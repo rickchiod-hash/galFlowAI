@@ -61,7 +61,7 @@ class WebSocketClient {
     }
   }
   
-  of(tipo, callback) {
+  off(tipo, callback) {
     if (this.listeners[tipo]) {
       this.listeners[tipo] = this.listeners[tipo].filter(cb => cb !== callback);
     }
