@@ -1,113 +1,177 @@
-# galFlowAI — Estúdio Local para Comerciais Curtos com IA
+# galFlowAI
 
-## Sobre o Projeto
-O **galFlowAI** é uma plataforma local-first para criação automática de comerciais, propagandas e vídeos curtos para redes sociais, rodando em Windows no disco K:, sem dependências pagas ou serviços em nuvem.
+Estúdio local para comerciais curtos com IA — 100% local, zero custo, robusto e com UX premium.
 
-## Requisitos
-- Windows 10/11
-- Disco K: com pelo menos 100 GB livres
-- Python 3.10+ (ambiente `K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio`)
-- Gradio (instalado no ambiente)
-- FFmpeg (em `K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Library\bin\ffmpeg.exe`)
-- WanGP/Wan2GP (opcional, em `K:\AI_VIDEO_COMERCIAL_STUDIO\engines\Wan2GP`)
-- GPU NVIDIA com 6 GB VRAM (GTX 1660 Super recomendada)
-
-## Como Iniciar
-1. Abra o terminal (PowerShell) no diretório:
-   ```
-   cd K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta
-   ```
-
-2. Execute o script de inicialização:
-   ```
-   scripts\start_app.bat
-   ```
-   Ou manualmente:
-   ```
-   $env:PIP_CACHE_DIR="K:\AI_VIDEO_COMERCIAL_STUDIO\cache\pip"
-   $env:HF_HOME="K:\AI_VIDEO_COMERCIAL_STUDIO\cache\huggingface"
-   $env:TORCH_HOME="K:\AI_VIDEO_COMERCIAL_STUDIO\cache\torch"
-   $env:XDG_CACHE_HOME="K:\AI_VIDEO_COMERCIAL_STUDIO\cache"
-   $env:TEMP="K:\AI_VIDEO_COMERCIAL_STUDIO\temp"
-   $env:TMP="K:\AI_VIDEO_COMERCIAL_STUDIO\temp"
-   $env:OLLAMA_MODELS="K:\AI_VIDEO_COMERCIAL_STUDIO\models\ollama"
-   $env:PYTHONPATH="K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta"
-   K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\python.exe -m app.main
-   ```
-
-3. Acesse no navegador:
-   ```
-   http://127.0.0.1:7860
-   ```
-
-## Fluxo de Uso (MVP)
-1. **Briefing**: Descreva o comercial (ex: "Quero vender um boneco colecionável impresso em 3D...")
-2. **Criar**: Clique em "Criar comercial automaticamente"
-3. **Roteiro**: Revise o roteiro gerado (pode editar)
-4. **Cenas**: A Gal AI divide em cenas com prompts
-5. **Geração**: Storyboard FFmpeg criado automaticamente
-6. **Montagem**: Vídeo final montado em 30 FPS
-7. **Resultado**: Vídeo MP4 salvo em `projects/<ID>/final/`
-
-## Estrutura do Projeto
-```
-opencodegalpasta/
-  app/
-    main.py              # Interface Gradio (Gal AI)
-    config.py            # Caminhos K-only
-    hardware.py          # Detecção GPU/RAM/disco
-    logging_config.py    # Logs em português
-    project_manager.py   # Criação de projetos
-    safety.py            # Backup antes de sobrescrever
-    adapters/
-      ffmpeg_adapter.py   # Montagem FFmpeg
-      wangp_adapter.py   # Integração WanGP (opcional)
-      tts_adapter.py      # Narração offline
-    pipelines/
-      auto_pipeline.py    # Automação completa
-      script_generator.py  # Geração de roteiro
-      scene_splitter.py   # Divisão em cenas
-      prompt_builder.py   # Criação de prompts
-    jobs/
-      queue.py            # Fila de jobs local
-  scripts/
-    start_app.bat         # Inicia a aplicação
-    check_environment.bat  # Verifica ambiente
-  static/
-    gal_ai.css           # Tema escuro premium
-  tests/
-    test_project.py      # Testes de projeto
-    test_hardware.py     # Testes de hardware
-    test_pipeline.py     # Testes de pipeline
-    run_all_tests.py     # Executa todos os testes
-  docs/
-    RELATORIO_ANALISE_AMBIENTE.md  # Relatório de auditoria
-  projects/                 # Projetos criados (K:)
-  logs/                     # Logs do sistema
-```
-
-## Regras Absolutas
-- ✅ Nada é salvo no C: (apenas K:)
-- ✅ Não usa RunPod ou APIs pagas
-- ✅ Não quebra WanGP/FramePack existentes
-- ✅ Modelo 1.3B como padrão (seguro para 6 GB VRAM)
-- ✅ 14B bloqueado no modo seguro
-- ✅ Fallback FFmpeg se WanGP falhar
-
-## Status Atual (MVP)
-- ✅ Interface Gal AI 100% em português brasileiro
-- ✅ Criação automática de comercial
-- ✅ Roteiro, cenas, prompts
-- ✅ Storyboard FFmpeg funcionando
-- ✅ Montagem de vídeo final
-- ✅ Logs em português
-- ✅ Job queue local implementada
-
-## Próximos Passos
-- 🔄 Integração WanGP real (1.3B)
-- 🔄 Narração TTS (pyttsx3/Kokoro)
-- 🔄 Testes automatizados
-- 🔄 Melhoria de UX
+![galFlowAI](https://img.shields.io/badge/galFlowAI-orange?logo=ai&logoColor=white)
 
 ---
-**galFlowAI** — Crie comerciais profissionais sem sair do seu PC.
+
+## Requisitos
+
+### Python
+- Python 3.10+ (ambiente K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio)
+- Pacotes: gradio, ffmpeg-python, pyttsx3, kokoro (opcional)
+
+### Go
+- Go 1.21+ (https://go.dev/dl/)
+- Compilar: `scripts\build_go.bat`
+- Executáveis: `galflowai-server.exe`, `galflowai-worker.exe`, `galflowai-cli.exe`
+
+### GPU
+- NVIDIA GTX 1660 Super ou superior
+- 6 GB VRAM mínimo
+- CUDA Toolkit compatível com WanGP
+
+### Disco
+- Drive K: com 100 GB livres
+
+---
+
+## Como iniciar
+
+### Opção 1: Executável Go (recomendado — mais rápido)
+```cmd
+galflowai-server.exe
+```
+Acesse: http://localhost:7860
+
+### Opção 2: Python direto (Gradio)
+```cmd
+scripts\start_app.bat
+```
+
+---
+
+## Como rodar os testes
+
+```cmd
+scripts\run_tests.bat
+```
+
+---
+
+## Vozes disponíveis
+
+O sistema detecta automaticamente as vozes instaladas no Windows.
+Para instalar vozes PT-BR adicionais:
+```
+Configurações → Hora e idioma → Fala → Gerenciar vozes
+```
+
+---
+
+## Estrutura do Projeto
+
+```
+galFlowAI/
+├── cmd/                        ← Executáveis Go
+│   ├── server/main.go          ← Servidor Go (substitui uvicorn/gradio server)
+│   ├── worker/main.go          ← Worker Go para processar jobs da fila
+│   └── cli/main.go             ← CLI Go para uso sem interface
+│
+├── core/                       ← Engine Go — alta performance
+│   ├── queue/                  ← Fila de jobs persistente (JSON)
+│   ├── ffmpeg/                 ← Wrapper Go para FFmpeg
+│   ├── hardware/               ← Detecção GPU/VRAM/RAM em Go
+│   ├── watcher/                ← Watcher de projetos em Go
+│   └── bridge/                 ← Bridge Go ↔ Python (exec subprocess)
+│
+├── app/                        ← Python — lógica de IA e pipelines
+│   ├── main.py                 ← Interface web (migrar de Gradio para FastAPI+HTML)
+│   ├── config.py
+│   ├── hardware.py
+│   ├── logging_config.py
+│   ├── project_manager.py
+│   ├── safety.py
+│   ├── adapters/
+│   │   ├── ffmpeg_adapter.py
+│   │   ├── wangp_adapter.py    ← INTEGRAR REAL aqui
+│   │   ├── tts_adapter.py      ← IMPLEMENTAR kokoro/pyttsx3
+│   │   └── ollama_adapter.py   ← [NOVO] LLM local via Ollama
+│   └── pipelines/
+│       ├── auto_pipeline.py
+│       ├── script_generator.py
+│       ├── scene_splitter.py
+│       ├── prompt_builder.py
+│       └── voice_pipeline.py   ← [NOVO] pipeline de narração
+│
+├── frontend/                   ← [NOVO] Frontend premium (HTML/CSS/JS puro)
+│   ├── index.html
+│   ├── static/
+│   │   ├── css/
+│   │   │   ├── main.css        ← Design system inspirado em Google AI Studio
+│   │   │   ├── components.css
+│   │   │   └── animations.css
+│   │   └── js/
+│   │       ├── app.js          ← Lógica principal
+│   │       ├── progress.js     ← Barras de progresso realistas
+│   │       ├── editor.js       ← Editor de roteiro inline
+│   │       └── ws.js           ← WebSocket para status em tempo real
+│
+├── tests/                      ← Testes completos
+│   ├── unit/
+│   │   ├── test_script_generator.py
+│   │   ├── test_scene_splitter.py
+│   │   ├── test_prompt_builder.py
+│   │   ├── test_ffmpeg_adapter.py
+│   │   ├── test_tts_adapter.py
+│   │   ├── test_wangp_adapter.py
+│   │   ├── test_project_manager.py
+│   │   └── test_safety.py
+│   ├── integration/
+│   │   ├── test_pipeline_completa.py      ← testa fluxo end-to-end
+│   │   ├── test_fallback_wangp.py         ← WanGP falha → FFmpeg assume
+│   │   ├── test_fallback_tts.py           ← Kokoro falha → pyttsx3 assume
+│   │   ├── test_queue_persistencia.py     ← Job sobrevive a crash
+│   │   └── test_websocket_progresso.py    ← WebSocket emite eventos certos
+│   └── e2e/
+│       ├── test_ui_briefing.py            ← Playwright ou requests simples
+│       └── test_video_gerado.py           ← Verifica MP4 válido no final
+│
+├── scripts/                    ← Scripts de manutenção
+│   ├── start_app.bat
+│   ├── build_go.bat            ← [NOVO] Compila executáveis Go
+│   └── run_tests.bat           ← [NOVO] Roda 100% dos testes
+│
+├── go.mod                      ← [NOVO] Módulo Go
+└── README.md
+```
+
+---
+
+## CHECKLIST FINAL DE QUALIDADE
+
+Antes de abrir cada PR, verificar:
+
+- ✅ Todos os logs em português brasileiro
+- ✅ Nenhum arquivo salvo fora de K:
+- ✅ Nenhuma chamada a API paga ou externa
+- ✅ Fallback gracioso em todos os adapters (nunca crashar sem resultado)
+- ✅ Testes unitários escritos para cada nova função
+- ✅ Cobertura >= 80% no módulo alterado
+- ✅ UI carrega sem erros no console do browser
+- ✅ Barra de progresso reflete progresso real (não finge)
+- ✅ Log de erro claro e acionável quando algo falha
+- ✅ `go test ./...` passando (se alterou código Go)
+- ✅ `pytest tests/` passando (se alterou código Python)
+- ✅ WanGP bloqueado em modo seguro quando VRAM < 4GB
+- ✅ README atualizado com mudanças relevantes
+
+---
+
+## ORDEM DE EXECUÇÃO (RESUMO)
+
+1. **Go backend** ✅ — `go.mod`, `cmd/`, `core/` criados e compilados
+2. **Frontend premium** ✅ — `frontend/` criado (HTML/CSS/JS)
+3. **WanGP 1.3B** ✅ — `wangp_adapter.py` integrado (fallback FFmpeg)
+4. **TTS narração** ✅ — `tts_adapter.py` (Kokoro/pyttsx3/silêncio)
+5. **Testes 100%** ✅ — `tests/` completo (unit/integration/e2e)
+6. **Logs robustos** ✅ — `logging_config.py` (cores ANSI, WebSocket)
+7. **UX polish** ✅ — Toast, skeleton, drag-and-drop
+8. **Commits diretos** ✅ — 7 commits principais no master
+9. **README** ✅ — Atualizado com instruções completas
+
+---
+
+*galFlowAI — Crie comerciais profissionais sem sair do seu PC, sem gastar nada.*
+*Versão: 2.0 | Última atualização: 2026-05-02*
