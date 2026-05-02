@@ -1,4 +1,4 @@
-// ws.js — WebSocket para status em tempo real
+// ws.js — WebSocket para status em tempo real.
 
 class WebSocketClient {
   constructor(url) {
@@ -87,7 +87,6 @@ const wsClient = new WebSocketClient('ws://localhost:7860/ws/status');
 
 // Handlers padrão
 wsClient.on('log', (data) => {
-  // Disparar evento customizado para outros scripts
   const event = new CustomEvent('ws-log', { detail: data });
   document.dispatchEvent(event);
 });

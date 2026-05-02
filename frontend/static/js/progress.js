@@ -6,7 +6,7 @@ const ETAPAS = [
   { id: 'cenas',     label: 'Dividindo em cenas',   peso: 10 },
   { id: 'prompts',   label: 'Construindo prompts',  peso: 10 },
   { id: 'render',    label: 'Renderizando cenas',   peso: 35 },
-  { id: 'narracao',  label: 'Gerando narração',     peso: 15 },
+  { id: 'narracao',  label: 'Gerando narracao',     peso: 15 },
   { id: 'montagem',  label: 'Montagem final',       peso: 5  },
 ];
 
