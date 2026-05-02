@@ -78,6 +78,47 @@ def create_storyboard_video(project_id: str, scenes: list) -> Path or None:
             logger.error("Erro FFmpeg (código %d): %s", result.returncode, result.stderr[-500:] if result.stderr else "Sem erro")
     except Exception as e:
         logger.error("Erro ao executar FFmpeg: %s", str(e))
+        return None
+
+def mixar_audio_video(video_path: Path, audio_path: Path, output_path: Path) -> Path or None:
+    """Combina narração com vídeo, ajustando duração automaticamente"""
+    if not video_path.exists():
+        logger.error("Vídeo não encontrado: %s", video_path)
+        return None
+    
+    cmd = [
+        str(FFMPEG_PATH), "-y",
+        "-i", str(video_path),
+        "-i", str(audio_path),
+        "-c:v", "copy",
+        "-c:a", "aac",
+        "-shortest",             # termina quando o menor acabar
+        "-filter:a", "afade=t=out:st=0:d=0.5",  # fade out suave no áudio
+        str(output_path)
+    ]
+    
+    if audio_path.exists():
+        cmd = [
+            str(FFMPEG_PATH), "-y",
+            "-i", str(video_path),
+            "-i", str(audio_path),
+            "-c:v", "copy",
+            "-c:a", "aac",
+            "-shortest",
+            "-filter:a", "afade=t=out:st=0:d=0.5",
+            str(output_path)
+        ]
+    
+    try:
+        logger.info("Mixando áudio + vídeo...")
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
+        if result.returncode == 0 and output_path.exists():
+            logger.info("Mixagem concluída: %s", output_path.name)
+            return output_path
+        else:
+            logger.error("Erro na mixagem: %s", result.stderr[-500:] if result.stderr else "Sem erro")
+    except Exception as e:
+        logger.error("Erro ao mixar áudio: %s", str(e))
     return None
 
 def create_placeholder_image(output_path: Path, text: str):
