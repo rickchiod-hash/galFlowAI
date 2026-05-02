@@ -7,7 +7,7 @@ from app.hardware import get_gpu_info, get_recommended_preset
 
 logger = setup_logger()
 
-WANGP_DIR = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/engines/Wan2GP")
+WANGP_DIR = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/engines/Wan2GP")
 WANGP_EXE = WANGP_DIR / "wen2gp_gui.py"  # ou .exe se houver um Windows build
 
 def check_wangp() -> bool:
