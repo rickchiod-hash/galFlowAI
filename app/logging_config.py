@@ -1,21 +1,103 @@
-import logging
-from pathlib import Path
+import logging`
+from pathlib import Path`
+from datetime import datetime`
 
-def setup_logger(name="galflowai", log_file=None):
-    if log_file is None:
-        log_dir = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/logs")
-        log_dir.mkdir(parents=True, exist_ok=True)
-        log_file = log_dir / "galflowai.log"
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.INFO)
-    if not logger.handlers:
-        fh = logging.FileHandler(log_file, encoding="utf-8")
-        fh.setLevel(logging.INFO)
-        fmt = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-        fh.setFormatter(fmt)
-        logger.addHandler(fh)
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.INFO)
-        ch.setFormatter(fmt)
-        logger.addHandler(ch)
-    return logger
+NIVEIS = {`
+    "debug": logging.DEBUG,`
+    "info": logging.INFO,`
+    "aviso": logging.WARNING,`
+    "erro": logging.ERROR,`
+}`
+
+def setup_logger(name="galflowai", nivel="info", projeto_id=None):`
+    """`
+    Configura logs em 3 destinos:`
+    1. Console: colorido, humano legível, em PT-BR`
+    2. Arquivo geral: K:/AI_.../logs/galflowai.log`
+    3. Arquivo do projeto: K:/AI_.../projects/<id>/logs/pipeline.log`
+    """`
+    
+    formato_console = "%(asctime)s [%(levelname)s] %(message)s"`
+    formato_arquivo = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"`
+    
+    logger = logging.getLogger(name)`
+    logger.setLevel(NIVEIS.get(nivel, logging.INFO))`
+    
+    # Handler console com cores`
+    if not any(isinstance(h, ColorConsoleHandler) for h in logger.handlers):`
+        console = ColorConsoleHandler()`
+        console.setFormatter(logging.Formatter(formato_console, datefmt="%H:%M:%S"))`
+        logger.addHandler(console)`
+    
+    # Handler arquivo geral (rotação por tamanho)`
+    if not any(isinstance(h, logging.handlers.RotatingFileHandler) for h in logger.handlers):`
+        log_dir = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/logs")`
+        log_dir.mkdir(parents=True, exist_ok=True)`
+        arquivo_geral = logging.handlers.RotatingFileHandler(`
+            log_dir / "galflowai.log",`
+            maxBytes=10*1024*1024,  # 10MB`
+            backupCount=5,`
+            encoding="utf-8"`
+        )`
+        arquivo_geral.setFormatter(logging.Formatter(formato_arquivo))`
+        logger.addHandler(arquivo_geral)`
+    
+    # Handler arquivo do projeto (se fornecido)`
+    if projeto_id:`
+        proj_log_dir = Path(f"K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/projects/{projeto_id}/logs")`
+        proj_log_dir.mkdir(parents=True, exist_ok=True)`
+        arquivo_proj = logging.FileHandler(`
+            proj_log_dir / "pipeline.log", encoding="utf-8")`
+        arquivo_proj.setFormatter(logging.Formatter(formato_arquivo))`
+        logger.addHandler(arquivo_proj)`
+    
+    return logger`
+
+
+class ColorConsoleHandler(logging.StreamHandler):`
+    """Handler com cores ANSI para o console Windows"""`
+    CORES = {`
+        logging.DEBUG:   "\033[36m",   # Ciano`
+        logging.INFO:    "\033[32m",   # Verde`
+        logging.WARNING: "\033[33m",   # Amarelo`
+        logging.ERROR:   "\033[31m",   # Vermelho`
+    }`
+    RESET = "\033[0m"`
+    
+    def emit(self, record):`
+        cor = self.CORES.get(record.levelno, "")`
+        record.levelname = self._traduzir_nivel(record.levelname)`
+        record.msg = f"{cor}{record.msg}{self.RESET}"`
+        super().emit(record)`
+    
+    def _traduzir_nivel(self, nivel):`
+        return {"DEBUG": "DEBUG", "INFO": "INFO", `
+                "WARNING": "AVISO", "ERROR": "ERRO"}.get(nivel, nivel)`
+
+
+def emitir_log_websocket(logger, tipo, msg, **kwargs):`
+    """Emite evento WebSocket para o frontend."""`
+    import json`
+    from datetime import datetime`
+    data = {`
+        "tipo": "log",`
+        "nivel": kwargs.get("level", "info"),`
+        "msg": msg,`
+        "ts": datetime.now().strftime("%H:%M:%S")`
+    }`
+    # Aqui seria emitido via WebSocket (implementar conforme necessário)`
+    logger.debug(f"WS emit: {json.dumps(data)}")`
+
+
+def log_progresso(logger, etapa, progresso, **kwargs):`
+    """Log de progresso para o frontend."""`
+    data = {`
+        "tipo": "progresso",`
+        "etapa": etapa,`
+        "progresso": progresso,`
+        "sub_progresso": kwargs.get("sub_progresso", 0),`
+        "tempo_decorrido": kwargs.get("tempo_decorrido", 0),`
+        "tempo_estimado": kwargs.get("tempo_estimado", 0)`
+    }`
+    logger.info(f"Progresso: {etapa} {progresso}%")`
+    # Aqui seria emitido via WebSocket`
