@@ -65,18 +65,61 @@ def run_auto_pipeline(project_name, briefing, commercial_type="produto", duratio
         save_prompts(project_id, scenes)
         result["logs"].append("Prompts gerados.")
         
-        # 8. Gerar storyboard via FFmpeg
+        # 8. Renderizar cenas (WanGP 1.3B primeiro, FFmpeg fallback)
         gpu = get_gpu_info()
         preset = get_recommended_preset(gpu["vram_gb"], gpu["name"])
         result["logs"].append("Preset: {}".format(preset["model"]))
         
-        try:
+        # Tradutor para prompts PT-BR → EN
+        from app.adapters.translator_adapter import TranslatorAdapter
+        translator = TranslatorAdapter()
+        result["logs"].append("Tradutor inicializado.")
+        
+        # WanGP adapter
+        from app.adapters.wangp_adapter import WanGPAdapter
+        wangp = WanGPAdapter(logger)
+        
+        rendered_videos = []
+        for scene in scenes:
+            # Traduzir prompt para EN (WanGP espera EN)
+            prompt_en = translator.traduzir(scene.get("prompt_positive", ""))
+            scene["prompt_positive_en"] = prompt_en
+            
+            # Tentar WanGP 1.3B primeiro
+            if wangp.disponivel:
+                result["logs"].append("Renderizando {} via WanGP 1.3B...".format(scene.get("id")))
+                video = wangp.gerar_cena(
+                    prompt=prompt_en,
+                    duracao_seg=scene.get("duration_estimate", 5),
+                    output_path=Path(proj_dir / "renders" / "{}_wgp.mp4".format(scene.get("id"))),
+                    progress_callback=None
+                )
+                if video:
+                    rendered_videos.append(str(video))
+                    scene["output_path"] = str(video)
+                    scene["status"] = "rendered"
+                    result["logs"].append("Cena {} renderizada via WanGP.".format(scene.get("id")))
+                    continue
+            
+            # Fallback: FFmpeg storyboard
+            result["logs"].append("WanGP indisponível/falhou. Usando FFmpeg...")
+            break
+        
+        # Se WanGP não renderizou tudo, usar FFmpeg para o resto
+        if len(rendered_videos) < len(scenes):
+            result["logs"].append("Renderizando storyboard FFmpeg para cenas restantes...")
             video_path = create_storyboard_video(project_id, scenes)
             if video_path:
+                rendered_videos.append(str(video_path))
                 result["video_preview"] = str(video_path)
-                result["logs"].append("Storyboard criado: {}".format(video_path.name))
-        except Exception as e:
-            result["logs"].append("Erro no storyboard: {}".format(str(e)))
+                result["logs"].append("Storyboard FFmpeg criado: {}".format(video_path.name))
+        else:
+            # Se WanGP renderizou tudo, compilar vídeo final
+            from app.adapters.ffmpeg_adapter import compile_final_video
+            final_video = compile_final_video(project_id, rendered_videos)
+            if final_video:
+                result["video_preview"] = str(final_video)
+                result["logs"].append("Vídeo final compilado: {}".format(final_video.name))
         
         result["status"] = "completed"
         result["logs"].append("Pipeline concluido.")
