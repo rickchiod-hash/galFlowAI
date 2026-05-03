@@ -1,23 +1,30 @@
 import json
 from app.logging_config import setup_logger
+from app.services.script_service import generate_script_with_llm
 
 logger = setup_logger()
 
-def generate_script(briefing, project_id=None):
-    """Gera roteiro a partir do briefing."""
-    msg = "Gerando roteiro para: %s" % str(briefing)[:50]
+def generate_script(briefing, project_id=None, mode="auto"):
+    """
+    Gera roteiro a partir do briefing usando LLMs locais ou templates.
+    mode: 'auto', 'fast', 'quality', 'safe', 'template'
+    """
+    msg = "Gerando roteiro para: %s [modo: %s]" % (str(briefing)[:50], mode)
     logger.info(msg)
-    template = (
-        "[Cena 1: Introducao]\n"
-        "Um ambiente moderno. O produto aparece.\n"
-        "Texto: %s\n\n"
-        "[Cena 2: Demonstrcao]\n"
-        "Demonstracao das funcionalidades.\n\n"
-        "[Cena 3: Chamada]\n"
-        "Adquira ja o seu!"
-    ) % str(briefing)[:100]
-    logger.info("Roteiro gerado")
-    return template
+    
+    try:
+        result = generate_script_with_llm(briefing, mode)
+        logger.info(
+            "Roteiro gerado via %s (tempo: %.2fs, qualidade: %s)",
+            result["provider"], result["time"], result["quality"]
+        )
+        return result["script"]
+    except Exception as e:
+        logger.error("Falha no servico de roteiro: %s", e)
+        # Fallback final
+        from app.adapters.llm.template_provider import TemplateProvider
+        tp = TemplateProvider()
+        return tp.generate(briefing)
 
 def save_script(project_id, script_text):
     """Salva roteiro no projeto."""

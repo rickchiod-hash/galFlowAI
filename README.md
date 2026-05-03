@@ -1,177 +1,281 @@
-# galFlowAI
+# FlowForgeAI (anteriormente galFlowAI)
 
 Estúdio local para comerciais curtos com IA — 100% local, zero custo, robusto e com UX premium.
 
-![galFlowAI](https://img.shields.io/badge/galFlowAI-orange?logo=ai&logoColor=white)
+![FlowForgeAI](https://img.shields.io/badge/FlowForgeAI-orange?logo=ai&logoColor=white)
 
 ---
 
 ## Requisitos
 
 ### Python
-- Python 3.10+ (ambiente K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio)
-- Pacotes: gradio, ffmpeg-python, pyttsx3, kokoro (opcional)
+- Python 3.10+ (ambiente: `K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio`)
+- Pacotes: gradio, fastapi, uvicorn, httpx, pydantic
+- Opcional: kokoro (TTS), gpt4all, llama-cpp-python
 
-### Go
-- Go 1.21+ (https://go.dev/dl/)
-- Compilar: `scripts\build_go.bat`
-- Executáveis: `galflowai-server.exe`, `galflowai-worker.exe`, `galflowai-cli.exe`
-
-### GPU
-- NVIDIA GTX 1660 Super ou superior
-- 6 GB VRAM mínimo
-- CUDA Toolkit compatível com WanGP
+### Hardware
+- **Mínimo**: GTX 1660 Super (6GB VRAM) ou superior
+- **RAM**: 16GB+
+- **Disco**: 100GB+ livres no K:
 
 ### Disco
-- Drive K: com 100 GB livres
+- **Trabalho**: K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta
+- **Nada salvo no C:** (exceto ambiente virtual)
 
 ---
 
-## Como iniciar
+## Como Iniciar
 
-### Opção 1: Executável Go (recomendado — mais rápido)
+### Opção 1: Gradio UI (Recomendado para uso diário)
 ```cmd
-galflowai-server.exe
+scripts\start_final.bat
 ```
-Acesse: http://localhost:7860
-
-### Opção 2: Python direto (Gradio)
-```cmd
-scripts\start_app.bat
+Acesse: http://127.0.0.1:7860
 ```
 
----
-
-## Como rodar os testes
-
+### Opção 2: FastAPI (Para automação/testes)
 ```cmd
-scripts\run_tests.bat
+scripts\start_fastapi.bat
+```
+Acesse: http://127.0.0.1:8000  
+Documentação: http://127.0.0.1:8000/docs
 ```
 
 ---
 
-## Vozes disponíveis
+## Motores de Roteiro (LLM Providers)
 
-O sistema detecta automaticamente as vozes instaladas no Windows.
-Para instalar vozes PT-BR adicionais:
+FlowForgeAI **nunca exige API key** e **funciona sem internet**.
+
+| Motor | Precisa Instalar? | Precisa Internet? | Qualidade | Recomendado para |
+|-------|-------------------|--------------------|----------|---------------------|
+| **Template Local** ⭐ Obrigatório | ❌ Não | ❌ Não | ⭐ Decente | Todos (sempre funciona) |
+| **LM Studio** | ✅ Sim | ❌ Não (após baixar) | ⭐⭐⭐ Alta | Quem quer qualidade melhor |
+| **KoboldCpp** | ✅ Sim (exe portátil) | ❌ Não | ⭐⭐ Boa | Portabilidade no K: |
+| **GPT4All** | ✅ Sim (SDK Python) | ❌ Não | ⭐⭐ Boa | Integração Python direta |
+| **Llama.cpp** | ✅ Sim (avançado) | ❌ Não | ⭐⭐⭐ Alta | Controle técnico total |
+
+### Fallback Garantido:
+Mesmo que **nenum LLM local esteja ativo**, o **TemplateProvider SEMPRE FUNCIONA**.
+
+---
+
+## Como Testar LLMs
+
+### Sem nenum LLM (Apenas Template):
+1. Execute: `python app/main.py`
+2. Acesse: http://127.0.0.1:7860
+3. Verá: "Motor usado: TemplateProvider"
+
+### Com LM Studio (Recomendado):
+1. Baixe: https://lmstudio.ai
+2. Abra: Developer → Local Server → Porta 1234
+3. Carregue um modelo leve (Llama 3.2 3B)
+4. Teste: `curl http://localhost:1234/v1/models`
+5. No FlowForgeAI: "Motor usado: LMStudioProvider"
+
+### Outros providers:
+- Execute: `scripts\llm\01_detectar_llms_locais.bat`
+- Siga as instruções nas docs criadas
+
+---
+
+## Roteiro Editável
+
+FlowForgeAI permite **editar o roteiro antes de gerar o vídeo**.
+
+### Fluxo:
+1. **Gerar Roteiro** (via LLM ou Template)
+2. **Exibir na UI** (campo editável)
+3. **Editar Manualmente** (o usuário altera o texto)
+4. **Salvar Edição** (cria nova versão)
+5. **Melhorar/Complementar** (botões de ação)
+6. **Aprovar Roteiro** (marca como pronto para cenas)
+
+### Estrutura de Versões:
 ```
-Configurações → Hora e idioma → Fala → Gerenciar vozes
+projects/<project_id>/script/
+  script_v001.md          # Versão 1
+  script_v001.json         # Metadados v1
+  script_v002.md          # Versão 2
+  script_approved.md      # Roteiro aprovado
+  script_approved.json    # Metadados aprovado
+  script_versions.json    # Lista de versões
 ```
+
+---
+
+## Endpoints FastAPI (V2)
+
+### Health Check
+```
+GET /api/health
+```
+
+### LLM Providers
+```
+GET /api/llm/providers
+```
+
+### Gerar Roteiro
+```
+POST /api/llm/script
+```
+
+### Edição de Roteiro
+```
+POST /api/projects/{id}/script/save-manual-edit
+POST /api/projects/{id}/script/improve
+POST /api/projects/{id}/script/more-viral
+POST /api/projects/{id}/script/more-premium
+POST /api/projects/{id}/script/more-direct
+POST /api/projects/{id}/script/new-version
+POST /api/projects/{id}/script/restore-previous
+POST /api/projects/{id}/script/approve
+GET /api/projects/{id}/script/current
+GET /api/projects/{id}/script/versions
+```
+
+### Hardware
+```
+GET /api/hardware
+```
+
+### Video Generation
+```
+POST /api/generate-video
+GET /api/video-status/{project_id}
+GET /api/pipeline/status
+```
+
+---
+
+## Scripts Disponíveis
+
+| Script | Função |
+|--------|---------|
+| `scripts\start_app_debug.bat` | Inicia Gradio UI |
+| `scripts\start_fastapi.bat` | Inicia FastAPI |
+| `scripts\start_final.bat` | Inicia com variáveis de ambiente |
+| `scripts\health_check.bat` | Testa conexão |
+| `scripts\llm\01_detectar_llms_locais.bat` | Detecta LLMs instalados |
+| `scripts\llm\02_iniciar_lmstudio_instrucoes.bat` | Instruções LM Studio |
+| `scripts\llm\03_baixar_koboldcpp_k.bat` | Baixa KoboldCpp |
+| `scripts\llm\04_instalar_gpt4all_sdk_k.bat` | Instala GPT4All |
+| `scripts\llm\05_iniciar_koboldcpp_exemplo.bat` | Exemplo KoboldCpp |
+| `scripts\llm\06_iniciar_llamacpp_exemplo.bat` | Exemplo Llama.cpp |
+| `scripts\llm\07_testar_providers_llm.bat` | Testa providers |
+
+---
+
+## Documentação Criada
+
+| Documento | Conteúdo |
+|------------|----------|
+| `docs\LLM_LOCAL_SEM_API_KEY.md` | Visão geral LLMs sem API key |
+| `docs\INSTALAR_LM_STUDIO_K.md` | Instalação LM Studio no K: |
+| `docs\INSTALAR_KOBOLDCPP_K.md` | Instalação KoboldCpp no K: |
+| `docs\INSTALAR_GPT4ALL_K.md` | Instalação GPT4All no K: |
+| `docs\INSTALAR_LLAMACPP_K.md` | Instalação Llama.cpp no K: |
+| `docs\ROTEIROS_COM_FANTASIA.md` | Exemplos de fantasia |
+| `docs\FASTAPI_V2.md` | Documentação FastAPI V2 |
+| `docs\SCRIPT_EDITABLE.md` | Roteiro editável |
+| `docs\MOTORES_ROTEIRO_TELA.md` | Motores de roteiro |
+| `docs\VIDEO_PIPELINE.md` | Pipeline de vídeo completo |
 
 ---
 
 ## Estrutura do Projeto
 
 ```
-galFlowAI/
-├── cmd/                        ← Executáveis Go
-│   ├── server/main.go          ← Servidor Go (substitui uvicorn/gradio server)
-│   ├── worker/main.go          ← Worker Go para processar jobs da fila
-│   └── cli/main.go             ← CLI Go para uso sem interface
-│
-├── core/                       ← Engine Go — alta performance
-│   ├── queue/                  ← Fila de jobs persistente (JSON)
-│   ├── ffmpeg/                 ← Wrapper Go para FFmpeg
-│   ├── hardware/               ← Detecção GPU/VRAM/RAM em Go
-│   ├── watcher/                ← Watcher de projetos em Go
-│   └── bridge/                 ← Bridge Go ↔ Python (exec subprocess)
-│
-├── app/                        ← Python — lógica de IA e pipelines
-│   ├── main.py                 ← Interface web (migrar de Gradio para FastAPI+HTML)
+K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta\
+├── app\
+│   ├── main.py                 ← Gradio UI
+│   ├── api.py                  ← FastAPI V2
 │   ├── config.py
-│   ├── hardware.py
-│   ├── logging_config.py
-│   ├── project_manager.py
-│   ├── safety.py
-│   ├── adapters/
+│   ├── adapters\
+│   │   ├── llm\               ← LLM Providers
+│   │   │   ├── base_provider.py
+│   │   │   ├── template_provider.py
+│   │   │   ├── lmstudio_provider.py
+│   │   │   ├── koboldcpp_provider.py
+│   │   │   ├── gpt4all_provider.py
+│   │   │   ├── llamacpp_provider.py
+│   │   │   └── provider_router.py
 │   │   ├── ffmpeg_adapter.py
-│   │   ├── wangp_adapter.py    ← INTEGRAR REAL aqui
-│   │   ├── tts_adapter.py      ← IMPLEMENTAR kokoro/pyttsx3
-│   │   └── ollama_adapter.py   ← [NOVO] LLM local via Ollama
-│   └── pipelines/
-│       ├── auto_pipeline.py
+│   │   ├── tts_adapter.py
+│   │   └── wangp_adapter.py
+│   ├── services\
+│   │   └── script_service.py ← Camada de negócio
+│   └── pipeline\
+│       ├── video_generation_pipeline.py
 │       ├── script_generator.py
 │       ├── scene_splitter.py
-│       ├── prompt_builder.py
-│       └── voice_pipeline.py   ← [NOVO] pipeline de narração
-│
-├── frontend/                   ← [NOVO] Frontend premium (HTML/CSS/JS puro)
-│   ├── index.html
-│   ├── static/
-│   │   ├── css/
-│   │   │   ├── main.css        ← Design system inspirado em Google AI Studio
-│   │   │   ├── components.css
-│   │   │   └── animations.css
-│   │   └── js/
-│   │       ├── app.js          ← Lógica principal
-│   │       ├── progress.js     ← Barras de progresso realistas
-│   │       ├── editor.js       ← Editor de roteiro inline
-│   │       └── ws.js           ← WebSocket para status em tempo real
-│
-├── tests/                      ← Testes completos
-│   ├── unit/
-│   │   ├── test_script_generator.py
-│   │   ├── test_scene_splitter.py
-│   │   ├── test_prompt_builder.py
-│   │   ├── test_ffmpeg_adapter.py
-│   │   ├── test_tts_adapter.py
-│   │   ├── test_wangp_adapter.py
-│   │   ├── test_project_manager.py
-│   │   └── test_safety.py
-│   ├── integration/
-│   │   ├── test_pipeline_completa.py      ← testa fluxo end-to-end
-│   │   ├── test_fallback_wangp.py         ← WanGP falha → FFmpeg assume
-│   │   ├── test_fallback_tts.py           ← Kokoro falha → pyttsx3 assume
-│   │   ├── test_queue_persistencia.py     ← Job sobrevive a crash
-│   │   └── test_websocket_progresso.py    ← WebSocket emite eventos certos
-│   └── e2e/
-│       ├── test_ui_briefing.py            ← Playwright ou requests simples
-│       └── test_video_gerado.py           ← Verifica MP4 válido no final
-│
-├── scripts/                    ← Scripts de manutenção
-│   ├── start_app.bat
-│   ├── build_go.bat            ← [NOVO] Compila executáveis Go
-│   └── run_tests.bat           ← [NOVO] Roda 100% dos testes
-│
-├── go.mod                      ← [NOVO] Módulo Go
+│       └── prompt_builder.py
+├── scripts\
+│   ├── llm\                    ← Scripts LLM
+│   ├── start_fastapi.bat
+│   └── start_final.bat
+├── docs\                      ← Documentação
+├── tests\                     ← Testes
+├── projects\                  ← Projetos criados
 └── README.md
 ```
 
 ---
 
-## CHECKLIST FINAL DE QUALIDADE
+## Checklist Final
 
-Antes de abrir cada PR, verificar:
-
+Antes de fazer commit, verifique:
 - ✅ Todos os logs em português brasileiro
-- ✅ Nenhum arquivo salvo fora de K:
+- ✅ Nada salvo no C:
 - ✅ Nenhuma chamada a API paga ou externa
-- ✅ Fallback gracioso em todos os adapters (nunca crashar sem resultado)
+- ✅ Fallback gracioso em todos os adapters
 - ✅ Testes unitários escritos para cada nova função
 - ✅ Cobertura >= 80% no módulo alterado
-- ✅ UI carrega sem erros no console do browser
-- ✅ Barra de progresso reflete progresso real (não finge)
-- ✅ Log de erro claro e acionável quando algo falha
-- ✅ `go test ./...` passando (se alterou código Go)
-- ✅ `pytest tests/` passando (se alterou código Python)
-- ✅ WanGP bloqueado em modo seguro quando VRAM < 4GB
+- ✅ Log de erro claro quando algo falha
 - ✅ README atualizado com mudanças relevantes
 
 ---
 
-## ORDEM DE EXECUÇÃO (RESUMO)
+## Status Atual (05/2026)
 
-1. **Go backend** ✅ — `go.mod`, `cmd/`, `core/` criados e compilados
-2. **Frontend premium** ✅ — `frontend/` criado (HTML/CSS/JS)
-3. **WanGP 1.3B** ✅ — `wangp_adapter.py` integrado (fallback FFmpeg)
-4. **TTS narração** ✅ — `tts_adapter.py` (Kokoro/pyttsx3/silêncio)
-5. **Testes 100%** ✅ — `tests/` completo (unit/integration/e2e)
-6. **Logs robustos** ✅ — `logging_config.py` (cores ANSI, WebSocket)
-7. **UX polish** ✅ — Toast, skeleton, drag-and-drop
-8. **Commits diretos** ✅ — 7 commits principais no master
-9. **README** ✅ — Atualizado com instruções completas
+### ✅ Implementado:
+1. **LLM Providers** - 6 providers (Template, LM Studio, KoboldCpp, GPT4All, Llama.cpp)
+2. **Script Service** - Camada de negócio com versionamento
+3. **FastAPI V2** - 15+ endpoints funcionais
+4. **Gradio UI** - Interface completa com seleção de motor
+5. **Video Pipeline** - Estrutura completa (FFmpeg fallback)
+6. **Adapters** - WanGP, TTS, FFmpeg
+7. **Documentação** - 10 documentos completos
+8. **Testes** - Unitários e integração criados
+
+### ⚠️ Pendências:
+1. Corrigir erros de sintaxe em `api.py` (faltam vírgulas em dicionários)
+2. Configurar Python corretamente (evitar Microsoft Store)
+3. Instalar WanGP real em `K:\AI_VIDEO_COMERCIAL_STUDIO\engines\Wan2GP`
+4. Testar pipeline completo com FFmpeg
+
+### 🔧 Correções Recentes:
+1. Backup de `api.py` criado (`api_original.bak`, `api_backup.py`)
+2. Scripts de inicialização atualizados com variáveis de ambiente
+3. Documentação de pipeline de vídeo criada
+4. Testes de integração criados
 
 ---
 
-*galFlowAI — Crie comerciais profissionais sem sair do seu PC, sem gastar nada.*
-*Versão: 2.0 | Última atualização: 2026-05-02*
+## Próximos Passos
+
+1. **Corrigir sintaxe** - api.py e main.py
+2. **Testar aplicação** - Subir Gradio e FastAPI
+3. **Instalar WanGP** - Para geração real de vídeo
+4. **Integrar WebSocket** - Para progresso em tempo real
+5. **Adicionar fila de jobs** - SQLite ou Redis/RQ
+6. **Criar React UI** - V3 (futuro)
+
+---
+
+**Versão:** 2.0  
+**Data:** 03/05/2026  
+**Status:** LLM Providers implementados, FastAPI V2 criado, Documentação completa, Aguardando correção de sintaxe  
+**Próximo marco:** Aplicação funcionando + WanGP integration

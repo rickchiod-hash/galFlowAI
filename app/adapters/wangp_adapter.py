@@ -1,94 +1,208 @@
+"""Adapter para WanGP (Wan2GP) - Motor de vídeo principal"""
+
+import os
+import sys
 import json
 import subprocess
 from pathlib import Path
-from app.logging_config import setup_logger
-from app.config import PROJECTS_DIR
-from app.hardware import get_gpu_info, get_recommended_preset
+from typing import Optional, Dict, Any, List
+import logging
+import shutil
 
-logger = setup_logger()
+logger = logging.getLogger(__name__)
 
-WANGP_DIR = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/engines/Wan2GP")
-WANGP_EXE = WANGP_DIR / "wen2gp_gui.py"  # ou .exe se houver um Windows build
 
-def check_wangp() -> bool:
-    """Verifica se Wan2GP existe e está acessível."""
-    if not WANGP_DIR.exists():
-        logger.warning("Wan2GP não encontrado em %s", WANGP_DIR)
-        return False
-    logger.info("Wan2GP encontrado em %s", WANGP_DIR)
-    return True
-
-def generate_scene_video_wangp(project_id: str, scene: dict, preset: dict = None) -> Path or None:
-    """
-    Gera vídeo para uma cena usando WanGP 1.3B (modo seguro).
-    Retorna caminho do vídeo ou None se falhar.
-    """
-    if not check_wangp():
-        logger.error("WanGP não disponível. Usando fallback FFmpeg.")
-        return None
-
-    gpu = get_gpu_info()
-    if preset is None:
-        preset = get_recommended_preset(gpu["vram_gb"], gpu["name"])
-
-    # Validação de segurança
-    if "14B" in preset.get("model", "") and preset.get("model") != "1.3B":
-        logger.warning("Modelo 14B bloqueado no modo seguro. Use 1.3B para sua GPU.")
-        preset["model"] = "1.3B"
-        preset["resolution"] = "480p/512p"
-
-    proj_dir = PROJECTS_DIR / project_id
-    scene_id = scene.get("id", "scene_001")
-    output_dir = proj_dir / "renders"
-    output_dir.mkdir(parents=True, exist_ok=True)
-    output_path = output_dir / "{}_wangp.mp4".format(scene_id)
-
-    # Monta comando básico (ajustar conforme interface real do Wan2GP)
-    cmd = [
-        "K:/AI_VIDEO_COMERCIAL_STUDIO/envs/studio/python.exe",
-        str(WANGP_EXE),
-        "--prompt", scene.get("prompt_positive", ""),
-        "--negative_prompt", scene.get("prompt_negative", ""),
-        "--model", preset.get("model", "1.3B"),
-        "--resolution", preset.get("resolution", "480p"),
-        "--duration", str(scene.get("duration_estimate", 5)),
-        "--output", str(output_path)
-    ]
-
-    try:
-        logger.info("Gerando cena %s com WanGP 1.3B (seguro)", scene_id)
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
-        if result.returncode == 0 and output_path.exists():
-            scene["output_path"] = str(output_path)
-            scene["status"] = "rendered"
-            # Atualiza project.json
-            proj_file = proj_dir / "project.json"
-            proj = json.loads(proj_file.read_text(encoding="utf-8"))
-            proj["scenes"] = [s if s["id"] != scene_id else scene for s in proj.get("scenes", [])]
-            proj_file.write_text(json.dumps(proj, indent=2, ensure_ascii=False), encoding="utf-8")
-            logger.info("Cena %s renderizada com sucesso: %s", scene_id, output_path.name)
-            return output_path
-        else:
-            logger.error("Falha no WanGP: %s", result.stderr or "Erro desconhecido")
-    except Exception as e:
-        logger.error("Erro ao executar WanGP: %s", str(e))
-
-    return None
-
-def batch_render_wangp(project_id: str, scenes: list, max_concurrent: int = 1) -> list:
-    """
-    Renderiza cenas com WanGP, uma por vez (seguro para 6GB VRAM).
-    """
-    results = []
-    preset = get_recommended_preset(get_gpu_info()["vram_gb"], get_gpu_info()["name"])
-    if "14B" in preset.get("model", ""):
-        preset["model"] = "1.3B"
-        preset["resolution"] = "480p/512p"
-
-    for scene in scenes:
-        if scene.get("status") in ("rendered", "approved"):
-            results.append(scene.get("output_path"))
-            continue
-        video = generate_scene_video_wangp(project_id, scene, preset)
-        results.append(str(video) if video else None)
-    return results
+class WanGPAdapter:
+    """Adapter para integrar WanGP/Wan2GP para geração de vídeo"""
+    
+    def __init__(self, wangp_path: Optional[str] = None):
+        """
+        Inicializa o adapter WanGP.
+        
+        Args:
+            wangp_path: Caminho para a instalação do WanGP. Se None, usa padrão.
+        """
+        self.wangp_path = wangp_path or r"K:\AI_VIDEO_COMERCIAL_STUDIO\engines\Wan2GP"
+        self.available = self._check_availability()
+        self.model_preset = "1.3B"  # Padrão para GTX 1660 Super (6GB VRAM)
+        self.resolution = "480p"     # Seguro para 6GB VRAM
+        
+    def _check_availability(self) -> bool:
+        """Verifica se WanGP está disponível"""
+        if not os.path.exists(self.wangp_path):
+            logger.info(f"WanGP não encontrado em: {self.wangp_path}")
+            return False
+        
+        # Verifica arquivos essenciais (main.py ou gradio.py ou wan_interface.py)
+        possible_main_files = ["main.py", "gradio.py", "wan_interface.py", "inference.py"]
+        main_found = False
+        for file in possible_main_files:
+            if os.path.exists(os.path.join(self.wangp_path, file)):
+                self.main_file = file
+                main_found = True
+                break
+        
+        if not main_found:
+            logger.info(f"Arquivo principal do WanGP não encontrado em {self.wangp_path}")
+            return False
+        
+        # Verifica se Python consegue importar os módulos necessários
+        try:
+            # Tenta verificar se o ambiente tem as deps necessárias
+            test_cmd = [self._get_python_executable(), "-c", "import torch; print('torch ok')"]
+            result = subprocess.run(test_cmd, capture_output=True, text=True, timeout=10)
+            if result.returncode != 0:
+                logger.warning("PyTorch não encontrado no ambiente")
+                return False
+        except:
+            pass
+        
+        return True
+    
+    def is_available(self) -> bool:
+        """Retorna se WanGP está disponível"""
+        return self.available
+    
+    def generate_video(
+        self,
+        prompt: str,
+        output_path: str,
+        negative_prompt: str = "",
+        duration_seconds: int = 5,
+        num_frames: int = 16,
+        resolution: Optional[str] = None,
+        model_preset: Optional[str] = None,
+        progress_callback: Optional[callable] = None
+    ) -> Dict[str, Any]:
+        """
+        Gera vídeo usando WanGP.
+        
+        Args:
+            prompt: Prompt positivo para geração
+            output_path: Caminho para salvar o vídeo
+            negative_prompt: Prompt negativo
+            duration_seconds: Duração desejada em segundos
+            num_frames: Número de frames
+            resolution: Resolução (ex: 480p, 512p)
+            model_preset: Modelo (ex: 1.3B, 14B)
+            progress_callback: Função de callback para progresso
+            
+        Returns:
+            Dict com status, caminho do vídeo, e metadados
+        """
+        if not self.available:
+            return {
+                "success": False,
+                "error": "WanGP não está disponível",
+                "fallback_suggested": True
+            }
+        
+        # Usa valores seguros para 6GB VRAM
+        resolution = resolution or self.resolution
+        model_preset = model_preset or self.model_preset
+        
+        # Validação para hardware limitation
+        if self._get_vram_gb() <= 6:
+            if model_preset not in ["1.3B"]:
+                logger.warning(f"Modelo {model_preset} muito grande para 6GB VRAM. Usando 1.3B")
+                model_preset = "1.3B"
+            if resolution not in ["480p", "512p"]:
+                logger.warning(f"Resolução {resolution} muito alta para 6GB VRAM. Usando 480p")
+                resolution = "480p"
+        
+        try:
+            # Prepara comando WanGP
+            cmd = self._build_command(
+                prompt=prompt,
+                negative_prompt=negative_prompt,
+                output_path=output_path,
+                duration_seconds=duration_seconds,
+                num_frames=num_frames,
+                resolution=resolution,
+                model_preset=model_preset
+            )
+            
+            logger.info(f"Executando WanGP: {' '.join(cmd)}")
+            
+            # Executa WanGP
+            process = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                cwd=self.wangp_path
+            )
+            
+            # Monitora progresso
+            stdout, stderr = process.communicate()
+            
+            if process.returncode == 0:
+                return {
+                    "success": True,
+                    "video_path": output_path,
+                    "prompt": prompt,
+                    "model": model_preset,
+                    "resolution": resolution,
+                    "duration": duration_seconds,
+                    "provider": "WanGP"
+                }
+            else:
+                logger.error(f"Erro WanGP: {stderr}")
+                return {
+                    "success": False,
+                    "error": stderr,
+                    "fallback_suggested": True
+                }
+                
+        except Exception as e:
+            logger.error(f"Exceção ao executar WanGP: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "fallback_suggested": True
+            }
+    
+    def _build_command(self, **kwargs) -> List[str]:
+        """Constrói comando para execução do WanGP"""
+        python_exe = self._get_python_executable()
+        
+        cmd = [
+            python_exe,
+            "main.py",
+            "--prompt", kwargs["prompt"],
+            "--output", kwargs["output_path"],
+            "--model", kwargs.get("model_preset", "1.3B"),
+            "--resolution", kwargs.get("resolution", "480p"),
+            "--frames", str(kwargs.get("num_frames", 16)),
+            "--duration", str(kwargs.get("duration_seconds", 5))
+        ]
+        
+        if kwargs.get("negative_prompt"):
+            cmd.extend(["--negative_prompt", kwargs["negative_prompt"]])
+        
+        return cmd
+    
+    def _get_python_executable(self) -> str:
+        """Retorna caminho do Python para executar WanGP"""
+        # Tenta usar o Python do ambiente studio
+        studio_python = r"K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe"
+        if os.path.exists(studio_python):
+            return studio_python
+        
+        # Fallback para python do sistema
+        return "python"
+    
+    def _get_vram_gb(self) -> int:
+        """Retorna VRAM em GB (placeholder - integrar com hardware.py)"""
+        # TODO: Integrar com hardware.py para detecção real
+        return 6  # GTX 1660 Super padrão
+    
+    def get_status(self) -> Dict[str, Any]:
+        """Retorna status do adapter"""
+        return {
+            "available": self.available,
+            "path": self.wangp_path,
+            "model_preset": self.model_preset,
+            "resolution": self.resolution,
+            "vram_gb": self._get_vram_gb()
+        }
