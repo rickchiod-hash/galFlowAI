@@ -8,7 +8,7 @@ from pipelines.auto_pipeline import run_auto_pipeline
 def create(brief):
     try:
         if not brief:
-            return "Erro: informe o briefing."
+            return "Erro: informe o briefing.", None
         
         result = run_auto_pipeline("", brief)
         
@@ -17,11 +17,11 @@ def create(brief):
             video = result.get("video_preview", "")
             if video:
                 status = status + "\nVideo: " + video
-            return status
+            return status, video
         else:
-            return "Erro: " + ", ".join(result["logs"])
+            return "Erro: " + ", ".join(result["logs"]), None
     except Exception as e:
-        return "Erro: " + str(e)
+        return "Erro: " + str(e), None
 
 with gr.Blocks(title="FlowForgeAI") as demo:
     gr.Markdown("# FlowForgeAI")
@@ -38,11 +38,12 @@ with gr.Blocks(title="FlowForgeAI") as demo:
             btn = gr.Button("Criar comercial", variant="primary")
     
     output = gr.Textbox(label="Status", lines=4, interactive=False)
-
+    video_preview = gr.Video(label="Preview do Video", visible=True)
+    
     btn.click(
         create, 
         inputs=[briefing], 
-        outputs=[output]
+        outputs=[output, video_preview]
     )
 
 if __name__ == "__main__":

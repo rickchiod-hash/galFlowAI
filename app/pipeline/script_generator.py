@@ -4,19 +4,39 @@ from app.logging_config import setup_logger
 logger = setup_logger()
 
 def generate_script(briefing, project_id=None):
-    """Gera roteiro a partir do briefing."""
+    """Gera roteiro a partir do briefing usando templates especializados."""
     msg = "Gerando roteiro para: %s" % str(briefing)[:50]
     logger.info(msg)
+    
+    # Extrair palavras-chave
+    words = briefing.lower().split()
+    product = "produto"
+    if "maquiagem" in words or "makeup" in words:
+        product = "maquiagem"
+    elif "boneco" in words or "action figure" in words:
+        product = "boneco colecionavel"
+    elif "impress" in words or "3d" in words:
+        product = "produto impresso em 3D"
+    
     template = (
-        "[Cena 1: Introducao]\n"
-        "Um ambiente moderno. O produto aparece.\n"
-        "Texto: %s\n\n"
-        "[Cena 2: Demonstrcao]\n"
-        "Demonstracao das funcionalidades.\n\n"
-        "[Cena 3: Chamada]\n"
-        "Adquira ja o seu!"
-    ) % str(briefing)[:100]
-    logger.info("Roteiro gerado")
+        "[Cena 1: Introducao - 5s]\n"
+        "Foco no %s em ambiente moderno. Luz suave destacando o produto.\n"
+        "Texto na tela: 'Apresentamos o novo %s'\n\n"
+        "[Cena 2: Beneficios - 15s]\n"
+        "Demonstracao rapida dos diferenciais. Close-ups das caracteristicas.\n"
+        "Texto: 'Qualidade premium, design unico'\n\n"
+        "[Cena 3: Prova Social - 7s]\n"
+        "Pessoas interagindo com o %s. Sorrisos e satisfacao.\n"
+        "Texto: 'Amado por clientes'\n\n"
+        "[Cena 4: Oferta - 3s]\n"
+        "Preco e condicoes especiais. Urgencia.\n"
+        "Texto: 'Oferta limitada'\n\n"
+        "[Cena 5: Chamada - 5s]\n"
+        "Logo da marca. Botao de acao.\n"
+        "Texto: 'Adquira ja o seu %s!'"
+    ) % (product, product, product, product)
+    
+    logger.info("Roteiro gerado com 5 cenas")
     return template
 
 def save_script(project_id, script_text):
