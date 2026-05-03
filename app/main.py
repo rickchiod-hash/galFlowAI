@@ -22,7 +22,7 @@ logger = setup_logger()
 def create_commercial(briefing, motor_llm="Automático local"):
     try:
         if not briefing:
-            return "Erro: informe o briefing.", None, "", ""
+            return "Erro: informe o briefing.", None, "", "", ""
         
         # Convert UI selection to mode
         mode_map = {
@@ -30,8 +30,7 @@ def create_commercial(briefing, motor_llm="Automático local"):
             "Template local": "safe",
             "LM Studio local": "safe",
             "KoboldCpp local": "safe",
-            "GPT4All local": "safe",
-            "llama.cpp local": "safe"
+            "GPT4All local": "safe"
         }
         mode = mode_map.get(motor_llm, "auto")
         
@@ -40,9 +39,11 @@ def create_commercial(briefing, motor_llm="Automático local"):
         
         if result["status"] == "completed":
             status = "Sucesso! " + ", ".join(result["logs"])
-            video = result.get("video_preview", "")
-            if video:
+            video = result.get("video_preview", None)
+            if video and isinstance(video, str) and len(video) > 0:
                 status = status + "\nVideo: " + video
+            else:
+                video = None
             
             # Load script for editing
             script = load_current_script(result["project_id"])
@@ -55,11 +56,12 @@ def create_commercial(briefing, motor_llm="Automático local"):
                 provider_info.get("time", 0)
             )
             
-            return status, video, script_text, provider_msg
+            return status, video, script_text, provider_msg, ""
         else:
-            return "Erro: " + ", ".join(result["logs"]), None, "", "Falha no roteiro"
+            error_msg = "Erro: " + ", ".join(result["logs"])
+            return error_msg, None, "", "Falha no roteiro", ""
     except Exception as e:
-        return "Erro: " + str(e), None, "", "Erro interno"
+        return "Erro: " + str(e), None, "", "Erro interno", ""
 
 def save_edit(project_id, script_text, note=""):
     try:

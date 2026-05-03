@@ -50,7 +50,7 @@ def generate_script_with_llm(briefing: str, mode: str = "auto") -> Dict:
     except Exception as e:
         logger.error("Script generation failed: %s", e)
         # Ultimate fallback
-        from app.adapters.llm.template_provider import TemplateProvider
+        from app.adapters.llm.base_provider import TemplateProvider
         tp = TemplateProvider()
         return {
             "script": tp.generate(briefing),
