@@ -3,12 +3,26 @@ from app.logging_config import setup_logger
 
 logger = setup_logger()
 
-def generate_script(briefing, project_id=None):
-    """Gera roteiro a partir do briefing usando templates especializados."""
+def generate_script(briefing, project_id=None, use_ollama=True):
+    """Gera roteiro a partir do briefing usando templates ou Ollama."""
     msg = "Gerando roteiro para: %s" % str(briefing)[:50]
     logger.info(msg)
     
-    # Extrair palavras-chave
+    # Tentar Ollama primeiro se disponivel
+    if use_ollama:
+        try:
+            from app.adapters.ollama_adapter import check_ollama_available, generate_with_ollama
+            if check_ollama_available():
+                logger.info("Usando Ollama para gerar roteiro")
+                result = generate_with_ollama(briefing)
+                if result:
+                    logger.info("Roteiro gerado via Ollama")
+                    return result
+        except Exception as e:
+            logger.warning("Falha no Ollama: %s", e)
+    
+    # Fallback para template
+    logger.info("Usando template fallback")
     words = briefing.lower().split()
     product = "produto"
     if "maquiagem" in words or "makeup" in words:
