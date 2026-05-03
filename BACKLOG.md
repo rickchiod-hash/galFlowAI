@@ -1,211 +1,152 @@
-# BACKLOG E ROADMAP - FlowForgeAI
+# BACKLOG TÉCNICO (Code Review) — Gal AI / galFlowAI
 
-**Arquivo de Checkpoint**: Consultar e atualizar sempre que iniciar nova sessão.
-**Objetivo**: Mapear o que foi feito, pular o que foi validado, e listar pendências.
-
-**Última atualização**: 03/05/2026
-**Último commit**: `3ea7b9e` - "feat(llm): LLM Providers completo + FastAPI V2 + Script Service + Video Pipeline"
+**Última atualização:** 03/05/2026  
+**Objetivo:** Evoluir a base atual sem quebrar o fluxo local-first existente (Gradio + FastAPI + fallback Template/FFmpeg).
 
 ---
 
-## ✅ CHECKLIST DE VALIDAÇÃO PARA NOVA SESSÃO
+## Resumo executivo (sem viés)
 
-Ao iniciar uma **nova sessão**, valide **tudo que está marcado como ✅** abaixo. Se estiver funcionando, **pule** para as pendências (⚠️).
+### Pontos fortes atuais
+- Arquitetura já separa UI/API de serviços e adapters, o que facilita evolução incremental.
+- Fallbacks centrais (TemplateProvider e FFmpeg) preservam continuidade operacional.
+- Existe documentação base para operação local e setup de providers.
 
-### 1. Estrutura Básica
-- [x] `app/main.py` existe e compila
-- [x] `app/api.py` existe (mas pode ter erros de sintaxe)
-- [x] `app/services/script_service.py` existe
-- [x] `app/adapters/llm/` com 6 providers criados
-- [x] `app/pipeline/video_generation_pipeline.py` criado
-- [x] `README.md` atualizado
-- [x] `AGENTS.md` atualizado
-- [x] `docs/` com 10 documentos
-- [x] `tests/` com testes criados
-
-### 2. Funcionalidades Implementadas
-- [x] **LLM Providers** (6 providers) - Template, LM Studio, KoboldCpp, GPT4All, Llama.cpp
-- [x] **Script Service** - Camada de negócio com versionamento
-- [x] **FastAPI V2** - 15+ endpoints criados
-- [x] **Gradio UI** - Interface com seletor de motor
-- [x] **Video Pipeline** - Estrutura completa criada
-- [x] **Adapters** - WanGP, TTS, FFmpeg criados
-- [x] **Documentação** - 10 documentos completos
-- [x] **Testes** - Unitários e integração criados
-
-### 3. Commits e Push
-- [x] Commit realizado: `3ea7b9e`
-- [x] Push realizado para `origin/master`
+### Pontos críticos atuais
+- Backlog anterior estava desatualizado e continha diagnósticos incorretos (ex.: sintaxe de `app/api.py` já está válida).
+- Há risco de divergência entre comportamento real e documentação em endpoints/fluxos.
+- Ausência de suíte de testes de contrato para API e de testes de regressão para fluxo fim-a-fim.
 
 ---
 
-## ❌ PENDÊNCIAS CRÍTICAS (Corrigir Agora)
-
-### 1. Erros de Sintaxe em `api.py` ⚠️
-**Status**: ❌ NÃO CORRIGIDO
-**Problema**: Múltiplos erros de sintaxe:
-- Linha 7: `from typing import Dict, List, Optional, Any` (está `Dict, List` sem vírgula)
-- Linha 13: `sys.path.insert(0, str(Path(__file__).parent.parent))` (está `__file__` incorreto)
-- Múltiplos returns: `return {"ok": True "version": ...}` (falta vírgula após `True`)
-- Linha 29: `allow_origins` (deveria ser `allow_origins`)
-- CORS middleware chamado incorretamente
-
-**Ação**: Corrigir todos os erros de sintaxe antes de subir aplicação.
-
-### 2. Python Não Encontrado ⚠️
-**Status**: ❌ REDIRECIONANDO PARA MICROSOFT STORE
-**Problema**: `python` comando redireciona para Microsoft Store
-**Causa**: Alias de execução do Windows ativado
-
-**Ação**: Usar caminho completo: `K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe`
-
-### 3. Caminhos Inconsistentes ⚠️
-**Status**: ❌ PARCIALMENTE INCONSISTENTE
-**Problema**: `AI_VIDEO_COMERCIAL_STUDIO` vs `AI_VIDEO_COMMERCIAL_STUDIO`
-
-**Ação**: Padronizar para `AI_VIDEO_COMERCIAL_STUDIO` (verificar se pasta é `COMERCIAL` ou `COMMERCIAL`)
+## Critérios para aceitar melhorias
+1. **Não quebrar fluxo vigente** (gerar roteiro → editar/aprovar → cenas → preview → MP4).
+2. **Melhorar observabilidade** (logs, erro claro, rastreabilidade por `project_id`/`job_id`).
+3. **Aumentar robustez** sem impor dependências cloud ou lock-in externo.
+4. **Permitir rollback fácil** (mudanças pequenas, feature flags quando aplicável).
 
 ---
 
-## 📋 BACKLOG COMPLETO
+## Backlog priorizado (crítico e coerente)
 
-### Prioridade 1 - Correções Críticas
+## P0 — Confiabilidade e risco imediato
 
-| ID | Tarefa | Status | Arquivos Afetados |
-|----|--------|--------|-------------------|
-| P1-01 | Corrigir sintaxe em `api.py` (faltam vírgulas em dicionários) | ❌ | `app/api.py` |
-| P1-02 | Corrigir `__file__` para `__file__` em `api.py` | ❌ | `app/api.py` |
-| P1-03 | Corrigir `allow_origins` para `allow_origins` | ❌ | `app/api.py` |
-| P1-04 | Corrigir CORS middleware (está `CORSMiddleware` mas deveria ser `CORSMiddleware`) | ❌ | `app/api.py` |
-| P1-05 | Corrigir `GRADIO_PORT` para `GRADIO_PORT` (conforme config.py) | ❌ | `app/api.py` |
-| P1-06 | Verificar sintaxe em `main.py` | ⚠️ | `app/main.py` |
-| P1-07 | Configurar Python para não abrir Microsoft Store | ❌ | Scripts de start |
-| P1-08 | Testar se Gradio sobe em `http://127.0.0.1:7860` | ❌ | `app/main.py` |
-| P1-09 | Testar se FastAPI sobe em `http://127.0.0.1:8000` | ❌ | `app/api.py` |
+| ID | Contexto da melhoria | Sugestão objetiva | Prós | Contras / custo | Vale a pena agora? |
+|---|---|---|---|---|---|
+| P0-01 | Documentação e estado do código divergentes geram retrabalho | Criar checklist de release técnico (README/docs/endpoints/scripts) antes de merge | Evita drift entre docs e código | Exige disciplina por PR | **Sim (alto impacto, baixo custo)** |
+| P0-02 | API sem testes de contrato tende a quebrar silenciosamente | Adicionar testes de contrato FastAPI para rotas críticas (`/api/health`, `/api/llm/*`, `/api/projects/*/script/*`) | Reduz regressão em endpoint | Setup inicial de fixtures | **Sim** |
+| P0-03 | Falhas de provider podem degradar UX sem diagnóstico claro | Padronizar envelope de erro (`code`, `message`, `details`, `retryable`) e mapear exceptions por adapter | Debug mais rápido, UX previsível | Refatoração moderada nas rotas | **Sim** |
 
-### Prioridade 2 - Validação de Funcionalidades
+## P1 — Robustez de arquitetura sem ruptura
 
-| ID | Tarefa | Status | Teste |
-|----|--------|--------|-------|
-| P2-01 | Validar LLM Providers (6 providers) | ✅ | `tests/unit/test_llm_providers.py` |
-| P2-02 | Validar Script Service | ⚠️ | `tests/test_script_service.py` |
-| P2-03 | Validar FastAPI endpoints | ❌ | `tests/test_api_*.py` |
-| P2-04 | Validar Gradio UI (seletor de motor) | ❌ | Manual |
-| P2-05 | Validar Roteiro Editável | ❌ | Manual |
-| P2-06 | Validar Video Pipeline (FFmpeg fallback) | ⚠️ | `tests/integration/test_pipeline_completo.py` |
-| P2-07 | Validar WanGP Adapter | ❌ | `app/adapters/wangp_adapter.py` |
-| P2-08 | Validar TTS Adapter | ❌ | `app/adapters/tts_adapter.py` |
+| ID | Contexto da melhoria | Sugestão objetiva | Prós | Contras / custo | Vale a pena agora? |
+|---|---|---|---|---|---|
+| P1-01 | Regras de negócio podem se espalhar entre API/UI | Consolidar casos de uso em camada `application` (use-cases) mantendo adapters em `infrastructure` | Reduz acoplamento e facilita testes | Refatoração gradual, demanda convenção | **Sim, incremental** |
+| P1-02 | Pipeline de vídeo pode bloquear requisição síncrona | Introduzir executor assíncrono local com fila leve (`sqlite` + worker já existente em Go/Python) | Melhor responsividade e retomada | Mais componentes operacionais | **Sim, faseado** |
+| P1-03 | Configuração local extensa e sujeita a erro | Adotar validação central de config (`pydantic-settings`) com mensagem de erro acionável | Menos erro de ambiente | Migração de config existente | **Sim** |
+| P1-04 | Falta de idempotência em ações de roteiro pode duplicar estado | Definir idempotency key por operação de escrita em script/versionamento | Evita versões fantasmas | Requer armazenamento de chave/estado | **Sim, para estabilidade** |
 
-### Prioridade 3 - Melhorias e Integração
+## P2 — Eficiência e qualidade de código
 
-| ID | Tarefa | Status | Detalhes |
-|----|--------|--------|----------|
-| P3-01 | Instalar WanGP real | ❌ | `scripts/install_wangp.bat` criado |
-| P3-02 | Testar pipeline completo com FFmpeg | ⚠️ | Funcionou parcialmente (preview de 35s) |
-| P3-03 | Integrar WebSocket para progresso | ❌ | Placeholder criado |
-| P3-04 | Adicionar fila de jobs (SQLite) | ❌ | Futuro |
-| P3-05 | Criar React UI (V3) | ❌ | Futuro |
-| P3-06 | Documentar com OpenAPI completo | ❌ | Swagger existe |
+| ID | Contexto da melhoria | Sugestão objetiva | Prós | Contras / custo | Vale a pena agora? |
+|---|---|---|---|---|---|
+| P2-01 | Providers diferentes podem repetir lógica de timeout/retry | Criar utilitário comum de execução (`retry`, `timeout`, `circuit breaker` simples local) | Menos duplicação, comportamento homogêneo | Ajuste em todos adapters | **Sim** |
+| P2-02 | Logs atuais dificultam correlação ponta-a-ponta | Estruturar logs JSON com `project_id`, `provider`, `latency_ms`, `fallback_used` | Observabilidade real | Requer adaptação de leitura manual | **Sim** |
+| P2-03 | Sem métricas mínimas, tuning fica subjetivo | Instrumentar métricas locais (tempo de geração, taxa fallback, erro por provider) | Decisão baseada em dado | Pequeno overhead | **Sim** |
+| P2-04 | Testes lentos/instáveis por dependência de LLM local | Criar modo de teste com fakes determinísticos para providers | CI estável e rápida | Necessário manter fakes | **Sim** |
+
+## P3 — Modernização arquitetural (sem “big bang”)
+
+| ID | Contexto da melhoria | Sugestão objetiva | Prós | Contras / custo | Vale a pena agora? |
+|---|---|---|---|---|---|
+| P3-01 | Evolução de frontend pode exigir API mais formal | Versionar API (`/api/v1`) e publicar schema OpenAPI versionado | Permite evolução sem quebrar clientes | Trabalho de governança | **Sim, antes da UI nova** |
+| P3-02 | Operações longas sem estado formal de job | Padronizar máquina de estados (`queued/running/succeeded/failed/canceled`) | Controle operacional e UX melhor | Implementação moderada | **Sim** |
+| P3-03 | Crescimento de features sem limites claros | Definir ADRs curtas (Architecture Decision Records) para decisões críticas | Histórico técnico rastreável | Custo de documentação contínua | **Sim** |
 
 ---
 
-## 🗺️ ROADMAP POR VERSÃO
+## Plano de execução recomendado (sem quebrar fluxo)
 
-### V2.0 - ATUAL (Em andamento)
-**Objetivo**: Finalizar funcionalidades básicas locais
-- ✅ LLM Providers sem API key
-- ✅ Script Service com versionamento
-- ✅ FastAPI V2 com endpoints
-- ❌ Corrigir sintaxe em `api.py`
-- ❌ Subir Gradio + FastAPI com sucesso
-- ⚠️ Testar pipeline completo
+### Sprint A (1–2 semanas)
+- P0-01, P0-02, P0-03
+- P1-03
+- P2-02
 
-### V2.1 - PRÓXIMA (Planejada)
-**Objetivo**: Estabilização e WanGP real
-- Corrigir todos os erros de sintaxe
-- Instalar WanGP em `K:\AI_VIDEO_COMERCIAL_STUDIO\engines\Wan2GP`
-- Testar geração real de vídeo com 1.3B
-- Validar fallback FFmpeg
-- Completar testes automatizados
+### Sprint B (2 semanas)
+- P1-01 (apenas casos de uso de roteiro)
+- P2-01, P2-04
+- P3-02 (estado de job mínimo)
 
-### V3.0 - FUTURA
-**Objetivo**: React UI + WebSocket + Jobs
-- Migrar Gradio para React/TypeScript
-- Implementar WebSocket para progresso em tempo real
-- Adicionar fila de jobs com Redis/RQ ou SQLite
-- Documentação OpenAPI completa
-- Deploy local primeiro
+### Sprint C (2+ semanas)
+- P1-02 (fila local faseada)
+- P2-03
+- P3-01, P3-03
 
 ---
 
-## 🔄 INSTRUÇÕES PARA NOVA SESSÃO
+## Itens congelados (não fazer agora)
+- Reescrita completa da UI em React sem estabilizar contratos da API.
+- Dependência obrigatória de cloud/API paga.
+- Troca massiva de stack sem baseline de performance/confiabilidade.
 
-Ao iniciar uma **nova sessão**, siga estes passos:
+---
 
-### 1. Consultar este arquivo
-```
-LEIA: K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta\BACKLOG.md
+## Checklist de revisão por PR
+- [ ] Mudança preserva fallback Template + FFmpeg.
+- [ ] Existe teste automatizado para rota/caso alterado.
+- [ ] Logs incluem contexto mínimo (`project_id`/`provider`).
+- [ ] Documentação atualizada no mesmo PR.
+- [ ] Sem promessa de funcionalidade não implementada.
+
+---
+
+## Refinamento de histórias (correções pontuais com economia de tokens)
+
+> Objetivo: executar correções pequenas, verificáveis e com baixa ambiguidade.
+
+### H1 — Padronizar identidade e metadados da API
+**Contexto:** ainda havia strings legadas no `app/api.py` (nome antigo do produto).  
+**Implementação sugerida:** manter docstring, título da API e payload de health coerentes com Gal AI.
+
+**Critérios de aceite (rígidos):**
+- [ ] `app/api.py` compila com `python -m py_compile app/api.py`.
+- [ ] `FastAPI(title=...)` usa nome atual do projeto.
+- [ ] `GET /api/health` retorna `app` coerente com branding atual.
+
+**Prompt enxuto (engenharia de prompt):**
+```text
+Corrija somente metadados de identidade em app/api.py sem alterar contratos de endpoint.
+Restrições: não criar novos endpoints, não alterar schemas de request/response.
+Entrega: patch mínimo + validação por py_compile.
 ```
 
-### 2. Validar o que está marcado como ✅
-- Execute os testes básicos
-- Verifique se os arquivos existem
-- Confirme se o último commit está estável
+### H2 — Endurecer tratamento de exceção sem mudar comportamento funcional
+**Contexto:** havia `except:` genérico em leitura de status de projeto.  
+**Implementação sugerida:** trocar por `except Exception` mantendo fallback atual.
 
-### 3. Pular o que foi validado
-Se algo marcado como ✅ está funcionando:
-- **NÃO reimplemente**
-- **NÃO recomece do zero**
-- **CONTINUE das pendências marcadas como ❌ ou ⚠️**
+**Critérios de aceite (rígidos):**
+- [ ] Não existir `except:` nu em `app/api.py`.
+- [ ] Endpoint `/api/video-status/{project_id}` continua retornando status mesmo quando `prompts.json` estiver malformado.
+- [ ] `python -m py_compile app/api.py` permanece OK.
 
-### 4. Atualizar este arquivo
-Após cada sessão:
-- Atualize o status das tarefas
-- Marque como ✅ o que foi concluído
-- Adicione novas pendências se necessário
-- Atualize o "Último commit" e "Última atualização"
-
-### 5. Fazer commit deste arquivo
-```
-cd K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta
-git add BACKLOG.md
-git commit -m "docs(backlog): Atualiza checkpoint e pendências"
-git push origin master
+**Prompt enxuto (engenharia de prompt):**
+```text
+Refatore apenas blocos `except:` nus em app/api.py para `except Exception`.
+Não mude regras de negócio, payload ou fluxo de fallback.
+Valide compilação no final.
 ```
 
----
+### H3 — Execução local previsível do módulo API
+**Contexto:** execução `__main__` deve ser explícita e estável para ambiente local.  
+**Implementação sugerida:** manter host local e explicitar parâmetros de `uvicorn.run` sem mudar porta/API.
 
-## 📊 RESUMO DO ESTADO ATUAL
+**Critérios de aceite (rígidos):**
+- [ ] Bloco `if __name__ == "__main__":` inicia API em `host=127.0.0.1` e `port=8000`.
+- [ ] Não importar variáveis não usadas de `config.py`.
+- [ ] Compilação sintática sem erro.
 
-### ✅ Concluído (Não mexer)
-1. Estrutura de pastas básica
-2. LLM Providers (6 providers implementados)
-3. Script Service (camada de negócio)
-4. Video Pipeline (estrutura criada)
-5. Documentação (10 documentos)
-6. Testes (criados, mas não executados)
-7. Commit e Push realizados (`3ea7b9e`)
-
-### ❌ Pendências Críticas (Fazer agora)
-1. **Corrigir sintaxe em `api.py`** - faltam vírgulas em dicionários
-2. **Configurar Python** - evitar Microsoft Store
-3. **Subir Gradio** - testar em `http://127.0.0.1:7860`
-4. **Subir FastAPI** - testar em `http://127.0.0.1:8000`
-
-### 🎯 Próximo Marco
-**Meta**: Aplicação funcionando com:
-- Gradio UI abrindo corretamente
-- FastAPI respondendo endpoints
-- TemplateProvider funcionando
-- Video Pipeline gerando preview com FFmpeg
-
----
-
-**NOTA PARA MIM MESMO**:
-Sempre que iniciar nova sessão:
-1. **LEIA este arquivo primeiro**
-2. **Valide o que está ✅**
-3. **Pule o que foi validado**
-4. **Foque nas pendências ❌**
-5. **Atualize este arquivo ao final**
-6. **Faça commit com tag `checkpoint`**
+**Prompt enxuto (engenharia de prompt):**
+```text
+Ajuste somente o bloco __main__ de app/api.py para inicialização local determinística.
+Não alterar rotas, modelos Pydantic ou middlewares.
+```
