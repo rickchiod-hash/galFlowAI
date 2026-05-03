@@ -12,7 +12,7 @@ from app.services.script_service import (
     generate_script_with_llm,
     save_manual_edit, improve_script, complement_script,
     make_script_more_viral, make_script_more_premium, make_script_more_direct,
-    create_new_script_version, restore_previous_version, approve_script,
+    create_new_version, restore_previous_version, approve_script,
     load_current_script, load_script_versions
 )
 from app.logging_config import setup_logger

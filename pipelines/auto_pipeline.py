@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from app.logging_config import setup_logger
 from app.project_manager import create_project
-from app.pipeline.script_generator import generate_script_from_brief, save_script
+from app.pipeline.script_generator import generate_script, save_script
 from app.pipeline.scene_splitter import split_script_into_scenes, save_scenes
 from app.pipeline.prompt_builder import build_prompts_for_scenes, save_prompts
 from app.adapters.ffmpeg_adapter import create_storyboard_video

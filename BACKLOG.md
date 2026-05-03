@@ -29,6 +29,29 @@
 
 ## Backlog priorizado (crítico e coerente)
 
+## Status Atual (03/05/2026 - Sessão Resumida)
+
+### ✅ Concluído Nesta Sessão
+1. **Correção de Sintaxe**: `app/logging_config.py` tinha backticks inválidos em todas as linhas
+2. **Ambiente Python**: Criado `K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio` (venv Python 3.12.4)
+3. **Dependências**: Instalados fastapi, uvicorn, gradio, pydantic, httpx no ambiente studio
+4. **Validação**: `api.py` compila e importa com sucesso
+5. **Teste FastAPI**: Servidor sobe e responde em `http://127.0.0.1:8000/api/health`
+6. **Correção de Imports**:
+   - `provider_router.py`: Corrigido import de `TemplateProvider` (estava em `base_provider.py`)
+   - `auto_pipeline.py`: Corrigido import `generate_script_from_brief` → `generate_script`
+   - `main.py`: Corrigido import `create_new_script_version` → `create_new_version`
+7. **Criação de Módulos Faltantes**:
+   - Criado `app/pipeline/prompt_builder.py` com funções necessárias
+8. **Teste Gradio UI**: Servidor sobe e responde em `http://127.0.0.1:7860` (Status 200)
+
+### ⚠️ Pendências Imediatas
+1. Testar Gradio UI em `http://127.0.0.1:7860`
+2. Validar se `auto_pipeline.py` executa sem erros
+3. Commit das correções realizadas
+
+---
+
 ## P0 — Confiabilidade e risco imediato
 
 | ID | Contexto da melhoria | Sugestão objetiva | Prós | Contras / custo | Vale a pena agora? |

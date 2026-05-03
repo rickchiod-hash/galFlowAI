@@ -4,8 +4,7 @@ Provider Router - manages LLM providers with fallback.
 import asyncio
 import time
 from typing import List, Optional, Dict
-from app.adapters.llm.base_provider import BaseLLMProvider
-from app.adapters.llm.template_provider import TemplateProvider
+from app.adapters.llm.base_provider import BaseLLMProvider, TemplateProvider
 
 class ProviderRouter:
     """Routes requests through available LLM providers with fallback."""
