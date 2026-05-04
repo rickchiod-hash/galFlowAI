@@ -292,9 +292,9 @@ def _normalize_level(level_str: str) -> str:
         return "DEBUG"  # Não deve aparecer na UI
     elif 'info' in level_lower:
         return "INFO"
-    elif 'warn' in level_lower:
+    elif 'warn' in level_lower or 'aviso' in level_lower or 'warning' in level_lower:
         return "WARN"
-    elif 'error' in level_lower:
+    elif 'error' in level_lower or 'erro' in level_lower:
         return "ERROR"
     else:
         return level_str.upper()
