@@ -8,9 +8,11 @@
 ## 1) Diagnóstico atual (code review)
 
 ### 1.1 Cobertura de testes
-- `tests/` possui apenas `run_all_tests.py` (legado).
-- Arquivo legado referencia módulos não existentes (`tests.test_project`, `tests.test_hardware`, `tests.test_pipeline`).
-- Resultado prático: cobertura automatizada atual é insuficiente para evitar regressões.
+- **Atualizado 2026-05-04**: Cobertura expandida significativamente.
+- Testes criados: 183 testes distribuídos em 30+ arquivos.
+- Itens do backlog 1-10 implementados com testes.
+- Testes cobrindo: exceptions, metrics, job queue, provider router, script service versioning, API endpoints, video pipeline, FFmpeg fallback, dashboard, TTS fallback, WanGP fallback, pipeline completo.
+- Resultado prático: cobertura automatizada para regressões críticas.
 
 ### 1.2 Arquitetura e acoplamento
 - `app/api.py` concentra múltiplas responsabilidades (contrato HTTP, orquestração, tratamento de erro e integração direta com serviços/pipeline).
