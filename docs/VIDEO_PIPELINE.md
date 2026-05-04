@@ -1,8 +1,8 @@
-# Pipeline de Geração de Vídeo - FlowForgeAI
+# Pipeline de Geração de Vídeo - Gal AI
 
 ## Visão Geral
 
-O FlowForgeAI agora possui um pipeline completo de geração de vídeo comercial, integrando:
+O Gal AI agora possui um pipeline completo de geração de vídeo comercial, integrando:
 - **LLM Providers** para roteiro
 - **WanGP 1.3B** para geração de vídeo (ou FFmpeg como fallback)
 - **TTS** para narração

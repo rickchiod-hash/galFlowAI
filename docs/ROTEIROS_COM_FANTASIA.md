@@ -1,6 +1,6 @@
 # Roteiros com Fantasia
 
-O FlowForgeAI agora suporta **briefings de fantasia** com templates especializados que geram roteiros comerciais (não narrativas de RPG).
+O Gal AI agora suporta **briefings de fantasia** com templates especializados que geram roteiros comerciais (não narrativas de RPG).
 
 ## Exemplos de Briefings de Fantasia
 
@@ -67,7 +67,7 @@ Cada roteiro contém:
 
 ## Validação de Qualidade
 
-O FlowForgeAI rejeita roteiros que contenham:
+O Gal AI rejeita roteiros que contenham:
 - "Apresentamos" (robótico)
 - "Solução completa" (genérico)
 - "Adquira agora" (sem contexto)
@@ -77,7 +77,7 @@ O FlowForgeAI rejeita roteiros que contenham:
 
 ## Testando
 
-Execute no FlowForgeAI:
+Execute no Gal AI:
 1. Cole um dos briefings acima
 2. Clique "Criar comercial"
 3. Verá o roteiro gerado com todas as seções
@@ -102,4 +102,4 @@ Execute no FlowForgeAI:
 ---
 
 **Documentação criada em:** 03/05/2026
-**Versão:** FlowForgeAI 1.0
+**Versão:** Gal AI 1.0

@@ -14,6 +14,12 @@ from app.adapters.llm import ProviderRouter
 
 logger = setup_logger()
 
+# TODO_TECNICO(SCRIPT_SERVICE):
+# 1) Separar IO de arquivos da regra de negócio (SRP).
+# 2) Garantir idempotência para salvar/aprovar versões de roteiro.
+# 3) Introduzir Result Object padronizado para erros/retornos.
+# 4) Criar testes unitários para geração, versionamento e aprovação.
+
 # ========== Generation ==========
 
 def generate_script_with_llm(briefing: str, mode: str = "auto") -> Dict:
