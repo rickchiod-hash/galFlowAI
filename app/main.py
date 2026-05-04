@@ -22,15 +22,16 @@ logger = setup_logger()
 def create_commercial(briefing, motor_llm="Automático local"):
     try:
         if not briefing:
-            return "Erro: informe o briefing.", None, "", "", ""
+            return "Erro: informe o briefing.", None, "", "", "", ""
         
-        # Convert UI selection to mode
+        # Convert UI selection to mode (implementa motores locais)
         mode_map = {
             "Automático local": "auto",
-            "Template local": "safe",
-            "LM Studio local": "safe",
-            "KoboldCpp local": "safe",
-            "GPT4All local": "safe"
+            "Template local": "template",
+            "LM Studio local": "lmstudio",
+            "KoboldCpp local": "koboldcpp",
+            "GPT4All local": "gpt4all",
+            "llama.cpp local": "llamacpp"
         }
         mode = mode_map.get(motor_llm, "auto")
         
@@ -38,6 +39,7 @@ def create_commercial(briefing, motor_llm="Automático local"):
         result = run_auto_pipeline("", briefing, mode=mode)
         
         if result["status"] == "completed":
+            project_id = result.get("project_id", "")
             status = "Sucesso! " + ", ".join(result["logs"])
             video = result.get("video_preview", None)
             # Garantir que video seja None se não for arquivo válido
@@ -46,23 +48,25 @@ def create_commercial(briefing, motor_llm="Automático local"):
             else:
                 video = None
             
-            # Load script for editing
-            script = load_current_script(result["project_id"])
-            script_text = script.get("script", "")
+            # Carrega roteiro: primeiro do resultado do pipeline, depois do arquivo
+            script_text = result.get("script", "")
+            if not script_text:
+                script = load_current_script(project_id)
+                script_text = script.get("script", "")
             
             # Show provider info
             provider_info = result.get("provider_info", {})
             provider_msg = "Motor usado: %s (%.2fs)" % (
                 provider_info.get("provider", "Template"),
-                provider_info.get("time", 0)
+                provider_info.get("time",0)
             )
             
-            return status, video, script_text, provider_msg, ""
+            return status, video, script_text, provider_msg, "", project_id
         else:
             error_msg = "Erro: " + ", ".join(result["logs"])
-            return error_msg, None, "", "Falha no roteiro", ""
+            return error_msg, None, "", "Falha no roteiro", "", ""
     except Exception as e:
-        return "Erro: " + str(e), None, "", "Erro interno", ""
+        return "Erro: " + str(e), None, "", "Erro interno", "", ""
 
 def save_edit(project_id, script_text, note=""):
     try:
@@ -134,8 +138,8 @@ def load_versions(project_id):
     except:
         return []
 
-with gr.Blocks(title="FlowForgeAI") as demo:
-    gr.Markdown("# FlowForgeAI")
+with gr.Blocks(title="GalFlowAI") as demo:
+    gr.Markdown("# GalFlowAI")
     gr.Markdown("Estudio local para comerciais curtos com IA - GTX 1660 Super")
     
     # Store project_id (simplified - in real app use state)
@@ -194,18 +198,24 @@ with gr.Blocks(title="FlowForgeAI") as demo:
     # Click handlers
     def on_create(briefing, motor):
         result = create_commercial(briefing, motor)
-        # Extract project_id from somewhere (simplified)
-        return result[0], result[1], result[2], result[3], ""
+        # result: status, video, script_text, provider_msg, action_status, project_id
+        return result[0], result[1], result[2], result[3], result[4], result[5]
     
     btn.click(
         on_create,
         inputs=[briefing, motor_llm],
-        outputs=[status, video_preview, script_editor, provider_info, action_status]
+        outputs=[status, video_preview, script_editor, provider_info, action_status, current_project_id]
     )
     
+    def on_save(project_id, script):
+        if not project_id:
+            return "Erro: Nenhum projeto carregado", ""
+        result = save_edit(project_id, script)
+        return result[0], result[1]
+    
     btn_save.click(
-        lambda script: (save_edit("dummy", script)[0], save_edit("dummy", script)[1]),
-        inputs=[script_editor],
+        on_save,
+        inputs=[current_project_id, script_editor],
         outputs=[action_status, gr.Textbox(visible=False)]
     )
     
@@ -699,6 +709,6 @@ with gr.Blocks(title="FlowForgeAI") as demo:
         )
     
 if __name__ == "__main__":
-    print("Iniciando FlowForgeAI em http://127.0.0.1:7860")
+    print("Iniciando GalFlowAI em http://127.0.0.1:7860")
     demo.launch(server_name="127.0.0.1", server_port=7860)
 
