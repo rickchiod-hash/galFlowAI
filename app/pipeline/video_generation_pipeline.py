@@ -76,12 +76,11 @@ class VideoGenerationPipeline:
             
             # 1. Gerar roteiro
             self._report_progress(progress_callback, 10, "Gerando roteiro...")
-            script_result = self.script_generator.generate_script(
-                product=product,
-                target_audience=target_audience,
-                duration_seconds=duration_seconds,
-                style=style,
-                keywords=keywords
+            # script_generator é uma função (generate_script_with_llm)
+            from app.services.script_service import generate_script_with_llm
+            script_result = generate_script_with_llm(
+                briefing=f"{product}. {target_audience}",
+                mode="safe"
             )
             
             if not script_result or "script" not in script_result:
@@ -96,9 +95,11 @@ class VideoGenerationPipeline:
             
             # 2. Dividir em cenas
             self._report_progress(progress_callback, 20, "Dividindo em cenas...")
-            scenes = self.scene_splitter.split_script(
+            # scene_splitter é uma função (split_script_into_scenes)
+            from app.pipeline.scene_splitter import split_script_into_scenes
+            scenes = split_script_into_scenes(
                 script_text,
-                target_duration=duration_seconds
+                project_id=project_id
             )
             
             if not scenes:
@@ -114,21 +115,19 @@ class VideoGenerationPipeline:
             
             # 3. Gerar prompts para cada cena
             self._report_progress(progress_callback, 30, "Gerando prompts de vídeo...")
-            scene_prompts = []
-            for i, scene in enumerate(scenes):
-                prompt_data = self.prompt_builder.build_prompt(
-                    scene_text=scene.get("text", ""),
-                    product=product,
-                    style=style
-                )
-                scene_prompts.append({
-                    "scene_id": i,
-                    "text": scene.get("text", ""),
-                    "duration": scene.get("duration", 5),
-                    "prompt": prompt_data.get("prompt", ""),
-                    "negative_prompt": prompt_data.get("negative_prompt", ""),
-                    "status": "pending"
-                })
+            from app.pipeline.prompt_builder import build_prompts_for_scenes
+            scene_prompts = build_prompts_for_scenes(
+                scenes=scenes,
+                project_id=project_id
+            )
+            
+            # Salva prompts
+            prompts_path = project_dir / "prompts" / "prompts.json"
+            prompts_path.parent.mkdir(exist_ok=True)
+            prompts_path.write_text(
+                json.dumps(scene_prompts, indent=2, ensure_ascii=False),
+                encoding="utf-8"
+            )
             
             # Salva prompts
             prompts_path = project_dir / "prompts" / "prompts.json"
@@ -165,11 +164,33 @@ class VideoGenerationPipeline:
                 if self.wangp_adapter.is_available():
                     # Tenta WanGP primeiro
                     video_result = self.wangp_adapter.generate_video(
-                        prompt=scene_prompt["prompt"],
+                        prompt=scene_prompt.get("prompt", ""),
                         output_path=str(scene_output),
-                        negative_prompt=scene_prompt["negative_prompt"],
-                        duration_seconds=scene_prompt["duration"]
+                        negative_prompt=scene_prompt.get("negative_prompt", ""),
+                        duration_seconds=scene_prompt.get("duration", 5)
                     )
+                    
+                    if video_result.get("success"):
+                        scene_prompt["status"] = "completed"
+                        scene_prompt["video_path"] = str(scene_output)
+                        rendered_scenes.append(scene_prompt)
+                        continue
+                
+                # Fallback: FFmpeg (vídeo estático com texto)
+                logger.info(f"WanGP não disponível, usando FFmpeg para cena {i}")
+                # Usa scene_text ou prompt como texto
+                text_for_video = scene_prompt.get("scene_text") or scene_prompt.get("prompt", "Cena")
+                ffmpeg_result = self.ffmpeg_adapter.create_static_video(
+                    text=text_for_video,
+                    output_path=str(scene_output),
+                    duration=scene_prompt.get("duration", 5)
+                )
+                
+                if ffmpeg_result.get("success"):
+                    scene_prompt["status"] = "completed"
+                    scene_prompt["video_path"] = str(scene_output)
+                    rendered_scenes.append(scene_prompt)
+                    continue
                     
                     if video_result.get("success"):
                         scene_prompt["status"] = "completed"
@@ -206,14 +227,16 @@ class VideoGenerationPipeline:
             
             # Concatena todos os vídeos das cenas
             video_files = [s["video_path"] for s in rendered_scenes if s.get("video_path")]
-            
+
             if not video_files:
                 return {"success": False, "error": "Nenhum vídeo de cena foi gerado"}
             
+            # Concatena vídeos (áudio é opcional)
+            audio_for_concat = str(audio_path) if audio_path and audio_path.exists() else None
             concat_result = self.ffmpeg_adapter.concat_videos(
                 video_paths=video_files,
                 output_path=str(final_video_path),
-                audio_path=str(audio_path) if audio_path.exists() else None
+                audio_path=audio_for_concat
             )
             
             if not concat_result.get("success"):

@@ -199,19 +199,31 @@ class FFmpegAdapter:
             list_file.write_text(list_content, encoding="utf-8")
             
             # Comando base
-            cmd = [
-                str(self.ffmpeg_path), "-y",
-                "-f", "concat", "-safe", "0",
-                "-i", str(list_file),
-                "-c:v", "libx264",
-                "-pix_fmt", "yuv420p",
-                "-preset", "fast",
-                output_path
-            ]
-            
-            # Adiciona áudio se fornecido
             if audio_path and Path(audio_path).exists():
-                cmd[6:6] = ["-i", audio_path, "-c:a", "aac", "-shortest"]
+                # Com áudio: concat + audio em um passo
+                cmd = [
+                    str(self.ffmpeg_path), "-y",
+                    "-f", "concat", "-safe", "0",
+                    "-i", str(list_file),
+                    "-i", str(audio_path),
+                    "-c:v", "libx264",
+                    "-pix_fmt", "yuv420p",
+                    "-preset", "fast",
+                    "-c:a", "aac",
+                    "-shortest",
+                    output_path
+                ]
+            else:
+                # Sem áudio
+                cmd = [
+                    str(self.ffmpeg_path), "-y",
+                    "-f", "concat", "-safe", "0",
+                    "-i", str(list_file),
+                    "-c:v", "libx264",
+                    "-pix_fmt", "yuv420p",
+                    "-preset", "fast",
+                    output_path
+                ]
             
             logger.info("Concatenando %d vídeos...", len(valid_videos))
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
