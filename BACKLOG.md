@@ -609,3 +609,31 @@ Após a etapa atual (`[Pasted ~5 lines]`), executar obrigatoriamente:
 - Aumentar cobertura com cenários que simulem a realidade para capturar gaps.
 - Ler `qa/QA_TEST_PLAN.md` e mapear todos os testes implementados até o presente momento.
 - Colocar itens pendentes na fila de revisão/criação/melhoria antes de novas features.
+
+
+## P0 — Configuração de Modelos (Sem Ollama) — PRIORIDADE ALTA
+
+**Contexto:** Usuário solicitou remoção do Ollama e configuração dos demais modelos como prioridade.
+
+### P0-MODELS-01 — Remover dependência Ollama
+- Substituir Ollama por TemplateProvider como fallback primário
+- Remover imports de ollama_adapter se existirem
+- Atualizar documentação
+
+### P0-MODELS-02 — Configurar WanGP 1.3B modelo padrão
+- Confirmar caminho: K:\\AI_VIDEO_COMERCIAL_STUDIO\\engines\\Wan2GP
+- Modelo 1.3B para GTX 1660 Super (6GB VRAM)
+- Resolução padrão: 480p
+
+### P0-MODELS-03 — Configurar FramePack como motor experimental
+- Caminho: K:\\AI_VIDEO_COMERCIAL_STUDIO\\engines\\FramePack
+- Criar FramePackAdapter seguindo padrão WanGPAdapter
+
+### P0-MODELS-04 — Configurar TTS offline (pyttsx3/Kokoro)
+- Prioridade: pyttsx3 (já no Python)
+- Fallback: Kokoro TTS se disponível
+
+### P0-MODELS-05 — Validar TemplateProvider como fallback universal
+- Garantir cobertura total de cenários
+- Documentar limitações
+
