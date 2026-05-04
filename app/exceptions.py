@@ -1,8 +1,8 @@
-"""Contratos de Erro - Exceções customizadas para o FlowForgeAI."""
+"""Contratos de Erro - Exceções customizadas para o GalFlowAI."""
 from typing import Optional, Dict, Any
 
 class FlowForgeException(Exception):
-    """Base exception para o FlowForgeAI."""
+    """Base exception para o GalFlowAI."""
     def __init__(self, message: str, code: int = 500, details: Optional[Dict[str, Any]] = None):
         self.message = message
         self.code = code

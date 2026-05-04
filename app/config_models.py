@@ -1,4 +1,4 @@
-"""Configuração centralizada de modelos para FlowForgeAI"""
+"""Configuração centralizada de modelos para GalFlowAI"""
 
 from pathlib import Path
 from typing import Dict, Any, Optional
