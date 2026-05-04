@@ -1,0 +1,18 @@
+{
+  "generated_scripts": 1,
+  "generated_videos": 0,
+  "fallback_used": 0,
+  "errors": 0,
+  "total_generation_time": 1.0,
+  "operations": [
+    {
+      "type": "script_generation",
+      "timestamp": "2026-05-04T04:50:36.020773",
+      "success": true,
+      "duration": 1.0,
+      "provider": "Template",
+      "used_fallback": false,
+      "project_id": ""
+    }
+  ]
+}

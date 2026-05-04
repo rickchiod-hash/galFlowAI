@@ -11,9 +11,9 @@ from datetime import datetime
 from app.adapters.wangp_adapter import WanGPAdapter
 from app.adapters.tts_adapter import TTSAdapter
 from app.adapters.ffmpeg_adapter import FFmpegAdapter
-from app.pipeline.script_generator import ScriptGenerator
-from app.pipeline.scene_splitter import SceneSplitter
-from app.pipeline.prompt_builder import PromptBuilder
+from app.pipeline.script_generator import generate_script
+from app.pipeline.scene_splitter import split_script_into_scenes
+from app.pipeline.prompt_builder import build_prompts_for_scenes
 from app.config import BASE_DIR, PROJECTS_DIR
 
 logger = logging.getLogger(__name__)
@@ -39,9 +39,11 @@ class VideoGenerationPipeline:
         self.wangp_adapter = WanGPAdapter()
         self.tts_adapter = TTSAdapter()
         self.ffmpeg_adapter = FFmpegAdapter()
-        self.script_generator = ScriptGenerator(llm_provider=llm_provider)
-        self.scene_splitter = SceneSplitter()
-        self.prompt_builder = PromptBuilder()
+        self.llm_provider = llm_provider
+        # Usa funções diretamente, não classes
+        self.script_generator = generate_script
+        self.scene_splitter = split_script_into_scenes
+        self.prompt_builder = build_prompts_for_scenes
         
     def generate_commercial(
         self,

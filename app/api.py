@@ -74,14 +74,22 @@ class LLMProviderResponse(BaseModel):
     openai_compatible_local: bool
 
 
-@app.get("/api/llm/providers", response_model=LLMProviderResponse)
+@app.get("/api/llm/providers")
 async def get_llm_providers():
     """Check which LLM providers are available."""
     try:
         from app.adapters.llm import ProviderRouter
         router = ProviderRouter()
         available = router.detect_available()
-        return available
+        # Mapear nomes de providers para o formato esperado pela UI
+        return {
+            "template": available.get("template", True),
+            "lmstudio": available.get("LMStudioProvider", False),
+            "koboldcpp": available.get("KoboldCppProvider", False),
+            "gpt4all": available.get("GPT4AllProvider", False),
+            "llamacpp": available.get("LlamaCppProvider", False),
+            "openai_compatible_local": False  # Não implementado ainda
+        }
     except Exception as e:
         logger.error("Failed to detect providers: %s", e)
         return {
@@ -407,15 +415,46 @@ async def get_pipeline_status():
 
 @app.websocket("/ws/jobs/{job_id}")
 async def websocket_progress(websocket: WebSocket, job_id: str):
-    """WebSocket for job progress updates."""
+    """WebSocket for real job progress updates."""
     await websocket.accept()
     try:
+        import asyncio
+        from app.jobs.queue import queue
+        
         while True:
-            # Placeholder for progress updates
-            await websocket.send_json({"job_id": job_id, "progress": 0, "status": "pending"})
-            await websocket.receive_text()
+            job = queue.get_job(job_id)
+            if job:
+                # Calculate progress
+                progress = 0
+                if job.status == "completed":
+                    progress = 100
+                elif job.status == "running":
+                    progress = 50
+                elif job.status == "failed":
+                    progress = 0
+                
+                await websocket.send_json({
+                    "job_id": job_id,
+                    "status": job.status,
+                    "progress": progress,
+                    "message": f"Job {job.job_type}: {job.status}",
+                    "error": job.error if job.status == "failed" else None
+                })
+                
+                if job.status in ["completed", "failed", "cancelled"]:
+                    break
+            else:
+                await websocket.send_json({"error": "Job not found"})
+                break
+            
+            await asyncio.sleep(1)
     except WebSocketDisconnect:
         pass
+    except Exception as e:
+        try:
+            await websocket.send_json({"error": str(e)})
+        except:
+            pass
 
 
 if __name__ == "__main__":

@@ -1,8 +1,8 @@
-"""Contratos de Erro - Exceções customizadas para o Gal AI Studio."""
+"""Contratos de Erro - Exceções customizadas para o FlowForgeAI."""
 from typing import Optional, Dict, Any
 
-class GalAIError(Exception):
-    """Base exception para o Gal AI."""
+class FlowForgeException(Exception):
+    """Base exception para o FlowForgeAI."""
     def __init__(self, message: str, code: int = 500, details: Optional[Dict[str, Any]] = None):
         self.message = message
         self.code = code
@@ -17,62 +17,68 @@ class GalAIError(Exception):
             "details": self.details
         }
 
-class ScriptGenerationError(GalAIError):
+class ScriptError(FlowForgeException):
     """Erro na geração de roteiro."""
-    def __init__(self, message: str, provider: str = "unknown"):
-        super().__init__(
-            message=message,
-            code=400,
-            details={"provider": provider, "stage": "script_generation"}
-        )
-
-class VideoGenerationError(GalAIError):
-    """Erro na geração de vídeo."""
-    def __init__(self, message: str, engine: str = "unknown"):
-        super().__init__(
-            message=message,
-            code=500,
-            details={"engine": engine, "stage": "video_generation"}
-        )
-
-class AdapterError(GalAIError):
-    """Erro em adapters (FFmpeg, WanGP, TTS)."""
-    def __init__(self, message: str, adapter: str = "unknown"):
-        super().__init__(
-            message=message,
-            code=500,
-            details={"adapter": adapter, "stage": "adapter"}
-        )
-
-class ProjectError(GalAIError):
-    """Erro na criação/gerenciamento de projetos."""
     def __init__(self, message: str, project_id: str = ""):
         super().__init__(
             message=message,
             code=400,
-            details={"project_id": project_id, "stage": "project"}
+            details={"project_id": project_id, "stage": "script"}
         )
 
-class ConfigError(GalAIError):
-    """Erro de configuração (caminhos, variáveis de ambiente)."""
-    def __init__(self, message: str, config_key: str = ""):
+class VideoError(FlowForgeException):
+    """Erro na geração de vídeo."""
+    def __init__(self, message: str, scene_id: str = ""):
         super().__init__(
             message=message,
             code=500,
-            details={"config_key": config_key, "stage": "config"}
+            details={"scene_id": scene_id, "stage": "video"}
         )
 
-class HardwareError(GalAIError):
-    """Erro relacionado a hardware (GPU, VRAM, disco)."""
-    def __init__(self, message: str, hardware_type: str = "unknown"):
+class ConfigError(FlowForgeException):
+    """Erro de configuração."""
+    def __init__(self, message: str, param: str = ""):
         super().__init__(
             message=message,
             code=500,
-            details={"hardware": hardware_type, "stage": "hardware"}
+            details={"param": param, "stage": "config"}
+        )
+
+class ProviderError(FlowForgeException):
+    """Erro em providers LLM."""
+    def __init__(self, message: str, provider: str = ""):
+        super().__init__(
+            message=message,
+            code=500,
+            details={"provider": provider, "stage": "provider"}
+        )
+
+class LLMError(ProviderError):
+    """Erro específico de LLM."""
+    def __init__(self, message: str, model: str = ""):
+        super().__init__(message, provider="llm")
+        self.details["model"] = model
+
+class FFmpegError(FlowForgeException):
+    """Erro no FFmpeg."""
+    def __init__(self, message: str, command: str = ""):
+        super().__init__(
+            message=message,
+            code=500,
+            details={"command": command, "stage": "ffmpeg"}
+        )
+
+class WanGPError(FlowForgeException):
+    """Erro no WanGP."""
+    def __init__(self, message: str, model: str = ""):
+        super().__init__(
+            message=message,
+            code=500,
+            details={"model": model, "stage": "wangp"}
         )
 
 class FallbackWarning(Warning):
-    """Aviso de fallback controlado (não é erro fatal)."""
+    """Aviso de fallback controlado."""
     def __init__(self, message: str, fallback_type: str = "unknown"):
         self.message = message
         self.fallback_type = fallback_type

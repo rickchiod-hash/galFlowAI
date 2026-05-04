@@ -42,9 +42,16 @@ def generate_script_with_llm(briefing: str, mode: str = "auto") -> Dict:
     
     try:
         if mode == "fast":
-            result = asyncio.run(router.generate_script_fast(briefing))
+            # Simplificado: usa safe se asyncio falhar
+            try:
+                result = asyncio.run(router.generate_script_fast(briefing))
+            except (RuntimeError, Exception):
+                result = router.generate_script_safe(briefing)
         elif mode == "quality":
-            result = asyncio.run(router.generate_script_quality(briefing))
+            try:
+                result = asyncio.run(router.generate_script_quality(briefing))
+            except (RuntimeError, Exception):
+                result = router.generate_script_safe(briefing)
         else:  # safe or auto
             result = router.generate_script_safe(briefing)
         

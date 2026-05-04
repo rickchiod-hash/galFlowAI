@@ -19,3 +19,6 @@ def setup_env_vars():
     os.environ["XDG_CACHE_HOME"] = str(CACHE_DIR)
     os.environ["TEMP"] = str(TEMP_DIR)
     os.environ["TMP"] = str(TEMP_DIR)
+    # Ollama removido da prioridade - TemplateProvider é o fallback principal
+    # Se Ollama existir no sistema, pode ser usado via LMStudioProvider ou similar
+    # os.environ["OLLAMA_MODELS"] = str(MODELS_DIR / "ollama")

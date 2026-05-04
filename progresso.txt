@@ -1,0 +1,57 @@
+=== RELATÓRIO DE PROGRESSO ===
+Data: 05/04/2026 03:28:48
+
+Testes passando:
+
+36 passed in 0.34s
+
+
+Commits ahead: 0
+Arquivos modificados:
+BACKLOG.md
+BACKLOG_CODEX_ERROR_CATALOG.md
+README.md
+ROADMAP.md
+app/adapters/llm/provider_router.py
+app/api.py
+app/api_commit_backup.py
+app/exceptions.py
+app/jobs/queue.py
+app/logging_config.py
+app/main.py
+app/pipeline/prompt_builder.py
+app/pipeline/video_generation_pipeline.py
+app/services/__init__.py
+app/services/log_service.py
+app/services/metrics_service.py
+app/services/script_service.py
+app/static/gal_ai_theme.css
+append_all_sections.py
+append_backlog.py
+docs/ARQUITETURA.md
+docs/GRADIO_STUDIO_UX.md
+docs/INSTALAR_GPT4ALL_K.md
+docs/INSTALAR_KOBOLDCPP_K.md
+docs/INSTALAR_LLAMACPP_K.md
+docs/INSTALAR_LM_STUDIO_K.md
+docs/LLM_LOCAL_SEM_API_KEY.md
+docs/PROMPT_ROTEIRO_V2.md
+docs/ROTEIROS_COM_FANTASIA.md
+docs/ROTEIRO_EDITAVEL.md
+docs/SCRIPT_EDITABLE.md
+docs/TROUBLESHOOTING.md
+docs/UI_UX_GAL_AI_STUDIO.md
+docs/VIDEO_PIPELINE.md
+pipelines/auto_pipeline.py
+qa/QA_TEST_PLAN.md
+scripts/check_fix_start.bat
+scripts/final_startup.bat
+scripts/fix_and_start.bat
+scripts/opencode_next_prompt.md
+scripts/opencode_refactor_prompt.md
+scripts/setup_gpt4all.bat
+scripts/setup_koboldcpp.bat
+scripts/setup_lmstudio.bat
+scripts/solucao_final.bat
+scripts/start_final_solution.bat
+update_backlog.py

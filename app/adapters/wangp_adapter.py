@@ -15,6 +15,19 @@ logger = logging.getLogger(__name__)
 class WanGPAdapter:
     """Adapter para integrar WanGP/Wan2GP para geração de vídeo"""
     
+    @staticmethod
+    def disponivel() -> bool:
+        """Verifica se WanGP está disponível (método estático para testes)"""
+        import os
+        wangp_path = r"K:\AI_VIDEO_COMERCIAL_STUDIO\engines\Wan2GP"
+        if not os.path.exists(wangp_path):
+            return False
+        possible_main_files = ["main.py", "gradio.py", "wan_interface.py", "inference.py"]
+        for file in possible_main_files:
+            if os.path.exists(os.path.join(wangp_path, file)):
+                return True
+        return False
+    
     def __init__(self, wangp_path: Optional[str] = None):
         """
         Inicializa o adapter WanGP.

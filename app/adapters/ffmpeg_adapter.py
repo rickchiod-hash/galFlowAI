@@ -8,7 +8,31 @@ from app.logging_config import setup_logger
 
 logger = setup_logger()
 
-FFMPEG_PATH = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/envs/studio/Library/bin/ffmpeg.exe")
+# Caminhos conhecidos do FFmpeg
+_FFMPEG_PATHS = [
+    Path("K:/AI_VIDEO_COMERCIAL_STUDIO/tools/ffmpeg/ffmpeg-8.1-essentials_build/bin/ffmpeg.exe"),
+    Path("K:/AI_VIDEO_COMERCIAL_STUDIO/engines/Wan2GP/ffmpeg_bins/ffmpeg.exe"),
+    Path("K:/AI_VIDEO_COMERCIAL_STUDIO/envs/studio/Library/bin/ffmpeg.exe")
+]
+
+def _find_ffmpeg() -> Path:
+    import shutil
+    # Tenta PATH primeiro
+    ffmpeg_in_path = shutil.which("ffmpeg")
+    if ffmpeg_in_path:
+        return Path(ffmpeg_in_path)
+    
+    # Tenta caminhos conhecidos
+    for path in _FFMPEG_PATHS:
+        if path.exists():
+            return path
+    
+    # Se não encontrou, retorna o primeiro caminho conhecido (mesmo que não exist)
+    if _FFMPEG_PATHS:
+        return _FFMPEG_PATHS[0]
+    return Path("ffmpeg")  # Fallback: espera que esteja no PATH
+
+FFMPEG_PATH = _find_ffmpeg()
 
 
 class FFmpegAdapter:
@@ -21,15 +45,27 @@ class FFmpegAdapter:
         Args:
             ffmpeg_path: Caminho para o executável FFmpeg. Se None, usa padrão.
         """
-        self.ffmpeg_path = Path(ffmpeg_path) if ffmpeg_path else FFMPEG_PATH
+        if ffmpeg_path:
+            self.ffmpeg_path = Path(ffmpeg_path)
+        else:
+            # Usa a função para encontrar FFmpeg
+            self.ffmpeg_path = _find_ffmpeg()
         self.available = self._check_availability()
     
     def _check_availability(self) -> bool:
         """Verifica se FFmpeg está disponível"""
+        # Tenta encontrar no PATH primeiro
+        import shutil
+        ffmpeg_in_path = shutil.which("ffmpeg")
+        if ffmpeg_in_path:
+            self.ffmpeg_path = Path(ffmpeg_in_path)
+            logger.info("FFmpeg encontrado no PATH: %s", ffmpeg_in_path)
+            return True
+        # Tenta caminho padrão
         if self.ffmpeg_path.exists():
             logger.info("FFmpeg encontrado: %s", self.ffmpeg_path)
             return True
-        logger.warning("FFmpeg não encontrado em %s", self.ffmpeg_path)
+        logger.warning("FFmpeg não encontrado em %s ou no PATH", self.ffmpeg_path)
         return False
     
     def is_available(self) -> bool:
