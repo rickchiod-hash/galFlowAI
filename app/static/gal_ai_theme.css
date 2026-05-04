@@ -1,0 +1,104 @@
+/* Gal AI Studio — Design System */
+
+:root {
+  --bg-primary: #08080B;
+  --bg-secondary: #111116;
+  --card-primary: #18181F;
+  --card-elevated: #20202A;
+  --border: #343442;
+  --text-primary: #F7F7FA;
+  --text-secondary: #A7A7B3;
+  --orange-galai: #FF5A00;
+  --orange-hover: #FF7A1A;
+  --blue-info: #38BDF8;
+  --green-success: #22C55E;
+  --yellow-warning: #F59E0B;
+  --red-error: #EF4444;
+  --purple-creative: #8B5CF6;
+}
+
+body, .gradio-container {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.gr-box, .gr-panel {
+  background-color: var(--card-primary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  padding: 12px !important;
+}
+
+.gr-button-primary {
+  background-color: var(--orange-galai) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  padding: 10px 20px !important;
+}
+.gr-button-primary:hover {
+  background-color: var(--orange-hover) !important;
+}
+
+.gr-button-secondary {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-primary) !important;
+  border-radius: 6px !important;
+}
+
+.gr-markdown h1 {
+  color: var(--orange-galai) !important;
+  font-size: 2rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.gr-markdown h2, .gr-markdown h3 {
+  color: var(--text-primary) !important;
+}
+
+.gr-video, .gr-dataframe {
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+.gr-dataframe table {
+  background-color: var(--card-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.gr-dataframe th {
+  background-color: var(--bg-secondary) !important;
+  color: var(--orange-galai) !important;
+  padding: 8px !important;
+}
+
+.gr-dataframe td {
+  padding: 6px 8px !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+/* Status colors */
+.status-INFO { color: var(--blue-info) !important; }
+.status-WARN { color: var(--yellow-warning) !important; }
+.status-ERROR { color: var(--red-error) !important; }
+.status-UNKNOWN { color: var(--text-secondary) !important; }
+
+/* Tabs */
+.gr-tabs button {
+  color: var(--text-secondary) !important;
+  border-bottom: 2px solid transparent !important;
+}
+.gr-tabs button.selected {
+  color: var(--orange-galai) !important;
+  border-bottom-color: var(--orange-galai) !important;
+}
+
+/* Inputs */
+.gr-textbox, .gr-dropdown, .gr-radio {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-primary) !important;
+}

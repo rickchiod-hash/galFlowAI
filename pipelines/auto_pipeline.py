@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from app.logging_config import setup_logger
 from app.project_manager import create_project
-from app.pipeline.script_generator import generate_script_from_brief, save_script
+from app.pipeline.script_generator import generate_script, save_script
 from app.pipeline.scene_splitter import split_script_into_scenes, save_scenes
 from app.pipeline.prompt_builder import build_prompts_for_scenes, save_prompts
 from app.adapters.ffmpeg_adapter import create_storyboard_video
@@ -10,7 +10,7 @@ from app.hardware import get_gpu_info, get_recommended_preset
 
 logger = setup_logger()
 
-def run_auto_pipeline(project_name, briefing, commercial_type="produto", duration=30, fmt="9:16", style="comercial moderno", uploaded_images=None):
+def run_auto_pipeline(project_name, briefing, commercial_type="produto", duration=30, fmt="9:16", style="comercial moderno", uploaded_images=None, mode="auto"):
     result = {
         "status": "started",
         "project_id": "",
@@ -49,7 +49,7 @@ def run_auto_pipeline(project_name, briefing, commercial_type="produto", duratio
         result["logs"].append("Briefing salvo.")
         
         # 5. Gerar roteiro
-        script = generate_script_from_brief(briefing, project_id)
+        script = generate_script(briefing, project_id, mode)
         save_script(project_id, script)
         result["script"] = script
         result["logs"].append("Roteiro gerado.")
@@ -77,7 +77,7 @@ def run_auto_pipeline(project_name, briefing, commercial_type="produto", duratio
         
         # WanGP adapter
         from app.adapters.wangp_adapter import WanGPAdapter
-        wangp = WanGPAdapter(logger)
+        wangp = WanGPAdapter()
         
         rendered_videos = []
         for scene in scenes:
@@ -86,7 +86,7 @@ def run_auto_pipeline(project_name, briefing, commercial_type="produto", duratio
             scene["prompt_positive_en"] = prompt_en
             
             # Tentar WanGP 1.3B primeiro
-            if wangp.disponivel:
+            if wangp.available:
                 result["logs"].append("Renderizando {} via WanGP 1.3B...".format(scene.get("id")))
                 video = wangp.gerar_cena(
                     prompt=prompt_en,

@@ -12,7 +12,7 @@ from app.services.script_service import (
     generate_script_with_llm,
     save_manual_edit, improve_script, complement_script,
     make_script_more_viral, make_script_more_premium, make_script_more_direct,
-    create_new_script_version, restore_previous_version, approve_script,
+    create_new_version, restore_previous_version, approve_script,
     load_current_script, load_script_versions
 )
 from app.logging_config import setup_logger
@@ -22,7 +22,7 @@ logger = setup_logger()
 def create_commercial(briefing, motor_llm="Automático local"):
     try:
         if not briefing:
-            return "Erro: informe o briefing.", None, "", ""
+            return "Erro: informe o briefing.", None, "", "", ""
         
         # Convert UI selection to mode
         mode_map = {
@@ -30,8 +30,7 @@ def create_commercial(briefing, motor_llm="Automático local"):
             "Template local": "safe",
             "LM Studio local": "safe",
             "KoboldCpp local": "safe",
-            "GPT4All local": "safe",
-            "llama.cpp local": "safe"
+            "GPT4All local": "safe"
         }
         mode = mode_map.get(motor_llm, "auto")
         
@@ -40,9 +39,12 @@ def create_commercial(briefing, motor_llm="Automático local"):
         
         if result["status"] == "completed":
             status = "Sucesso! " + ", ".join(result["logs"])
-            video = result.get("video_preview", "")
-            if video:
+            video = result.get("video_preview", None)
+            # Garantir que video seja None se não for arquivo válido
+            if video and isinstance(video, str) and len(video) > 0 and Path(video).exists():
                 status = status + "\nVideo: " + video
+            else:
+                video = None
             
             # Load script for editing
             script = load_current_script(result["project_id"])
@@ -55,11 +57,12 @@ def create_commercial(briefing, motor_llm="Automático local"):
                 provider_info.get("time", 0)
             )
             
-            return status, video, script_text, provider_msg
+            return status, video, script_text, provider_msg, ""
         else:
-            return "Erro: " + ", ".join(result["logs"]), None, "", "Falha no roteiro"
+            error_msg = "Erro: " + ", ".join(result["logs"])
+            return error_msg, None, "", "Falha no roteiro", ""
     except Exception as e:
-        return "Erro: " + str(e), None, "", "Erro interno"
+        return "Erro: " + str(e), None, "", "Erro interno", ""
 
 def save_edit(project_id, script_text, note=""):
     try:
@@ -337,6 +340,212 @@ with gr.Blocks(title="FlowForgeAI") as demo:
             generate_video_wrapper,
             inputs=[vid_product, vid_audience, vid_duration, vid_style, vid_keywords],
             outputs=[vid_status, vid_progress, vid_output, vid_info]
+        )
+    
+    # ========== Tab: Central de Logs ==========
+    with gr.Tab("📋 Logs e Diagnóstico"):
+        gr.Markdown("# Central de Logs")
+        gr.Markdown("Acompanhe eventos, avisos e erros da aplicação em tempo real controlado.")
+        
+        # Cards de resumo
+        with gr.Row():
+            with gr.Column(scale=1):
+                info_count = gr.Number(label="Total INFO", value=0)
+            with gr.Column(scale=1):
+                warn_count = gr.Number(label="Total WARN", value=0)
+            with gr.Column(scale=1):
+                error_count = gr.Number(label="Total ERROR", value=0)
+            with gr.Column(scale=2):
+                last_error_display = gr.Textbox(label="Último erro", interactive=False)
+            with gr.Column(scale=2):
+                last_update_display = gr.Textbox(label="Última atualização", interactive=False)
+        
+        # Filtro e busca
+        with gr.Row():
+            level_filter = gr.Dropdown(
+                choices=["Todos", "INFO", "WARN", "ERROR"],
+                value="Todos",
+                label="Filtrar por nível"
+            )
+            search_box = gr.Textbox(
+                label="Buscar nos logs",
+                placeholder="Ex: FFmpeg, provider, project_id, erro, roteiro",
+                value=""
+            )
+        
+        # Tabela de logs
+        logs_table = gr.DataFrame(
+            headers=["Horário", "Nível", "Módulo", "Projeto", "Job", "Mensagem", "Sugestão"],
+            label="Logs Recentes",
+            interactive=False
+        )
+        
+        # Console bruto
+        raw_console = gr.Textbox(
+            label="Console Bruto (últimas linhas)",
+            lines=15,
+            interactive=False,
+            max_lines=500
+        )
+        
+        # Botões
+        with gr.Row():
+            btn_update = gr.Button("🔄 Atualizar logs", variant="primary")
+            btn_clear = gr.Button("🧹 Limpar visualização")
+            btn_copy = gr.Button("📋 Copiar diagnóstico")
+            btn_open_folder = gr.Button("📁 Abrir pasta de logs")
+            btn_open_file = gr.Button("📄 Abrir arquivo de log")
+            btn_pause = gr.Button("⏸ Pausar atualização automática")
+            btn_resume = gr.Button("▶ Retomar atualização automática")
+        
+        status_logs = gr.Textbox(label="Status", interactive=False)
+        
+        # Variável de estado para controlar pausa
+        auto_update_paused = gr.State(value=False)
+        
+        # Funções síncronas para logs (conforme instruções: "NEM TUDO DEVE SER ASYNC")
+        def update_logs(level_filter, search_text):
+            """Atualiza logs - síncrono conforme instruções."""
+            try:
+                from app.services.log_service import get_recent_logs, get_log_summary
+                
+                # Converte filtro
+                level_map = {"Todos": None, "INFO": "info", "WARN": "warn", "ERROR": "error"}
+                level = level_map.get(level_filter, None)
+                
+                # Busca logs
+                result = get_recent_logs(level=level, search=search_text if search_text else None, limit=200)
+                logs = result.get("logs", [])
+                
+                # Atualiza tabela
+                if logs:
+                    import pandas as pd
+                    df = pd.DataFrame(logs)
+                else:
+                    df = pd.DataFrame(columns=["horario", "nivel", "modulo", "projeto", "job", "mensagem", "sugestao"])
+                
+                # Console bruto
+                console_text = ""
+                for log in logs[:50]:
+                    console_text += f"{log.get('horario', '')} [{log.get('nivel', '')}] {log.get('mensagem', '')}\n"
+                
+                # Resumo
+                summary = get_log_summary()
+                
+                return (
+                    df,
+                    console_text,
+                    summary.get("total_info", 0),
+                    summary.get("total_warn", 0),
+                    summary.get("total_error", 0),
+                    summary.get("last_error", "")[:200],
+                    summary.get("last_update", ""),
+                    "Logs atualizados." if not summary.get("message") else summary.get("message")
+                )
+            except Exception as e:
+                return (
+                    pd.DataFrame(),
+                    f"Erro ao ler logs: {str(e)}",
+                    0, 0, 0, "",
+                    "",
+                    f"Erro: {str(e)}"
+                )
+        
+        def clear_view():
+            import pandas as pd
+            return (
+                pd.DataFrame(columns=["horario", "nivel", "modulo", "projeto", "job", "mensagem", "sugestao"]),
+                "",
+                0, 0, 0, "",
+                "",
+                "Visualização limpa."
+            )
+        
+        def copy_diagnostic():
+            try:
+                from app.services.log_service import copy_diagnostic_bundle
+                bundle = copy_diagnostic_bundle()
+                return f"Diagnóstico copiável:\n\n{bundle}"
+            except Exception as e:
+                return f"Erro ao gerar diagnóstico: {str(e)}"
+        
+        def open_folder():
+            try:
+                from app.services.log_service import open_logs_folder
+                result = open_logs_folder()
+                return result.get("message", "")
+            except Exception as e:
+                return f"Erro: {str(e)}"
+        
+        def open_log_file():
+            try:
+                import subprocess
+                from pathlib import Path
+                log_file = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/logs/galflowai.log")
+                if log_file.exists():
+                    subprocess.Popen(f'explorer "{log_file}"')
+                    return "Arquivo de log aberto."
+                else:
+                    return "Arquivo de log ainda não existe."
+            except Exception as e:
+                return f"Erro: {str(e)}"
+        
+        # Callbacks
+        btn_update.click(
+            update_logs,
+            inputs=[level_filter, search_box],
+            outputs=[logs_table, raw_console, info_count, warn_count, error_count, last_error_display, last_update_display, status_logs]
+        )
+        
+        btn_clear.click(
+            clear_view,
+            outputs=[logs_table, raw_console, info_count, warn_count, error_count, last_error_display, last_update_display, status_logs]
+        )
+        
+        btn_copy.click(
+            copy_diagnostic,
+            outputs=[status_logs]
+        )
+        
+        btn_open_folder.click(
+            open_folder,
+            outputs=[status_logs]
+        )
+        
+        btn_open_file.click(
+            open_log_file,
+            outputs=[status_logs]
+        )
+        
+        # Timer para atualização automática (gr.Timer é aceitável conforme instruções)
+        timer = gr.Timer(2.0, active=True)  # 2 segundos conforme instruções
+        
+        def timer_callback(level_filter, search_text, is_paused):
+            if is_paused:
+                return gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), "Atualização automática pausada."
+            return update_logs(level_filter, search_text)
+        
+        timer.tick(
+            timer_callback,
+            inputs=[level_filter, search_box, auto_update_paused],
+            outputs=[logs_table, raw_console, info_count, warn_count, error_count, last_error_display, last_update_display, status_logs]
+        )
+        
+        # Botões de pausar/retomar
+        def pause_update():
+            return True, "Atualização automática pausada."
+        
+        def resume_update():
+            return False, "Atualização automática retomada."
+        
+        btn_pause.click(
+            pause_update,
+            outputs=[auto_update_paused, status_logs]
+        )
+        
+        btn_resume.click(
+            resume_update,
+            outputs=[auto_update_paused, status_logs]
         )
 
 if __name__ == "__main__":
