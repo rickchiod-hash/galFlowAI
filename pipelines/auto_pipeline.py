@@ -12,7 +12,7 @@ from app.hardware import get_gpu_info, get_recommended_preset
 
 logger = setup_logger()
 
-def run_auto_pipeline(project_name, briefing, commercial_type="produto", duration=30, fmt="9:16", style="comercial moderno", uploaded_images=None):
+def run_auto_pipeline(project_name, briefing, commercial_type="produto", duration=30, fmt="9:16", style="comercial moderno", uploaded_images=None, mode="auto"):
     result = {
         "status": "started",
         "project_id": "",
@@ -39,7 +39,6 @@ def run_auto_pipeline(project_name, briefing, commercial_type="produto", duratio
         
         # 3. Criar projeto
         proj = create_project(project_name)
-        time.sleep(0.1)  # Wait for dirs to be created
         project_id = proj["id"]
         result["project_id"] = project_id
         proj_dir = PROJECTS_DIR / project_id
@@ -51,11 +50,24 @@ def run_auto_pipeline(project_name, briefing, commercial_type="produto", duratio
         brief_file.write_text(briefing, encoding="utf-8")
         result["logs"].append("Briefing salvo.")
         
-        # 5. Gerar roteiro
-        script = generate_script(briefing, project_id)
+        # 5. Gerar roteiro using LLM providers
+        from app.pipeline.script_generator import generate_script
+        script = generate_script(briefing, project_id, mode=mode)
         save_script(project_id, script)
         result["script"] = script
         result["logs"].append("Roteiro gerado.")
+        
+        # Capture provider info
+        from app.services.script_service import generate_script_with_llm
+        try:
+            router_result = generate_script_with_llm(briefing, mode)
+            result["provider_info"] = {
+                "provider": router_result.get("provider", "TemplateProvider"),
+                "time": router_result.get("time", 0),
+                "quality": router_result.get("quality", "fallback")
+            }
+        except:
+            result["provider_info"] = {"provider": "TemplateProvider", "time": 0, "quality": "fallback"}
         
         # 6. Dividir em cenas
         scenes = split_script_into_scenes(script, project_id)

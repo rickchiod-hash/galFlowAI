@@ -10,6 +10,17 @@ ENGINES_DIR = BASE_DIR / "engines"
 ASSETS_DIR = BASE_DIR / "assets"
 TEMP_DIR = BASE_DIR / "temp"
 
+# LLM Settings
+LLM_PROVIDER_MODE = "auto"  # auto, fast, quality, safe
+LLM_FAST_TIMEOUT_SECONDS = 5
+LLM_QUALITY_TIMEOUT_SECONDS = 15
+
+LMSTUDIO_BASE_URL = "http://localhost:1234/v1"
+KOBOLDCPP_BASE_URL = "http://localhost:5001"
+LLAMACPP_BASE_URL = "http://localhost:8080/v1"
+GPT4ALL_MODEL_DIR = str(BASE_DIR / "opencodegalpasta/models/gpt4all")
+GGUF_MODEL_DIR = str(BASE_DIR / "opencodegalpasta/models/gguf")
+
 GRADIO_HOST = "127.0.0.1"
 GRADIO_PORT = 7860
 
