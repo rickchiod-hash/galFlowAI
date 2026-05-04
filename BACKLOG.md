@@ -178,7 +178,12 @@ Não alterar rotas, modelos Pydantic ou middlewares.
 ### Decisão
 - Estes ajustes **não serão executados agora**; entram na fila de backlog para execução incremental guiada por `qa/QA_TEST_PLAN.md`.
 
----
+**Prompt enxuto (engenharia de prompt):**
+```text
+Refatore apenas blocos `except:` nus em app/api.py para `except Exception`.
+Não mude regras de negócio, payload ou fluxo de fallback.
+Valide compilação no final.
+```
 
 ## Item obrigatório de backlog (solicitação direta)
 
