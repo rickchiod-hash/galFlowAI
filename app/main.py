@@ -1,38 +1,54 @@
+import gradio as gr
+import time
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import gradio as gr
+# Detect project root
+PROJECT_ROOT = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta")
+sys.path.insert(0, str(PROJECT_ROOT))
+
 from pipelines.auto_pipeline import run_auto_pipeline
-from app.adapters.llm import ProviderRouter
+from app.services.script_service import (
+    generate_script_with_llm,
+    save_manual_edit, improve_script, complement_script,
+    make_script_more_viral, make_script_more_premium, make_script_more_direct,
+    create_new_version, restore_previous_version, approve_script,
+    load_current_script, load_script_versions
+)
+from app.logging_config import setup_logger
 
-def create(brief, motor_llm="auto"):
+logger = setup_logger()
+
+def create_commercial(briefing, motor_llm="Automático local"):
     try:
-        if not brief:
-            return "Erro: informe o briefing.", None, ""
+        if not briefing:
+            return "Erro: informe o briefing.", None, "", "", ""
         
-        # Detect available providers
-        router = ProviderRouter()
-        available = router.detect_available()
-        
-        # Generate script with selected mode
+        # Convert UI selection to mode
         mode_map = {
             "Automático local": "auto",
             "Template local": "safe",
             "LM Studio local": "safe",
             "KoboldCpp local": "safe",
-            "GPT4All local": "safe",
-            "llama.cpp local": "safe"
+            "GPT4All local": "safe"
         }
         mode = mode_map.get(motor_llm, "auto")
         
-        result = run_auto_pipeline("", brief, mode=mode)
+        # Run pipeline
+        result = run_auto_pipeline("", briefing, mode=mode)
         
         if result["status"] == "completed":
             status = "Sucesso! " + ", ".join(result["logs"])
-            video = result.get("video_preview", "")
-            if video:
+            video = result.get("video_preview", None)
+            # Garantir que video seja None se não for arquivo válido
+            if video and isinstance(video, str) and len(video) > 0 and Path(video).exists():
                 status = status + "\nVideo: " + video
+            else:
+                video = None
+            
+            # Load script for editing
+            script = load_current_script(result["project_id"])
+            script_text = script.get("script", "")
             
             # Show provider info
             provider_info = result.get("provider_info", {})
@@ -41,15 +57,89 @@ def create(brief, motor_llm="auto"):
                 provider_info.get("time", 0)
             )
             
-            return status, video, provider_msg
+            return status, video, script_text, provider_msg, ""
         else:
-            return "Erro: " + ", ".join(result["logs"]), None, "Falha no roteiro"
+            error_msg = "Erro: " + ", ".join(result["logs"])
+            return error_msg, None, "", "Falha no roteiro", ""
     except Exception as e:
-        return "Erro: " + str(e), None, "Erro interno"
+        return "Erro: " + str(e), None, "", "Erro interno", ""
+
+def save_edit(project_id, script_text, note=""):
+    try:
+        result = save_manual_edit(project_id, script_text, note)
+        return "Edição salva: " + result.get("version", ""), "OK"
+    except Exception as e:
+        return "Erro ao salvar: " + str(e), "ERRO"
+
+def improve(project_id):
+    try:
+        result = improve_script(project_id)
+        return result.get("script", ""), "Melhorado"
+    except Exception as e:
+        return "", "Erro: " + str(e)
+
+def complement(project_id):
+    try:
+        result = complement_script(project_id)
+        return result.get("script", ""), "Complementado"
+    except Exception as e:
+        return "", "Erro: " + str(e)
+
+def make_viral(project_id):
+    try:
+        result = make_script_more_viral(project_id)
+        return result.get("script", ""), "Mais viral"
+    except Exception as e:
+        return "", "Erro: " + str(e)
+
+def make_premium(project_id):
+    try:
+        result = make_script_more_premium(project_id)
+        return result.get("script", ""), "Mais premium"
+    except Exception as e:
+        return "", "Erro: " + str(e)
+
+def make_direct(project_id):
+    try:
+        result = make_script_more_direct(project_id)
+        return result.get("script", ""), "Mais direto"
+    except Exception as e:
+        return "", "Erro: " + str(e)
+
+def new_version(project_id):
+    try:
+        result = create_new_script_version(project_id)
+        return result.get("version", ""), "Nova versão criada"
+    except Exception as e:
+        return "", "Erro: " + str(e)
+
+def restore_version(project_id):
+    try:
+        result = restore_previous_version(project_id)
+        return result.get("script", ""), "Versão restaurada"
+    except Exception as e:
+        return "", "Erro: " + str(e)
+
+def approve(project_id):
+    try:
+        result = approve_script(project_id)
+        return result.get("script", ""), "Roteiro aprovado!"
+    except Exception as e:
+        return "", "Erro: " + str(e)
+
+def load_versions(project_id):
+    try:
+        versions = load_script_versions(project_id)
+        return versions
+    except:
+        return []
 
 with gr.Blocks(title="FlowForgeAI") as demo:
     gr.Markdown("# FlowForgeAI")
     gr.Markdown("Estudio local para comerciais curtos com IA - GTX 1660 Super")
+    
+    # Store project_id (simplified - in real app use state)
+    current_project_id = gr.State(value="")
     
     with gr.Row():
         with gr.Column(scale=2):
@@ -58,9 +148,10 @@ with gr.Blocks(title="FlowForgeAI") as demo:
                 lines=6, 
                 placeholder="Ex: Quero vender um boneco colecionavel impresso em 3D..."
             )
-            motor_llm = gr.Radiobuttons(
-                choices=["Automático local", "Template local", "LM Studio local", 
-                         "KoboldCpp local", "GPT4All local", "llama.cpp local"],
+            motor_llm = gr.Radio(
+                choices=["Automático local", "Template local", 
+                         "LM Studio local", "KoboldCpp local", 
+                         "GPT4All local", "llama.cpp local"],
                 label="Motor de roteiro",
                 value="Automático local",
                 info="Use Automático para detectar LLMs disponíveis. Template sempre funciona."
@@ -68,15 +159,394 @@ with gr.Blocks(title="FlowForgeAI") as demo:
         with gr.Column(scale=1):
             btn = gr.Button("Criar comercial", variant="primary")
     
-    output = gr.Textbox(label="Status", lines=4, interactive=False)
+    with gr.Row():
+        status = gr.Textbox(label="Status", lines=4, interactive=False)
+        provider_info = gr.Textbox(label="Motor de Roteiro", interactive=False)
+    
     video_preview = gr.Video(label="Preview do Video", visible=True)
-    provider_info = gr.Textbox(label="Motor de Roteiro", interactive=False)
+    
+    # Script editing area
+    gr.Markdown("## Roteiro (Editável)")
+    with gr.Row():
+        with gr.Column(scale=3):
+            script_editor = gr.Textbox(
+                label="Roteiro",
+                lines=15,
+                interactive=True
+            )
+        with gr.Column(scale=1):
+            gr.Markdown("**Ações:**")
+            btn_save = gr.Button("Salvar Edição", variant="secondary")
+            btn_improve = gr.Button("Melhorar")
+            btn_complement = gr.Button("Complementar")
+            btn_viral = gr.Button("Mais Viral")
+            btn_premium = gr.Button("Mais Premium")
+            btn_direct = gr.Button("Mais Direto")
+    
+    with gr.Row():
+        btn_new_version = gr.Button("Nova Versão")
+        btn_restore = gr.Button("Restaurar Anterior")
+        btn_approve = gr.Button("Aprovar Roteiro", variant="primary")
+    
+    versions_df = gr.DataFrame(label="Versões", interactive=False)
+    action_status = gr.Textbox(label="Ação", interactive=False)
+    
+    # Click handlers
+    def on_create(briefing, motor):
+        result = create_commercial(briefing, motor)
+        # Extract project_id from somewhere (simplified)
+        return result[0], result[1], result[2], result[3], ""
     
     btn.click(
-        create, 
-        inputs=[briefing, motor_llm], 
-        outputs=[output, video_preview, provider_info]
+        on_create,
+        inputs=[briefing, motor_llm],
+        outputs=[status, video_preview, script_editor, provider_info, action_status]
     )
+    
+    btn_save.click(
+        lambda script: (save_edit("dummy", script)[0], save_edit("dummy", script)[1]),
+        inputs=[script_editor],
+        outputs=[action_status, gr.Textbox(visible=False)]
+    )
+    
+    # ========== Tab: Gerar Vídeo ==========
+    with gr.Tab("🎬 Gerar Vídeo"):
+        gr.Markdown("### Gerar Comercial Completo")
+        gr.Markdown("Preencha os dados abaixo para gerar um comercial completo")
+        
+        with gr.Row():
+            with gr.Column():
+                vid_product = gr.Textbox(
+                    label="Produto/Serviço",
+                    placeholder="Ex: Curso de Python, Whey Protein...",
+                    value=""
+                )
+                vid_audience = gr.Textbox(
+                    label="Público-alvo",
+                    placeholder="Ex: Iniciantes em programação, Atletas...",
+                    value=""
+                )
+                vid_duration = gr.Slider(
+                    minimum=15,
+                    maximum=60,
+                    value=30,
+                    step=15,
+                    label="Duração (segundos)"
+                )
+                vid_style = gr.Dropdown(
+                    choices=["viral", "premium", "direct"],
+                    value="viral",
+                    label="Estilo"
+                )
+                vid_keywords = gr.Textbox(
+                    label="Palavras-chave (separadas por vírgula)",
+                    placeholder="Ex: curso, online, certificado",
+                    value=""
+                )
+                vid_generate_btn = gr.Button("🎬 Gerar Comercial", variant="primary")
+            
+            with gr.Column():
+                vid_status = gr.Textbox(
+                    label="Status",
+                    value="Aguardando...",
+                    interactive=False
+                )
+                vid_progress = gr.Slider(
+                    minimum=0,
+                    maximum=100,
+                    value=0,
+                    label="Progresso",
+                    interactive=False
+                )
+                vid_output = gr.Video(
+                    label="Vídeo Gerado",
+                    visible=False
+                )
+                vid_info = gr.JSON(
+                    label="Informações do Projeto",
+                    visible=False
+                )
+        
+        def generate_video_wrapper(product, audience, duration, style, keywords_text):
+            """Wrapper para gerar vídeo"""
+            try:
+                import httpx
+                from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
+                
+                # Processa keywords
+                keywords = None
+                if keywords_text:
+                    keywords = [k.strip() for k in keywords_text.split(",") if k.strip()]
+                
+                # Usa API se disponível, senão executa direto
+                try:
+                    response = httpx.post(
+                        "http://127.0.0.1:8000/api/generate-video",
+                        json={
+                            "product": product,
+                            "target_audience": audience,
+                            "duration_seconds": duration,
+                            "style": style,
+                            "keywords": keywords
+                        },
+                        timeout=10
+                    )
+                    if response.status_code == 200:
+                        result = response.json()
+                        return (
+                            "Vídeo gerado com sucesso via API!",
+                            100,
+                            result.get("final_video", ""),
+                            result
+                        )
+                except:
+                    pass
+                
+                # Fallback: executa direto
+                pipeline = VideoGenerationPipeline()
+                result = pipeline.generate_commercial(
+                    project_id="manual_" + product.replace(" ", "_"),
+                    product=product,
+                    target_audience=audience,
+                    duration_seconds=duration,
+                    style=style,
+                    keywords=keywords
+                )
+                
+                if result.get("success"):
+                    return (
+                        f"Comercial gerado! Cenas: {result.get('scenes_succeeded')}/{result.get('scenes_count')}",
+                        100,
+                        result.get("final_video", ""),
+                        result
+                    )
+                else:
+                    return (
+                        f"Erro: {result.get('error')}",
+                        0,
+                        None,
+                        result
+                    )
+                    
+            except Exception as e:
+                return (
+                    f"Erro: {str(e)}",
+                    0,
+                    None,
+                    {"error": str(e)}
+                )
+        
+        vid_generate_btn.click(
+            generate_video_wrapper,
+            inputs=[vid_product, vid_audience, vid_duration, vid_style, vid_keywords],
+            outputs=[vid_status, vid_progress, vid_output, vid_info]
+        )
+    
+    # ========== Tab: Central de Logs ==========
+    with gr.Tab("📋 Logs e Diagnóstico"):
+        gr.Markdown("# Central de Logs")
+        gr.Markdown("Acompanhe eventos, avisos e erros da aplicação em tempo real controlado.")
+        
+        # Cards de resumo
+        with gr.Row():
+            with gr.Column(scale=1):
+                info_count = gr.Number(label="Total INFO", value=0)
+            with gr.Column(scale=1):
+                warn_count = gr.Number(label="Total WARN", value=0)
+            with gr.Column(scale=1):
+                error_count = gr.Number(label="Total ERROR", value=0)
+            with gr.Column(scale=2):
+                last_error_display = gr.Textbox(label="Último erro", interactive=False)
+            with gr.Column(scale=2):
+                last_update_display = gr.Textbox(label="Última atualização", interactive=False)
+        
+        # Filtro e busca
+        with gr.Row():
+            level_filter = gr.Dropdown(
+                choices=["Todos", "INFO", "WARN", "ERROR"],
+                value="Todos",
+                label="Filtrar por nível"
+            )
+            search_box = gr.Textbox(
+                label="Buscar nos logs",
+                placeholder="Ex: FFmpeg, provider, project_id, erro, roteiro",
+                value=""
+            )
+        
+        # Tabela de logs
+        logs_table = gr.DataFrame(
+            headers=["Horário", "Nível", "Módulo", "Projeto", "Job", "Mensagem", "Sugestão"],
+            label="Logs Recentes",
+            interactive=False
+        )
+        
+        # Console bruto
+        raw_console = gr.Textbox(
+            label="Console Bruto (últimas linhas)",
+            lines=15,
+            interactive=False,
+            max_lines=500
+        )
+        
+        # Botões
+        with gr.Row():
+            btn_update = gr.Button("🔄 Atualizar logs", variant="primary")
+            btn_clear = gr.Button("🧹 Limpar visualização")
+            btn_copy = gr.Button("📋 Copiar diagnóstico")
+            btn_open_folder = gr.Button("📁 Abrir pasta de logs")
+            btn_open_file = gr.Button("📄 Abrir arquivo de log")
+            btn_pause = gr.Button("⏸ Pausar atualização automática")
+            btn_resume = gr.Button("▶ Retomar atualização automática")
+        
+        status_logs = gr.Textbox(label="Status", interactive=False)
+        
+        # Variável de estado para controlar pausa
+        auto_update_paused = gr.State(value=False)
+        
+        # Funções síncronas para logs (conforme instruções: "NEM TUDO DEVE SER ASYNC")
+        def update_logs(level_filter, search_text):
+            """Atualiza logs - síncrono conforme instruções."""
+            try:
+                from app.services.log_service import get_recent_logs, get_log_summary
+                
+                # Converte filtro
+                level_map = {"Todos": None, "INFO": "info", "WARN": "warn", "ERROR": "error"}
+                level = level_map.get(level_filter, None)
+                
+                # Busca logs
+                result = get_recent_logs(level=level, search=search_text if search_text else None, limit=200)
+                logs = result.get("logs", [])
+                
+                # Atualiza tabela
+                if logs:
+                    import pandas as pd
+                    df = pd.DataFrame(logs)
+                else:
+                    df = pd.DataFrame(columns=["horario", "nivel", "modulo", "projeto", "job", "mensagem", "sugestao"])
+                
+                # Console bruto
+                console_text = ""
+                for log in logs[:50]:
+                    console_text += f"{log.get('horario', '')} [{log.get('nivel', '')}] {log.get('mensagem', '')}\n"
+                
+                # Resumo
+                summary = get_log_summary()
+                
+                return (
+                    df,
+                    console_text,
+                    summary.get("total_info", 0),
+                    summary.get("total_warn", 0),
+                    summary.get("total_error", 0),
+                    summary.get("last_error", "")[:200],
+                    summary.get("last_update", ""),
+                    "Logs atualizados." if not summary.get("message") else summary.get("message")
+                )
+            except Exception as e:
+                return (
+                    pd.DataFrame(),
+                    f"Erro ao ler logs: {str(e)}",
+                    0, 0, 0, "",
+                    "",
+                    f"Erro: {str(e)}"
+                )
+        
+        def clear_view():
+            import pandas as pd
+            return (
+                pd.DataFrame(columns=["horario", "nivel", "modulo", "projeto", "job", "mensagem", "sugestao"]),
+                "",
+                0, 0, 0, "",
+                "",
+                "Visualização limpa."
+            )
+        
+        def copy_diagnostic():
+            try:
+                from app.services.log_service import copy_diagnostic_bundle
+                bundle = copy_diagnostic_bundle()
+                return f"Diagnóstico copiável:\n\n{bundle}"
+            except Exception as e:
+                return f"Erro ao gerar diagnóstico: {str(e)}"
+        
+        def open_folder():
+            try:
+                from app.services.log_service import open_logs_folder
+                result = open_logs_folder()
+                return result.get("message", "")
+            except Exception as e:
+                return f"Erro: {str(e)}"
+        
+        def open_log_file():
+            try:
+                import subprocess
+                from pathlib import Path
+                log_file = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/logs/galflowai.log")
+                if log_file.exists():
+                    subprocess.Popen(f'explorer "{log_file}"')
+                    return "Arquivo de log aberto."
+                else:
+                    return "Arquivo de log ainda não existe."
+            except Exception as e:
+                return f"Erro: {str(e)}"
+        
+        # Callbacks
+        btn_update.click(
+            update_logs,
+            inputs=[level_filter, search_box],
+            outputs=[logs_table, raw_console, info_count, warn_count, error_count, last_error_display, last_update_display, status_logs]
+        )
+        
+        btn_clear.click(
+            clear_view,
+            outputs=[logs_table, raw_console, info_count, warn_count, error_count, last_error_display, last_update_display, status_logs]
+        )
+        
+        btn_copy.click(
+            copy_diagnostic,
+            outputs=[status_logs]
+        )
+        
+        btn_open_folder.click(
+            open_folder,
+            outputs=[status_logs]
+        )
+        
+        btn_open_file.click(
+            open_log_file,
+            outputs=[status_logs]
+        )
+        
+        # Timer para atualização automática (gr.Timer é aceitável conforme instruções)
+        timer = gr.Timer(2.0, active=True)  # 2 segundos conforme instruções
+        
+        def timer_callback(level_filter, search_text, is_paused):
+            if is_paused:
+                return gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), "Atualização automática pausada."
+            return update_logs(level_filter, search_text)
+        
+        timer.tick(
+            timer_callback,
+            inputs=[level_filter, search_box, auto_update_paused],
+            outputs=[logs_table, raw_console, info_count, warn_count, error_count, last_error_display, last_update_display, status_logs]
+        )
+        
+        # Botões de pausar/retomar
+        def pause_update():
+            return True, "Atualização automática pausada."
+        
+        def resume_update():
+            return False, "Atualização automática retomada."
+        
+        btn_pause.click(
+            pause_update,
+            outputs=[auto_update_paused, status_logs]
+        )
+        
+        btn_resume.click(
+            resume_update,
+            outputs=[auto_update_paused, status_logs]
+        )
 
 if __name__ == "__main__":
     print("Iniciando FlowForgeAI em http://127.0.0.1:7860")

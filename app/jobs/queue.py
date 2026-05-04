@@ -1,10 +1,30 @@
 import json
 import time
+import os
 from pathlib import Path
 from datetime import datetime
+from typing import Optional, Dict, Any
 from app.logging_config import setup_logger
+from app.exceptions import JobError, FallbackWarning
 
 logger = setup_logger()
+
+def retry_with_backoff(func, max_retries=3, base_delay=0.5, max_delay=5.0, *args, **kwargs):
+    """Retry com exponential backoff para operações de fila."""
+    last_exception = None
+    for attempt in range(max_retries + 1):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            last_exception = e
+            if attempt < max_retries:
+                delay = min(base_delay * (2 ** attempt), max_delay)
+                logger.warning(f"Tentativa {attempt + 1} falhou: {str(e)}. Retry em {delay}s...")
+                time.sleep(delay)
+            else:
+                logger.error(f"Todas as {max_retries + 1} tentativas falharam.")
+                raise last_exception
+    raise last_exception
 
 class Job:
     def __init__(self, job_id, job_type, project_id, params=None):
@@ -37,11 +57,12 @@ class JobQueue:
         self.queue_file = queue_file or Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/state/job_queue.json")
         self.queue_file.parent.mkdir(parents=True, exist_ok=True)
         self.jobs = {}
+        self.running_job_id = None  # Controle de concorrência: apenas 1 job por vez
         self.load()
     
     def load(self):
         if self.queue_file.exists():
-            try:
+            def do_load():
                 data = json.loads(self.queue_file.read_text(encoding="utf-8"))
                 for job_data in data.get("jobs", []):
                     job = Job(job_data["job_id"], job_data["job_type"], job_data["project_id"])
@@ -54,6 +75,8 @@ class JobQueue:
                     job.params = job_data.get("params", {})
                     self.jobs[job.job_id] = job
                 logger.info("Fila carregada: %d jobs", len(self.jobs))
+            try:
+                retry_with_backoff(do_load, max_retries=3, base_delay=0.2)
             except Exception as e:
                 logger.error("Erro ao carregar fila: %s", e)
     
@@ -62,7 +85,15 @@ class JobQueue:
             "jobs": [job.to_dict() for job in self.jobs.values()],
             "updated_at": datetime.now().isoformat()
         }
-        self.queue_file.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+        
+        def do_save():
+            self.queue_file.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+        
+        try:
+            retry_with_backoff(do_save, max_retries=3, base_delay=0.2)
+            logger.info("Fila salva com sucesso")
+        except Exception as e:
+            logger.error("Erro ao salvar fila após retries: %s", e)
     
     def add_job(self, job_type, project_id, params=None):
         job_id = "job_{}".format(int(time.time()))
@@ -73,10 +104,39 @@ class JobQueue:
         return job
     
     def get_next_job(self):
+        # Controle de concorrência: apenas 1 job por vez (GPU 6GB)
+        if self.running_job_id is not None:
+            logger.warning("Job %s ainda em execução. Aguardando...", self.running_job_id)
+            return None
+        
         for job in self.jobs.values():
             if job.status == "queued":
                 return job
         return None
+    
+    def validate_job_files(self, job) -> tuple[bool, str]:
+        """
+        Valida se os arquivos necessários para o job existem.
+        Retorna (válido, mensagem).
+        """
+        params = job.params or {}
+        
+        # Verifica arquivos de entrada
+        input_files = params.get("input_files", [])
+        if input_files:
+            for f in input_files:
+                if not Path(f).exists():
+                    return False, f"Arquivo não encontrado: {f}"
+        
+        # Verifica se diretórios de saída são válidos
+        output_dir = params.get("output_dir")
+        if output_dir:
+            try:
+                Path(output_dir).mkdir(parents=True, exist_ok=True)
+            except Exception as e:
+                return False, f"Erro ao criar diretório de saída: {e}"
+        
+        return True, "Arquivos validados"
     
     def get_job(self, job_id):
         return self.jobs.get(job_id)
@@ -87,8 +147,11 @@ class JobQueue:
             job.status = status
             if status == "running" and not job.started_at:
                 job.started_at = datetime.now().isoformat()
+                self.running_job_id = job_id  # Controle de concorrência
             if status in ("completed", "failed", "cancelled"):
                 job.finished_at = datetime.now().isoformat()
+                if self.running_job_id == job_id:
+                    self.running_job_id = None  # Libera para próximo job
             if result:
                 job.result = result
             if error:
