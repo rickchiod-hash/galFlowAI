@@ -48,11 +48,20 @@ def create_commercial(briefing, motor_llm="Automático local"):
             else:
                 video = None
             
-            # Carrega roteiro: primeiro do resultado do pipeline, depois do arquivo
+            # Carrega roteiro: primeiro do resultado do pipeline
             script_text = result.get("script", "")
+            
+            # Se vazio, tenta load_current_script
             if not script_text:
                 script = load_current_script(project_id)
-                script_text = script.get("script", "")
+                if script and script.get("script"):
+                    script_text = script.get("script")
+            
+            # Se ainda vazio, lê o arquivo diretamente usando Path global
+            if not script_text:
+                script_file = Path(f"K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/projects/{project_id}/script/script.txt")
+                if script_file.exists():
+                    script_text = script_file.read_text(encoding="utf-8")
             
             # Show provider info
             provider_info = result.get("provider_info", {})
