@@ -29,29 +29,6 @@
 
 ## Backlog priorizado (crítico e coerente)
 
-## Status Atual (03/05/2026 - Sessão Resumida)
-
-### ✅ Concluído Nesta Sessão
-1. **Correção de Sintaxe**: `app/logging_config.py` tinha backticks inválidos em todas as linhas
-2. **Ambiente Python**: Criado `K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio` (venv Python 3.12.4)
-3. **Dependências**: Instalados fastapi, uvicorn, gradio, pydantic, httpx no ambiente studio
-4. **Validação**: `api.py` compila e importa com sucesso
-5. **Teste FastAPI**: Servidor sobe e responde em `http://127.0.0.1:8000/api/health`
-6. **Correção de Imports**:
-   - `provider_router.py`: Corrigido import de `TemplateProvider` (estava em `base_provider.py`)
-   - `auto_pipeline.py`: Corrigido import `generate_script_from_brief` → `generate_script`
-   - `main.py`: Corrigido import `create_new_script_version` → `create_new_version`
-7. **Criação de Módulos Faltantes**:
-   - Criado `app/pipeline/prompt_builder.py` com funções necessárias
-8. **Teste Gradio UI**: Servidor sobe e responde em `http://127.0.0.1:7860` (Status 200)
-
-### ⚠️ Pendências Imediatas
-1. Testar Gradio UI em `http://127.0.0.1:7860`
-2. Validar se `auto_pipeline.py` executa sem erros
-3. Commit das correções realizadas
-
----
-
 ## P0 — Confiabilidade e risco imediato
 
 | ID | Contexto da melhoria | Sugestão objetiva | Prós | Contras / custo | Vale a pena agora? |
@@ -173,3 +150,46 @@ Valide compilação no final.
 Ajuste somente o bloco __main__ de app/api.py para inicialização local determinística.
 Não alterar rotas, modelos Pydantic ou middlewares.
 ```
+
+
+## QA obrigatório (referência cruzada)
+- Plano oficial de QA e mapeamento de pendências: `qa/QA_TEST_PLAN.md`.
+- Regra: após cada história P0/P1 concluída, criar/ajustar ao menos 3 testes unitários cobrindo sucesso, falha e fallback.
+- Regra: incluir cenários de automação/API e simulação de condições reais para capturar gaps antes de release.
+
+---
+
+## GAPs faltantes (análise profunda adicional)
+
+### Gaps técnicos não cobertos ainda
+1. **Ausência de contratos tipados de erro** entre API e serviços (risco de payload inconsistente).
+2. **Acoplamento forte de IO com regra de negócio** em serviços/pipeline (dificulta testes e rollback).
+3. **Sem testes de concorrência/reentrância** para versionamento de roteiro (risco de corrida em gravação).
+4. **Sem política central de timeout/retry/backoff** para adapters (comportamento heterogêneo).
+5. **Sem métricas operacionais mínimas** (latência por provider, taxa de fallback, taxa de erro por etapa).
+6. **Sem validação de contrato de arquivos do projeto** (`script`, `prompts`, `storyboard`, `final`) antes/apos cada etapa.
+7. **Sem testes de compatibilidade de backward endpoints** para preservar clientes locais existentes.
+
+### Gaps de engenharia de qualidade
+1. **Sem cobertura de cenários negativos realistas** (JSON corrompido, diretório ausente, permissão negada, timeout).
+2. **Sem testes de smoke do fluxo completo local-first** (com mocks determinísticos).
+3. **Sem baseline de cobertura por módulo crítico** com gate de falha.
+
+### Decisão
+- Estes ajustes **não serão executados agora**; entram na fila de backlog para execução incremental guiada por `qa/QA_TEST_PLAN.md`.
+
+**Prompt enxuto (engenharia de prompt):**
+```text
+Refatore apenas blocos `except:` nus em app/api.py para `except Exception`.
+Não mude regras de negócio, payload ou fluxo de fallback.
+Valide compilação no final.
+```
+
+## Item obrigatório de backlog (solicitação direta)
+
+Após a etapa atual (`[Pasted ~5 lines]`), executar obrigatoriamente:
+- Criar **3 testes unitários** que validem cenários principais e de falha.
+- Criar cenários de **testes de automação e chamadas de API**.
+- Aumentar cobertura com cenários que simulem a realidade para capturar gaps.
+- Ler `qa/QA_TEST_PLAN.md` e mapear todos os testes implementados até o presente momento.
+- Colocar itens pendentes na fila de revisão/criação/melhoria antes de novas features.

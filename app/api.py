@@ -1,5 +1,5 @@
 """
-FastAPI V2 for Gal AI / FlowForgeAI - Local-first internal API.
+FastAPI V2 for Gal AI / galFlowAI - local-first internal API.
 """
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,10 +12,16 @@ import time
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from app.config import GRADIO_HOST, GRADIO_PORT
+from app.config import GRADIO_HOST
 from app.logging_config import setup_logger
 
 logger = setup_logger()
+
+# TODO_TECNICO(API_MODULARIZACAO):
+# 1) Extrair regras de negócio para app/application/use_cases (controller fino).
+# 2) Padronizar envelope de erro/sucesso: {ok, code, message, details}.
+# 3) Adicionar testes de contrato FastAPI para rotas críticas (/api/health, /api/llm/*, /api/projects/*).
+# 4) Manter compatibilidade de endpoints atuais durante refatoração (sem breaking changes).
 
 app = FastAPI(
     title="Gal AI API",
@@ -374,7 +380,7 @@ async def get_video_status(project_id: str):
             status["scenes"] = scenes
             status["scenes_completed"] = len([s for s in scenes if s.get("status") == "completed"])
             status["scenes_total"] = len(scenes)
-        except:
+        except Exception:
             pass
     
     return status
@@ -414,4 +420,4 @@ async def websocket_progress(websocket: WebSocket, job_id: str):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host=GRADIO_HOST, port=8000)
+    uvicorn.run(app, host=GRADIO_HOST, port=8000, reload=False)

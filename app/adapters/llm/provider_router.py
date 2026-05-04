@@ -6,6 +6,13 @@ import time
 from typing import List, Optional, Dict
 from app.adapters.llm.base_provider import BaseLLMProvider, TemplateProvider
 
+# TODO_TECNICO(PROVIDER_ROUTER):
+# 1) Aplicar Strategy + Factory para inicialização/configuração de providers.
+# 2) Unificar timeout/retry/fallback em funções auxiliares reutilizáveis.
+# 3) Criar testes de fallback para indisponibilidade total de providers locais.
+# 4) Preservar TemplateProvider como fallback obrigatório.
+
+
 class ProviderRouter:
     """Routes requests through available LLM providers with fallback."""
     

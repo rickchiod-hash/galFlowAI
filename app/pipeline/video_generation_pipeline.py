@@ -18,6 +18,12 @@ from app.config import BASE_DIR, PROJECTS_DIR
 
 logger = logging.getLogger(__name__)
 
+# TODO_TECNICO(VIDEO_PIPELINE):
+# 1) Quebrar etapas em casos de uso independentes (gerar roteiro/cenas/prompts/render).
+# 2) Padronizar estado de job (queued/running/succeeded/failed/canceled).
+# 3) Adicionar testes e2e com mocks para fallback WanGP -> FFmpeg.
+# 4) Isolar operações de filesystem em helpers para facilitar testes.
+
 
 class VideoGenerationPipeline:
     """Pipeline completo: Briefing -> Roteiro -> Cenas -> Vídeo -> Final"""
