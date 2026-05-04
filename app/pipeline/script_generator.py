@@ -1,57 +1,30 @@
 import json
 from app.logging_config import setup_logger
+from app.services.script_service import generate_script_with_llm
 
 logger = setup_logger()
 
-def generate_script(briefing, project_id=None, use_ollama=True):
-    """Gera roteiro a partir do briefing usando templates ou Ollama."""
-    msg = "Gerando roteiro para: %s" % str(briefing)[:50]
+def generate_script(briefing, project_id=None, mode="auto"):
+    """
+    Gera roteiro a partir do briefing usando LLMs locais ou templates.
+    mode: 'auto', 'fast', 'quality', 'safe', 'template'
+    """
+    msg = "Gerando roteiro para: %s [modo: %s]" % (str(briefing)[:50], mode)
     logger.info(msg)
     
-    # Tentar Ollama primeiro se disponivel
-    if use_ollama:
-        try:
-            from app.adapters.ollama_adapter import check_ollama_available, generate_with_ollama
-            if check_ollama_available():
-                logger.info("Usando Ollama para gerar roteiro")
-                result = generate_with_ollama(briefing)
-                if result:
-                    logger.info("Roteiro gerado via Ollama")
-                    return result
-        except Exception as e:
-            logger.warning("Falha no Ollama: %s", e)
-    
-    # Fallback para template
-    logger.info("Usando template fallback")
-    words = briefing.lower().split()
-    product = "produto"
-    if "maquiagem" in words or "makeup" in words:
-        product = "maquiagem"
-    elif "boneco" in words or "action figure" in words:
-        product = "boneco colecionavel"
-    elif "impress" in words or "3d" in words:
-        product = "produto impresso em 3D"
-    
-    template = (
-        "[Cena 1: Introducao - 5s]\n"
-        "Foco no %s em ambiente moderno. Luz suave destacando o produto.\n"
-        "Texto na tela: 'Apresentamos o novo %s'\n\n"
-        "[Cena 2: Beneficios - 15s]\n"
-        "Demonstracao rapida dos diferenciais. Close-ups das caracteristicas.\n"
-        "Texto: 'Qualidade premium, design unico'\n\n"
-        "[Cena 3: Prova Social - 7s]\n"
-        "Pessoas interagindo com o %s. Sorrisos e satisfacao.\n"
-        "Texto: 'Amado por clientes'\n\n"
-        "[Cena 4: Oferta - 3s]\n"
-        "Preco e condicoes especiais. Urgencia.\n"
-        "Texto: 'Oferta limitada'\n\n"
-        "[Cena 5: Chamada - 5s]\n"
-        "Logo da marca. Botao de acao.\n"
-        "Texto: 'Adquira ja o seu %s!'"
-    ) % (product, product, product, product)
-    
-    logger.info("Roteiro gerado com 5 cenas")
-    return template
+    try:
+        result = generate_script_with_llm(briefing, mode)
+        logger.info(
+            "Roteiro gerado via %s (tempo: %.2fs, qualidade: %s)",
+            result["provider"], result["time"], result["quality"]
+        )
+        return result["script"]
+    except Exception as e:
+        logger.error("Falha no servico de roteiro: %s", e)
+        # Fallback final
+        from app.adapters.llm.template_provider import TemplateProvider
+        tp = TemplateProvider()
+        return tp.generate(briefing)
 
 def save_script(project_id, script_text):
     """Salva roteiro no projeto."""

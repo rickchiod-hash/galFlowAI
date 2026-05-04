@@ -4,47 +4,53 @@ from app.logging_config import setup_logger
 
 logger = setup_logger()
 
-
-def build_prompts_for_scenes(scenes: list, style: str = "cinematic") -> list:
-    """Gera prompts positivos e negativos para cada cena."""
-    msg = "Construindo prompts para {} cenas".format(len(scenes))
-    logger.info(msg)
-
-    for scene in scenes:
-        desc = scene.get("description", "")
-        positive = "{} style, {}, high quality, detailed, professional commercial".format(style, desc)
-        scene["prompt_positive"] = positive
+def build_prompts_for_scenes(scenes, project_id=None):
+    """
+    Build prompts for each scene.
+    Returns list of dicts with: scene_id, prompt_pos, prompt_neg, duration
+    """
+    prompts = []
+    for i, scene in enumerate(scenes, 1):
+        prompt_pos = scene.get("text", "")
+        prompt_neg = "blurry, low quality, static, bad anatomy"
+        duration = scene.get("duration", 5)
         
-        if not scene.get("prompt_negative"):
-            scene["prompt_negative"] = "blurry, low quality, distorted, bad anatomy, watermark, text overlay"
-        scene["status"] = "prompt_ready"
+        prompts.append({
+            "scene_id": i,
+            "prompt_pos": prompt_pos,
+            "prompt_neg": prompt_neg,
+            "duration": duration,
+            "status": "pending",
+            "output_path": ""
+        })
+    
+    logger.info("Prompts gerados para %d cenas", len(prompts))
+    return prompts
 
-    return scenes
-
-
-def save_prompts(project_id: str, scenes: list) -> Path:
+def save_prompts(project_id, prompts):
+    """Save prompts to project directory."""
     from app.config import PROJECTS_DIR
-    proj_dir = PROJECTS_DIR / project_id
-    prompts_path = proj_dir / "prompts" / "prompts.json"
-    text = json.dumps(scenes, indent=2, ensure_ascii=False)
-    prompts_path.write_text(text, encoding="utf-8")
+    from datetime import datetime
     
-    # Also save individual prompt files
+    proj_dir = Path(PROJECTS_DIR) / project_id
     prompts_dir = proj_dir / "prompts"
-    for scene in scenes:
-        safe_id = scene["id"].replace("/", "_")
-        pos_path = prompts_dir / "{}_positive.txt".format(safe_id)
-        neg_path = prompts_dir / "{}_negative.txt".format(safe_id)
-        pos_path.write_text(scene["prompt_positive"], encoding="utf-8")
-        neg_path.write_text(scene["prompt_negative"], encoding="utf-8")
+    prompts_dir.mkdir(parents=True, exist_ok=True)
     
-    # Update project.json
-    proj_file = proj_dir / "project.json"
-    content = proj_file.read_text(encoding="utf-8")
-    proj = json.loads(content)
-    proj["scenes"] = scenes
-    proj["status"] = "prompts_ready"
-    proj_file.write_text(json.dumps(proj, indent=2, ensure_ascii=False), encoding="utf-8")
+    # Save as JSON
+    prompts_file = prompts_dir / "prompts.json"
+    prompts_file.write_text(
+        json.dumps(prompts, indent=2, ensure_ascii=False),
+        encoding="utf-8"
+    )
     
-    logger.info("Prompts salvos para {}".format(project_id))
-    return prompts_path
+    # Save human-readable version
+    readable_file = prompts_dir / "prompts.txt"
+    with open(readable_file, "w", encoding="utf-8") as f:
+        for p in prompts:
+            f.write(f"[Cena {p['scene_id']}]\n")
+            f.write(f"Prompt: {p['prompt_pos']}\n")
+            f.write(f"Negativo: {p['prompt_neg']}\n")
+            f.write(f"Duração: {p['duration']}s\n\n")
+    
+    logger.info("Prompts salvos em: %s", prompts_file)
+    return str(prompts_file)

@@ -1,0 +1,203 @@
+import gradio as gr
+import json
+from pathlib import Path
+from datetime import datetime
+
+from app.config import setup_env_vars, GRADIO_PORT, GRADIO_HOST
+from app.hardware import get_gpu_info, get_disk_info, get_ram_info, get_recommended_preset
+from app.project_manager import create_project, load_project
+from app.logging_config import setup_logger
+from app.pipeline.script_generator import generate_script_from_brief, save_script
+from app.pipeline.scene_splitter import split_script_into_scenes, save_scenes
+from app.pipeline.prompt_builder import build_prompts_for_scenes, save_prompts
+from app.adapters.ffmpeg_adapter import assemble_final_video, create_storyboard_video
+
+setup_env_vars()
+logger = setup_logger()
+
+CUSTOM_CSS = """
+:root {
+    --bg-primary: #0B1020;
+    --card-bg: #111827;
+    --card-secondary: #1F2937;
+    --action-blue: #38BDF8;
+    --success-green: #22C55E;
+    --warning-yellow: #F59E0B;
+    --error-red: #EF4444;
+    --text-primary: #F8FAFC;
+    --text-secondary: #CBD5E1;
+    --border: #334155;
+}
+body, .gradio-container { background-color: var(--bg-primary) !important; color: var(--text-primary) !important; }
+.gr-box, .gr-panel { background-color: var(--card-bg) !important; border: 1px solid var(--border) !important; }
+.gr-button { background-color: var(--action-blue) !important; color: var(--bg-primary) !important; border: none !important; }
+.gr-button:hover { opacity: 0.9; }
+.gr-tab-item { background-color: var(--card-secondary) !important; color: var(--text-primary) !important; }
+.gr-tab-item.selected { border-bottom: 2px solid var(--action-blue) !important; }
+.gr-textbox, .gr-dropdown, .gr-number { background-color: var(--card-secondary) !important; color: var(--text-primary) !important; border: 1px solid var(--border) !important; }
+.gr-markdown { color: var(--text-primary) !important; }
+#hardware-status { background-color: var(--card-secondary); padding: 10px; border-radius: 5px; border: 1px solid var(--border); }
+.log-panel { background-color: #000000; color: #22C55E; font-family: monospace; height: 300px; }
+"""
+
+def get_hardware_status():
+    gpu = get_gpu_info()
+    disk = get_disk_info()
+    ram = get_ram_info()
+    preset = get_recommended_preset(gpu["vram_gb"], gpu["name"])
+    return "\n\n".join([
+        f"**GPU:** {gpu['name']} ({gpu['vram_gb']} GB VRAM) {'✅' if gpu['cuda_available'] else '❌'}",
+        f"**CUDA:** {gpu.get('cuda_version', 'N/A')}",
+        f"**RAM:** {ram['total_gb']} GB total, {ram['available_gb']} GB disponível",
+        f"**Disco K:** {disk['free_gb']} GB livre / {disk['total_gb']} GB total",
+        f"**Preset recomendado:** {preset['model']} @ {preset['resolution']} — {preset['note']}"
+    ])
+
+def create_project_action(name, brief_text):
+    if not name:
+        return "Erro: informe um nome.", None
+    try:
+        proj = create_project(name)
+        proj_path = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects") / proj["id"]
+        (proj_path / "brief" / "brief.txt").write_text(brief_text, encoding="utf-8")
+        logger.info(f"Project {proj['id']} created with brief")
+        return f"Projeto criado: {proj['id']}", proj["id"]
+    except Exception as e:
+        logger.error(f"Create project failed: {e}")
+        return f"Erro: {e}", None
+
+def generate_script_action(project_id, brief_text):
+    if not project_id:
+        return "Crie um projeto primeiro.", ""
+    try:
+        script = generate_script_from_brief(brief_text, project_id)
+        save_script(project_id, script)
+        return "Roteiro gerado e salvo.", script
+    except Exception as e:
+        logger.error(f"Script generation failed: {e}")
+        return f"Erro: {e}", ""
+
+def generate_scenes_action(project_id, script_text):
+    if not project_id:
+        return "Crie um projeto primeiro.", ""
+    try:
+        scenes = split_script_into_scenes(script_text, project_id)
+        save_scenes(project_id, scenes)
+        return f"{len(scenes)} cenas geradas e salvas.", json.dumps(scenes, indent=2, ensure_ascii=False)
+    except Exception as e:
+        logger.error(f"Scene generation failed: {e}")
+        return f"Erro: {e}", ""
+
+def build_prompts_action(project_id, scenes_json):
+    if not project_id:
+        return "Crie um projeto primeiro.", ""
+    try:
+        scenes = json.loads(scenes_json)
+        scenes = build_prompts_for_scenes(scenes)
+        save_prompts(project_id, scenes)
+        return "Prompts gerados e salvos.", json.dumps(scenes, indent=2, ensure_ascii=False)
+    except Exception as e:
+        logger.error(f"Prompt building failed: {e}")
+        return f"Erro: {e}", ""
+
+def render_storyboard_action(project_id, scenes_json):
+    if not project_id:
+        return "Crie um projeto primeiro.", ""
+    try:
+        scenes = json.loads(scenes_json)
+        video_path = create_storyboard_video(project_id, scenes)
+        if video_path:
+            return f"Storyboard criado: {video_path.name}", str(video_path)
+        return "Falha ao criar storyboard.", ""
+    except Exception as e:
+        logger.error(f"Storyboard render failed: {e}")
+        return f"Erro: {e}", ""
+
+def assemble_action(project_id, scenes_json):
+    if not project_id:
+        return "Crie um projeto primeiro.", ""
+    try:
+        scenes = json.loads(scenes_json)
+        video_path = assemble_final_video(project_id, scenes)
+        if video_path:
+            return f"Vídeo final montado: {video_path.name}", str(video_path)
+        return "Falha ao montar vídeo final.", ""
+    except Exception as e:
+        logger.error(f"Video assembly failed: {e}")
+        return f"Erro: {e}", ""
+
+def read_logs():
+    log_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/logs")
+    if not log_dir.exists():
+        return "Sem logs ainda."
+    logs = sorted(log_dir.glob("*.log"), key=lambda x: x.stat().st_mtime, reverse=True)
+    if not logs:
+        return "Sem logs."
+    content = logs[0].read_text(encoding="utf-8", errors="ignore")
+    return "\n".join(content.strip().split("\n")[-50:])
+
+with gr.Blocks(title="FlowForgeAI", css=CUSTOM_CSS, theme=gr.themes.Base()) as demo:
+    gr.Markdown("# FlowForgeAI")
+    gr.Markdown("Plataforma local para criação de comerciais curtos — **MVP Real**")
+
+    hw_status = gr.Markdown(get_hardware_status(), elem_id="hardware-status")
+    refresh_hw_btn = gr.Button("Atualizar Status HW", size="sm")
+    refresh_hw_btn.click(get_hardware_status, outputs=hw_status)
+
+    current_project = gr.State(value=None)
+    scenes_json = gr.State(value="[]")
+
+    with gr.Tabs():
+        with gr.Tab("Briefing"):
+            with gr.Row():
+                proj_name = gr.Textbox(label="Nome do Projeto")
+                create_btn = gr.Button("Criar Projeto", variant="primary")
+            brief_text = gr.Textbox(label="Briefing (objetivo, público, mensagem, estilo)", lines=6)
+            briefing_status = gr.Textbox(label="Status", interactive=False)
+            create_btn.click(create_project_action, inputs=[proj_name, brief_text], outputs=[briefing_status, current_project])
+
+        with gr.Tab("Roteiro"):
+            script_btn = gr.Button("Gerar Roteiro", variant="primary")
+            script_status = gr.Textbox(label="Status", interactive=False)
+            script_output = gr.Textbox(label="Roteiro", lines=8, interactive=False)
+            script_btn.click(generate_script_action, inputs=[current_project, brief_text], outputs=[script_status, script_output])
+
+        with gr.Tab("Storyboard"):
+            scenes_btn = gr.Button("Dividir em Cenas", variant="primary")
+            scenes_status = gr.Textbox(label="Status", interactive=False)
+            scenes_output = gr.Textbox(label="Cenas/Prompts JSON", lines=8, interactive=False)
+            scenes_btn.click(generate_scenes_action, inputs=[current_project, script_output], outputs=[scenes_status, scenes_output])
+            scenes_output.change(lambda x: x, inputs=scenes_output, outputs=scenes_json)
+            gr.Markdown("**Upload de imagens de referência (opcional)**")
+            img_upload = gr.File(label="Imagens", file_count="multiple", type="filepath")
+
+        with gr.Tab("Render"):
+            prompts_btn = gr.Button("Criar Prompts", variant="primary")
+            prompts_status = gr.Textbox(label="Status", interactive=False)
+            prompts_btn.click(build_prompts_action, inputs=[current_project, scenes_json], outputs=[prompts_status, scenes_output])
+            render_btn = gr.Button("Renderizar Storyboard (FFmpeg)")
+            render_status = gr.Textbox(label="Status", interactive=False)
+            render_output = gr.Textbox(label="Caminho do Vídeo", interactive=False)
+            render_btn.click(render_storyboard_action, inputs=[current_project, scenes_json], outputs=[render_status, render_output])
+
+        with gr.Tab("Montagem"):
+            assemble_btn = gr.Button("Montar Vídeo Final (FFmpeg)", variant="primary")
+            assemble_status = gr.Textbox(label="Status", interactive=False)
+            assemble_output = gr.Textbox(label="Vídeo Final", interactive=False)
+            assemble_btn.click(assemble_action, inputs=[current_project, scenes_json], outputs=[assemble_status, assemble_output])
+
+        with gr.Tab("Resultado"):
+            gr.Markdown("**Vídeo final será exibido aqui.**")
+            result_video = gr.Video(label="Preview Final", interactive=False)
+            # Update video when assemble_output changes
+            assemble_output.change(lambda x: x if Path(x).exists() else None, inputs=assemble_output, outputs=result_video)
+
+        with gr.Tab("Logs"):
+            log_display = gr.Textbox(label="Logs Recentes (últimas 50 linhas)", lines=15, interactive=False, elem_classes=["log-panel"])
+            refresh_log_btn = gr.Button("Atualizar Logs")
+            refresh_log_btn.click(read_logs, outputs=log_display)
+            demo.load(read_logs, outputs=log_display)
+
+if __name__ == "__main__":
+    logger.info("Starting FlowForgeAI on http://127.0.0.1:7860")
+    demo.launch(server_name=GRADIO_HOST, server_port=GRADIO_PORT)

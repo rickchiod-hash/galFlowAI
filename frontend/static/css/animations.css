@@ -1,0 +1,65 @@
+/* animations.css — Animações e micro-interações */
+
+/* Fade-in para cards */
+.fade-in {
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Shimmer para skeleton loading */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Slide in para toasts */
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Pulse para botão ativo */
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255,107,43,0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(255,107,43,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,107,43,0); }
+}
+
+/* Transição suave para barra de progresso */
+.progress-fill {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover suave em cards */
+.card {
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transform: translateY(-2px);
+}
+
+/* Drag-and-drop para cenas */
+.scene-card.dragging {
+  opacity: 0.5;
+  border: 2px dashed var(--accent-primary);
+}
+
+.drop-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  text-align: center;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+
+.drop-zone.drag-over {
+  border-color: var(--accent-primary);
+  background: var(--accent-glow);
+}

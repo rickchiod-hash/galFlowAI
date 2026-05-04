@@ -10,18 +10,18 @@ def split_script_into_scenes(script_text: str, project_id: str) -> list:
     msg = "Dividindo roteiro em cenas para %s" % project_id
     logger.info(msg)
 
-    pattern = r'\[Cena\s*(\d+):\s*([^]-]+)\s*-\s*(\d+)s\]'
+    pattern = r'(?:Cena|Scene)\s*(\d+)[:\s-]*(.*)'
     matches = re.findall(pattern, script_text, re.IGNORECASE)
-    
+
     if matches:
         scenes = []
-        for i, (num, desc, duration) in enumerate(matches):
+        for i, (num, desc) in enumerate(matches):
             scene_id = "scene_%s" % num.zfill(3)
             scenes.append({
                 "id": scene_id,
                 "scene_number": int(num),
                 "description": desc.strip() or "Cena %s" % num,
-                "duration_estimate": int(duration),
+                "duration_estimate": 5,
                 "status": "pending",
                 "prompt_positive": "",
                 "prompt_negative": "blurry, low quality, distorted, bad anatomy",

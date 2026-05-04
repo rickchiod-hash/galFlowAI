@@ -1,128 +1,368 @@
+"""Adapter para FFmpeg - Processamento de vídeo estático e montagem"""
+
 import subprocess
+import os
 from pathlib import Path
+from typing import Optional, List, Dict, Any
 from app.logging_config import setup_logger
-from app.config import PROJECTS_DIR
 
 logger = setup_logger()
 
-def check_ffmpeg() -> bool:
-    try:
-        result = subprocess.run(
-            ["K:/AI_VIDEO_COMMERCIAL_STUDIO/envs/studio/Library/bin/ffmpeg.exe", "-version"],
-            capture_output=True, text=True, timeout=10
-        )
-        return result.returncode == 0
-    except Exception as e:
-        logger.error(f"FFmpeg check failed: {e}")
-        return False
+FFMPEG_PATH = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/envs/studio/Library/bin/ffmpeg.exe")
 
-def create_storyboard_video(project_id: str, scenes: list) -> Path:
+
+class FFmpegAdapter:
+    """Adapter para operações com FFmpeg"""
+    
+    def __init__(self, ffmpeg_path: Optional[str] = None):
+        """
+        Inicializa o adapter FFmpeg.
+        
+        Args:
+            ffmpeg_path: Caminho para o executável FFmpeg. Se None, usa padrão.
+        """
+        self.ffmpeg_path = Path(ffmpeg_path) if ffmpeg_path else FFMPEG_PATH
+        self.available = self._check_availability()
+    
+    def _check_availability(self) -> bool:
+        """Verifica se FFmpeg está disponível"""
+        if self.ffmpeg_path.exists():
+            logger.info("FFmpeg encontrado: %s", self.ffmpeg_path)
+            return True
+        logger.warning("FFmpeg não encontrado em %s", self.ffmpeg_path)
+        return False
+    
+    def is_available(self) -> bool:
+        """Retorna se FFmpeg está disponível"""
+        return self.available
+    
+    def create_static_video(
+        self,
+        text: str,
+        output_path: str,
+        duration: int = 5,
+        width: int = 854,
+        height: int = 480,
+        bg_color: str = "303030",
+        text_color: str = "FFFFFF"
+    ) -> Dict[str, Any]:
+        """
+        Cria vídeo estático com texto (fallback quando WanGP não disponível).
+        
+        Args:
+            text: Texto para exibir no vídeo
+            output_path: Caminho para salvar o vídeo
+            duration: Duração em segundos
+            width: Largura do vídeo
+            height: Altura do vídeo
+            bg_color: Cor de fundo (hex sem #)
+            text_color: Cor do texto (hex sem #)
+            
+        Returns:
+            Dict com status e metadados
+        """
+        if not self.available:
+            return {
+                "success": False,
+                "error": "FFmpeg não disponível"
+            }
+        
+        try:
+            # Cria filtro de texto (escapa aspas)
+            text_escaped = text.replace("'", "'\\''")
+            drawtext_filter = (
+                f"drawtext=text='{text_escaped}':"
+                f"fontcolor={text_color}:"
+                f"fontsize=24:"
+                f"x=(w-text_w)/2:y=(h-text_h)/2:"
+                f"box=1:boxcolor={bg_color}@0.5"
+            )
+            
+            cmd = [
+                str(self.ffmpeg_path), "-y",
+                "-f", "lavfi",
+                "-i", f"color=c={bg_color}:s={width}x{height}:d={duration}",
+                "-vf", drawtext_filter,
+                "-c:v", "libx264",
+                "-pix_fmt", "yuv420p",
+                "-t", str(duration),
+                output_path
+            ]
+            
+            logger.info("Criando vídeo estático com FFmpeg...")
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+            
+            if result.returncode == 0 and Path(output_path).exists():
+                logger.info("Vídeo estático criado: %s", Path(output_path).name)
+                return {
+                    "success": True,
+                    "video_path": output_path,
+                    "duration": duration,
+                    "method": "static_text"
+                }
+            else:
+                logger.error("Erro FFmpeg: %s", result.stderr[-500:] if result.stderr else "Sem erro")
+                return {
+                    "success": False,
+                    "error": result.stderr[-500:] if result.stderr else "Erro desconhecido"
+                }
+                
+        except Exception as e:
+            logger.error("Exceção ao criar vídeo estático: %s", str(e))
+            return {
+                "success": False,
+                "error": str(e)
+            }
+    
+    def concat_videos(
+        self,
+        video_paths: List[str],
+        output_path: str,
+        audio_path: Optional[str] = None,
+        transition: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Concatena múltiplos vídeos em um único arquivo.
+        
+        Args:
+            video_paths: Lista de caminhos dos vídeos
+            output_path: Caminho para salvar o vídeo final
+            audio_path: Caminho opcional para áudio de fundo
+            transition: Transição entre vídeos (None, 'fade', etc.)
+            
+        Returns:
+            Dict com status e metadados
+        """
+        if not self.available:
+            return {
+                "success": False,
+                "error": "FFmpeg não disponível"
+            }
+        
+        if not video_paths:
+            return {
+                "success": False,
+                "error": "Nenhum vídeo para concatenar"
+            }
+        
+        try:
+            # Filtra apenas vídeos que existem
+            valid_videos = [vp for vp in video_paths if Path(vp).exists()]
+            
+            if not valid_videos:
+                return {
+                    "success": False,
+                    "error": "Nenhum vídeo válido encontrado"
+                }
+            
+            # Cria arquivo de lista para o FFmpeg
+            list_file = Path(output_path).parent / "concat_list.txt"
+            list_content = ""
+            for vp in valid_videos:
+                list_content += f"file '{Path(vp).resolve()}'\n"
+            list_file.write_text(list_content, encoding="utf-8")
+            
+            # Comando base
+            cmd = [
+                str(self.ffmpeg_path), "-y",
+                "-f", "concat", "-safe", "0",
+                "-i", str(list_file),
+                "-c:v", "libx264",
+                "-pix_fmt", "yuv420p",
+                "-preset", "fast",
+                output_path
+            ]
+            
+            # Adiciona áudio se fornecido
+            if audio_path and Path(audio_path).exists():
+                cmd[6:6] = ["-i", audio_path, "-c:a", "aac", "-shortest"]
+            
+            logger.info("Concatenando %d vídeos...", len(valid_videos))
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+            
+            # Limpa arquivo temporário
+            if list_file.exists():
+                list_file.unlink()
+            
+            if result.returncode == 0 and Path(output_path).exists():
+                logger.info("Vídeos concatenados: %s", Path(output_path).name)
+                return {
+                    "success": True,
+                    "video_path": output_path,
+                    "videos_count": len(valid_videos),
+                    "audio_added": audio_path is not None
+                }
+            else:
+                logger.error("Erro ao concatenar: %s", result.stderr[-500:] if result.stderr else "Sem erro")
+                return {
+                    "success": False,
+                    "error": result.stderr[-500:] if result.stderr else "Erro desconhecido"
+                }
+                
+        except Exception as e:
+            logger.error("Exceção ao concatenar vídeos: %s", str(e))
+            return {
+                "success": False,
+                "error": str(e)
+            }
+    
+    def add_audio_to_video(
+        self,
+        video_path: str,
+        audio_path: str,
+        output_path: str
+    ) -> Dict[str, Any]:
+        """
+        Adiciona áudio a um vídeo existente.
+        
+        Args:
+            video_path: Caminho do vídeo
+            audio_path: Caminho do áudio
+            output_path: Caminho para salvar
+            
+        Returns:
+            Dict com status
+        """
+        if not self.available:
+            return {"success": False, "error": "FFmpeg não disponível"}
+        
+        try:
+            cmd = [
+                str(self.ffmpeg_path), "-y",
+                "-i", video_path,
+                "-i", audio_path,
+                "-c:v", "copy",
+                "-c:a", "aac",
+                "-shortest",
+                output_path
+            ]
+            
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
+            
+            if result.returncode == 0 and Path(output_path).exists():
+                return {"success": True, "video_path": output_path}
+            else:
+                return {"success": False, "error": result.stderr[-500:] if result.stderr else "Erro"}
+                
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+    
+    def get_status(self) -> Dict[str, Any]:
+        """Retorna status do adapter"""
+        return {
+            "available": self.available,
+            "path": str(self.ffmpeg_path),
+            "exists": self.ffmpeg_path.exists()
+        }
+
+
+# ========== Funções de compatibilidade (mantidas para código existente) ==========
+
+def check_ffmpeg():
+    """Verifica se FFmpeg está disponível."""
+    return FFmpegAdapter().is_available()
+
+
+def create_storyboard_video(project_id: str, scenes: list) -> Path or None:
     """
-    Cria um vídeo de storyboard estático usando FFmpeg.
-    Gera clipes coloridos com texto para cada cena e monta em um MP4 final.
+    Cria vídeo de storyboard usando FFmpeg.
+    Fallback: imagens estáticas + áudio.
     """
+    from app.config import PROJECTS_DIR
+    
+    adapter = FFmpegAdapter()
+    if not adapter.is_available():
+        logger.error("FFmpeg não disponível. Impossível criar vídeo.")
+        return None
+    
     proj_dir = PROJECTS_DIR / project_id
+    output_dir = proj_dir / "final"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    output_path = output_dir / "comercial_storyboard.mp4"
+    
+    # Cria vídeos estáticos para cada cena
+    scene_videos = []
     storyboard_dir = proj_dir / "storyboard"
     storyboard_dir.mkdir(parents=True, exist_ok=True)
-    renders_dir = proj_dir / "renders"
-    renders_dir.mkdir(parents=True, exist_ok=True)
-
-    ffmpeg_exe = "K:/AI_VIDEO_COMMERCIAL_STUDIO/envs/studio/Library/bin/ffmpeg.exe"
-    scene_clips = []
-
+    
     for scene in scenes:
-        scene_id = scene["id"]
-        duration = scene.get("duration_estimate", 5)
-        desc_clean = scene.get("description", "Cena")[:30].encode("latin-1", "replace").decode("latin-1")
-        clip_path = renders_dir / (scene_id + "_storyboard.mp4")
-        filter_complex = (
-            "color=c=navy:s=480x512:d=%d,"
-            "drawtext=text='%s':fontcolor=white:fontsize=24:x=(w-text_w)/2:y=(h-text_h)/2"
-            % (duration, desc_clean)
+        scene_id = scene.get("id", "unknown")
+        scene_text = scene.get("description", "Cena")
+        scene_duration = scene.get("duration_estimate", 5)
+        
+        scene_video = storyboard_dir / f"{scene_id}.mp4"
+        result = adapter.create_static_video(
+            text=scene_text,
+            output_path=str(scene_video),
+            duration=scene_duration
         )
-        cmd = [
-            ffmpeg_exe, "-f", "lavfi", "-i", filter_complex,
-            "-c:v", "libx264", "-preset", "fast", "-pix_fmt", "yuv420p",
-            "-y", str(clip_path)
-        ]
-        try:
-            logger.info("Creating storyboard clip for %s", scene_id)
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
-            if result.returncode != 0:
-                logger.error("FFmpeg error for %s: %s", scene_id, result.stderr)
-            elif clip_path.exists():
-                scene_clips.append(clip_path)
-                scene["output_path"] = str(clip_path)
-                scene["status"] = "storyboard_rendered"
-                logger.info("Clip created: %s", clip_path)
-            else:
-                logger.error("Clip file not created for %s", scene_id)
-        except Exception as e:
-            logger.error("Failed to create clip for %s: %s", scene_id, e)
-
-    if not scene_clips:
-        logger.error("No storyboard clips created")
+        
+        if result.get("success"):
+            scene_videos.append(str(scene_video))
+    
+    if not scene_videos:
+        logger.error("Nenhum vídeo de cena criado.")
+        return None
+    
+    # Concatena todos
+    concat_result = adapter.concat_videos(
+        video_paths=scene_videos,
+        output_path=str(output_path)
+    )
+    
+    if concat_result.get("success"):
+        return output_path
+    else:
         return None
 
-    # Concatenate clips
-    concat_file = storyboard_dir / "concat_list.txt"
-    with open(concat_file, "w", encoding="utf-8") as f:
-        for clip in scene_clips:
-            f.write(f"file '{clip.as_posix()}'\n")
 
-    output_path = proj_dir / "final" / "preview_storyboard.mp4"
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    cmd_concat = [
-        ffmpeg_exe, "-f", "concat", "-safe", "0", "-i", str(concat_file),
-        "-c", "copy", "-y", str(output_path)
-    ]
-    try:
-        logger.info(f"Assembling storyboard video: {output_path}")
-        subprocess.run(cmd_concat, capture_output=True, text=True, timeout=120)
-        if output_path.exists():
-            logger.info(f"Storyboard video created: {output_path}")
-            return output_path
-    except Exception as e:
-        logger.error(f"Failed to assemble storyboard: {e}")
-    return None
+def mixar_audio_video(video_path: Path, audio_path: Path, output_path: Path) -> Path or None:
+    """Combina narração com vídeo, ajustando duração automaticamente"""
+    adapter = FFmpegAdapter()
+    result = adapter.add_audio_to_video(
+        video_path=str(video_path),
+        audio_path=str(audio_path),
+        output_path=str(output_path)
+    )
+    return Path(output_path) if result.get("success") else None
 
-def assemble_final_video(project_id: str, scenes: list, audio_path: str = None) -> Path:
-    """
-    Montagem final usando FFmpeg com cenas reais ou storyboard.
-    """
+
+def compile_final_video(project_id: str, video_paths: list, audio_path: Path = None) -> Path or None:
+    """Compila vídeos renderizados em um único MP4 final."""
+    from app.config import PROJECTS_DIR
+    
+    adapter = FFmpegAdapter()
     proj_dir = PROJECTS_DIR / project_id
-    final_dir = proj_dir / "final"
-    final_dir.mkdir(parents=True, exist_ok=True)
+    output_path = proj_dir / "final" / "comercial_final.mp4"
+    
+    result = adapter.concat_videos(
+        video_paths=video_paths,
+        output_path=str(output_path),
+        audio_path=str(audio_path) if audio_path and audio_path.exists() else None
+    )
+    
+    return Path(output_path) if result.get("success") else None
 
-    ffmpeg_exe = "K:/AI_VIDEO_COMMERCIAL_STUDIO/envs/studio/Library/bin/ffmpeg.exe"
-    # Filter valid rendered clips
-    valid_clips = [s for s in scenes if s.get("output_path") and Path(s["output_path"]).exists()]
-    if not valid_clips:
-        logger.warning("No valid clips found, falling back to storyboard")
-        return create_storyboard_video(project_id, scenes)
 
-    concat_file = final_dir / "final_concat.txt"
-    with open(concat_file, "w", encoding="utf-8") as f:
-        for scene in valid_clips:
-            f.write(f"file '{Path(scene['output_path']).as_posix()}'\n")
-
-    output_path = final_dir / "final_30fps_preview.mp4"
-    cmd = [
-        ffmpeg_exe, "-f", "concat", "-safe", "0", "-i", str(concat_file),
-        "-c:v", "libx264", "-preset", "fast", "-r", "30", "-pix_fmt", "yuv420p"
-    ]
-    if audio_path and Path(audio_path).exists():
-        cmd.extend(["-i", audio_path, "-c:a", "aac", "-map", "0:v", "-map", "1:a"])
-    else:
-        cmd.extend(["-an"])
-    cmd.extend(["-y", str(output_path)])
-
+def create_placeholder_image(output_path: Path, text: str):
+    """Cria imagem placeholder com texto (requer PIL/Pillow)."""
     try:
-        logger.info(f"Assembling final video: {output_path}")
-        subprocess.run(cmd, capture_output=True, text=True, timeout=300)
-        if output_path.exists():
-            logger.info(f"Final video created: {output_path}")
-            return output_path
+        from PIL import Image, ImageDraw, ImageFont
+        img = Image.new("RGB", (854, 480), color=(30, 30, 30))
+        draw = ImageDraw.Draw(img)
+        try:
+            font = ImageFont.truetype("arial.ttf", 24)
+        except:
+            font = ImageFont.load_default()
+        bbox = draw.textbbox((0, 0), text, font=font)
+        w = bbox[2] - bbox[0]
+        h = bbox[3] - bbox[1]
+        position = ((854 - w) / 2, (480 - h) / 2)
+        draw.text(position, text, fill=(255, 255, 255), font=font)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        img.save(str(output_path))
+        logger.info("Placeholder criado: %s", output_path.name)
+    except ImportError:
+        logger.warning("Pillow não instalado. Imagem placeholder não criada.")
     except Exception as e:
-        logger.error(f"Failed to assemble final video: {e}")
-    return None
+        logger.error("Erro ao criar placeholder: %s", str(e))

@@ -1,0 +1,45 @@
+# Ambiente Python
+envs/
+env/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Cache e temporarios
+cache/
+temp/
+tmp/
+*.log
+logs/*.log
+
+# Modelos e dados grandes
+models/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Assets e projetos gerados
+assets/
+projects/
+*.mp4
+*.wav
+*.mp3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+Desktop.ini
+$DN_
+
+# Arquivos de teste temporarios
+test_*.py
+temp_*.py

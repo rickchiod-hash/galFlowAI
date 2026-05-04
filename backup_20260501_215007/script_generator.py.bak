@@ -1,0 +1,66 @@
+import json
+from pathlib import Path
+from datetime import datetime
+from app.logging_config import setup_logger
+
+logger = setup_logger()
+
+
+def generate_script_from_brief(brief_text: str, project_id: str, use_ollama: bool = False) -> str:
+    """Gera roteiro a partir do briefing. Fallback: template determinístico se Ollama não disponível."""
+    msg = "Gerando roteiro para projeto {}".format(project_id)
+    logger.info(msg)
+
+    if use_ollama:
+        try:
+            import subprocess
+            cmd = ["ollama", "run", "llama3", "Gere um roteiro curto para comercial baseado em: {}".format(brief_text)]
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+            if result.returncode == 0:
+                script = result.stdout.strip()
+                logger.info("Roteiro gerado via Ollama")
+                return script
+        except Exception as e:
+            logger.warning("Ollama falhou: {}. Usando fallback.".format(e))
+
+    # Template determinístico (fallback)
+    lines = brief_text.split("\n")
+    product = lines[0] if lines else "produto"
+    script = """[ROTEIRO GERADO - TEMPLATE]
+
+Cena 1 (0-5s): Apresentação do {}
+- Foco: destaque visual do produto
+- Tom: profissional, impactante
+
+Cena 2 (5-10s): Benefícios principais
+- Foco: resolver problema do cliente
+- Tom: confiança, clareza
+
+Cena 3 (10-15s): Prova social / CTA
+- Foco: chamada para ação
+- Tom: urgente, direto
+
+Texto narração sugerido:
+"Apresentamos o {}. Solução completa para suas necessidades. Adquira agora!"
+""".format(product, product)
+    
+    logger.info("Roteiro gerado via template fallback")
+    return script
+
+
+def save_script(project_id: str, script_text: str) -> Path:
+    from app.config import PROJECTS_DIR
+    proj_dir = PROJECTS_DIR / project_id
+    script_path = proj_dir / "script" / "script.txt"
+    script_path.write_text(script_text, encoding="utf-8")
+    
+    # Update project.json
+    proj_file = proj_dir / "project.json"
+    content = proj_file.read_text(encoding="utf-8")
+    proj = json.loads(content)
+    proj["script"] = script_text
+    proj["status"] = "script_generated"
+    proj_file.write_text(json.dumps(proj, indent=2, ensure_ascii=False), encoding="utf-8")
+    
+    logger.info("Roteiro salvo para {}".format(project_id))
+    return script_path

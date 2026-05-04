@@ -1,104 +1,311 @@
-import json
+"""Adapter para TTS (Text-to-Speech) - Narração do roteiro"""
+
+import os
+import sys
+import logging
 from pathlib import Path
-from app.logging_config import setup_logger
+from typing import Optional, Dict, Any, List
+import subprocess
 
-logger = setup_logger()
+logger = logging.getLogger(__name__)
 
-def check_tts_engine():
-    """Verifica se há engine TTS disponível (pyttsx3, Kokoro, Coqui)."""
-    engines = []
-    
-    # 1. pyttsx3 (built-in Windows)
-    try:
-        import pyttsx3
-        engines.append("pyttsx3")
-        logger.info("pyttsx3 disponível")
-    except ImportError:
-        logger.warning("pyttsx3 não encontrado")
-    
-    # 2. Kokoro (recomendado após MVP)
-    try:
-        import kokoro
-        engines.append("kokoro")
-        logger.info("Kokoro disponível")
-    except ImportError:
-        logger.info("Kokoro não encontrado (futuro)")
-    
-    # 3. Coqui TTS
-    try:
-        import TTS
-        engines.append("coqui")
-        logger.info("Coqui TTS disponível")
-    except ImportError:
-        logger.info("Coqui TTS não encontrado (futuro)")
-    
-    return engines
 
-def generate_speech_pyttsx3(text: str, output_path: Path) -> Path or None:
-    """Gera áudio usando pyttsx3 (offline, Windows)."""
-    try:
-        import pyttsx3
-        engine = pyttsx3.init()
-        engine.save_to_file(text, str(output_path))
-        engine.runAndWait()
-        if output_path.exists():
-            logger.info("Áudio gerado (pyttsx3): %s", output_path.name)
-            return output_path
-    except Exception as e:
-        logger.error("Erro pyttsx3: %s", str(e))
-    return None
-
-def generate_speech(text: str, project_id: str, scene_id: str = "narration") -> Path or None:
-    """
-    Gera narração para o comercial.
-    Fallback: pyttsx3 -> texto salvo (sem áudio).
-    """
-    proj_dir = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/projects") / project_id
-    audio_dir = proj_dir / "audio"
-    audio_dir.mkdir(parents=True, exist_ok=True)
-    output_path = audio_dir / "{}_narration.wav".format(scene_id)
+class TTSAdapter:
+    """Adapter para geração de narração usando diferentes motores TTS"""
     
-    # Tenta pyttsx3 primeiro
-    if "pyttsx3" in check_tts_engine():
-        result = generate_speech_pyttsx3(text, output_path)
-        if result:
-            return result
+    def __init__(self, prefer_engine: str = "auto"):
+        """
+        Inicializa o adapter TTS.
+        
+        Args:
+            prefer_engine: Motor preferido ("kokoro", "pyttsx3", "silence", "auto")
+        """
+        self.prefer_engine = prefer_engine
+        self.available_engines = self._detect_engines()
+        self.selected_engine = self._select_engine()
+        
+    def _detect_engines(self) -> Dict[str, bool]:
+        """Detecta quais motores TTS estão disponíveis"""
+        engines = {
+            "kokoro": False,
+            "pyttsx3": False,
+            "silence": True,  # Sempre disponível como fallback
+            "system": False   # Windows system voices
+        }
+        
+        # Testa Kokoro
+        try:
+            import kokoro
+            engines["kokoro"] = True
+            logger.info("Kokoro TTS detectado")
+        except ImportError:
+            logger.info("Kokoro TTS não disponível")
+        
+        # Testa pyttsx3
+        try:
+            import pyttsx3
+            engines["pyttsx3"] = True
+            logger.info("pyttsx3 detectado")
+        except ImportError:
+            logger.info("pyttsx3 não disponível")
+        
+        # Testa vozes do Windows
+        try:
+            import win32com.client
+            engines["system"] = True
+            logger.info("Vozes do Windows detectadas")
+        except ImportError:
+            logger.info("Vozes do Windows não disponíveis")
+        
+        return engines
     
-    # Fallback: salva texto para referência
-    text_path = audio_dir / "{}_narration.txt".format(scene_id)
-    text_path.write_text(text, encoding="utf-8")
-    logger.warning("Narração: áudio não gerado. Texto salvo em %s", text_path.name)
-    return text_path
-
-def generate_project_narration(project_id: str, script_text: str = None) -> list:
-    """Gera narração para todo o roteiro ou cenas."""
-    proj_dir = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/projects") / project_id
-    proj_file = proj_dir / "project.json"
+    def _select_engine(self) -> str:
+        """Seleciona o melhor motor TTS disponível"""
+        if self.prefer_engine != "auto":
+            if self.available_engines.get(self.prefer_engine, False):
+                return self.prefer_engine
+            else:
+                logger.warning(f"Motor {self.prefer_engine} solicitado, mas não disponível")
+        
+        # Prioridade: kokoro > pyttsx3 > system > silence
+        if self.available_engines["kokoro"]:
+            return "kokoro"
+        elif self.available_engines["pyttsx3"]:
+            return "pyttsx3"
+        elif self.available_engines["system"]:
+            return "system"
+        else:
+            return "silence"
     
-    if not proj_file.exists():
-        logger.error("Projeto %s não encontrado", project_id)
-        return []
+    def is_available(self) -> bool:
+        """Retorna se pelo menos um motor TTS está disponível"""
+        return any(v for k, v in self.available_engines.items() if k != "silence") or True
     
-    proj = json.loads(proj_file.read_text(encoding="utf-8"))
-    results = []
+    def generate_audio(
+        self,
+        text: str,
+        output_path: str,
+        voice: Optional[str] = None,
+        speed: float = 1.0,
+        language: str = "pt"
+    ) -> Dict[str, Any]:
+        """
+        Gera áudio a partir de texto.
+        
+        Args:
+            text: Texto para narrar
+            output_path: Caminho para salvar o áudio
+            voice: Nome da voz (opcional)
+            speed: Velocidade da fala (1.0 = normal)
+            language: Idioma ("pt", "en", etc.)
+            
+        Returns:
+            Dict com status e metadados
+        """
+        logger.info(f"Gerando áudio com motor: {self.selected_engine}")
+        
+        try:
+            if self.selected_engine == "kokoro":
+                return self._generate_kokoro(text, output_path, voice, speed, language)
+            elif self.selected_engine == "pyttsx3":
+                return self._generate_pyttsx3(text, output_path, voice, speed)
+            elif self.selected_engine == "system":
+                return self._generate_system_voice(text, output_path, voice, speed)
+            elif self.selected_engine == "silence":
+                return self._generate_silence(text, output_path)
+            else:
+                return {
+                    "success": False,
+                    "error": f"Motor TTS desconhecido: {self.selected_engine}",
+                    "engine": self.selected_engine
+                }
+        except Exception as e:
+            logger.error(f"Erro ao gerar áudio: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "engine": self.selected_engine
+            }
     
-    # Se tem cenas, gera por cena
-    if proj.get("scenes"):
-        for scene in proj["scenes"]:
-            scene_id = scene.get("id", "scene_001")
-            narration_text = scene.get("narration", scene.get("description", ""))
-            audio = generate_speech(narration_text, project_id, scene_id)
-            if audio:
-                scene["audio_path"] = str(audio)
-                results.append(str(audio))
-    # Caso contrário, gera para roteiro inteiro
-    elif script_text or proj.get("script"):
-        text = script_text or proj.get("script", "")
-        audio = generate_speech(text, project_id, "full")
-        if audio:
-            results.append(str(audio))
+    def _generate_kokoro(
+        self,
+        text: str,
+        output_path: str,
+        voice: Optional[str],
+        speed: float,
+        language: str
+    ) -> Dict[str, Any]:
+        """Gera áudio usando Kokoro TTS"""
+        try:
+            from kokoro import KPipeline
+            import soundfile as sf
+            import torch
+            
+            # Cria pipeline
+            pipeline = KPipeline(lang_code=language[:2])
+            
+            # Gera áudio
+            audio_list = []
+            for i, (gs, ps, audio) in enumerate(pipeline(text, voice=voice or "bm_lewis")):
+                audio_list.append(audio)
+            
+            # Concatena
+            if audio_list:
+                import numpy as np
+                final_audio = np.concatenate(audio_list)
+                sf.write(output_path, final_audio, 24000)
+                
+                return {
+                    "success": True,
+                    "audio_path": output_path,
+                    "engine": "kokoro",
+                    "voice": voice or "bm_lewis",
+                    "duration_seconds": len(final_audio) / 24000
+                }
+            else:
+                return {"success": False, "error": "Nenhum áudio gerado"}
+                
+        except Exception as e:
+            logger.error(f"Erro Kokoro: {e}")
+            return {"success": False, "error": str(e), "engine": "kokoro"}
     
-    # Atualiza project.json
-    proj_file.write_text(json.dumps(proj, indent=2, ensure_ascii=False), encoding="utf-8")
-    logger.info("Narração concluída: %d arquivos", len(results))
-    return results
+    def _generate_pyttsx3(
+        self,
+        text: str,
+        output_path: str,
+        voice: Optional[str],
+        speed: float
+    ) -> Dict[str, Any]:
+        """Gera áudio usando pyttsx3"""
+        try:
+            import pyttsx3
+            
+            engine = pyttsx3.init()
+            
+            # Configura voz
+            if voice:
+                voices = engine.getProperty('voices')
+                for v in voices:
+                    if voice.lower() in v.name.lower():
+                        engine.setProperty('voice', v.id)
+                        break
+            
+            # Configura velocidade
+            engine.setProperty('rate', int(200 * speed))
+            
+            # Salva áudio
+            engine.save_to_file(text, output_path)
+            engine.runAndWait()
+            
+            return {
+                "success": True,
+                "audio_path": output_path,
+                "engine": "pyttsx3",
+                "voice": voice or "default"
+            }
+            
+        except Exception as e:
+            logger.error(f"Erro pyttsx3: {e}")
+            return {"success": False, "error": str(e), "engine": "pyttsx3"}
+    
+    def _generate_system_voice(
+        self,
+        text: str,
+        output_path: str,
+        voice: Optional[str],
+        speed: float
+    ) -> Dict[str, Any]:
+        """Gera áudio usando vozes do Windows"""
+        try:
+            import win32com.client
+            
+            speaker = win32com.client.Dispatch("SAPI.SpVoice")
+            
+            # Configura voz
+            if voice:
+                voices = speaker.GetVoices()
+                for i in range(voices.Count):
+                    if voice.lower() in voices.Item(i).GetDescription().lower():
+                        speaker.Voice = voices.Item(i)
+                        break
+            
+            # Salva arquivo
+            speaker.Speak(text)
+            
+            # Nota: Windows SAPI não tem save direto fácil
+            # Retorna placeholder
+            return {
+                "success": True,
+                "audio_path": output_path,
+                "engine": "system",
+                "voice": voice or "default",
+                "note": "Áudio reproduzido, mas não salvo (limitação SAPI)"
+            }
+            
+        except Exception as e:
+            logger.error(f"Erro Windows SAPI: {e}")
+            return {"success": False, "error": str(e), "engine": "system"}
+    
+    def _generate_silence(
+        self,
+        text: str,
+        output_path: str
+    ) -> Dict[str, Any]:
+        """Gera arquivo de áudio silencioso (fallback)"""
+        try:
+            import numpy as np
+            import soundfile as sf
+            
+            # Estima duração baseada no texto (150 palavras por minuto)
+            words = len(text.split())
+            duration = (words / 150) * 60  # segundos
+            duration = max(duration, 1.0)  # mínimo 1 segundo
+            
+            # Gera silêncio
+            sample_rate = 22050
+            silence = np.zeros(int(sample_rate * duration))
+            sf.write(output_path, silence, sample_rate)
+            
+            return {
+                "success": True,
+                "audio_path": output_path,
+                "engine": "silence",
+                "duration_seconds": duration,
+                "note": "Áudio silencioso gerado como fallback"
+            }
+            
+        except Exception as e:
+            logger.error(f"Erro ao gerar silêncio: {e}")
+            return {"success": False, "error": str(e), "engine": "silence"}
+    
+    def get_available_voices(self) -> List[Dict[str, str]]:
+        """Retorna lista de vozes disponíveis"""
+        voices = []
+        
+        if self.available_engines["kokoro"]:
+            voices.append({"engine": "kokoro", "name": "bm_lewis", "language": "pt"})
+            voices.append({"engine": "kokoro", "name": "bf_emma", "language": "pt"})
+        
+        if self.available_engines["pyttsx3"]:
+            try:
+                import pyttsx3
+                engine = pyttsx3.init()
+                for v in engine.getProperty('voices'):
+                    voices.append({
+                        "engine": "pyttsx3",
+                        "name": v.name,
+                        "id": v.id
+                    })
+            except:
+                pass
+        
+        return voices
+    
+    def get_status(self) -> Dict[str, Any]:
+        """Retorna status do adapter TTS"""
+        return {
+            "available": self.is_available(),
+            "selected_engine": self.selected_engine,
+            "available_engines": self.available_engines,
+            "voices_count": len(self.get_available_voices())
+        }

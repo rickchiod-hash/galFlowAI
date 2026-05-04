@@ -1,0 +1,127 @@
+/* components.css — Componentes específicos */
+
+/* Config card */
+.config-card .config-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.8rem 0;
+}
+
+.config-card label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  min-width: 80px;
+}
+
+.btn-duration, .btn-voice {
+  padding: 0.4rem 1rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.btn-duration.active, .btn-voice.active {
+  background: var(--accent-glow);
+  color: var(--accent-primary);
+  border-color: var(--border-accent);
+}
+
+/* Suggestions */
+.suggestions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.suggestion {
+  padding: 0.4rem 0.8rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.suggestion:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-accent);
+}
+
+/* Char count */
+.char-count {
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.3rem;
+}
+
+/* Hardware panel */
+.hardware-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-top: 1.5rem;
+}
+
+.hardware-panel h3 {
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.hardware-panel p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0.3rem 0;
+}
+
+/* Projects list */
+.projects-list .project-item {
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.projects-list .project-item:hover {
+  background: var(--bg-hover);
+}
+
+/* Button new */
+.btn-new {
+  width: 100%;
+  padding: 0.8rem;
+  background: var(--accent-glow);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-md);
+  color: var(--accent-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-new:hover {
+  background: var(--accent-primary);
+  color: white;
+}
+
+/* Pulse animation for create button when active */
+.btn-create.pulse {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255,107,43,0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(255,107,43,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,107,43,0); }
+}

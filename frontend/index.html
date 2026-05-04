@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>galFlowAI</title>
+    <link rel="stylesheet" href="static/css/main.css">
+    <link rel="stylesheet" href="static/css/components.css">
+    <link rel="stylesheet" href="static/css/animations.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+    <header class="header">
+        <div class="logo">■ galFlowAI</div>
+        <div class="hardware-info" id="hardware-info">
+            [Hardware: GTX1660 6GB ✓] [K: 87GB]
+        </div>
+    </header>
+    
+    <div class="container">
+        <aside class="sidebar">
+            <button class="btn-new" id="btn-novo">+ Novo</button>
+            <div class="projects-list" id="projects-list">
+                <h3>Projetos:</h3>
+                <!-- Projects will be listed here -->
+            </div>
+            <div class="hardware-panel" id="hardware-panel">
+                <h3>Hardware</h3>
+                <p>GPU: <span id="gpu-name">...</span></p>
+                <p>RAM: <span id="ram-info">...</span></p>
+                <p>VRAM: <span id="vram-info">...</span></p>
+                <p>K: <span id="disk-info">...</span></p>
+            </div>
+        </aside>
+        
+        <main class="main-area">
+            <div class="steps">
+                <div class="step active" data-step="1">1. Briefing</div>
+                <div class="step" data-step="2">2. Roteiro</div>
+                <div class="step" data-step="3">3. Gerar</div>
+            </div>
+            
+            <div class="card" id="briefing-card">
+                <h2>Briefing</h2>
+                <textarea id="briefing-input" placeholder="Descreva seu comercial..." rows="4"></textarea>
+                <div class="char-count"><span id="char-count">0</span>/500</div>
+                <div class="suggestions">
+                    <button class="suggestion">Produto físico</button>
+                    <button class="suggestion">Serviço</button>
+                    <button class="suggestion">Evento</button>
+                    <button class="suggestion">App</button>
+                </div>
+            </div>
+            
+            <div class="card" id="config-card">
+                <h2>Configurações</h2>
+                <div class="config-row">
+                    <label>Duração:</label>
+                    <button class="btn-duration" data-duration="15">15s</button>
+                    <button class="btn-duration active" data-duration="30">30s</button>
+                    <button class="btn-duration" data-duration="60">60s</button>
+                </div>
+                <div class="config-row">
+                    <label>Voz:</label>
+                    <button class="btn-voice" data-voice="male">♂ Masculino</button>
+                    <button class="btn-voice active" data-voice="female">♀ Feminino</button>
+                </div>
+            </div>
+            
+            <button class="btn-create" id="btn-create">
+                <span>CRIAR COMERCIAL</span>
+                <div class="progress-bar" id="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </button>
+            
+            <div class="log-panel" id="log-panel">
+                <div class="log-header">
+                    <span>Log</span>
+                    <div class="log-filters">
+                        <button class="log-filter active" data-level="all">TODOS</button>
+                        <button class="log-filter" data-level="error">ERROS</button>
+                        <button class="log-filter" data-level="warning">AVISOS</button>
+                        <button class="log-filter" data-level="info">INFO</button>
+                    </div>
+                </div>
+                <div class="log-content" id="log-content"></div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="static/js/app.js"></script>
+    <script src="static/js/progress.js"></script>
+    <script src="static/js/editor.js"></script>
+    <script src="static/js/ws.js"></script>
+</body>
+</html>
