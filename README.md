@@ -73,6 +73,15 @@ flowchart LR
 | GPT compatível local | Depende do endpoint | Depende | Parcial | Integração customizada |
 | Ollama | Não | Não | Opcional (não obrigatório) | Apenas se já estiver no ambiente |
 
+## Documentação de Motores LLM
+| Motor | Documentação Oficial | API Reference | Status no Projeto |
+|---|---|---|---|
+| KoboldCpp | [GitHub](https://github.com/LostRuins/koboldcpp) | [KoboldCpp API](https://lite.koboldai.net/koboldcpp_api) | Implementado |
+| GPT4All | [GitHub](https://github.com/nomic-ai/gpt4all) | [Documentação](https://docs.gpt4all.io/index.html) | Implementado |
+| LM Studio | [Website](https://lmstudio.ai) | [Developer Docs](https://lmstudio.ai/docs/developer) | Implementado |
+| llama.cpp | [GitHub](https://github.com/ggml-org/llama.cpp) | [README](https://github.com/ggml-org/llama.cpp#readme) | Implementado |
+| Ollama | [Website](https://ollama.com) | [Docs](https://github.com/ollama/ollama/blob/main/README.md) | Opcional |
+
 ## Fallbacks
 ```mermaid
 flowchart TD
