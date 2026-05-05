@@ -208,7 +208,9 @@ with gr.Blocks(title="GalFlowAI") as demo:
     def on_create(briefing, motor):
         result = create_commercial(briefing, motor)
         # result: status, video, script_text, provider_msg, action_status, project_id
-        return result[0], result[1], result[2], result[3], result[4], result[5]
+        # Garante que script_text não seja None
+        script_text = result[2] if result[2] else ""
+        return result[0], result[1], script_text, result[3], result[4], result[5]
     
     btn.click(
         on_create,
