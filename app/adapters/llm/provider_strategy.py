@@ -38,7 +38,7 @@ class TemplateStrategy(LLMStrategy):
         return True
     
     def validate_response(self, response: str) -> bool:
-        return bool(response and len(response.strip()) > 10
+        return bool(response and len(response.strip()) > 10)
 
 
 class ProviderStrategyFactory:

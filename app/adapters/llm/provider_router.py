@@ -48,24 +48,6 @@ class ProviderRouter:
                 self.strategies.insert(0, ProviderStrategyFactory.create(name))
             except (ImportError, Exception):
                 pass
-        
-        try:
-            from app.adapters.llm.koboldcpp_provider import KoboldCppProvider
-            self.providers.insert(1, KoboldCppProvider())
-        except ImportError:
-            pass
-        
-        try:
-            from app.adapters.llm.llamacpp_provider import LlamaCppProvider
-            self.providers.insert(2, LlamaCppProvider())
-        except ImportError:
-            pass
-        
-        try:
-            from app.adapters.llm.gpt4all_provider import GPT4AllProvider
-            self.providers.insert(3, GPT4AllProvider())
-        except ImportError:
-            pass
     
     def detect_available(self) -> Dict[str, bool]:
         """Detect which providers are available."""
