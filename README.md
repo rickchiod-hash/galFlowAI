@@ -82,6 +82,14 @@ flowchart LR
 | llama.cpp | [GitHub](https://github.com/ggml-org/llama.cpp) | [README](https://github.com/ggml-org/llama.cpp#readme) | Implementado |
 | Ollama | [Website](https://ollama.com) | [Docs](https://github.com/ollama/ollama/blob/main/README.md) | Opcional |
 
+## Motores Avançados de Vídeo
+| Motor | Documentação Oficial | Status no Projeto | Uso Recomendado |
+|---|---|---|---|
+| WanGP/Wan2GP | [GitHub](https://github.com/LostRuins/koboldcpp) | Planejado/Opcional | Geração avançada (1.3B, 480p para 6GB VRAM) |
+| FramePack | [GitHub](https://github.com/xxx/FramePack) | Planejado/Opcional | Alternativa ao WanGP |
+
+**Nota**: Estes motores são opcionais e não bloqueantes. O fallback obrigatório é FFmpeg.
+
 ## Fallbacks
 ```mermaid
 flowchart TD
