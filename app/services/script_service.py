@@ -41,17 +41,18 @@ def generate_script_with_llm(briefing: str, mode: str = "auto") -> Dict:
             mode = "fast"  # Only template available
     
     try:
-        if mode == "fast":
-            # Simplificado: usa safe se asyncio falhar
+        if mode in ("fast", "quality"):
+            # Check if there's a running event loop to avoid asyncio.run conflicts
             try:
-                result = asyncio.run(router.generate_script_fast(briefing))
-            except (RuntimeError, Exception):
+                asyncio.get_running_loop()
+                # Running loop exists (e.g., FastAPI endpoint), use safe mode
                 result = router.generate_script_safe(briefing)
-        elif mode == "quality":
-            try:
-                result = asyncio.run(router.generate_script_quality(briefing))
-            except (RuntimeError, Exception):
-                result = router.generate_script_safe(briefing)
+            except RuntimeError:
+                # No running loop, safe to use asyncio.run for async providers
+                if mode == "fast":
+                    result = asyncio.run(router.generate_script_fast(briefing))
+                else:  # quality
+                    result = asyncio.run(router.generate_script_quality(briefing))
         else:  # safe or auto
             result = router.generate_script_safe(briefing)
         

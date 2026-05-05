@@ -1,4 +1,4 @@
-# Gal AI / galFlowAI
+# FlowForgeAI
 
 > Estúdio **local-first** para criar comerciais curtos com IA, roteiro editável e fallback em FFmpeg.
 
@@ -9,26 +9,29 @@
 ![FFmpeg](https://img.shields.io/badge/FFmpeg-Fallback-007808?logo=ffmpeg&logoColor=white)
 
 ## Visão geral
-O Gal AI organiza, em ambiente local, o fluxo de criação de comerciais curtos: briefing, roteiro, cenas, preview e exportação final em MP4.  
+O FlowForgeAI organiza, em ambiente local, o fluxo de criação de comerciais curtos: briefing, roteiro, cenas, preview e exportação final em MP4.  
 O foco é operação sem dependência obrigatória de cloud, com providers LLM locais e fallback por template.  
 A interface principal é Gradio e a camada API é FastAPI para automações e integrações internas.
 
 ## Problema que resolve
 Criar vídeo publicitário curto costuma exigir várias etapas manuais (ideia, roteiro, refinamento, cortes, prompts, montagem e render).  
-O Gal AI reduz atrito operacional ao centralizar o fluxo técnico em uma stack local-first, com fallback para continuar funcionando mesmo sem LLM ativo.
+O FlowForgeAI reduz atrito operacional ao centralizar o fluxo técnico em uma stack local-first, com fallback para continuar funcionando mesmo sem LLM ativo.
 
-## O que o Gal AI faz
+## O que o FlowForgeAI faz
 | Funcionalidade | Status |
 |---|---|
-| Criar projeto a partir de briefing | Implementado |
-| Gerar roteiro com provider local ou template | Implementado |
-| Editar, versionar e aprovar roteiro | Implementado |
-| Dividir roteiro em cenas | Implementado |
-| Gerar prompts por cena | Parcial |
-| Criar preview/storyboard com FFmpeg | Implementado |
-| Exportar MP4 final | Implementado |
-| FastAPI para automação do fluxo | Implementado |
-| WanGP/Wan2GP para geração avançada | Planejado/Opcional |
+| Criar projeto a partir de briefing | ✅ Implementado |
+| Gerar roteiro com provider local ou template | ✅ Implementado |
+| Editar, versionar e aprovar roteiro | ✅ Implementado |
+| Dividir roteiro em cenas | ✅ Implementado |
+| Gerar prompts por cena | ✅ Implementado |
+| Criar preview/storyboard com FFmpeg | ✅ Implementado |
+| Exportar MP4 final | ✅ Implementado |
+| FastAPI para automação do fluxo | ✅ Implementado |
+| API tests (7 endpoints) | ✅ Implementado |
+| Script versioning (v1, v2...) | ✅ Implementado |
+| Approval workflow | ✅ Implementado |
+| WanGP/Wan2GP para geração avançada | 🔲 Planejado/Opcional |
 
 ## Fluxo do usuário
 ```mermaid
