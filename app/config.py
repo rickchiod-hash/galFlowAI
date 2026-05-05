@@ -1,6 +1,6 @@
 from pathlib import Path
 
-BASE_DIR = Path("K:/AI_VIDEO_COMERCIAL_STUDIO")
+BASE_DIR = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO")
 WORKSPACE_DIR = BASE_DIR / "opencodegalpasta"
 PROJECTS_DIR = WORKSPACE_DIR / "projects"
 LOGS_DIR = WORKSPACE_DIR / "logs"

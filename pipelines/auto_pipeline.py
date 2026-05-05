@@ -39,7 +39,7 @@ def run_auto_pipeline(project_name, briefing, commercial_type="produto", duratio
         proj = create_project(project_name)
         project_id = proj["id"]
         result["project_id"] = project_id
-        proj_dir = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/projects") / project_id
+        proj_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects") / project_id
         result["project_path"] = str(proj_dir)
         result["logs"].append("Projeto criado: {}".format(project_id))
         

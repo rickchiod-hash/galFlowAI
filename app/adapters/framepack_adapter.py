@@ -15,7 +15,7 @@ class FramePackAdapter:
     @staticmethod
     def disponivel() -> bool:
         """Verifica se FramePack está disponível"""
-        framepack_path = r"K:\AI_VIDEO_COMERCIAL_STUDIO\engines\FramePack"
+        framepack_path = r"K:\AI_VIDEO_COMMERCIAL_STUDIO\engines\FramePack"
         if not os.path.exists(framepack_path):
             return False
         possible_files = ["main.py", "run.py", "inference.py", "generate.py"]
@@ -25,7 +25,7 @@ class FramePackAdapter:
         return False
     
     def __init__(self, framepack_path: Optional[str] = None):
-        self.framepack_path = framepack_path or r"K:\AI_VIDEO_COMERCIAL_STUDIO\engines\FramePack"
+        self.framepack_path = framepack_path or r"K:\AI_VIDEO_COMMERCIAL_STUDIO\engines\FramePack"
         self.available = self.disponivel()
         self.model_preset = "1.3B"
         
@@ -71,7 +71,7 @@ class FramePackAdapter:
             return {"success": False, "error": str(e), "fallback_suggested": True}
     
     def _get_python_executable(self) -> str:
-        studio_python = r"K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe"
+        studio_python = r"K:\AI_VIDEO_COMMERCIAL_STUDIO\envs\studio\Scripts\python.exe"
         if os.path.exists(studio_python):
             return studio_python
         return "python"

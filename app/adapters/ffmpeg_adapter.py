@@ -10,9 +10,9 @@ logger = setup_logger()
 
 # Caminhos conhecidos do FFmpeg
 _FFMPEG_PATHS = [
-    Path("K:/AI_VIDEO_COMERCIAL_STUDIO/tools/ffmpeg/ffmpeg-8.1-essentials_build/bin/ffmpeg.exe"),
-    Path("K:/AI_VIDEO_COMERCIAL_STUDIO/engines/Wan2GP/ffmpeg_bins/ffmpeg.exe"),
-    Path("K:/AI_VIDEO_COMERCIAL_STUDIO/envs/studio/Library/bin/ffmpeg.exe")
+    Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/tools/ffmpeg/ffmpeg-8.1-essentials_build/bin/ffmpeg.exe"),
+    Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/engines/Wan2GP/ffmpeg_bins/ffmpeg.exe"),
+    Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/envs/studio/Library/bin/ffmpeg.exe")
 ]
 
 def _find_ffmpeg() -> Path:

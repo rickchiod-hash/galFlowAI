@@ -73,7 +73,7 @@ class Job:
 
 class JobQueue:
     def __init__(self, queue_file=None):
-        self.queue_file = queue_file or Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/state/job_queue.json")
+        self.queue_file = queue_file or Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/state/job_queue.json")
         self.queue_file.parent.mkdir(parents=True, exist_ok=True)
         self.jobs = {}
         self.running_job_id = None
@@ -82,7 +82,7 @@ class JobQueue:
     def _load(self):
         if self.queue_file.exists():
             def do_load():
-                data = json.loads(self.queue_file.read_text(encoding="utf-8"))
+                data = json.loads(self.queue_file.read_text(encoding="utf-8"
                 for job_data in data.get("jobs", []):
                     job = Job(job_data["job_id"], job_data["job_type"], job_data["project_id"])
                     job.status = job_data["status"]

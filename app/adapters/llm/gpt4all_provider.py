@@ -9,7 +9,7 @@ from app.adapters.llm.base_provider import BaseLLMProvider
 class GPT4AllProvider(BaseLLMProvider):
     """Provider using GPT4All Python package."""
     
-    def __init__(self, model_dir: str = "K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/models/gpt4all"):
+    def __init__(self, model_dir: str = "K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/models/gpt4all"):
         super().__init__("GPT4AllProvider")
         self.model_dir = Path(model_dir)
         self.model = None

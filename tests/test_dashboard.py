@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from datetime import datetime
 
-sys.path.insert(0, str(Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta")))
+sys.path.insert(0, str(Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta")))
 
 from app.main import load_projects, get_project_details
 
@@ -15,7 +15,7 @@ class TestDashboardProjects:
     
     def setup_method(self):
         """Limpa diretório de projetos antes de cada teste"""
-        self.projects_dir = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/projects")
+        self.projects_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects")
         if self.projects_dir.exists():
             import shutil
             for item in self.projects_dir.iterdir():

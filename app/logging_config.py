@@ -34,8 +34,8 @@ def setup_logger(name="galflowai", nivel="info", projeto_id=None):
     """
     Configura logs em 3 destinos:
     1. Console: colorido, humano legível, em PT-BR
-    2. Arquivo geral: K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/logs/galflowai.log
-    3. Arquivo do projeto: K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/projects/<id>/logs/pipeline.log
+    2. Arquivo geral: K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/logs/galflowai.log
+    3. Arquivo do projeto: K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects/<id>/logs/pipeline.log
     """
     
     formato_console = "%(asctime)s [%(levelname)s] %(message)s"
@@ -52,7 +52,7 @@ def setup_logger(name="galflowai", nivel="info", projeto_id=None):
     
     # Handler arquivo geral (rotação por tamanho)
     if not any(isinstance(h, logging.handlers.RotatingFileHandler) for h in logger.handlers):
-        log_dir = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/logs")
+        log_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/logs")
         log_dir.mkdir(parents=True, exist_ok=True)
         arquivo_geral = logging.handlers.RotatingFileHandler(
             log_dir / "galflowai.log",
@@ -65,7 +65,7 @@ def setup_logger(name="galflowai", nivel="info", projeto_id=None):
     
     # Handler arquivo do projeto (se fornecido)
     if projeto_id:
-        proj_log_dir = Path(f"K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/projects/{projeto_id}/logs")
+        proj_log_dir = Path(f"K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects/{projeto_id}/logs")
         proj_log_dir.mkdir(parents=True, exist_ok=True)
         arquivo_proj = logging.FileHandler(
             proj_log_dir / "pipeline.log", encoding="utf-8")

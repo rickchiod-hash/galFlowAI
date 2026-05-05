@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 
 # Caminhos base
-BASE_DIR = Path("K:/AI_VIDEO_COMERCIAL_STUDIO")
+BASE_DIR = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO")
 MODELS_DIR = BASE_DIR / "models"
 ENGINES_DIR = BASE_DIR / "engines"
 

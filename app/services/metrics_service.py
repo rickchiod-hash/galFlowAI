@@ -6,7 +6,7 @@ from typing import Dict, Any, List
 from datetime import datetime
 from collections import defaultdict
 
-METRICS_DIR = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/logs")
+METRICS_DIR = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/logs")
 METRICS_FILE = METRICS_DIR / "metrics.json"
 
 
@@ -34,7 +34,7 @@ class MetricsService:
     def _load_data(self) -> Dict[str, Any]:
         """Carrega dados do arquivo."""
         try:
-            return json.loads(self.metrics_file.read_text(encoding="utf-8"))
+            return json.loads(self.metrics_file.read_text(encoding="utf-8"
         except:
             self._ensure_file()
             return self._load_data()

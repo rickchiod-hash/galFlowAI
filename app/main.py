@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 # Detect project root
-PROJECT_ROOT = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta")
+PROJECT_ROOT = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta")
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from pipelines.auto_pipeline import run_auto_pipeline
@@ -65,7 +65,7 @@ def create_commercial(briefing, motor_llm="Automático local", progress=gr.Progr
             
             # Se ainda vazio, lê o arquivo diretamente usando Path global
             if not script_text:
-                script_file = Path(f"K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/projects/{project_id}/script/script.txt")
+                script_file = Path(f"K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects/{project_id}/script/script.txt")
                 if script_file.exists():
                     script_text = script_file.read_text(encoding="utf-8")
             
@@ -550,7 +550,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
             try:
                 import subprocess
                 from pathlib import Path
-                log_file = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/logs/galflowai.log")
+                log_file = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/logs/galflowai.log")
                 if log_file.exists():
                     subprocess.Popen(f'explorer "{log_file}"')
                     return "Arquivo de log aberto."
@@ -655,7 +655,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
                 import json
                 from datetime import datetime
                 
-                projects_dir = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/projects")
+                projects_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects")
                 if not projects_dir.exists():
                     return [], 0, "Diretório de projetos não encontrado.", {}
                 
@@ -669,7 +669,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
                         
                         if proj_file.exists():
                             try:
-                                data = json.loads(proj_file.read_text(encoding="utf-8"))
+                                data = json.loads(proj_file.read_text(encoding="utf-8"
                                 status = data.get("status", status)
                                 if (proj_dir / "final" / "commercial.mp4").exists():
                                     has_video = "✅"
@@ -712,7 +712,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
                 from pathlib import Path
                 import subprocess
                 
-                proj_dir = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/projects") / proj_id
+                proj_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects") / proj_id
                 if proj_dir.exists():
                     subprocess.Popen(f'explorer "{proj_dir}"')
                     return f"Pasta aberta: {proj_dir}"
@@ -726,7 +726,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
                 from pathlib import Path
                 import json
                 
-                proj_dir = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/projects") / proj_id
+                proj_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects") / proj_id
                 if not proj_dir.exists():
                     return {}, "Projeto não encontrado."
                 
@@ -746,7 +746,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
                 proj_file = proj_dir / "project.json"
                 if proj_file.exists():
                     try:
-                        data = json.loads(proj_file.read_text(encoding="utf-8"))
+                        data = json.loads(proj_file.read_text(encoding="utf-8"
                         details["data"] = data
                     except:
                         pass

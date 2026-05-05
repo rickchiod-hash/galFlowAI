@@ -19,7 +19,7 @@ class WanGPAdapter:
     def disponivel() -> bool:
         """Verifica se WanGP está disponível (método estático para testes)"""
         import os
-        wangp_path = r"K:\AI_VIDEO_COMERCIAL_STUDIO\engines\Wan2GP"
+        wangp_path = r"K:\AI_VIDEO_COMMERCIAL_STUDIO\engines\Wan2GP"
         if not os.path.exists(wangp_path):
             return False
         possible_main_files = ["main.py", "gradio.py", "wan_interface.py", "inference.py"]
@@ -35,7 +35,7 @@ class WanGPAdapter:
         Args:
             wangp_path: Caminho para a instalação do WanGP. Se None, usa padrão.
         """
-        self.wangp_path = wangp_path or r"K:\AI_VIDEO_COMERCIAL_STUDIO\engines\Wan2GP"
+        self.wangp_path = wangp_path or r"K:\AI_VIDEO_COMMERCIAL_STUDIO\engines\Wan2GP"
         self.available = self._check_availability()
         self.model_preset = "1.3B"  # Padrão para GTX 1660 Super (6GB VRAM)
         self.resolution = "480p"     # Seguro para 6GB VRAM
@@ -198,7 +198,7 @@ class WanGPAdapter:
     def _get_python_executable(self) -> str:
         """Retorna caminho do Python para executar WanGP"""
         # Tenta usar o Python do ambiente studio
-        studio_python = r"K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe"
+        studio_python = r"K:\AI_VIDEO_COMMERCIAL_STUDIO\envs\studio\Scripts\python.exe"
         if os.path.exists(studio_python):
             return studio_python
         

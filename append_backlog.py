@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 # Read current BACKLOG.md
-backlog_path = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/BACKLOG.md")
+backlog_path = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/BACKLOG.md")
 with open(backlog_path, 'r', encoding='utf-8') as f:
     content = f.read()
 
