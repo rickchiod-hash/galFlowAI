@@ -19,10 +19,12 @@ from app.logging_config import setup_logger
 
 logger = setup_logger()
 
-def create_commercial(briefing, motor_llm="Automático local"):
+def create_commercial(briefing, motor_llm="Automático local", progress=gr.Progress()):
     try:
         if not briefing:
             return "Erro: informe o briefing.", None, "", "", "", ""
+        
+        progress(0, desc="Iniciando...")
         
         # Convert UI selection to mode (implementa motores locais)
         mode_map = {
@@ -35,15 +37,19 @@ def create_commercial(briefing, motor_llm="Automático local"):
         }
         mode = mode_map.get(motor_llm, "auto")
         
+        progress(0.3, desc="Gerando roteiro...")
+        
         # Run pipeline
         result = run_auto_pipeline("", briefing, mode=mode)
+        
+        progress(0.7, desc="Carregando resultados...")
         
         if result["status"] == "completed":
             project_id = result.get("project_id", "")
             status = "Sucesso! " + ", ".join(result["logs"])
             video = result.get("video_preview", None)
             # Garantir que video seja None se não for arquivo válido
-            if video and isinstance(video, str) and len(video) > 0 and Path(video).exists():
+            if video and isinstance(video, str) and len(video) >0 and Path(video).exists():
                 status = status + "\nVideo: " + video
             else:
                 video = None
@@ -70,6 +76,7 @@ def create_commercial(briefing, motor_llm="Automático local"):
                 provider_info.get("time",0)
             )
             
+            progress(1.0, desc="Concluído!")
             return status, video, script_text, provider_msg, "", project_id
         else:
             error_msg = "Erro: " + ", ".join(result["logs"])
@@ -205,8 +212,8 @@ with gr.Blocks(title="GalFlowAI") as demo:
     action_status = gr.Textbox(label="Ação", interactive=False)
     
     # Click handlers
-    def on_create(briefing, motor):
-        result = create_commercial(briefing, motor)
+    def on_create(briefing, motor, progress=gr.Progress()):
+        result = create_commercial(briefing, motor, progress)
         # result: status, video, script_text, provider_msg, action_status, project_id
         # Garante que script_text não seja None
         script_text = result[2] if result[2] else ""
@@ -288,16 +295,20 @@ with gr.Blocks(title="GalFlowAI") as demo:
                     visible=False
                 )
         
-        def generate_video_wrapper(product, audience, duration, style, keywords_text):
-            """Wrapper para gerar vídeo"""
+        def generate_video_wrapper(product, audience, duration, style, keywords_text, progress=gr.Progress()):
+            """Wrapper para gerar vídeo com indicador de progresso"""
             try:
                 import httpx
                 from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
+                
+                progress(0.1, desc="Iniciando geração de vídeo...")
                 
                 # Processa keywords
                 keywords = None
                 if keywords_text:
                     keywords = [k.strip() for k in keywords_text.split(",") if k.strip()]
+                
+                progress(0.3, desc="Conectando aos serviços...")
                 
                 # Usa API se disponível, senão executa direto
                 try:
@@ -313,6 +324,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
                         timeout=10
                     )
                     if response.status_code == 200:
+                        progress(0.8, desc="Vídeo gerado com sucesso!")
                         result = response.json()
                         return (
                             "Vídeo gerado com sucesso via API!",
@@ -322,6 +334,42 @@ with gr.Blocks(title="GalFlowAI") as demo:
                         )
                 except:
                     pass
+                
+                # Fallback: executa direto
+                progress(0.5, desc="Executando pipeline local...")
+                pipeline = VideoGenerationPipeline()
+                result = pipeline.generate_commercial(
+                    project_id="manual_" + product.replace(" ", "_"),
+                    product=product,
+                    target_audience=audience,
+                    duration_seconds=duration,
+                    style=style,
+                    keywords=keywords
+                )
+                
+                progress(0.9, desc="Finalizando...")
+                
+                if result.get("success"):
+                    return (
+                        f"Comercial gerado! Cenas: {result.get('scenes_succeeded')}/{result.get('scenes_count')}",
+                        100,
+                        result.get("final_video", ""),
+                        result
+                    )
+                else:
+                    return (
+                        f"Erro: {result.get('error')}",
+                        0,
+                        None,
+                        result
+                    )
+            except Exception as e:
+                return (
+                    f"Erro: {str(e)}",
+                    0,
+                    None,
+                    None
+                )
                 
                 # Fallback: executa direto
                 pipeline = VideoGenerationPipeline()
@@ -359,7 +407,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
         
         vid_generate_btn.click(
             generate_video_wrapper,
-            inputs=[vid_product, vid_audience, vid_duration, vid_style, vid_keywords],
+            inputs=[vid_product, vid_audience, vid_duration, vid_style, vid_keywords, gr.Progress()],
             outputs=[vid_status, vid_progress, vid_output, vid_info]
         )
     
