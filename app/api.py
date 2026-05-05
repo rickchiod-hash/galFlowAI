@@ -384,7 +384,7 @@ async def get_video_status(project_id: str):
     scenes_path = project_dir / "prompts" / "prompts.json"
     if scenes_path.exists():
         try:
-            scenes = json.loads(scenes_path.read_text(encoding="utf-8"
+            scenes = json.loads(scenes_path.read_text(encoding="utf-8"))
             status["scenes"] = scenes
             status["scenes_completed"] = len([s for s in scenes if s.get("status") == "completed"])
             status["scenes_total"] = len(scenes)

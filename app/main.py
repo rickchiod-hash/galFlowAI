@@ -669,7 +669,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
                         
                         if proj_file.exists():
                             try:
-                                data = json.loads(proj_file.read_text(encoding="utf-8"
+                                data = json.loads(proj_file.read_text(encoding="utf-8"))
                                 status = data.get("status", status)
                                 if (proj_dir / "final" / "commercial.mp4").exists():
                                     has_video = "✅"
@@ -746,7 +746,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
                 proj_file = proj_dir / "project.json"
                 if proj_file.exists():
                     try:
-                        data = json.loads(proj_file.read_text(encoding="utf-8"
+                        data = json.loads(proj_file.read_text(encoding="utf-8"))
                         details["data"] = data
                     except:
                         pass

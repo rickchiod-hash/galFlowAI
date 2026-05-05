@@ -22,4 +22,4 @@ def create_project(name):
 
 def load_project(pid):
     path = PROJECTS_DIR / pid / "project.json"
-    return json.loads(path.read_text(encoding="utf-8"
+    return json.loads(path.read_text(encoding="utf-8"))

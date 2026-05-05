@@ -34,7 +34,7 @@ class MetricsService:
     def _load_data(self) -> Dict[str, Any]:
         """Carrega dados do arquivo."""
         try:
-            return json.loads(self.metrics_file.read_text(encoding="utf-8"
+            return json.loads(self.metrics_file.read_text(encoding="utf-8"))
         except:
             self._ensure_file()
             return self._load_data()
