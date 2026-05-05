@@ -49,7 +49,7 @@ def create_commercial(briefing, motor_llm="Automático local", progress=gr.Progr
             status = "Sucesso! " + ", ".join(result["logs"])
             video = result.get("video_preview", None)
             # Garantir que video seja None se não for arquivo válido
-            if video and isinstance(video, str) and len(video) >0 and Path(video).exists():
+            if video and isinstance(video, str) and len(video) > 0 and Path(video).exists():
                 status = status + "\nVideo: " + video
             else:
                 video = None
@@ -128,7 +128,7 @@ def make_direct(project_id):
 
 def new_version(project_id):
     try:
-        result = create_new_script_version(project_id)
+        result = create_new_version(project_id)
         return result.get("version", ""), "Nova versão criada"
     except Exception as e:
         return "", "Erro: " + str(e)
@@ -222,7 +222,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
     btn.click(
         on_create,
         inputs=[briefing, motor_llm],
-        outputs=[status, video_review, script_editor, provider_info, action_status, current_project_id]
+        outputs=[status, video_preview, script_editor, provider_info, action_status, current_project_id]
     )
     
     def on_save(project_id, script):
@@ -407,7 +407,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
         
         vid_generate_btn.click(
             generate_video_wrapper,
-            inputs=[vid_product, vid_audience, vid_duration, vid_style, vid_keywords, gr.Progress()],
+            inputs=[vid_product, vid_audience, vid_duration, vid_style, vid_keywords],
             outputs=[vid_status, vid_progress, vid_output, vid_info]
         )
     
