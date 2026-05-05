@@ -1,5 +1,5 @@
 """
-FastAPI V2 for FlowForgeAI - local-first internal API.
+FastAPI V2 for Gal AI - local-first internal API.
 """
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
@@ -80,7 +80,7 @@ async def health_check():
     """Health check endpoint."""
     return success_response({
         "status": "ok",
-        "app": "FlowForgeAI",
+        "app": "Gal AI",
         "mode": "local",
         "ui": "gradio",
         "fastapi": True,
@@ -451,10 +451,10 @@ async def websocket_progress(websocket: WebSocket, job_id: str):
     except WebSocketDisconnect:
         pass
     except Exception as e:
-        try:
-            await websocket.send_json({"error": str(e)})
-        except:
-            pass
+             try:
+                 await websocket.send_json({"error": str(e)})
+             except Exception:
+                 pass
 
 
 if __name__ == "__main__":
