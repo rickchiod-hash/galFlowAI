@@ -236,7 +236,68 @@ with gr.Blocks(title="GalFlowAI") as demo:
         inputs=[current_project_id, script_editor],
         outputs=[action_status, gr.Textbox(visible=False)]
     )
-    
+
+    # Script action buttons
+    def on_improve(project_id):
+        if not project_id:
+            return "", "Erro: Nenhum projeto carregado"
+        result = improve_script(project_id)
+        return result.get("script", ""), result.get("status", "Erro")
+
+    def on_complement(project_id):
+        if not project_id:
+            return "", "Erro: Nenhum projeto carregado"
+        result = complement_script(project_id)
+        return result.get("script", ""), result.get("status", "Erro")
+
+    def on_make_viral(project_id):
+        if not project_id:
+            return "", "Erro: Nenhum projeto carregado"
+        result = make_script_more_viral(project_id)
+        return result.get("script", ""), result.get("status", "Erro")
+
+    def on_make_premium(project_id):
+        if not project_id:
+            return "", "Erro: Nenhum projeto carregado"
+        result = make_script_more_premium(project_id)
+        return result.get("script", ""), result.get("status", "Erro")
+
+    def on_make_direct(project_id):
+        if not project_id:
+            return "", "Erro: Nenhum projeto carregado"
+        result = make_script_more_direct(project_id)
+        return result.get("script", ""), result.get("status", "Erro")
+
+    btn_improve.click(
+        on_improve,
+        inputs=[current_project_id],
+        outputs=[script_editor, action_status]
+    )
+
+    btn_complement.click(
+        on_complement,
+        inputs=[current_project_id],
+        outputs=[script_editor, action_status]
+    )
+
+    btn_viral.click(
+        on_make_viral,
+        inputs=[current_project_id],
+        outputs=[script_editor, action_status]
+    )
+
+    btn_premium.click(
+        on_make_premium,
+        inputs=[current_project_id],
+        outputs=[script_editor, action_status]
+    )
+
+    btn_direct.click(
+        on_make_direct,
+        inputs=[current_project_id],
+        outputs=[script_editor, action_status]
+    )
+
     # ========== Tab: Gerar Vídeo ==========
     with gr.Tab("🎬 Gerar Vídeo"):
         gr.Markdown("### Gerar Comercial Completo")
