@@ -7,18 +7,18 @@ logger = setup_logger()
 def build_prompts_for_scenes(scenes, project_id=None):
     """
     Build prompts for each scene.
-    Returns list of dicts with: scene_id, prompt_pos, prompt_neg, duration
+    Returns list of dicts with: scene_id, prompt, negative_prompt, duration
     """
     prompts = []
-    for i, scene in enumerate(scenes, 1):
-        prompt_pos = scene.get("text", "")
-        prompt_neg = "blurry, low quality, static, bad anatomy"
+    for scene in scenes:
+        prompt_text = scene.get("text", "")
+        negative_prompt = "blurry, low quality, static, bad anatomy"
         duration = scene.get("duration", 5)
         
         prompts.append({
-            "scene_id": i,
-            "prompt_pos": prompt_pos,
-            "prompt_neg": prompt_neg,
+            "scene_id": scene.get("id", "unknown"),
+            "prompt": prompt_text,
+            "negative_prompt": negative_prompt,
             "duration": duration,
             "status": "pending",
             "output_path": ""
@@ -48,8 +48,8 @@ def save_prompts(project_id, prompts):
     with open(readable_file, "w", encoding="utf-8") as f:
         for p in prompts:
             f.write(f"[Cena {p['scene_id']}]\n")
-            f.write(f"Prompt: {p['prompt_pos']}\n")
-            f.write(f"Negativo: {p['prompt_neg']}\n")
+            f.write(f"Prompt: {p['prompt']}\n")
+            f.write(f"Negativo: {p['negative_prompt']}\n")
             f.write(f"Duração: {p['duration']}s\n\n")
     
     logger.info("Prompts salvos em: %s", prompts_file)
