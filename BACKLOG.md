@@ -601,8 +601,20 @@ Critério de aceite:
 - usados como referência de estrutura, não como resposta fixa;
 - todos os exemplos em português brasileiro.
 
-## Item obrigatório de backlog (solicitação direta)
+## Itens identificados na Revisão Crítica (H10)
 
+| ID | Contexto da melhoria | Sugestão objetiva | Prioridade |
+|---|---|---|---|
+| RC-01 | Caminhos C: hardcoded em `check_ffmpeg.py` | Substituir por caminhos relativos ou variáveis de ambiente (K:) | P0 (Bloqueante) |
+| RC-02 | 14B mencionado como exemplo em `wangp_adapter.py` | Remover 14B da docstring, manter apenas 1.3B como padrão seguro | P0 (Bloqueante) |
+| RC-03 | BATs não configuram variáveis obrigatórias | Criar BAT padrão que configure TODAS as variáveis do AGENTS.md | P0 (Bloqueante) |
+| RC-04 | Erros sem causa e correção clara | Padronizar: `logger.error("CAUSA: %s | CORREÇÃO: %s", causa, solucao)` | P1 |
+| RC-05 | README desatualizado | Atualizar: 212 testes coletados, progresso H10, status de use cases | P1 |
+| RC-06 | Falta teste E2E para fallback FFmpeg | Criar teste: mock WanGP falha → verificar se FFmpeg é chamado | P1 |
+| RC-07 | Backups não sistêmicos | Criar `scripts/backup_before_change.bat` automatizado | P2 |
+
+## Item obrigatório de backlog (solicitação direta)
+ 
 Após a etapa atual (`[Pasted ~5 lines]`), executar obrigatoriamente:
 - Criar **3 testes unitários** que validem cenários principais e de falha.
 - Criar cenários de **testes de automação e chamadas de API**.

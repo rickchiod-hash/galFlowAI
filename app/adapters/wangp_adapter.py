@@ -94,7 +94,7 @@ class WanGPAdapter:
             duration_seconds: Duração desejada em segundos
             num_frames: Número de frames
             resolution: Resolução (ex: 480p, 512p)
-            model_preset: Modelo (ex: 1.3B, 14B)
+            model_preset: Modelo (ex: 1.3B) - 14B não recomendado para 6GB VRAM
             progress_callback: Função de callback para progresso
             
         Returns:
