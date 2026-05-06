@@ -15,6 +15,19 @@ logger = logging.getLogger(__name__)
 class WanGPAdapter:
     """Adapter para integrar WanGP/Wan2GP para geração de vídeo"""
     
+    @staticmethod
+    def disponivel() -> bool:
+        """Verifica se WanGP está disponível (método estático para testes)"""
+        import os
+        wangp_path = r"K:\AI_VIDEO_COMMERCIAL_STUDIO\engines\Wan2GP"
+        if not os.path.exists(wangp_path):
+            return False
+        possible_main_files = ["main.py", "gradio.py", "wan_interface.py", "inference.py"]
+        for file in possible_main_files:
+            if os.path.exists(os.path.join(wangp_path, file)):
+                return True
+        return False
+    
     def __init__(self, wangp_path: Optional[str] = None):
         """
         Inicializa o adapter WanGP.
@@ -46,18 +59,15 @@ class WanGPAdapter:
             logger.info(f"Arquivo principal do WanGP não encontrado em {self.wangp_path}")
             return False
         
-        # Verifica se Python consegue importar os módulos necessários
+        # Verifica se PyTorch está instalado (simplificado)
         try:
-            # Tenta verificar se o ambiente tem as deps necessárias
-            test_cmd = [self._get_python_executable(), "-c", "import torch; print('torch ok')"]
-            result = subprocess.run(test_cmd, capture_output=True, text=True, timeout=10)
-            if result.returncode != 0:
-                logger.warning("PyTorch não encontrado no ambiente")
-                return False
-        except:
-            pass
-        
-        return True
+            import torch
+            self.available = True
+            return True
+        except ImportError:
+            logger.warning("PyTorch não encontrado no ambiente")
+            self.available = False
+            return False
     
     def is_available(self) -> bool:
         """Retorna se WanGP está disponível"""
@@ -185,7 +195,7 @@ class WanGPAdapter:
     def _get_python_executable(self) -> str:
         """Retorna caminho do Python para executar WanGP"""
         # Tenta usar o Python do ambiente studio
-        studio_python = r"K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe"
+        studio_python = r"K:\AI_VIDEO_COMMERCIAL_STUDIO\envs\studio\Scripts\python.exe"
         if os.path.exists(studio_python):
             return studio_python
         

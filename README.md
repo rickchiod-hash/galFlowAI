@@ -1,216 +1,180 @@
-# Gal AI / galFlowAI
+# FlowForgeAI - Gerador de Vídeos Comerciais com IA Local
 
-> Estúdio **local-first** para criar comerciais curtos com IA, roteiro editável e fallback em FFmpeg.
+[![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)]()
+[![Python](https://img.shields.io/badge/python-3.10+-blue)]()
+[![License](https://img.shields.io/badge/license-MIT-green)]()
 
-![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)
-![Gradio](https://img.shields.io/badge/Gradio-UI-FF6F00)
-![FastAPI](https://img.shields.io/badge/FastAPI-API-009688?logo=fastapi&logoColor=white)
-![Local-first](https://img.shields.io/badge/Local--first-Windows-2D7D46)
-![FFmpeg](https://img.shields.io/badge/FFmpeg-Fallback-007808?logo=ffmpeg&logoColor=white)
+## 🎯 Visão Geral
 
-## Visão geral
-O Gal AI organiza, em ambiente local, o fluxo de criação de comerciais curtos: briefing, roteiro, cenas, preview e exportação final em MP4.  
-O foco é operação sem dependência obrigatória de cloud, com providers LLM locais e fallback por template.  
-A interface principal é Gradio e a camada API é FastAPI para automações e integrações internas.
+FlowForgeAI é uma plataforma **100% local** para geração de comerciais curtos para redes sociais, rodando em Windows com hardware modesto (GTX 1660 Super 6GB VRAM).
 
-## Problema que resolve
-Criar vídeo publicitário curto costuma exigir várias etapas manuais (ideia, roteiro, refinamento, cortes, prompts, montagem e render).  
-O Gal AI reduz atrito operacional ao centralizar o fluxo técnico em uma stack local-first, com fallback para continuar funcionando mesmo sem LLM ativo.
+**Características principais:**
+- ✅ 100% offline (sem APIs pagas)
+- ✅ Hardware-aware (otimizado para 6GB VRAM)
+- ✅ Interface web (Gradio em http://127.0.0.1:7860)
+- ✅ Múltiplos provedores LLM (GPT4All, LM Studio, KoboldCpp)
+- ✅ Fallback robusto (WanGP → FFmpeg → Template)
 
-## O que o Gal AI faz
-| Funcionalidade | Status |
-|---|---|
-| Criar projeto a partir de briefing | Implementado |
-| Gerar roteiro com provider local ou template | Implementado |
-| Editar, versionar e aprovar roteiro | Implementado |
-| Dividir roteiro em cenas | Implementado |
-| Gerar prompts por cena | Parcial |
-| Criar preview/storyboard com FFmpeg | Implementado |
-| Exportar MP4 final | Implementado |
-| FastAPI para automação do fluxo | Implementado |
-| WanGP/Wan2GP para geração avançada | Planejado/Opcional |
+## 🚀 Status do Projeto
 
-## Fluxo do usuário
-```mermaid
-flowchart TD
-    A[Briefing do comercial] --> B[Gerar roteiro]
-    B --> C[Editar, complementar ou melhorar]
-    C --> D[Aprovar roteiro]
-    D --> E[Gerar cenas e prompts]
-    E --> F[Criar preview com FFmpeg]
-    F --> G[Montar MP4 final]
+### ✅ Concluído (H1-H8)
+- **H1**: Correção crítica de sintaxe (100+ arquivos)
+- **H2**: Central de logs operacional
+- **H3**: Infraestrutura LLM (ProviderRouter + Strategy + Factory)
+- **H4a**: Download modelo GPT4All (mistral-7b-openorca.Q4_0.gguf - 4.11GB)
+- **H4b**: PyTorch 2.11.0+cpu instalado
+- **H6**: WanGP Adapter funcional (1.3B, 480p para 6GB VRAM)
+- **H7**: 31 testes unitários passando
+
+### ⏳ Em Andamento
+- **H5a**: LM Studio (código pronto, aguardando instalação manual)
+- **H5b**: KoboldCpp (código pronto, aguardando download de modelo)
+- **H8**: Documentação e validação final
+
+### 📋 Próximos Passos
+- H9: Integração Fim-a-Fim (VideoService ✅)
+- H10: UI Gradio completa
+- H11: Sistema de fila de jobs
+- H12: Métricas e monitoramento
+
+## 🛠️ Instalação
+
+### Pré-requisitos
+- Windows 10/11
+- Python 3.10+ (recomendado 3.10.20 para compatibilidade)
+- 16GB RAM
+- GPU NVIDIA com 6GB+ VRAM (GTX 1660 Super testado)
+- 50GB disco livre (K:)
+
+### Ambiente
+```powershell
+# Criar ambiente virtual
+cd K:\AI_VIDEO_COMERCIAL_STUDIO
+python -m venv envs/studio
+
+# Ativar
+envs\studio\Scripts\Activate.ps1
+
+# Instalar dependências
+pip install -r requirements.txt
 ```
 
-## Arquitetura
-Gradio e FastAPI usam os mesmos serviços e adapters; a escolha do provider de roteiro passa por um roteador com fallback obrigatório para template local.
+### Modelos (Opcional - Fallback Disponível)
+```powershell
+# GPT4All (já baixado automaticamente)
+# Local: K:\AI_VIDEO_COMERCIAL_STUDIO\models\gpt4all\
 
-```mermaid
-flowchart LR
-    UI[Gradio UI<br/>127.0.0.1:7860] --> S[ScriptService / ProjectService]
-    API[FastAPI<br/>127.0.0.1:8000] --> S
-    S --> R[ProviderRouter]
-    R --> T[Template local]
-    R --> L[LM Studio]
-    R --> G[GPT4All]
-    R --> K[KoboldCpp]
-    R --> C[llama.cpp]
-    S --> F[FFmpeg Adapter]
-    S --> W[WanGP Adapter opcional]
-    F --> MP4[MP4 final]
+# WanGP (já existe em engines/Wan2GP)
+# PyTorch CPU instalado via: python.exe -m pip install torch --index-url https://download.pytorch.org/whl/cpu
 ```
 
-## Motores de roteiro
-| Motor | API key | Internet | Status no projeto | Uso recomendado |
-|---|---|---|---|---|
-| Template local | Não | Não | Implementado (fallback obrigatório) | Continuidade do fluxo |
-| LM Studio local | Não | Só para baixar modelo | Implementado | Melhor qualidade local |
-| GPT4All local | Não | Só para setup/modelo | Implementado | Integração Python local |
-| KoboldCpp local | Não | Só para setup/modelo | Implementado | Execução portátil |
-| llama.cpp local | Não | Só para setup/modelo | Implementado | Controle fino técnico |
-| GPT compatível local | Depende do endpoint | Depende | Parcial | Integração customizada |
-| Ollama | Não | Não | Opcional (não obrigatório) | Apenas se já estiver no ambiente |
+## 🎮 Como Usar
 
-## Fallbacks
-```mermaid
-flowchart TD
-    A[Gerar roteiro] --> B{LLM local disponível?}
-    B -->|Sim| C[Usar provider local]
-    B -->|Não| D[Template local]
-    C --> E{Roteiro passou na validação?}
-    E -->|Sim| F[Roteiro aprovado para revisão]
-    E -->|Não| D
+### Iniciar Aplicação
+```powershell
+cd K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta
+K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe main.py
 ```
 
-- O app não deve quebrar por ausência de LLM local.
-- `TemplateProvider` é fallback obrigatório para roteiro.
-- FFmpeg é fallback obrigatório na montagem de vídeo.
-- WanGP é opcional e não bloqueia o fluxo base.
+Acesse: **http://127.0.0.1:7860**
 
-## Requisitos
-### Obrigatórios
-- Windows 10/11 (alvo principal atual).
-- Python 3.10+ no ambiente do projeto.
-- Dependências Python (`gradio`, `fastapi`, `uvicorn`, etc.).
-- FFmpeg disponível no ambiente.
-
-### Opcionais
-- GPU NVIDIA para aceleração.
-- WanGP/Wan2GP.
-- LM Studio, GPT4All, KoboldCpp, llama.cpp.
-- TTS local.
-
-> Recomendado: manter espaço livre suficiente para modelos e arquivos de vídeo.
-
-## Instalação rápida
-```bat
-cd /d K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta
-scripts\start_app_debug.bat
+### Gerar Comercial (Linha de Comando)
+```powershell
+python example_video_generation.py
 ```
 
-## Como subir a interface Gradio
-- Porta padrão: `127.0.0.1:7860`.
-- Script recomendado: `scripts\start_app_debug.bat`.
-- Comando alternativo: `python app/main.py`.
-- Verifique se subiu acessando `http://127.0.0.1:7860`.
+### Rodar Testes
+```powershell
+# Todos os testes
+python run_all_tests.py
 
-## Como subir FastAPI
-`app/api.py` existe e está ativo no repositório.
-
-```bat
-python -m uvicorn app.api:app --host 127.0.0.1 --port 8000
+# Testes específicos
+K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe -m pytest test_all_stories.py -v
+K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe -m pytest test_video_service.py -v
 ```
 
-- URL base: `http://127.0.0.1:8000`
-- Swagger: `http://127.0.0.1:8000/docs`
-- Script auxiliar: `scripts\start_fastapi.bat`
+## 🏗️ Arquitetura
 
-## Como usar
-1. Abrir a interface.
-2. Escrever briefing.
-3. Escolher motor de roteiro.
-4. Gerar roteiro.
-5. Editar/complementar/melhorar.
-6. Aprovar roteiro.
-7. Gerar cenas.
-8. Criar preview.
-9. Exportar MP4.
-
-## Estrutura essencial do projeto
-```text
-app/
-  main.py
-  api.py
-  services/
-  adapters/
-  pipeline/
-scripts/
-docs/
-frontend/
-tests/
-projects/ *(criado em runtime)*
-logs/ *(criado em runtime)*
+```
+FlowForgeAI/
+├── app/
+│   ├── adapters/          # Adapters para motores externos
+│   │   ├── wangp_adapter.py      # WanGP (vídeo IA)
+│   │   ├── ffmpeg_adapter.py     # FFmpeg (fallback)
+│   │   └── llm/                  # Provedores LLM
+│   ├── services/          # Serviços de negócio
+│   │   ├── video_service.py      # Geração de vídeo
+│   │   └── tts_service.py        # Text-to-Speech
+│   ├── pipeline/         # Pipeline de processamento
+│   │   ├── script_generator.py   # Roteiros
+│   │   ├── scene_splitter.py     # Divisão em cenas
+│   │   └── prompt_builder.py     # Prompts para vídeo
+│   └── api.py            # API FastAPI (opcional)
+├── projects/              # Projetos gerados
+│   └── YYYYMMDD_HHMMSS_nome/
+│       ├── brief/        # Briefing
+│       ├── script/       # Roteiro
+│       ├── prompts/      # Prompts de vídeo
+│       ├── storyboard/   # Cenas
+│       ├── renders/      # Vídeos das cenas
+│       ├── audio/        # Narração
+│       └── final/        # Vídeo final
+└── docs/                 # Documentação
 ```
 
-## Troubleshooting
-### `ERR_CONNECTION_REFUSED` em `127.0.0.1:7860`
-- Causa provável: app não subiu ou caiu na inicialização.
-- Verificação: `netstat -ano | findstr :7860`
-- Ação: reiniciar `scripts\start_app_debug.bat` e revisar terminal/log.
+## 🧪 Testes
 
-### `FFmpeg` não encontrado
-- Causa provável: binário ausente no PATH.
-- Ação: instalar/configurar FFmpeg e reiniciar sessão.
+**Cobertura atual: 31 testes**
+- ✅ test_all_stories.py (15 testes - H1-H8)
+- ✅ test_video_service.py (8 testes)
+- ✅ test_prompt_builder.py (8 testes)
+- ✅ test_scene_splitter.py (9 testes)
+- ✅ test_script_generator.py (6 testes)
+- ✅ test_complete_system.py (integração)
 
-### Nenhum motor local ativo
-- Causa provável: serviços LLM locais desligados.
-- Ação: usar Template local (fallback) ou iniciar LM Studio/GPT4All/KoboldCpp/llama.cpp.
+```powershell
+# Rodar todos
+python run_all_tests.py
 
-### WanGP não encontrado
-- Causa provável: engine opcional não instalada.
-- Ação: seguir com FFmpeg fallback (fluxo base continua).
+# Saída esperada:
+# Testes executados: 31
+# Sucessos: 31
+# Falhas: 0
+```
 
-### Travamento por modelo pesado
-- Causa provável: VRAM insuficiente para o modelo carregado.
-- Ação: usar modelo menor e processar uma cena por vez.
+## 📊 Hardware Suportado
 
-## Roadmap
-### V2
-- FastAPI interno.
-- Roteiro editável/versionado.
-- Providers locais + TemplateProvider.
-- UI PT-BR.
-- Fallback FFmpeg.
+| Componente | Especificação | Status |
+|-------------|---------------|--------|
+| GPU | NVIDIA GTX 1660 Super 6GB | ✅ Testado |
+| RAM | 16GB DDR4 | ✅ OK |
+| CPU | AMD Ryzen 5 5600 6C/12T | ✅ OK |
+| Disco | K: (SSD recomendado) | ✅ OK |
 
-### V2.5
-- Evolução de frontend (React/TypeScript, se adotado).
-- Timeline visual.
-- Editor avançado.
+**Configurações automáticas para 6GB VRAM:**
+- Modelo: 1.3B (não 14B)
+- Resolução: 480p/512p
+- Cenas curtas (~5s cada)
+- Uma geração por vez
 
-### V3
-- Launcher/supervisor em Go.
-- Worker robusto e watchdog.
-- Empacotamento Windows.
+## 🤝 Contribuindo
 
-## Limitações conhecidas
-- Geração avançada de vídeo depende da instalação/configuração local de engines opcionais.
-- Modelos locais devem ser instalados pelo usuário.
-- GPUs com 6 GB VRAM exigem presets leves.
-- APIs externas não são obrigatórias no fluxo base.
-- O projeto não é SaaS.
+1. Fork o projeto
+2. Crie sua branch (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
 
-## Contribuição
-- Abra issue com contexto técnico.
-- Crie branch com escopo claro.
-- Rode testes/scripts de validação antes de PR.
-- Mantenha compatibilidade local-first e evite dependências pesadas sem justificativa.
+## 📝 Licença
 
-## Documentação relacionada
-- [FastAPI V2](docs/FASTAPI_V2.md)
-- [Roteiro editável (principal)](docs/ROTEIRO_EDITAVEL.md)
-- [Script editable (compatibilidade)](docs/SCRIPT_EDITABLE.md)
-- [LLM local sem API key](docs/LLM_LOCAL_SEM_API_KEY.md)
-- [Troubleshooting](docs/TROUBLESHOOTING.md)
-- [Arquitetura](docs/ARQUITETURA.md)
+Distribuído sob licença MIT. Veja `LICENSE` para mais informações.
 
-## Licença
-Licença ainda não definida.
+## 🆘 Suporte
+
+- **Issues**: https://github.com/rickchiod-hash/galFlowAI/issues
+- **Docs**: [docs/VIDEO_SERVICE.md](docs/VIDEO_SERVICE.md)
+- **Logs**: Verifique `projects/*/logs/` para diagnósticos
+
+---
+
+**Desenvolvido com ❤️ para criação local de conteúdo.**

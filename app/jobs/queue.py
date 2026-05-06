@@ -1,16 +1,33 @@
 import json
 import time
-import os
+import uuid
 from pathlib import Path
 from datetime import datetime
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, Tuple
 from app.logging_config import setup_logger
-from app.exceptions import JobError, FallbackWarning
+from app.exceptions import FallbackWarning
 
 logger = setup_logger()
 
+class JobStatus:
+    QUEUED = "queued"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+
+def validate_job_files(script_path: Optional[str] = None, 
+                       audio_path: Optional[str] = None, 
+                       video_path: Optional[str] = None) -> bool:
+    """Valida se arquivos de job existam."""
+    for path in [script_path, audio_path, video_path]:
+        if path is not None:
+            if not Path(path).exists():
+                return False
+    return True
+
 def retry_with_backoff(func, max_retries=3, base_delay=0.5, max_delay=5.0, *args, **kwargs):
-    """Retry com exponential backoff para operações de fila."""
+    """Retry com exponential backoff."""
     last_exception = None
     for attempt in range(max_retries + 1):
         try:
@@ -32,12 +49,13 @@ class Job:
         self.job_type = job_type
         self.project_id = project_id
         self.params = params or {}
-        self.status = "queued"
+        self.status = JobStatus.QUEUED
         self.created_at = datetime.now().isoformat()
         self.started_at = None
         self.finished_at = None
         self.result = None
         self.error = None
+        self.output_path = None
     
     def to_dict(self):
         return {
@@ -49,18 +67,19 @@ class Job:
             "started_at": self.started_at,
             "finished_at": self.finished_at,
             "result": self.result,
-            "error": self.error
+            "error": self.error,
+            "output_path": self.output_path
         }
 
 class JobQueue:
     def __init__(self, queue_file=None):
-        self.queue_file = queue_file or Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/state/job_queue.json")
+        self.queue_file = queue_file or Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/state/job_queue.json")
         self.queue_file.parent.mkdir(parents=True, exist_ok=True)
         self.jobs = {}
-        self.running_job_id = None  # Controle de concorrência: apenas 1 job por vez
-        self.load()
+        self.running_job_id = None
+        self._load()
     
-    def load(self):
+    def _load(self):
         if self.queue_file.exists():
             def do_load():
                 data = json.loads(self.queue_file.read_text(encoding="utf-8"))
@@ -73,6 +92,7 @@ class JobQueue:
                     job.result = job_data.get("result")
                     job.error = job_data.get("error")
                     job.params = job_data.get("params", {})
+                    job.output_path = job_data.get("output_path")
                     self.jobs[job.job_id] = job
                 logger.info("Fila carregada: %d jobs", len(self.jobs))
             try:
@@ -80,7 +100,7 @@ class JobQueue:
             except Exception as e:
                 logger.error("Erro ao carregar fila: %s", e)
     
-    def save(self):
+    def _save(self):
         data = {
             "jobs": [job.to_dict() for job in self.jobs.values()],
             "updated_at": datetime.now().isoformat()
@@ -95,78 +115,66 @@ class JobQueue:
         except Exception as e:
             logger.error("Erro ao salvar fila após retries: %s", e)
     
+    @staticmethod
+    def clear_all():
+        """Limpa todos os jobs (para testes)."""
+        import gc
+        for obj in gc.get_objects():
+            if isinstance(obj, JobQueue):
+                obj.jobs.clear()
+                obj.running_job_id = None
+    
     def add_job(self, job_type, project_id, params=None):
-        job_id = "job_{}".format(int(time.time()))
+        job_id = "job_{}_{}".format(int(time.time() * 1000), uuid.uuid4().hex[:8])
         job = Job(job_id, job_type, project_id, params)
         self.jobs[job_id] = job
-        self.save()
+        self._save()
         logger.info("Job adicionado: %s (%s)", job_id, job_type)
-        return job
+        return job_id
     
     def get_next_job(self):
-        # Controle de concorrência: apenas 1 job por vez (GPU 6GB)
         if self.running_job_id is not None:
-            logger.warning("Job %s ainda em execução. Aguardando...", self.running_job_id)
+            logger.warning("Job %s ainda em execução.", self.running_job_id)
             return None
         
         for job in self.jobs.values():
-            if job.status == "queued":
+            if job.status == JobStatus.QUEUED:
+                job.status = JobStatus.RUNNING
+                job.started_at = datetime.now().isoformat()
+                self.running_job_id = job.job_id
+                self._save()
                 return job
         return None
-    
-    def validate_job_files(self, job) -> tuple[bool, str]:
-        """
-        Valida se os arquivos necessários para o job existem.
-        Retorna (válido, mensagem).
-        """
-        params = job.params or {}
-        
-        # Verifica arquivos de entrada
-        input_files = params.get("input_files", [])
-        if input_files:
-            for f in input_files:
-                if not Path(f).exists():
-                    return False, f"Arquivo não encontrado: {f}"
-        
-        # Verifica se diretórios de saída são válidos
-        output_dir = params.get("output_dir")
-        if output_dir:
-            try:
-                Path(output_dir).mkdir(parents=True, exist_ok=True)
-            except Exception as e:
-                return False, f"Erro ao criar diretório de saída: {e}"
-        
-        return True, "Arquivos validados"
     
     def get_job(self, job_id):
         return self.jobs.get(job_id)
     
-    def update_job_status(self, job_id, status, result=None, error=None):
+    def complete_job(self, job_id, output_path=None):
         job = self.jobs.get(job_id)
         if job:
-            job.status = status
-            if status == "running" and not job.started_at:
-                job.started_at = datetime.now().isoformat()
-                self.running_job_id = job_id  # Controle de concorrência
-            if status in ("completed", "failed", "cancelled"):
-                job.finished_at = datetime.now().isoformat()
-                if self.running_job_id == job_id:
-                    self.running_job_id = None  # Libera para próximo job
-            if result:
-                job.result = result
-            if error:
-                job.error = str(error)
-            self.save()
-            logger.info("Job %s atualizado: %s", job_id, status)
+            job.status = JobStatus.COMPLETED
+            job.finished_at = datetime.now().isoformat()
+            job.output_path = output_path
+            if self.running_job_id == job_id:
+                self.running_job_id = None
+            self._save()
+            logger.info("Job %s completado", job_id)
     
-    def get_project_jobs(self, project_id):
-        return [job.to_dict() for job in self.jobs.values() if job.project_id == project_id]
+    def fail_job(self, job_id, error_msg=""):
+        job = self.jobs.get(job_id)
+        if job:
+            job.status = JobStatus.FAILED
+            job.finished_at = datetime.now().isoformat()
+            job.error = error_msg
+            if self.running_job_id == job_id:
+                self.running_job_id = None
+            self._save()
+            logger.info("Job %s falhou: %s", job_id, error_msg)
     
-    def get_queue_status(self):
-        status = {"queued": 0, "running": 0, "completed": 0, "failed": 0, "cancelled": 0}
-        for job in self.jobs.values():
-            if job.status in status:
-                status[job.status] += 1
-        return status
+    def list_jobs(self, status=None):
+        jobs = list(self.jobs.values())
+        if status:
+            jobs = [j for j in jobs if j.status == status]
+        return [j.to_dict() for j in jobs]
 
 queue = JobQueue()

@@ -1,5 +1,5 @@
 """
-FastAPI V2 for Gal AI / galFlowAI - local-first internal API.
+FastAPI V2 for Gal AI - local-first internal API.
 """
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,6 +16,39 @@ from app.config import GRADIO_HOST
 from app.logging_config import setup_logger
 
 logger = setup_logger()
+
+
+# ========== Standardized Error/Success Envelope ==========
+
+class ApiResponse(BaseModel):
+    """Standardized API response envelope."""
+    ok: bool
+    code: Optional[str] = None
+    message: Optional[str] = None
+    details: Optional[Any] = None
+
+
+def success_response(data: Any = None, message: str = "Success") -> Dict:
+    """Create standardized success response."""
+    return {
+        "ok": True,
+        "code": "SUCCESS",
+        "message": message,
+        "details": data
+    }
+
+
+def error_response(code: str, message: str, details: Any = None, status_code: int = 400) -> HTTPException:
+    """Create standardized error response as HTTPException."""
+    return HTTPException(
+        status_code=status_code,
+        detail={
+            "ok": False,
+            "code": code,
+            "message": message,
+            "details": details
+        }
+    )
 
 # TODO_TECNICO(API_MODULARIZACAO):
 # 1) Extrair regras de negócio para app/application/use_cases (controller fino).
@@ -41,26 +74,18 @@ app.add_middleware(
 
 # ========== Health ==========
 
-class HealthResponse(BaseModel):
-    status: str
-    app: str
-    mode: str
-    ui: str
-    fastapi: bool
-    version: str
 
-
-@app.get("/api/health", response_model=HealthResponse)
+@app.get("/api/health")
 async def health_check():
     """Health check endpoint."""
-    return {
+    return success_response({
         "status": "ok",
         "app": "Gal AI",
         "mode": "local",
         "ui": "gradio",
         "fastapi": True,
         "version": "2.0"
-    }
+    }, "Service is healthy")
 
 
 # ========== LLM Providers ==========
@@ -74,14 +99,22 @@ class LLMProviderResponse(BaseModel):
     openai_compatible_local: bool
 
 
-@app.get("/api/llm/providers", response_model=LLMProviderResponse)
+@app.get("/api/llm/providers")
 async def get_llm_providers():
     """Check which LLM providers are available."""
     try:
         from app.adapters.llm import ProviderRouter
         router = ProviderRouter()
         available = router.detect_available()
-        return available
+        # Mapear nomes de providers para o formato esperado pela UI
+        return {
+            "template": available.get("template", True),
+            "lmstudio": available.get("LMStudioProvider", False),
+            "koboldcpp": available.get("KoboldCppProvider", False),
+            "gpt4all": available.get("GPT4AllProvider", False),
+            "llamacpp": available.get("LlamaCppProvider", False),
+            "openai_compatible_local": False  # Não implementado ainda
+        }
     except Exception as e:
         logger.error("Failed to detect providers: %s", e)
         return {
@@ -105,18 +138,7 @@ class ScriptGenerateRequest(BaseModel):
     endpoint: Optional[str] = None
 
 
-class ScriptGenerateResponse(BaseModel):
-    ok: bool
-    provider_used: str
-    fallback_used: bool
-    response_time_seconds: float
-    quality_score: int
-    script_markdown: str
-    script_json: Dict[str, Any]
-    logs: List[str]
-
-
-@app.post("/api/llm/script", response_model=ScriptGenerateResponse)
+@app.post("/api/llm/script")
 async def generate_script_api(request: ScriptGenerateRequest):
     """Generate script using LLM providers."""
     start = time.time()
@@ -125,8 +147,7 @@ async def generate_script_api(request: ScriptGenerateRequest):
         from app.services.script_service import generate_script_with_llm
         result = generate_script_with_llm(request.briefing, request.provider)
         
-        return {
-            "ok": True,
+        return success_response({
             "provider_used": result.get("provider", "Unknown"),
             "fallback_used": result.get("quality", "fallback") == "fallback",
             "response_time_seconds": result.get("time", 0),
@@ -134,19 +155,10 @@ async def generate_script_api(request: ScriptGenerateRequest):
             "script_markdown": result.get("script", ""),
             "script_json": {},
             "logs": []
-        }
+        }, "Script generated successfully")
     except Exception as e:
         logger.error("Script generation failed: %s", e)
-        return {
-            "ok": False,
-            "provider_used": "TemplateProvider",
-            "fallback_used": True,
-            "response_time_seconds": time.time() - start,
-            "quality_score": 0,
-            "script_markdown": "",
-            "script_json": {},
-            "logs": [str(e)]
-        }
+        return error_response("SCRIPT_GENERATION_FAILED", str(e), status_code=500)
 
 
 # ========== Script Editing ==========
@@ -163,9 +175,9 @@ async def save_manual_edit(project_id: str, request: ScriptSaveRequest):
     try:
         from app.services.script_service import save_manual_edit
         result = save_manual_edit(project_id, request.script_markdown, request.version_note)
-        return {"ok": True, "version": result.get("version")}
+        return success_response({"version": result.get("version")}, "Script saved successfully")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise error_response("SAVE_EDIT_FAILED", str(e), status_code=500)
 
 
 @app.post("/api/projects/{project_id}/script/improve")
@@ -174,9 +186,9 @@ async def improve_script(project_id: str, briefing: str = ""):
     try:
         from app.services.script_service import improve_script
         result = improve_script(project_id, briefing)
-        return {"ok": True, "script": result.get("script")}
+        return success_response({"script": result.get("script")}, "Script improved successfully")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise error_response("IMPROVE_FAILED", str(e), status_code=500)
 
 
 @app.post("/api/projects/{project_id}/script/more-viral")
@@ -185,9 +197,9 @@ async def make_more_viral(project_id: str):
     try:
         from app.services.script_service import make_more_viral
         result = make_more_viral(project_id)
-        return {"ok": True, "script": result.get("script")}
+        return success_response({"script": result.get("script")}, "Script made more viral")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise error_response("VIRAL_FAILED", str(e), status_code=500)
 
 
 @app.post("/api/projects/{project_id}/script/more-premium")
@@ -196,9 +208,9 @@ async def make_more_premium(project_id: str):
     try:
         from app.services.script_service import make_more_premium
         result = make_more_premium(project_id)
-        return {"ok": True, "script": result.get("script")}
+        return success_response({"script": result.get("script")}, "Script made more premium")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise error_response("PREMIUM_FAILED", str(e), status_code=500)
 
 
 @app.post("/api/projects/{project_id}/script/more-direct")
@@ -207,9 +219,9 @@ async def make_more_direct(project_id: str):
     try:
         from app.services.script_service import make_more_direct
         result = make_more_direct(project_id)
-        return {"ok": True, "script": result.get("script")}
+        return success_response({"script": result.get("script")}, "Script made more direct")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise error_response("DIRECT_FAILED", str(e), status_code=500)
 
 
 @app.post("/api/projects/{project_id}/script/new-version")
@@ -218,9 +230,9 @@ async def create_new_version(project_id: str):
     try:
         from app.services.script_service import create_new_version
         result = create_new_version(project_id)
-        return {"ok": True, "version": result.get("version")}
+        return success_response({"version": result.get("version")}, "New version created")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise error_response("NEW_VERSION_FAILED", str(e), status_code=500)
 
 
 @app.post("/api/projects/{project_id}/script/restore-previous")
@@ -229,20 +241,20 @@ async def restore_previous_version(project_id: str):
     try:
         from app.services.script_service import restore_previous_version
         result = restore_previous_version(project_id)
-        return {"ok": True, "version": result.get("version")}
+        return success_response({"version": result.get("version")}, "Previous version restored")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise error_response("RESTORE_FAILED", str(e), status_code=500)
 
 
 @app.post("/api/projects/{project_id}/script/approve")
-async def approve_script(project_id: str):
+async def approve_script_api(project_id: str):
     """Approve script for production."""
     try:
         from app.services.script_service import approve_script
         result = approve_script(project_id)
-        return {"ok": True, "script": result.get("script")}
+        return success_response({"script": result.get("script")}, "Script approved")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise error_response("APPROVE_FAILED", str(e), status_code=500)
 
 
 @app.get("/api/projects/{project_id}/script/current")
@@ -251,9 +263,9 @@ async def get_current_script(project_id: str):
     try:
         from app.services.script_service import load_current_script
         result = load_current_script(project_id)
-        return {"ok": True, "script": result.get("script")}
+        return success_response({"script": result.get("script")}, "Current script loaded")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise error_response("LOAD_SCRIPT_FAILED", str(e), status_code=500)
 
 
 @app.get("/api/projects/{project_id}/script/versions")
@@ -262,9 +274,9 @@ async def get_script_versions(project_id: str):
     try:
         from app.services.script_service import load_script_versions
         versions = load_script_versions(project_id)
-        return {"ok": True, "versions": versions}
+        return success_response({"versions": versions}, "Script versions loaded")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise error_response("LOAD_VERSIONS_FAILED", str(e), status_code=500)
 
 
 # ========== Hardware ==========
@@ -274,10 +286,10 @@ async def get_hardware_info():
     """Get hardware information."""
     try:
         from app.hardware import get_gpu_info
-        return get_gpu_info()
+        return success_response(get_gpu_info(), "Hardware info retrieved")
     except Exception as e:
         logger.error("Hardware check failed: %s", e)
-        return {"error": str(e)}
+        return error_response("HARDWARE_CHECK_FAILED", str(e), status_code=500)
 
 
 # ========== Jobs (Placeholder) ==========
@@ -285,13 +297,13 @@ async def get_hardware_info():
 @app.get("/api/jobs/{job_id}")
 async def get_job_status(job_id: str):
     """Get job status."""
-    return {"job_id": job_id, "status": "pending", "progress": 0}
+    return success_response({"job_id": job_id, "status": "pending", "progress": 0}, "Job status retrieved")
 
 
 @app.post("/api/jobs/{job_id}/cancel")
 async def cancel_job(job_id: str):
     """Cancel a job."""
-    return {"ok": True, "job_id": job_id}
+    return success_response({"job_id": job_id}, "Job cancelled")
 
 
 # ========== Video Generation ==========
@@ -333,22 +345,18 @@ async def generate_video(request: VideoGenerationRequest):
         )
         
         if result.get("success"):
-            return {
-                "success": True,
+            return success_response({
                 "project_id": project_id,
                 "final_video": result.get("final_video"),
                 "scenes_count": result.get("scenes_count"),
                 "provider_used": result.get("provider_used")
-            }
+            }, "Video generated successfully")
         else:
-            raise HTTPException(
-                status_code=500,
-                detail=result.get("error", "Erro desconhecido")
-            )
+            raise error_response("VIDEO_GENERATION_FAILED", result.get("error", "Erro desconhecido"), status_code=500)
             
     except Exception as e:
         logger.error("Erro ao gerar video: %s", str(e))
-        raise HTTPException(status_code=500, detail=str(e))
+        raise error_response("VIDEO_GENERATION_ERROR", str(e), status_code=500)
 
 
 @app.get("/api/video-status/{project_id}")
@@ -361,7 +369,7 @@ async def get_video_status(project_id: str):
     project_dir = Path(PROJECTS_DIR) / project_id
     
     if not project_dir.exists():
-        raise HTTPException(status_code=404, detail="Projeto nao encontrado")
+        raise error_response("PROJECT_NOT_FOUND", "Projeto nao encontrado", status_code=404)
     
     status = {
         "project_id": project_id,
@@ -383,7 +391,7 @@ async def get_video_status(project_id: str):
         except Exception:
             pass
     
-    return status
+    return success_response(status, "Video status retrieved")
 
 
 # ========== Pipeline Status ==========
@@ -397,25 +405,56 @@ async def get_pipeline_status():
         pipeline = VideoGenerationPipeline()
         status = pipeline.get_pipeline_status()
         
-        return status
+        return success_response(status, "Pipeline status retrieved")
     except Exception as e:
         logger.error("Erro ao obter status do pipeline: %s", str(e))
-        return {"error": str(e)}
+        raise error_response("PIPELINE_STATUS_FAILED", str(e), status_code=500)
 
 
 # ========== WebSocket for Progress ==========
 
 @app.websocket("/ws/jobs/{job_id}")
 async def websocket_progress(websocket: WebSocket, job_id: str):
-    """WebSocket for job progress updates."""
+    """WebSocket for real job progress updates."""
     await websocket.accept()
     try:
+        import asyncio
+        from app.jobs.queue import queue
+        
         while True:
-            # Placeholder for progress updates
-            await websocket.send_json({"job_id": job_id, "progress": 0, "status": "pending"})
-            await websocket.receive_text()
+            job = queue.get_job(job_id)
+            if job:
+                # Calculate progress
+                progress = 0
+                if job.status == "completed":
+                    progress = 100
+                elif job.status == "running":
+                    progress = 50
+                elif job.status == "failed":
+                    progress = 0
+                
+                await websocket.send_json({
+                    "job_id": job_id,
+                    "status": job.status,
+                    "progress": progress,
+                    "message": f"Job {job.job_type}: {job.status}",
+                    "error": job.error if job.status == "failed" else None
+                })
+                
+                if job.status in ["completed", "failed", "cancelled"]:
+                    break
+            else:
+                await websocket.send_json({"error": "Job not found"})
+                break
+            
+            await asyncio.sleep(1)
     except WebSocketDisconnect:
         pass
+    except Exception as e:
+             try:
+                 await websocket.send_json({"error": str(e)})
+             except Exception:
+                 pass
 
 
 if __name__ == "__main__":

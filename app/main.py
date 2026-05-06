@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 # Detect project root
-PROJECT_ROOT = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta")
+PROJECT_ROOT = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta")
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from pipelines.auto_pipeline import run_auto_pipeline
@@ -19,25 +19,33 @@ from app.logging_config import setup_logger
 
 logger = setup_logger()
 
-def create_commercial(briefing, motor_llm="Automático local"):
+def create_commercial(briefing, motor_llm="Automático local", progress=gr.Progress()):
     try:
         if not briefing:
-            return "Erro: informe o briefing.", None, "", "", ""
+            return "Erro: informe o briefing.", None, "", "", "", ""
         
-        # Convert UI selection to mode
+        progress(0, desc="Iniciando...")
+        
+        # Convert UI selection to mode (implementa motores locais)
         mode_map = {
             "Automático local": "auto",
-            "Template local": "safe",
-            "LM Studio local": "safe",
-            "KoboldCpp local": "safe",
-            "GPT4All local": "safe"
+            "Template local": "template",
+            "LM Studio local": "lmstudio",
+            "KoboldCpp local": "koboldcpp",
+            "GPT4All local": "gpt4all",
+            "llama.cpp local": "llamacpp"
         }
         mode = mode_map.get(motor_llm, "auto")
+        
+        progress(0.3, desc="Gerando roteiro...")
         
         # Run pipeline
         result = run_auto_pipeline("", briefing, mode=mode)
         
+        progress(0.7, desc="Carregando resultados...")
+        
         if result["status"] == "completed":
+            project_id = result.get("project_id", "")
             status = "Sucesso! " + ", ".join(result["logs"])
             video = result.get("video_preview", None)
             # Garantir que video seja None se não for arquivo válido
@@ -46,23 +54,35 @@ def create_commercial(briefing, motor_llm="Automático local"):
             else:
                 video = None
             
-            # Load script for editing
-            script = load_current_script(result["project_id"])
-            script_text = script.get("script", "")
+            # Carrega roteiro: primeiro do resultado do pipeline
+            script_text = result.get("script", "")
+            
+            # Se vazio, tenta load_current_script
+            if not script_text:
+                script = load_current_script(project_id)
+                if script and script.get("script"):
+                    script_text = script.get("script")
+            
+            # Se ainda vazio, lê o arquivo diretamente usando Path global
+            if not script_text:
+                script_file = Path(f"K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects/{project_id}/script/script.txt")
+                if script_file.exists():
+                    script_text = script_file.read_text(encoding="utf-8")
             
             # Show provider info
             provider_info = result.get("provider_info", {})
             provider_msg = "Motor usado: %s (%.2fs)" % (
                 provider_info.get("provider", "Template"),
-                provider_info.get("time", 0)
+                provider_info.get("time",0)
             )
             
-            return status, video, script_text, provider_msg, ""
+            progress(1.0, desc="Concluído!")
+            return status, video, script_text, provider_msg, "", project_id
         else:
             error_msg = "Erro: " + ", ".join(result["logs"])
-            return error_msg, None, "", "Falha no roteiro", ""
+            return error_msg, None, "", "Falha no roteiro", "", ""
     except Exception as e:
-        return "Erro: " + str(e), None, "", "Erro interno", ""
+        return "Erro: " + str(e), None, "", "Erro interno", "", ""
 
 def save_edit(project_id, script_text, note=""):
     try:
@@ -108,7 +128,7 @@ def make_direct(project_id):
 
 def new_version(project_id):
     try:
-        result = create_new_script_version(project_id)
+        result = create_new_version(project_id)
         return result.get("version", ""), "Nova versão criada"
     except Exception as e:
         return "", "Erro: " + str(e)
@@ -134,8 +154,8 @@ def load_versions(project_id):
     except:
         return []
 
-with gr.Blocks(title="FlowForgeAI") as demo:
-    gr.Markdown("# FlowForgeAI")
+with gr.Blocks(title="GalFlowAI") as demo:
+    gr.Markdown("# GalFlowAI")
     gr.Markdown("Estudio local para comerciais curtos com IA - GTX 1660 Super")
     
     # Store project_id (simplified - in real app use state)
@@ -193,22 +213,91 @@ with gr.Blocks(title="FlowForgeAI") as demo:
     
     # Click handlers
     def on_create(briefing, motor):
-        result = create_commercial(briefing, motor)
-        # Extract project_id from somewhere (simplified)
-        return result[0], result[1], result[2], result[3], ""
+        return create_commercial(briefing, motor)
+        # result: status, video, script_text, provider_msg, action_status, project_id
+        # Garante que script_text não seja None
+        # script_text = result[2] if result[2] else ""
+        # return result[0], result[1], script_text, result[3], result[4], result[5]
     
     btn.click(
         on_create,
         inputs=[briefing, motor_llm],
-        outputs=[status, video_preview, script_editor, provider_info, action_status]
+        outputs=[status, video_preview, script_editor, provider_info, action_status, current_project_id]
     )
+    
+    def on_save(project_id, script):
+        if not project_id:
+            return "Erro: Nenhum projeto carregado", ""
+        result = save_edit(project_id, script)
+        return result[0], result[1]
     
     btn_save.click(
-        lambda script: (save_edit("dummy", script)[0], save_edit("dummy", script)[1]),
-        inputs=[script_editor],
+        on_save,
+        inputs=[current_project_id, script_editor],
         outputs=[action_status, gr.Textbox(visible=False)]
     )
-    
+
+    # Script action buttons
+    def on_improve(project_id):
+        if not project_id:
+            return "", "Erro: Nenhum projeto carregado"
+        result = improve_script(project_id)
+        return result.get("script", ""), result.get("status", "Erro")
+
+    def on_complement(project_id):
+        if not project_id:
+            return "", "Erro: Nenhum projeto carregado"
+        result = complement_script(project_id)
+        return result.get("script", ""), result.get("status", "Erro")
+
+    def on_make_viral(project_id):
+        if not project_id:
+            return "", "Erro: Nenhum projeto carregado"
+        result = make_script_more_viral(project_id)
+        return result.get("script", ""), result.get("status", "Erro")
+
+    def on_make_premium(project_id):
+        if not project_id:
+            return "", "Erro: Nenhum projeto carregado"
+        result = make_script_more_premium(project_id)
+        return result.get("script", ""), result.get("status", "Erro")
+
+    def on_make_direct(project_id):
+        if not project_id:
+            return "", "Erro: Nenhum projeto carregado"
+        result = make_script_more_direct(project_id)
+        return result.get("script", ""), result.get("status", "Erro")
+
+    btn_improve.click(
+        on_improve,
+        inputs=[current_project_id],
+        outputs=[script_editor, action_status]
+    )
+
+    btn_complement.click(
+        on_complement,
+        inputs=[current_project_id],
+        outputs=[script_editor, action_status]
+    )
+
+    btn_viral.click(
+        on_make_viral,
+        inputs=[current_project_id],
+        outputs=[script_editor, action_status]
+    )
+
+    btn_premium.click(
+        on_make_premium,
+        inputs=[current_project_id],
+        outputs=[script_editor, action_status]
+    )
+
+    btn_direct.click(
+        on_make_direct,
+        inputs=[current_project_id],
+        outputs=[script_editor, action_status]
+    )
+
     # ========== Tab: Gerar Vídeo ==========
     with gr.Tab("🎬 Gerar Vídeo"):
         gr.Markdown("### Gerar Comercial Completo")
@@ -267,16 +356,20 @@ with gr.Blocks(title="FlowForgeAI") as demo:
                     visible=False
                 )
         
-        def generate_video_wrapper(product, audience, duration, style, keywords_text):
-            """Wrapper para gerar vídeo"""
+        def generate_video_wrapper(product, audience, duration, style, keywords_text, progress=gr.Progress()):
+            """Wrapper para gerar vídeo com indicador de progresso"""
             try:
                 import httpx
                 from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
+                
+                progress(0.1, desc="Iniciando geração de vídeo...")
                 
                 # Processa keywords
                 keywords = None
                 if keywords_text:
                     keywords = [k.strip() for k in keywords_text.split(",") if k.strip()]
+                
+                progress(0.3, desc="Conectando aos serviços...")
                 
                 # Usa API se disponível, senão executa direto
                 try:
@@ -292,6 +385,7 @@ with gr.Blocks(title="FlowForgeAI") as demo:
                         timeout=10
                     )
                     if response.status_code == 200:
+                        progress(0.8, desc="Vídeo gerado com sucesso!")
                         result = response.json()
                         return (
                             "Vídeo gerado com sucesso via API!",
@@ -301,6 +395,42 @@ with gr.Blocks(title="FlowForgeAI") as demo:
                         )
                 except:
                     pass
+                
+                # Fallback: executa direto
+                progress(0.5, desc="Executando pipeline local...")
+                pipeline = VideoGenerationPipeline()
+                result = pipeline.generate_commercial(
+                    project_id="manual_" + product.replace(" ", "_"),
+                    product=product,
+                    target_audience=audience,
+                    duration_seconds=duration,
+                    style=style,
+                    keywords=keywords
+                )
+                
+                progress(0.9, desc="Finalizando...")
+                
+                if result.get("success"):
+                    return (
+                        f"Comercial gerado! Cenas: {result.get('scenes_succeeded')}/{result.get('scenes_count')}",
+                        100,
+                        result.get("final_video", ""),
+                        result
+                    )
+                else:
+                    return (
+                        f"Erro: {result.get('error')}",
+                        0,
+                        None,
+                        result
+                    )
+            except Exception as e:
+                return (
+                    f"Erro: {str(e)}",
+                    0,
+                    None,
+                    None
+                )
                 
                 # Fallback: executa direto
                 pipeline = VideoGenerationPipeline()
@@ -481,7 +611,7 @@ with gr.Blocks(title="FlowForgeAI") as demo:
             try:
                 import subprocess
                 from pathlib import Path
-                log_file = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/logs/galflowai.log")
+                log_file = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/logs/galflowai.log")
                 if log_file.exists():
                     subprocess.Popen(f'explorer "{log_file}"')
                     return "Arquivo de log aberto."
@@ -547,7 +677,158 @@ with gr.Blocks(title="FlowForgeAI") as demo:
             resume_update,
             outputs=[auto_update_paused, status_logs]
         )
-
+    
+    # ========== Tab: Dashboard de Projetos ==========
+    with gr.Tab("📊 Dashboard de Projetos"):
+        gr.Markdown("# Dashboard de Projetos")
+        gr.Markdown("Visão geral de todos os projetos criados.")
+        
+        with gr.Row():
+            with gr.Column(scale=1):
+                btn_refresh = gr.Button("🔄 Atualizar Lista", variant="primary")
+            with gr.Column(scale=3):
+                projects_count = gr.Number(label="Total de Projetos", value=0)
+        
+        projects_table = gr.DataFrame(
+            headers=["ID", "Nome", "Data", "Status", "Vídeo", "Ações"],
+            label="Projetos",
+            interactive=False
+        )
+        
+        # Detalhes do projeto selecionado
+        with gr.Row():
+            with gr.Column():
+                proj_details = gr.JSON(label="Detalhes do Projeto", visible=False)
+            with gr.Column():
+                proj_status = gr.Textbox(label="Status do Projeto", interactive=False)
+        
+        gr.Markdown("### Ações em Lote")
+        with gr.Row():
+            btn_open_folder = gr.Button("📁 Abrir Pasta do Projeto")
+            btn_delete = gr.Button("🗑️ Excluir Projeto", variant="stop")
+        
+        dashboard_status = gr.Textbox(label="Status", interactive=False)
+        
+        def load_projects():
+            """Carrega lista de projetos do diretório."""
+            try:
+                from pathlib import Path
+                import json
+                from datetime import datetime
+                
+                projects_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects")
+                if not projects_dir.exists():
+                    return [], 0, "Diretório de projetos não encontrado.", {}
+                
+                projects = []
+                for proj_dir in sorted(projects_dir.iterdir(), reverse=True):
+                    if proj_dir.is_dir():
+                        # Tenta ler project.json
+                        proj_file = proj_dir / "project.json"
+                        status = "❓ Desconhecido"
+                        has_video = "❌"
+                        
+                        if proj_file.exists():
+                            try:
+                                data = json.loads(proj_file.read_text(encoding="utf-8"))
+                                status = data.get("status", status)
+                                if (proj_dir / "final" / "commercial.mp4").exists():
+                                    has_video = "✅"
+                            except:
+                                pass
+                        else:
+                            # Tenta detectar status pelos arquivos
+                            if (proj_dir / "final" / "commercial.mp4").exists():
+                                status = "✅ Concluído"
+                                has_video = "✅"
+                            elif (proj_dir / "renders").exists():
+                                status = "🎬 Renderizando"
+                            elif (proj_dir / "prompts").exists():
+                                status = "📝 Roteiro"
+                            elif (proj_dir / "script").exists():
+                                status = "📝 Roteiro"
+                        
+                        # Extrai nome amigável
+                        dir_name = proj_dir.name
+                        parts = dir_name.split("_")
+                        nome = " ".join(parts[2:]) if len(parts) > 2 else dir_name
+                        
+                        projects.append([
+                            dir_name,
+                            nome,
+                            parts[0] + "_" + parts[1] if len(parts) >= 2 else "N/A",
+                            status,
+                            has_video,
+                            "Ver"
+                        ])
+                
+                return projects, len(projects), f"{len(projects)} projetos encontrados.", {}
+                
+            except Exception as e:
+                return [], 0, f"Erro: {str(e)}", {}
+        
+        def open_project_folder(proj_id):
+            """Abre pasta do projeto."""
+            try:
+                from pathlib import Path
+                import subprocess
+                
+                proj_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects") / proj_id
+                if proj_dir.exists():
+                    subprocess.Popen(f'explorer "{proj_dir}"')
+                    return f"Pasta aberta: {proj_dir}"
+                return "Projeto não encontrado."
+            except Exception as e:
+                return f"Erro: {str(e)}"
+        
+        def get_project_details(proj_id):
+            """Retorna detalhes do projeto."""
+            try:
+                from pathlib import Path
+                import json
+                
+                proj_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects") / proj_id
+                if not proj_dir.exists():
+                    return {}, "Projeto não encontrado."
+                
+                details = {
+                    "id": proj_id,
+                    "path": str(proj_dir),
+                    "exists": True,
+                    "files": {}
+                }
+                
+                # Verifica arquivos
+                for subdir in ["brief", "script", "prompts", "storyboard", "renders", "audio", "final"]:
+                    subdir_path = proj_dir / subdir
+                    details["files"][subdir] = subdir_path.exists()
+                
+                # Lê project.json se existir
+                proj_file = proj_dir / "project.json"
+                if proj_file.exists():
+                    try:
+                        data = json.loads(proj_file.read_text(encoding="utf-8"))
+                        details["data"] = data
+                    except:
+                        pass
+                
+                return details, "Detalhes carregados."
+                
+            except Exception as e:
+                return {}, f"Erro: {str(e)}"
+        
+        btn_refresh.click(
+            load_projects,
+            outputs=[projects_table, projects_count, dashboard_status, proj_details]
+        )
+        
+        # Carrega projetos ao iniciar
+        demo.load(
+            load_projects,
+            outputs=[projects_table, projects_count, dashboard_status, proj_details]
+        )
+    
 if __name__ == "__main__":
-    print("Iniciando FlowForgeAI em http://127.0.0.1:7860")
+    print("Iniciando GalFlowAI em http://127.0.0.1:7860")
     demo.launch(server_name="127.0.0.1", server_port=7860)
+

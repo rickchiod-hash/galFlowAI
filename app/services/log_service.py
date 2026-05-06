@@ -8,7 +8,7 @@ from typing import List, Dict, Optional, Any
 from datetime import datetime
 
 # Caminho base dos logs
-LOG_DIR = Path("K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/logs")
+LOG_DIR = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/logs")
 MAX_LINES = 500  # Limite para não travar UI
 
 def _get_log_file():
@@ -223,7 +223,7 @@ def copy_diagnostic_bundle() -> str:
             result = subprocess.run(
                 ["git", "log", "--oneline", "-1"],
                 capture_output=True, text=True, timeout=5,
-                cwd="K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta"
+                cwd="K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta"
             )
             bundle.append(f"Commit atual: {result.stdout.strip()}")
         except:

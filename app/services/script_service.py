@@ -41,10 +41,18 @@ def generate_script_with_llm(briefing: str, mode: str = "auto") -> Dict:
             mode = "fast"  # Only template available
     
     try:
-        if mode == "fast":
-            result = asyncio.run(router.generate_script_fast(briefing))
-        elif mode == "quality":
-            result = asyncio.run(router.generate_script_quality(briefing))
+        if mode in ("fast", "quality"):
+            # Check if there's a running event loop to avoid asyncio.run conflicts
+            try:
+                asyncio.get_running_loop()
+                # Running loop exists (e.g., FastAPI endpoint), use safe mode
+                result = router.generate_script_safe(briefing)
+            except RuntimeError:
+                # No running loop, safe to use asyncio.run for async providers
+                if mode == "fast":
+                    result = asyncio.run(router.generate_script_fast(briefing))
+                else:  # quality
+                    result = asyncio.run(router.generate_script_quality(briefing))
         else:  # safe or auto
             result = router.generate_script_safe(briefing)
         
@@ -296,13 +304,12 @@ def restore_previous_version(project_id: str) -> Dict:
         md_file = script_dir / f"script_{version}.md"
         if md_file.exists():
             script = md_file.read_text(encoding="utf-8")
-            return {"ok": True, "script": script, "version": version}
         else:
             return {"ok": False, "error": "Previous version file not found"}
+        
+        return {"ok": True, "script": script, "version": version}
     except Exception as e:
         return {"ok": False, "error": str(e)}
-
-
 def approve_script(project_id: str) -> Dict:
     """Approve current script for production."""
     try:
