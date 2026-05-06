@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-label="GalFlowAI logo">
+  <rect width="1024" height="1024" fill="#000"/>
+  <g transform="translate(512 350)" stroke="#b00000" stroke-width="20" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <circle r="220" opacity="0.35"/>
+    <path d="M0-180 L0 180 M-140-90 L0 0 L140-90 M-140 90 L0 0 L140 90"/>
+    <polygon points="160,-10 220,20 160,50" fill="#b00000" stroke="none"/>
+  </g>
+  <text x="512" y="700" text-anchor="middle" font-size="118" font-family="Georgia, 'Times New Roman', serif" fill="#f1f1f1" letter-spacing="2">GalFlow<tspan fill="#c40000">AI</tspan></text>
+  <text x="512" y="770" text-anchor="middle" font-size="34" font-family="Georgia, serif" fill="#b00000" letter-spacing="5">ROTEIRO • CENAS • IA • VÍDEO</text>
+</svg>
