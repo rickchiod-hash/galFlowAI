@@ -63,8 +63,9 @@
 - Logs via API (H13 concluído: 11 testes passando).
 - Prompt Context Pack (H14 concluído: 12 testes passando).
 - Script Quality & Commercial (H15 concluído: 13 testes passando).
-- Advanced Script Editing (H16 em progresso: use cases criados).
+- Advanced Script Editing (H16 concluído: 11 testes passando).
 - Visual Consistency (H17 concluído: 13 testes passando).
+- Advanced Observability (H18 concluído: 6 testes passando).
 - Documentação técnica segmentada em `docs/`.
 
 ### 🟨 Em evolução (não concluído)
