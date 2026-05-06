@@ -62,6 +62,7 @@
 - Metrics & Monitoring (H12 concluído: 10 testes passando).
 - Logs via API (H13 concluído: 11 testes passando).
 - Prompt Context Pack (H14 concluído: 12 testes passando).
+- Script Quality & Commercial (H15 concluído: 13 testes passando).
 - Documentação técnica segmentada em `docs/`.
 
 ### 🟨 Em evolução (não concluído)
