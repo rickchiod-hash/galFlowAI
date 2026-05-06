@@ -384,6 +384,11 @@ async def list_all_jobs():
         raise error_response("LIST_JOBS_FAILED", str(e), status_code=500)
 
 
+class JobCreateRequest(BaseModel):
+    """Request model for job creation."""
+    project_id: str
+    job_type: str = "video_render"
+
 @app.post("/api/jobs")
 async def create_job(request: JobCreateRequest):
     """Create new job using use case."""
