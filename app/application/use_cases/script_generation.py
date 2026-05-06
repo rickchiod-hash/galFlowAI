@@ -1,85 +1,166 @@
 """
 Use case for script generation.
+3-point standard: Validate -> Execute -> Return result.
 """
 from typing import Dict, Any
 from app.application.use_cases.base import UseCase, UseCaseError
 from app.services.script_service import generate_script_with_llm
+from app.pipeline.script_generator import save_script
 
 
 class GenerateScriptUseCase(UseCase):
-    """Use case for generating scripts with LLM providers."""
+    """Use case for generating scripts with LLM providers.
     
-    def execute(self, briefing: str, provider: str = "auto") -> Dict[str, Any]:
+    3-point standard:
+    1. Validate briefing and provider
+    2. Generate script using LLM providers
+    3. Save script and return result with status
+    """
+    
+    def execute(self, briefing: str, project_id: str = "", provider: str = "auto") -> Dict[str, Any]:
         """
         Generate script using LLM providers.
         
         Args:
             briefing: Text briefing for the commercial
+            project_id: Project identifier for saving script
             provider: Provider name or 'auto'
             
         Returns:
             Dictionary with script and metadata
         """
         try:
+            # 1. Validate input
+            if not self._validate(briefing=briefing, project_id=project_id):
+                return self._build_error("Invalid briefing or project_id")
+            
+            # 2. Execute business logic
             result = generate_script_with_llm(briefing, provider)
-            return {
-                "success": True,
-                "script": result.get("script", ""),
-                "provider_used": result.get("provider", "Unknown"),
-                "fallback_used": result.get("quality", "fallback") == "fallback",
-                "response_time_seconds": result.get("time", 0),
-                "quality_score": 0,
-                "script_markdown": result.get("script", ""),
-                "script_json": {},
-                "logs": []
-            }
+            if project_id:
+                save_script(project_id, result.get("script", ""))
+            
+            # 3. Return result with status
+            return self._build_success(
+                data={
+                    "script": result.get("script", ""),
+                    "provider_used": result.get("provider", "Unknown"),
+                    "fallback_used": result.get("quality", "fallback") == "fallback",
+                    "response_time_seconds": result.get("time", 0),
+                    "quality_score": 0
+                },
+                project_id=project_id
+            )
         except Exception as e:
-            raise UseCaseError("SCRIPT_GENERATION_FAILED", str(e))
+            return self._build_error(str(e))
+    
+    def _validate(self, **kwargs) -> bool:
+        """Validate briefing and project_id."""
+        briefing = kwargs.get("briefing", "")
+        project_id = kwargs.get("project_id", "")
+        return bool(briefing and len(briefing.strip()) >= 10 and project_id)
 
 
 class SaveManualEditUseCase(UseCase):
-    """Use case for saving manual script edits."""
+    """Use case for saving manual script edits.
+    
+    3-point standard:
+    1. Validate project_id and script_markdown
+    2. Save manual edit as new version
+    3. Return version info
+    """
     
     def execute(self, project_id: str, script_markdown: str, version_note: str = None) -> Dict[str, Any]:
         """Save manually edited script."""
-        from app.services.script_service import save_manual_edit
         try:
+            # 1. Validate input
+            if not self._validate(project_id=project_id, script_markdown=script_markdown):
+                return self._build_error("Invalid project_id or script_markdown")
+            
+            # 2. Execute business logic
+            from app.services.script_service import save_manual_edit
             result = save_manual_edit(project_id, script_markdown, version_note)
-            return {
-                "success": True,
-                "version": result.get("version")
-            }
+            
+            # 3. Return result with status
+            return self._build_success(
+                data={"version": result.get("version")},
+                project_id=project_id
+            )
         except Exception as e:
-            raise UseCaseError("SAVE_EDIT_FAILED", str(e))
+            return self._build_error(str(e), project_id=project_id)
+    
+    def _validate(self, **kwargs) -> bool:
+        """Validate project_id and script_markdown."""
+        project_id = kwargs.get("project_id", "")
+        script_markdown = kwargs.get("script_markdown", "")
+        return bool(project_id and script_markdown)
 
 
 class ImproveScriptUseCase(UseCase):
-    """Use case for improving existing script."""
+    """Use case for improving existing script.
+    
+    3-point standard:
+    1. Validate project_id
+    2. Improve existing script using LLM
+    3. Return improved script
+    """
     
     def execute(self, project_id: str, briefing: str = "") -> Dict[str, Any]:
         """Improve existing script."""
-        from app.services.script_service import improve_script
         try:
+            # 1. Validate input
+            if not self._validate(project_id=project_id):
+                return self._build_error("Invalid project_id")
+            
+            # 2. Execute business logic
+            from app.services.script_service import improve_script
             result = improve_script(project_id, briefing)
-            return {
-                "success": True,
-                "script": result.get("script")
-            }
+            
+            # 3. Return result with status
+            return self._build_success(
+                data={"script": result.get("script")},
+                project_id=project_id
+            )
         except Exception as e:
-            raise UseCaseError("IMPROVE_FAILED", str(e))
+            return self._build_error(str(e), project_id=project_id)
+    
+    def _validate(self, **kwargs) -> bool:
+        """Validate project_id."""
+        project_id = kwargs.get("project_id", "")
+        return bool(project_id)
 
 
 class ApproveScriptUseCase(UseCase):
-    """Use case for approving script."""
+    """Use case for approving script.
+    
+    3-point standard:
+    1. Validate project_id
+    2. Approve script for production
+    3. Return approval status
+    """
     
     def execute(self, project_id: str) -> Dict[str, Any]:
         """Approve script for production."""
-        from app.services.script_service import approve_script
         try:
+            # 1. Validate input
+            if not self._validate(project_id=project_id):
+                return self._build_error("Invalid project_id")
+            
+            # 2. Execute business logic
+            from app.services.script_service import approve_script
             result = approve_script(project_id)
-            return {
-                "success": True,
-                "script": result.get("script")
-            }
+            
+            # 3. Return result with status
+            if result.get("ok"):
+                return self._build_success(
+                    data={"script": result.get("script"), "status": result.get("status")},
+                    project_id=project_id
+                )
+            else:
+                return self._build_error(result.get("error", "Approval failed"), project_id=project_id)
         except Exception as e:
-            raise UseCaseError("APPROVE_FAILED", str(e))
+            return self._build_error(str(e), project_id=project_id)
+    
+    def _validate(self, **kwargs) -> bool:
+        """Validate project_id."""
+        project_id = kwargs.get("project_id", "")
+        return bool(project_id)
