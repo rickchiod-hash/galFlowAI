@@ -325,18 +325,63 @@ async def get_hardware_info():
         return error_response("HARDWARE_CHECK_FAILED", str(e), status_code=500)
 
 
-# ========== Jobs (Placeholder) ==========
+# ========== Jobs (Implemented with Use Cases) ==========
 
 @app.get("/api/jobs/{job_id}")
 async def get_job_status(job_id: str):
-    """Get job status."""
-    return success_response({"job_id": job_id, "status": "pending", "progress": 0}, "Job status retrieved")
+    """Get job status using use case."""
+    try:
+        from app.application.use_cases.job_use_cases import GetQueueStatusUseCase
+        uc = GetQueueStatusUseCase()
+        status = uc.execute()
+        
+        if status["ok"]:
+            # Find specific job
+            jobs = status["data"]["jobs"]
+            job = next((j for j in jobs if j["job_id"] == job_id), None)
+            if job:
+                return success_response(job, "Job status retrieved")
+            else:
+                raise error_response("JOB_NOT_FOUND", "Job not found", status_code=404)
+        else:
+            raise error_response("QUEUE_STATUS_FAILED", status["error"], status_code=500)
+    except Exception as e:
+        logger.error("Job status check failed: %s", e)
+        raise error_response("JOB_STATUS_FAILED", str(e), status_code=500)
 
 
 @app.post("/api/jobs/{job_id}/cancel")
 async def cancel_job(job_id: str):
-    """Cancel a job."""
-    return success_response({"job_id": job_id}, "Job cancelled")
+    """Cancel a job using use case."""
+    try:
+        from app.application.use_cases.job_use_cases import RemoveJobUseCase
+        uc = RemoveJobUseCase()
+        result = uc.execute(job_id=job_id)
+        
+        if result["ok"]:
+            return success_response({"job_id": job_id}, "Job cancelled")
+        else:
+            raise error_response("CANCEL_FAILED", result["error"], status_code=500)
+    except Exception as e:
+        logger.error("Job cancellation failed: %s", e)
+        raise error_response("CANCEL_FAILED", str(e), status_code=500)
+
+
+@app.get("/api/jobs")
+async def list_all_jobs():
+    """List all jobs using use case."""
+    try:
+        from app.application.use_cases.job_use_cases import ListJobsUseCase
+        uc = ListJobsUseCase()
+        result = uc.execute()
+        
+        if result["ok"]:
+            return success_response(result["data"], "Jobs listed")
+        else:
+            raise error_response("LIST_JOBS_FAILED", result["error"], status_code=500)
+    except Exception as e:
+        logger.error("Job listing failed: %s", e)
+        raise error_response("LIST_JOBS_FAILED", str(e), status_code=500)
 
 
 # ========== Video Generation ==========
