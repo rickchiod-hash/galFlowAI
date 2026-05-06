@@ -1,6 +1,6 @@
 @echo off
-REM FlowForgeAI - Standard Startup Script (ALL required env vars)
-echo Iniciando FlowForgeAI com configuracao padrao K:...
+REM GalFlowAI - Standard Startup Script (ALL required env vars)
+echo Iniciando GalFlowAI com configuracao padrao K:...
 
 REM Required environment variables (from AGENTS.md context)
 set PIP_CACHE_DIR=K:\AI_VIDEO_COMMERCIAL_STUDIO\cache\pip
@@ -20,7 +20,7 @@ call K:\AI_VIDEO_COMMERCIAL_STUDIO\envs\studio\Scripts\activate.bat
 
 REM Start Gradio UI
 echo.
-echo FlowForgeAI - Gradio UI
+echo GalFlowAI - Gradio UI
 echo Acesse: http://127.0.0.1:7860
 echo.
 

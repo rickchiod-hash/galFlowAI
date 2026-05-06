@@ -1,5 +1,5 @@
 @echo off&
-REM Solução Final FlowForgeAI - Execute este arquivo&
+REM Solução Final GalFlowAI - Execute este arquivo&
 setlocal EnableDelayedExpansion&
 
 set BASE_DIR=K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta&
@@ -7,7 +7,7 @@ set PORTABLE_DIR=%BASE_DIR%\python_portable&
 set PYTHON=%PORTABLE_DIR%\python.exe&
 
 echo =&
-echo   FlowForgeAI - Solução Final&
+echo   GalFlowAI - Solução Final&
 echo =&
 
 REM 1. Baixar Python se necessário&
@@ -56,7 +56,7 @@ echo Verificando sintaxe...&
 echo.&
 
 REM 3. Subir aplicação&
-echo [3/3] Iniciando FlowForgeAI...&
+echo [3/3] Iniciando GalFlowAI...&
 echo.&
 echo ===============================&
 echo   URLS:&

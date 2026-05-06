@@ -1,9 +1,9 @@
 @echo off
-REM Setup KoboldCpp for FlowForgeAI
+REM Setup KoboldCpp for GalFlowAI
 REM Download: https://github.com/LostRuins/KoboldCpp/releases
 
 echo ================================
-echo   FlowForgeAI - Setup KoboldCpp
+echo   GalFlowAI - Setup KoboldCpp
 echo ================================
 echo.
 
@@ -42,12 +42,12 @@ timeout /t 5 /nobreak >nul
 curl -s http://localhost:5001/api/v1/models >nul 2>&1
 if %errorlevel%==0 (
     echo ✓ KoboldCpp server is running!
-    echo FlowForgeAI will detect it automatically.
+    echo GalFlowAI will detect it automatically.
 ) else (
     echo ✗ KoboldCpp server not responding on port 5001
     echo Check if a model is loaded.
 )
 
 echo.
-echo Setup complete! Now restart FlowForgeAI and select "KoboldCpp local"
+echo Setup complete! Now restart GalFlowAI and select "KoboldCpp local"
 pause

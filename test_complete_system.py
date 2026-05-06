@@ -1,4 +1,4 @@
-"""Testes abrangentes para todo o sistema FlowForgeAI"""
+"""Testes abrangentes para todo o sistema GalFlowAI"""
 
 import unittest
 import sys

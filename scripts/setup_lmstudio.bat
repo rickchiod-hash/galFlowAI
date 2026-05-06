@@ -1,9 +1,9 @@
 @echo off
-REM Setup LM Studio for FlowForgeAI
+REM Setup LM Studio for GalFlowAI
 REM Guide: https://lmstudio.ai
 
 echo ================================
-echo   FlowForgeAI - Setup LM Studio
+echo   GalFlowAI - Setup LM Studio
 echo ================================
 echo.
 
@@ -33,12 +33,12 @@ echo [3/3] Testing connection...
 curl -s http://localhost:1234/v1/models >nul 2>&1
 if %errorlevel%==0 (
     echo ✓ LM Studio server is running!
-    echo FlowForgeAI will detect it automatically.
+    echo GalFlowAI will detect it automatically.
 ) else (
     echo ✗ LM Studio server not responding on port 1234
     echo Please start the server following instructions above.
 )
 
 echo.
-echo Setup complete! Now restart FlowForgeAI and select "LM Studio local"
+echo Setup complete! Now restart GalFlowAI and select "LM Studio local"
 pause

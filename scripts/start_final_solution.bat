@@ -1,5 +1,5 @@
 @echo off
-REM Final startup script for FlowForgeAI
+REM Final startup script for GalFlowAI
 setlocal EnableDelayedExpansion
 
 set BASE_DIR=K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta
@@ -7,7 +7,7 @@ set PORTABLE_PYTHON_DIR=%BASE_DIR%\python_portable
 set PORTABLE_PYTHON=%PORTABLE_PYTHON_DIR%\python.exe
 
 echo ================================
-echo   FlowForgeAI - Final Startup
+echo   GalFlowAI - Final Startup
 echo ================================
 echo.
 
@@ -87,7 +87,7 @@ echo ✓ Syntax OK
 echo.
 
 REM ========== Step 4: Start application ==========
-echo [4/4] Starting FlowForgeAI...
+echo [4/4] Starting GalFlowAI...
 echo.
 echo ================================
 echo   ACCESS URLS:

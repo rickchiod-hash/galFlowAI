@@ -2,7 +2,7 @@
 
 ## Visão Geral
 
-O `VideoService` é o serviço responsável por orquestrar a geração de vídeos comerciais no FlowForgeAI. Ele integra os adaptadores WanGP (vídeo real) e FFmpeg (fallback estático).
+O `VideoService` é o serviço responsável por orquestrar a geração de vídeos comerciais no GalFlowAI. Ele integra os adaptadores WanGP (vídeo real) e FFmpeg (fallback estático).
 
 ## Localização
 

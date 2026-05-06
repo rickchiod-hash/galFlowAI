@@ -1,5 +1,5 @@
 @echo off
-REM Start FlowForgeAI FastAPI with required environment variables
+REM Start GalFlowAI FastAPI with required environment variables
 
 setlocal EnableDelayedExpansion
 
@@ -26,7 +26,7 @@ cd /d "K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta"
 
 REM ========== Start FastAPI ==========
 echo ================================
-echo   FlowForgeAI - FastAPI
+echo   GalFlowAI - FastAPI
 echo ================================
 echo.
 echo Environment variables set:

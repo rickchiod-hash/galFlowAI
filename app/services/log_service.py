@@ -215,7 +215,7 @@ def copy_diagnostic_bundle() -> str:
         import subprocess
 
         bundle = []
-        bundle.append("=== DIAGNÓSTICO FLOWFORGEAI ===")
+        bundle.append("=== DIAGNÓSTICO GalFlowAI ===")
         bundle.append(f"Data/Hora: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
 
         # Commit atual

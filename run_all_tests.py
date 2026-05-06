@@ -1,4 +1,4 @@
-"""Script para rodar todos os testes do FlowForgeAI"""
+"""Script para rodar todos os testes do GalFlowAI"""
 
 import sys
 import unittest
@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 def run_all_tests():
     """Executa todos os testes unitários"""
     print("=" * 60)
-    print("FlowForgeAI - Executor de Testes Completo")
+    print("GalFlowAI - Executor de Testes Completo")
     print("=" * 60)
     print()
     
@@ -106,7 +106,7 @@ def run_specific_test(test_name):
 if __name__ == "__main__":
     import argparse
     
-    parser = argparse.ArgumentParser(description="Executor de Testes FlowForgeAI")
+    parser = argparse.ArgumentParser(description="Executor de Testes GalFlowAI")
     parser.add_argument(
         "test",
         nargs="?",
