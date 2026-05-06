@@ -23,6 +23,23 @@
 
 ---
 
+## Template Padrão para Critérios de Aceite (DOC-09)
+**Obrigatório para todas as novas histórias no backlog.**
+
+```
+### [ID] - [Nome da História]
+**Contexto:** [Descrição do problema/oportunidade]
+**Objetivo:** [O que será alcançado]
+**Critérios de Aceite (3 pontos):**
+1. **Validate:** [Validação de entrada/pré-condição]
+2. **Execute:** [Execução da lógica de negócio]
+3. **Return:** [Retorno com status e evidência]
+**Evidência:** [Como validar: teste, log, endpoint, artefato]
+**Status:** [🟨 Pendente | ✅ Concluído]
+```
+
+---
+
 ## Critérios para aceitar melhorias
 1. **Não quebrar fluxo vigente** (gerar roteiro → editar/aprovar → cenas → preview → MP4).
 2. **Melhorar observabilidade** (logs, erro claro, rastreabilidade por `project_id`/`job_id`).
