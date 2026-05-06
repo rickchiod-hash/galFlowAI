@@ -94,6 +94,7 @@ class JobQueue:
                     job.params = job_data.get("params", {})
                     job.output_path = job_data.get("output_path")
                     self.jobs[job.job_id] = job
+                self.running_job_id = data.get("running_job_id")
                 logger.info("Fila carregada: %d jobs", len(self.jobs))
             try:
                 retry_with_backoff(do_load, max_retries=3, base_delay=0.2)
@@ -103,6 +104,7 @@ class JobQueue:
     def _save(self):
         data = {
             "jobs": [job.to_dict() for job in self.jobs.values()],
+            "running_job_id": self.running_job_id,
             "updated_at": datetime.now().isoformat()
         }
         
