@@ -217,10 +217,9 @@ async def make_more_viral(project_id: str):
         if result.get("ok"):
             return success_response({"script": result.get("script")}, "Script made more viral")
         else:
-            return error_response("VIRAL_FAILED", result.get("error", "Failed"), status_code=500)
+            raise error_response("VIRAL_FAILED", result.get("error", "Failed"), status_code=500)
     except Exception as e:
         raise error_response("VIRAL_FAILED", str(e), status_code=500)
-
 
 @app.post("/api/projects/{project_id}/script/more-premium")
 async def make_more_premium(project_id: str):
@@ -228,10 +227,12 @@ async def make_more_premium(project_id: str):
     try:
         from app.services.script_service import make_more_premium
         result = make_more_premium(project_id)
-        return success_response({"script": result.get("script")}, "Script made more premium")
+        if result.get("ok"):
+            return success_response({"script": result.get("script")}, "Script made more premium")
+        else:
+            raise error_response("PREMIUM_FAILED", result.get("error", "Failed"), status_code=500)
     except Exception as e:
         raise error_response("PREMIUM_FAILED", str(e), status_code=500)
-
 
 @app.post("/api/projects/{project_id}/script/more-direct")
 async def make_more_direct(project_id: str):
@@ -239,10 +240,12 @@ async def make_more_direct(project_id: str):
     try:
         from app.services.script_service import make_more_direct
         result = make_more_direct(project_id)
-        return success_response({"script": result.get("script")}, "Script made more direct")
+        if result.get("ok"):
+            return success_response({"script": result.get("script")}, "Script made more direct")
+        else:
+            raise error_response("DIRECT_FAILED", result.get("error", "Failed"), status_code=500)
     except Exception as e:
         raise error_response("DIRECT_FAILED", str(e), status_code=500)
-
 
 @app.post("/api/projects/{project_id}/script/new-version")
 async def create_new_version(project_id: str):
@@ -250,10 +253,12 @@ async def create_new_version(project_id: str):
     try:
         from app.services.script_service import create_new_version
         result = create_new_version(project_id)
-        return success_response({"version": result.get("version")}, "New version created")
+        if result.get("ok"):
+            return success_response({"version": result.get("version")}, "New version created")
+        else:
+            raise error_response("NEW_VERSION_FAILED", result.get("error", "Failed"), status_code=500)
     except Exception as e:
         raise error_response("NEW_VERSION_FAILED", str(e), status_code=500)
-
 
 @app.post("/api/projects/{project_id}/script/restore-previous")
 async def restore_previous_version(project_id: str):
@@ -261,7 +266,10 @@ async def restore_previous_version(project_id: str):
     try:
         from app.services.script_service import restore_previous_version
         result = restore_previous_version(project_id)
-        return success_response({"version": result.get("version")}, "Previous version restored")
+        if result.get("ok"):
+            return success_response({"version": result.get("version")}, "Previous version restored")
+        else:
+            raise error_response("RESTORE_FAILED", result.get("error", "Failed"), status_code=500)
     except Exception as e:
         raise error_response("RESTORE_FAILED", str(e), status_code=500)
 
