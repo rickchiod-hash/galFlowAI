@@ -51,10 +51,14 @@ def error_response(code: str, message: str, details: Any = None, status_code: in
     )
 
 # TODO_TECNICO(API_MODULARIZACAO):
-# 1) Extrair regras de negócio para app/application/use_cases (controller fino).
-# 2) Padronizar envelope de erro/sucesso: {ok, code, message, details}.
+# 1) Extrair regras de negócio para app/application/use_cases (controller fino). ✅
+# 2) Padronizar envelope de erro/sucesso: {ok, code, message, details}. ✅
 # 3) Adicionar testes de contrato FastAPI para rotas críticas (/api/health, /api/llm/*, /api/projects/*).
-# 4) Manter compatibilidade de endpoints atuais durante refatoração (sem breaking changes).
+# 4) Manter compatibilidade de endpoints atuais durante refatoração (sem breaking changes). ✅
+
+# Import use cases
+from app.application.use_cases.script_generation import GenerateScriptUseCase, SaveManualEditUseCase
+from app.application.use_cases.project_use_cases import CreateProjectUseCase
 
 app = FastAPI(
     title="Gal AI API",
@@ -141,21 +145,24 @@ class ScriptGenerateRequest(BaseModel):
 @app.post("/api/llm/script")
 async def generate_script_api(request: ScriptGenerateRequest):
     """Generate script using LLM providers."""
-    start = time.time()
-    
     try:
-        from app.services.script_service import generate_script_with_llm
-        result = generate_script_with_llm(request.briefing, request.provider)
+        # Use case: thin controller
+        uc = GenerateScriptUseCase()
+        result = uc.execute(briefing=request.briefing, project_id=request.project_id or "", provider=request.provider)
         
-        return success_response({
-            "provider_used": result.get("provider", "Unknown"),
-            "fallback_used": result.get("quality", "fallback") == "fallback",
-            "response_time_seconds": result.get("time", 0),
-            "quality_score": 0,
-            "script_markdown": result.get("script", ""),
-            "script_json": {},
-            "logs": []
-        }, "Script generated successfully")
+        if result["ok"]:
+            return success_response({
+                "provider_used": result["data"].get("provider_used", "Unknown"),
+                "fallback_used": result["data"].get("fallback_used", False),
+                "response_time_seconds": result["data"].get("response_time_seconds", 0),
+                "quality_score": result["data"].get("quality_score", 0),
+                "script_markdown": result["data"].get("script", ""),
+                "script_json": {},
+                "logs": [],
+                "project_id": result.get("project_id")
+            }, "Script generated successfully")
+        else:
+            return error_response("SCRIPT_GENERATION_FAILED", result["error"], status_code=500)
     except Exception as e:
         logger.error("Script generation failed: %s", e)
         return error_response("SCRIPT_GENERATION_FAILED", str(e), status_code=500)
@@ -173,9 +180,14 @@ class ScriptSaveRequest(BaseModel):
 async def save_manual_edit(project_id: str, request: ScriptSaveRequest):
     """Save manually edited script."""
     try:
-        from app.services.script_service import save_manual_edit
-        result = save_manual_edit(project_id, request.script_markdown, request.version_note)
-        return success_response({"version": result.get("version")}, "Script saved successfully")
+        # Use case: thin controller
+        uc = SaveManualEditUseCase()
+        result = uc.execute(project_id=project_id, script_markdown=request.script_markdown, version_note=request.version_note)
+        
+        if result["ok"]:
+            return success_response({"version": result["data"].get("version")}, "Script saved successfully")
+        else:
+            return error_response("SAVE_EDIT_FAILED", result["error"], status_code=500)
     except Exception as e:
         raise error_response("SAVE_EDIT_FAILED", str(e), status_code=500)
 
@@ -184,9 +196,14 @@ async def save_manual_edit(project_id: str, request: ScriptSaveRequest):
 async def improve_script(project_id: str, briefing: str = ""):
     """Improve existing script."""
     try:
-        from app.services.script_service import improve_script
-        result = improve_script(project_id, briefing)
-        return success_response({"script": result.get("script")}, "Script improved successfully")
+        from app.application.use_cases.script_generation import ImproveScriptUseCase
+        uc = ImproveScriptUseCase()
+        result = uc.execute(project_id=project_id, briefing=briefing)
+        
+        if result["ok"]:
+            return success_response({"script": result["data"].get("script")}, "Script improved successfully")
+        else:
+            return error_response("IMPROVE_FAILED", result["error"], status_code=500)
     except Exception as e:
         raise error_response("IMPROVE_FAILED", str(e), status_code=500)
 
@@ -197,7 +214,10 @@ async def make_more_viral(project_id: str):
     try:
         from app.services.script_service import make_more_viral
         result = make_more_viral(project_id)
-        return success_response({"script": result.get("script")}, "Script made more viral")
+        if result.get("ok"):
+            return success_response({"script": result.get("script")}, "Script made more viral")
+        else:
+            return error_response("VIRAL_FAILED", result.get("error", "Failed"), status_code=500)
     except Exception as e:
         raise error_response("VIRAL_FAILED", str(e), status_code=500)
 
@@ -250,9 +270,14 @@ async def restore_previous_version(project_id: str):
 async def approve_script_api(project_id: str):
     """Approve script for production."""
     try:
-        from app.services.script_service import approve_script
-        result = approve_script(project_id)
-        return success_response({"script": result.get("script")}, "Script approved")
+        from app.application.use_cases.script_generation import ApproveScriptUseCase
+        uc = ApproveScriptUseCase()
+        result = uc.execute(project_id=project_id)
+        
+        if result["ok"]:
+            return success_response({"script": result["data"].get("script")}, "Script approved")
+        else:
+            return error_response("APPROVE_FAILED", result["error"], status_code=500)
     except Exception as e:
         raise error_response("APPROVE_FAILED", str(e), status_code=500)
 
@@ -325,38 +350,61 @@ async def generate_video(request: VideoGenerationRequest):
     Flow: Briefing -> Script -> Scenes -> Prompts -> Video -> Final
     """
     try:
-        from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
+        from app.application.use_cases.project_use_cases import CreateProjectUseCase
+        from app.application.use_cases.script_generation import GenerateScriptUseCase
+        from app.application.use_cases.pipeline_use_cases import SplitScenesUseCase, BuildPromptsUseCase, CreateStoryboardUseCase
         from datetime import datetime
         
-        # Create project ID
-        project_id = datetime.now().strftime("%Y%m%d_%H%M%S") + "_" + request.product.replace(" ", "_")
+        # 1. Create project (use case)
+        project_name = request.product.replace(" ", "_")
+        project_uc = CreateProjectUseCase()
+        project_result = project_uc.execute(project_name=project_name)
         
-        # Initialize pipeline
-        pipeline = VideoGenerationPipeline()
+        if not project_result["ok"]:
+            return error_response("PROJECT_CREATION_FAILED", project_result["error"], status_code=500)
         
-        # Generate commercial
-        result = pipeline.generate_commercial(
-            project_id=project_id,
-            product=request.product,
-            target_audience=request.target_audience,
-            duration_seconds=request.duration_seconds,
-            style=request.style,
-            keywords=request.keywords
-        )
+        project_id = project_result["project_id"]
         
-        if result.get("success"):
-            return success_response({
-                "project_id": project_id,
-                "final_video": result.get("final_video"),
-                "scenes_count": result.get("scenes_count"),
-                "provider_used": result.get("provider_used")
-            }, "Video generated successfully")
-        else:
-            raise error_response("VIDEO_GENERATION_FAILED", result.get("error", "Erro desconhecido"), status_code=500)
+        # 2. Generate script (use case)
+        briefing = f"Comercial para {request.product}, público: {request.target_audience}, duração: {request.duration_seconds}s"
+        script_uc = GenerateScriptUseCase()
+        script_result = script_uc.execute(briefing=briefing, project_id=project_id)
+        
+        if not script_result["ok"]:
+            return error_response("SCRIPT_GENERATION_FAILED", script_result["error"], status_code=500)
+        
+        script = script_result["data"]["script"]
+        
+        # 3. Split scenes (use case)
+        scenes_uc = SplitScenesUseCase()
+        scenes_result = scenes_uc.execute(script=script, project_id=project_id)
+        
+        if not scenes_result["ok"]:
+            return error_response("SCENE_SPLIT_FAILED", scenes_result["error"], status_code=500)
+        
+        scenes = scenes_result["data"]["scenes"]
+        
+        # 4. Build prompts (use case)
+        prompts_uc = BuildPromptsUseCase()
+        prompts_result = prompts_uc.execute(scenes=scenes, style=request.style, project_id=project_id)
+        
+        if not prompts_result["ok"]:
+            return error_response("PROMPT_BUILD_FAILED", prompts_result["error"], status_code=500)
+        
+        # 5. Create storyboard (use case)
+        storyboard_uc = CreateStoryboardUseCase()
+        storyboard_result = storyboard_uc.execute(project_id=project_id, scenes=scenes)
+        
+        return success_response({
+            "project_id": project_id,
+            "final_video": storyboard_result["data"].get("video_path") if storyboard_result["ok"] else None,
+            "scenes_count": len(scenes),
+            "provider_used": script_result["data"].get("provider_used")
+        }, "Video generated successfully")
             
     except Exception as e:
         logger.error("Erro ao gerar video: %s", str(e))
-        raise error_response("VIDEO_GENERATION_ERROR", str(e), status_code=500)
+        return error_response("VIDEO_GENERATION_ERROR", str(e), status_code=500)
 
 
 @app.get("/api/video-status/{project_id}")
