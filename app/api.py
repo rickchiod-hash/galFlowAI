@@ -607,6 +607,74 @@ async def get_recent_operations(limit: int = 10):
         raise error_response("OPERATIONS_FAILED", str(e), status_code=500)
 
 
+@app.get("/api/logs/recent")
+async def get_recent_logs(level: Optional[str] = None, search: Optional[str] = None, limit: int = 200):
+    """Get recent logs with filters."""
+    try:
+        from app.application.use_cases.log_use_cases import GetRecentLogsUseCase
+        uc = GetRecentLogsUseCase()
+        result = uc.execute(level=level, search=search, limit=limit)
+        
+        if result["ok"]:
+            return success_response(result["data"], "Logs retrieved")
+        else:
+            raise error_response("LOGS_FAILED", result["error"], status_code=500)
+    except Exception as e:
+        logger.error("Logs retrieval failed: %s", e)
+        raise error_response("LOGS_FAILED", str(e), status_code=500)
+
+
+@app.get("/api/logs/summary")
+async def get_log_summary():
+    """Get log summary statistics."""
+    try:
+        from app.application.use_cases.log_use_cases import GetLogSummaryUseCase
+        uc = GetLogSummaryUseCase()
+        result = uc.execute()
+        
+        if result["ok"]:
+            return success_response(result["data"], "Log summary retrieved")
+        else:
+            raise error_response("LOG_SUMMARY_FAILED", result["error"], status_code=500)
+    except Exception as e:
+        logger.error("Log summary failed: %s", e)
+        raise error_response("LOG_SUMMARY_FAILED", str(e), status_code=500)
+
+
+@app.get("/api/logs/last-error")
+async def get_last_error():
+    """Get last error from logs."""
+    try:
+        from app.application.use_cases.log_use_cases import GetLastErrorUseCase
+        uc = GetLastErrorUseCase()
+        result = uc.execute()
+        
+        if result["ok"]:
+            return success_response(result["data"], "Last error retrieved")
+        else:
+            raise error_response("LAST_ERROR_FAILED", result["error"], status_code=500)
+    except Exception as e:
+        logger.error("Last error retrieval failed: %s", e)
+        raise error_response("LAST_ERROR_FAILED", str(e), status_code=500)
+
+
+@app.get("/api/logs/diagnostic")
+async def get_diagnostic_bundle():
+    """Get diagnostic bundle for support."""
+    try:
+        from app.application.use_cases.log_use_cases import GetDiagnosticBundleUseCase
+        uc = GetDiagnosticBundleUseCase()
+        result = uc.execute()
+        
+        if result["ok"]:
+            return success_response(result["data"], "Diagnostic bundle retrieved")
+        else:
+            raise error_response("DIAGNOSTIC_FAILED", result["error"], status_code=500)
+    except Exception as e:
+        logger.error("Diagnostic bundle failed: %s", e)
+        raise error_response("DIAGNOSTIC_FAILED", str(e), status_code=500)
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host=GRADIO_HOST, port=8000, reload=False)
