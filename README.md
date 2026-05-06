@@ -16,18 +16,21 @@
 ---
 
 ## Sumário
+### 🎯 Trilha Operação (como usar)
+- [Começando em 5 minutos](#começando-em-5-minutos)
+- [Onboarding Rápido](#onboarding-rápido)
+- [Execução e Operação](#execução-e-operação)
+- [Riscos Ativos](#riscos-ativos)
+- [Qualidade e Testes](#qualidade-e-testes)
+
+### 🏗️ Trilha Arquitetura (como evoluir)
 - [Visão do Produto](#visão-do-produto)
 - [Princípios de Arquitetura](#princípios-de-arquitetura)
 - [Status Real do Projeto](#status-real-do-projeto)
 - [Fluxo do Sistema](#fluxo-do-sistema)
 - [Arquitetura Técnica](#arquitetura-técnica)
-- [Começando em 5 minutos](#começando-em-5-minutos)
-- [Execução e Operação](#execução-e-operação)
-- [Qualidade e Testes](#qualidade-e-testes)
 - [Roadmap objetivo](#roadmap-objetivo)
 - [Governança de documentação](#governança-de-documentação)
-- [Riscos Ativos](#riscos-ativos)
-- [Onboarding Rápido](#onboarding-rápido)
 
 ---
 
@@ -224,6 +227,37 @@ Para cada PR:
 - incluir evidência (teste, log, endpoint ou artefato);
 - manter naming oficial **GalFlowAI**;
 - usar logos oficiais (`galflowai_logo_master.png`, `galflowai_app_icon.png`).
+
+---
+
+## Trilhas de Documentação
+
+### 🎯 Trilha Operação (como usar o GalFlowAI)
+- **Começando:** [Começando em 5 minutos](#começando-em-5-minutos)
+- **Onboarding:** [Onboarding Rápido](#onboarding-rápido)
+- **Execução:** [Execução e Operação](#execução-e-operação)
+- **Troubleshooting:** `docs/TROUBLESHOOTING.md`
+- **Provedores LLM:** `docs/PROVIDERS_SETUP.md`
+- **Instalação GPT4All:** `docs/INSTALAR_GPT4ALL_K.md`
+- **Instalação KoboldCPP:** `docs/INSTALAR_KOBOLDCPP_K.md`
+- **Instalação LLaMA.cpp:** `docs/INSTALAR_LLAMACPP_K.md`
+- **Instalação LM Studio:** `docs/INSTALAR_LM_STUDIO_K.md`
+
+### 🏗️ Trilha Arquitetura (como evoluir o GalFlowAI)
+- **Visão:** [Visão do Produto](#visão-do-produto)
+- **Princípios:** [Princípios de Arquitetura](#princípios-de-arquitetura)
+- **Status:** [Status Real do Projeto](#status-real-do-projeto)
+- **Fluxo:** [Fluxo do Sistema](#fluxo-do-sistema)
+- **Arquitetura:** [Arquitetura Técnica](#arquitetura-técnica)
+- **Roadmap:** [Roadmap objetivo](#roadmap-objetivo)
+- **Governança:** [Governança de documentação](#governança-de-documentação)
+- **Arquitetura Detalhada:** `docs/ARQUITETURA.md`
+- **API V2:** `docs/FASTAPI_V2.md`
+- **UI/UX:** `docs/GRADIO_STUDIO_UX.md`, `docs/UI_UX_GAL_AI_STUDIO.md`
+- **Motores:** `docs/MOTORES_ROTEIRO_TELA.md`, `docs/VIDEO_SERVICE.md`
+- **Pipeline:** `docs/VIDEO_PIPELINE.md`
+- **Roteiro:** `docs/PROMPT_ROTEIRO_V2.md`, `docs/ROTEIRO_EDITAVEL.md`, `docs/SCRIPT_EDITABLE.md`
+- **LLM Local:** `docs/LLM_LOCAL_SEM_API_KEY.md`
 
 ---
 
