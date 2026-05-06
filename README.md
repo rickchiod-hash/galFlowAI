@@ -58,12 +58,12 @@
 - Base FastAPI + UI local.
 - Fallback operacional em cadeia para não interromper geração.
 - Estrutura inicial de use cases na camada de aplicação.
+- Job queue com mutex (H11 concluído: 16 testes passando).
 - Documentação técnica segmentada em `docs/`.
 
 ### 🟨 Em evolução (não concluído)
 - Contratos de API versionados e testados de ponta a ponta.
 - Padronização formal de envelope de erro.
-- Orquestração de jobs com fila local e estados robustos.
 - Métricas operacionais e observabilidade premium.
 
 ---
