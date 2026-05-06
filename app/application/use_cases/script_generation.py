@@ -57,7 +57,8 @@ class GenerateScriptUseCase(UseCase):
         """Validate briefing and project_id."""
         briefing = kwargs.get("briefing", "")
         project_id = kwargs.get("project_id", "")
-        return bool(briefing and len(briefing.strip()) >= 10 and project_id)
+        # briefing is required, project_id is optional (for saving)
+        return bool(briefing and len(briefing.strip()) >= 10)
 
 
 class SaveManualEditUseCase(UseCase):

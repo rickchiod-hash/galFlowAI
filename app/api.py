@@ -162,10 +162,10 @@ async def generate_script_api(request: ScriptGenerateRequest):
                 "project_id": result.get("project_id")
             }, "Script generated successfully")
         else:
-            return error_response("SCRIPT_GENERATION_FAILED", result["error"], status_code=500)
+            raise error_response("SCRIPT_GENERATION_FAILED", result["error"], status_code=500)
     except Exception as e:
         logger.error("Script generation failed: %s", e)
-        return error_response("SCRIPT_GENERATION_FAILED", str(e), status_code=500)
+        raise error_response("SCRIPT_GENERATION_FAILED", str(e), status_code=500)
 
 
 # ========== Script Editing ==========
