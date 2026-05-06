@@ -31,11 +31,20 @@ FlowForgeAI é uma plataforma **100% local** para geração de comerciais curtos
 - **H5b**: KoboldCpp (código pronto, aguardando download de modelo)
 - **H8**: Documentação e validação final
 
+### ✅ Concluído (H9-H10)
+- **H9**: Integração Fim-a-Fim (VideoService ✅)
+- **H10**: Application Layer / Use Cases (80% completo)
+  - Estrutura `app/application/use_cases/` criada
+  - 7+ use cases implementados com padrão de 3 pontos
+  - 14 testes H10 passando (100%)
+  - API refatorada para thin controller
+  - Commits atômicos realizados
+
 ### 📋 Próximos Passos
-- H9: Integração Fim-a-Fim (VideoService ✅)
-- H10: UI Gradio completa
 - H11: Sistema de fila de jobs
 - H12: Métricas e monitoramento
+- H13: Hardware-Awareness Integration
+- H14: Observability & Structured Logs
 
 ## 🛠️ Instalação
 
@@ -85,8 +94,11 @@ python example_video_generation.py
 
 ### Rodar Testes
 ```powershell
-# Todos os testes
-python run_all_tests.py
+# Testes H10 (rápido - 14 testes)
+K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe -m pytest tests/test_h10_use_cases.py -v
+
+# Todos os testes (demora ~4 min)
+K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe -m pytest tests/ --collect-only
 
 # Testes específicos
 K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe -m pytest test_all_stories.py -v
@@ -98,18 +110,20 @@ K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe -m pytest test_video
 ```
 FlowForgeAI/
 ├── app/
+│   ├── application/      # Camada de aplicação (Use Cases)
+│   │   └── use_cases/      # Casos de uso (padrão 3 pontos)
 │   ├── adapters/          # Adapters para motores externos
 │   │   ├── wangp_adapter.py      # WanGP (vídeo IA)
 │   │   ├── ffmpeg_adapter.py     # FFmpeg (fallback)
 │   │   └── llm/                  # Provedores LLM
 │   ├── services/          # Serviços de negócio
 │   │   ├── video_service.py      # Geração de vídeo
-│   │   └── tts_service.py        # Text-to-Speech
+│   │   └── script_service.py     # Roteiros
 │   ├── pipeline/         # Pipeline de processamento
 │   │   ├── script_generator.py   # Roteiros
 │   │   ├── scene_splitter.py     # Divisão em cenas
 │   │   └── prompt_builder.py     # Prompts para vídeo
-│   └── api.py            # API FastAPI (opcional)
+│   └── api.py            # API FastAPI (thin controller)
 ├── projects/              # Projetos gerados
 │   └── YYYYMMDD_HHMMSS_nome/
 │       ├── brief/        # Briefing
@@ -124,22 +138,22 @@ FlowForgeAI/
 
 ## 🧪 Testes
 
-**Cobertura atual: 31 testes**
+**Cobertura atual: 212 testes coletados**
+- ✅ test_h10_use_cases.py (14 testes - H10 Use Cases)
 - ✅ test_all_stories.py (15 testes - H1-H8)
 - ✅ test_video_service.py (8 testes)
 - ✅ test_prompt_builder.py (8 testes)
 - ✅ test_scene_splitter.py (9 testes)
 - ✅ test_script_generator.py (6 testes)
 - ✅ test_complete_system.py (integração)
+- ✅ + outros 150+ testes
 
 ```powershell
-# Rodar todos
-python run_all_tests.py
+# Rodar testes H10 (rápido)
+K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe -m pytest tests/test_h10_use_cases.py -v
 
-# Saída esperada:
-# Testes executados: 31
-# Sucessos: 31
-# Falhas: 0
+# Rodar todos (demora ~4 min)
+K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe -m pytest tests/ --collect-only
 ```
 
 ## 📊 Hardware Suportado
@@ -152,10 +166,11 @@ python run_all_tests.py
 | Disco | K: (SSD recomendado) | ✅ OK |
 
 **Configurações automáticas para 6GB VRAM:**
-- Modelo: 1.3B (não 14B)
+- Modelo: 1.3B (14B não é padrão)
 - Resolução: 480p/512p
 - Cenas curtas (~5s cada)
 - Uma geração por vez
+- Fallback: WanGP → FFmpeg → Template
 
 ## 🤝 Contribuindo
 
