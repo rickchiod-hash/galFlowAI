@@ -13,8 +13,7 @@ def find_ffmpeg():
         # Caminhos alternativos
         r"K:\AI_VIDEO_COMMERCIAL_STUDIO\envs\studio\Library\bin\ffmpeg.exe",
         r"K:\AI_VIDEO_COMMERCIAL_STUDIO\tools\ffmpeg.exe",
-        r"C:\Program Files\ffmpeg\bin\ffmpeg.exe",
-        r"C:\ffmpeg\bin\ffmpeg.exe",
+        r"K:\AI_VIDEO_COMMERCIAL_STUDIO\envs\studio\Scripts\ffmpeg.exe",
     ]
     
     for path in paths_to_check:
