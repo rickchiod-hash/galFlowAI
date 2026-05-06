@@ -675,6 +675,62 @@ async def get_diagnostic_bundle():
         raise error_response("DIAGNOSTIC_FAILED", str(e), status_code=500)
 
 
+@app.post("/api/projects/{project_id}/prompt-pack")
+async def create_prompt_pack(project_id: str, request: dict):
+    """Create Prompt Context Pack."""
+    try:
+        from app.application.use_cases.prompt_use_cases import CreatePromptPackUseCase
+        uc = CreatePromptPackUseCase()
+        result = uc.execute(
+            project_id=project_id,
+            script=request.get("script", ""),
+            scenes=request.get("scenes", []),
+            visual_style=request.get("visual_style", "cinematic")
+        )
+        
+        if result["ok"]:
+            return success_response(result["data"], "Prompt pack created")
+        else:
+            raise error_response("PROMPT_PACK_CREATE_FAILED", result["error"], status_code=500)
+    except Exception as e:
+        logger.error("Prompt pack creation failed: %s", e)
+        raise error_response("PROMPT_PACK_CREATE_FAILED", str(e), status_code=500)
+
+
+@app.get("/api/projects/{project_id}/prompt-pack")
+async def get_prompt_pack(project_id: str):
+    """Get Prompt Context Pack."""
+    try:
+        from app.application.use_cases.prompt_use_cases import LoadPromptPackUseCase
+        uc = LoadPromptPackUseCase()
+        result = uc.execute(project_id=project_id)
+        
+        if result["ok"]:
+            return success_response(result["data"], "Prompt pack retrieved")
+        else:
+            raise error_response("PROMPT_PACK_NOT_FOUND", result["error"], status_code=404)
+    except Exception as e:
+        logger.error("Prompt pack retrieval failed: %s", e)
+        raise error_response("PROMPT_PACK_FAILED", str(e), status_code=500)
+
+
+@app.post("/api/projects/{project_id}/prompt-pack/validate")
+async def validate_prompt_pack(project_id: str, request: dict):
+    """Validate Prompt Context Pack consistency."""
+    try:
+        from app.application.use_cases.prompt_use_cases import ValidatePromptConsistencyUseCase
+        uc = ValidatePromptConsistencyUseCase()
+        result = uc.execute(pack_data=request)
+        
+        if result["ok"]:
+            return success_response(result["data"], "Prompt pack validated")
+        else:
+            raise error_response("PROMPT_VALIDATION_FAILED", result["error"], status_code=500)
+    except Exception as e:
+        logger.error("Prompt pack validation failed: %s", e)
+        raise error_response("PROMPT_VALIDATION_FAILED", str(e), status_code=500)
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host=GRADIO_HOST, port=8000, reload=False)
