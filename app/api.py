@@ -384,7 +384,29 @@ async def list_all_jobs():
         raise error_response("LIST_JOBS_FAILED", str(e), status_code=500)
 
 
-# ========== Video Generation ==========
+@app.post("/api/jobs")
+async def create_job(request: JobCreateRequest):
+    """Create new job using use case."""
+    try:
+        from app.application.use_cases.job_use_cases import AddJobUseCase
+        uc = AddJobUseCase()
+        result = uc.execute(
+            project_id=request.project_id,
+            job_type=request.job_type
+        )
+        
+        if result["ok"]:
+            return success_response(result["data"], "Job created")
+        else:
+            raise error_response("JOB_CREATE_FAILED", result["error"], status_code=500)
+    except Exception as e:
+        logger.error("Job creation failed: %s", e)
+        raise error_response("JOB_CREATE_FAILED", str(e), status_code=500)
+
+class JobCreateRequest(BaseModel):
+    """Request model for job creation."""
+    project_id: str
+    job_type: str = "video_render"
 
 class VideoGenerationRequest(BaseModel):
     """Request model for video generation."""
