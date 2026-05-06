@@ -99,7 +99,7 @@ class JobQueue:
             try:
                 retry_with_backoff(do_load, max_retries=3, base_delay=0.2)
             except Exception as e:
-                logger.error("Erro ao carregar fila: %s", e)
+                logger.error("CAUSA: Erro ao carregar fila: %s | CORREÇÃO: Verifique se queue.json não está corrompido", e)
     
     def _save(self):
         data = {
@@ -115,7 +115,7 @@ class JobQueue:
             retry_with_backoff(do_save, max_retries=3, base_delay=0.2)
             logger.info("Fila salva com sucesso")
         except Exception as e:
-            logger.error("Erro ao salvar fila após retries: %s", e)
+            logger.error("CAUSA: Erro ao salvar fila após retries: %s | CORREÇÃO: Verifique permissões de escrita", e)
     
     @staticmethod
     def clear_all():
@@ -136,7 +136,7 @@ class JobQueue:
     
     def get_next_job(self):
         if self.running_job_id is not None:
-            logger.warning("Job %s ainda em execução.", self.running_job_id)
+            logger.warning("CAUSA: Job %s ainda em execução | CORREÇÃO: Aguarde conclusão ou cancele job", self.running_job_id)
             return None
         
         for job in self.jobs.values():

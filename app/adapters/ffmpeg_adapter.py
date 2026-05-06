@@ -65,7 +65,7 @@ class FFmpegAdapter:
         if self.ffmpeg_path.exists():
             logger.info("FFmpeg encontrado: %s", self.ffmpeg_path)
             return True
-        logger.warning("FFmpeg não encontrado em %s ou no PATH", self.ffmpeg_path)
+        logger.warning("CAUSA: FFmpeg não encontrado em %s ou no PATH | CORREÇÃO: Verifique se FFmpeg está instalado e no PATH", self.ffmpeg_path)
         return False
     
     def is_available(self) -> bool:
@@ -137,14 +137,14 @@ class FFmpegAdapter:
                     "method": "static_text"
                 }
             else:
-                logger.error("Erro FFmpeg: %s", result.stderr[-500:] if result.stderr else "Sem erro")
+                logger.error("CAUSA: Erro FFmpeg: %s | CORREÇÃO: Verifique parâmetros de vídeo/áudio", result.stderr[-500:] if result.stderr else "Sem erro")
                 return {
                     "success": False,
                     "error": result.stderr[-500:] if result.stderr else "Erro desconhecido"
                 }
                 
         except Exception as e:
-            logger.error("Exceção ao criar vídeo estático: %s", str(e))
+            logger.error("CAUSA: Exceção ao criar vídeo estático: %s | CORREÇÃO: Verifique se imagem e áudio estão acessíveis", str(e))
             return {
                 "success": False,
                 "error": str(e)
@@ -241,14 +241,14 @@ class FFmpegAdapter:
                     "audio_added": audio_path is not None
                 }
             else:
-                logger.error("Erro ao concatenar: %s", result.stderr[-500:] if result.stderr else "Sem erro")
+                logger.error("CAUSA: Erro ao concatenar: %s | CORREÇÃO: Verifique se vídeos de cena existem e são compatíveis", result.stderr[-500:] if result.stderr else "Sem erro")
                 return {
                     "success": False,
                     "error": result.stderr[-500:] if result.stderr else "Erro desconhecido"
                 }
                 
         except Exception as e:
-            logger.error("Exceção ao concatenar vídeos: %s", str(e))
+            logger.error("CAUSA: Exceção ao concatenar vídeos: %s | CORREÇÃO: Verifique integridade dos arquivos de vídeo", str(e))
             return {
                 "success": False,
                 "error": str(e)
@@ -320,7 +320,7 @@ def create_storyboard_video(project_id: str, scenes: list) -> Path or None:
     
     adapter = FFmpegAdapter()
     if not adapter.is_available():
-        logger.error("FFmpeg não disponível. Impossível criar vídeo.")
+        logger.error("CAUSA: FFmpeg não disponível | CORREÇÃO: Instale FFmpeg e adicione ao PATH")
         return None
     
     proj_dir = PROJECTS_DIR / project_id
@@ -349,7 +349,7 @@ def create_storyboard_video(project_id: str, scenes: list) -> Path or None:
             scene_videos.append(str(scene_video))
     
     if not scene_videos:
-        logger.error("Nenhum vídeo de cena criado.")
+        logger.error("CAUSA: Nenhum vídeo de cena criado | CORREÇÃO: Verifique se cenas foram geradas corretamente")
         return None
     
     # Concatena todos
@@ -411,6 +411,6 @@ def create_placeholder_image(output_path: Path, text: str):
         img.save(str(output_path))
         logger.info("Placeholder criado: %s", output_path.name)
     except ImportError:
-        logger.warning("Pillow não instalado. Imagem placeholder não criada.")
+        logger.warning("CAUSA: Pillow não instalado | CORREÇÃO: pip install Pillow")
     except Exception as e:
-        logger.error("Erro ao criar placeholder: %s", str(e))
+        logger.error("CAUSA: Erro ao criar placeholder: %s | CORREÇÃO: Verifique permissões e espaço em disco", str(e))

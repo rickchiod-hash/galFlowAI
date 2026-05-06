@@ -90,7 +90,7 @@ def _load_versions(project_id: str) -> List[Dict]:
     try:
         return json.loads(versions_file.read_text(encoding="utf-8"))
     except Exception as e:
-        logger.error("Failed to load versions: %s", e)
+        logger.error("CAUSA: Failed to load versions: %s | CORREÇÃO: Verify script_versions.json exists and is valid JSON", e)
         return []
 
 
