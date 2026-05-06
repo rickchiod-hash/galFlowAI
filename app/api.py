@@ -567,10 +567,44 @@ async def websocket_progress(websocket: WebSocket, job_id: str):
     except WebSocketDisconnect:
         pass
     except Exception as e:
-             try:
-                 await websocket.send_json({"error": str(e)})
-             except Exception:
-                 pass
+         try:
+              await websocket.send_json({"error": str(e)})
+         except Exception:
+             pass
+
+
+@app.get("/api/metrics")
+async def get_metrics():
+    """Get metrics summary."""
+    try:
+        from app.application.use_cases.metrics_use_cases import GetMetricsSummaryUseCase
+        uc = GetMetricsSummaryUseCase()
+        result = uc.execute()
+        
+        if result["ok"]:
+            return success_response(result["data"], "Metrics retrieved")
+        else:
+            raise error_response("METRICS_FAILED", result["error"], status_code=500)
+    except Exception as e:
+        logger.error("Metrics retrieval failed: %s", e)
+        raise error_response("METRICS_FAILED", str(e), status_code=500)
+
+
+@app.get("/api/metrics/operations")
+async def get_recent_operations(limit: int = 10):
+    """Get recent operations."""
+    try:
+        from app.application.use_cases.metrics_use_cases import GetRecentOperationsUseCase
+        uc = GetRecentOperationsUseCase()
+        result = uc.execute(limit=limit)
+        
+        if result["ok"]:
+            return success_response(result["data"], "Operations retrieved")
+        else:
+            raise error_response("OPERATIONS_FAILED", result["error"], status_code=500)
+    except Exception as e:
+        logger.error("Operations retrieval failed: %s", e)
+        raise error_response("OPERATIONS_FAILED", str(e), status_code=500)
 
 
 if __name__ == "__main__":
