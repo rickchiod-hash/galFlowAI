@@ -908,6 +908,40 @@ async def validate_visual_consistency(project_id: str, request: dict):
         raise error_response("VISUAL_VALIDATION_FAILED", str(e), status_code=500)
 
 
+@app.get("/api/health/dashboard")
+async def get_health_dashboard():
+    """Get comprehensive health dashboard."""
+    try:
+        from app.application.use_cases.observability_use_cases import GetHealthDashboardUseCase
+        uc = GetHealthDashboardUseCase()
+        result = uc.execute()
+        
+        if result["ok"]:
+            return success_response(result["data"], "Health dashboard retrieved")
+        else:
+            raise error_response("HEALTH_DASHBOARD_FAILED", result["error"], status_code=500)
+    except Exception as e:
+        logger.error("Health dashboard failed: %s", e)
+        raise error_response("HEALTH_DASHBOARD_FAILED", str(e), status_code=500)
+
+
+@app.get("/api/logs/structured")
+async def get_structured_logs(level: Optional[str] = None, limit: int = 100):
+    """Get logs in structured JSON format."""
+    try:
+        from app.application.use_cases.observability_use_cases import GetStructuredLogsUseCase
+        uc = GetStructuredLogsUseCase()
+        result = uc.execute(level=level, limit=limit)
+        
+        if result["ok"]:
+            return success_response(result["data"], "Structured logs retrieved")
+        else:
+            raise error_response("STRUCTURED_LOGS_FAILED", result["error"], status_code=500)
+    except Exception as e:
+        logger.error("Structured logs failed: %s", e)
+        raise error_response("STRUCTURED_LOGS_FAILED", str(e), status_code=500)
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host=GRADIO_HOST, port=8000, reload=False)
