@@ -847,6 +847,67 @@ async def get_script_versions(project_id: str):
         raise error_response("SCRIPT_VERSIONS_FAILED", str(e), status_code=500)
 
 
+@app.post("/api/projects/{project_id}/visual-bible")
+async def create_visual_bible(project_id: str, request: dict):
+    """Create Visual Bible for project."""
+    try:
+        from app.application.use_cases.visual_consistency_use_cases import CreateVisualBibleUseCase
+        uc = CreateVisualBibleUseCase()
+        result = uc.execute(
+            project_id=project_id,
+            color_palette=request.get("color_palette"),
+            style_keywords=request.get("style_keywords"),
+            logo_path=request.get("logo_path", "")
+        )
+        
+        if result["ok"]:
+            return success_response(result["data"], "Visual Bible created")
+        else:
+            raise error_response("VISUAL_BIBLE_CREATE_FAILED", result["error"], status_code=500)
+    except Exception as e:
+        logger.error("Visual Bible creation failed: %s", e)
+        raise error_response("VISUAL_BIBLE_CREATE_FAILED", str(e), status_code=500)
+
+
+@app.post("/api/projects/{project_id}/scene-contracts")
+async def generate_scene_contracts(project_id: str, request: dict):
+    """Generate scene contracts with visual consistency."""
+    try:
+        from app.application.use_cases.visual_consistency_use_cases import GenerateScenePromptsUseCase
+        uc = GenerateScenePromptsUseCase()
+        result = uc.execute(
+            project_id=project_id,
+            script=request.get("script", ""),
+            scenes=request.get("scenes", []),
+            visual_bible=request.get("visual_bible")
+        )
+        
+        if result["ok"]:
+            return success_response(result["data"], "Scene contracts generated")
+        else:
+            raise error_response("SCENE_CONTRACTS_FAILED", result["error"], status_code=500)
+    except Exception as e:
+        logger.error("Scene contracts generation failed: %s", e)
+        raise error_response("SCENE_CONTRACTS_FAILED", str(e), status_code=500)
+
+
+@app.post("/api/projects/{project_id}/validate-visual")
+async def validate_visual_consistency(project_id: str, request: dict):
+    """Validate visual consistency across scenes."""
+    try:
+        from app.application.use_cases.visual_consistency_use_cases import ValidateVisualConsistencyUseCase
+        uc = ValidateVisualConsistencyUseCase()
+        result = uc.execute(contracts=request.get("contracts", []))
+        
+        if result["ok"]:
+            return success_response(result["data"], "Visual consistency validated")
+        else:
+            raise error_response("VISUAL_VALIDATION_FAILED", result["error"], status_code=500)
+    except Exception as e:
+        logger.error("Visual consistency validation failed: %s", e)
+        raise error_response("VISUAL_VALIDATION_FAILED", str(e), status_code=500)
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host=GRADIO_HOST, port=8000, reload=False)
