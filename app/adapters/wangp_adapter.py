@@ -35,7 +35,7 @@ class WanGPAdapter:
         Args:
             wangp_path: Caminho para a instalação do WanGP. Se None, usa padrão.
         """
-        self.wangp_path = wangp_path or r"K:\AI_VIDEO_COMMERCIAL_STUDIO\engines\Wan2GP"
+        self.wangp_path = wangp_path or r"K:\AI_VIDEO_COMERCIAL_STUDIO\engines\Wan2GP"
         self.available = self._check_availability()
         self.model_preset = "1.3B"  # Padrão para GTX 1660 Super (6GB VRAM)
         self.resolution = "480p"     # Seguro para 6GB VRAM
@@ -59,18 +59,15 @@ class WanGPAdapter:
             logger.info(f"Arquivo principal do WanGP não encontrado em {self.wangp_path}")
             return False
         
-        # Verifica se Python consegue importar os módulos necessários
+        # Verifica se PyTorch está instalado (simplificado)
         try:
-            # Tenta verificar se o ambiente tem as deps necessárias
-            test_cmd = [self._get_python_executable(), "-c", "import torch; print('torch ok')"]
-            result = subprocess.run(test_cmd, capture_output=True, text=True, timeout=10)
-            if result.returncode != 0:
-                logger.warning("PyTorch não encontrado no ambiente")
-                return False
-        except:
-            pass
-        
-        return True
+            import torch
+            self.available = True
+            return True
+        except ImportError:
+            logger.warning("PyTorch não encontrado no ambiente")
+            self.available = False
+            return False
     
     def is_available(self) -> bool:
         """Retorna se WanGP está disponível"""
