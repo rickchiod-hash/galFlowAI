@@ -731,6 +731,63 @@ async def validate_prompt_pack(project_id: str, request: dict):
         raise error_response("PROMPT_VALIDATION_FAILED", str(e), status_code=500)
 
 
+@app.post("/api/scripts/score")
+async def score_script(request: dict):
+    """Score a script based on quality criteria."""
+    try:
+        from app.application.use_cases.script_quality_use_cases import ScoreScriptUseCase
+        uc = ScoreScriptUseCase()
+        result = uc.execute(
+            script=request.get("script", ""),
+            project_id=request.get("project_id", "")
+        )
+        
+        if result["ok"]:
+            return success_response(result["data"], "Script scored")
+        else:
+            raise error_response("SCRIPT_SCORE_FAILED", result["error"], status_code=500)
+    except Exception as e:
+        logger.error("Script scoring failed: %s", e)
+        raise error_response("SCRIPT_SCORE_FAILED", str(e), status_code=500)
+
+
+@app.get("/api/scripts/templates/{commercial_type}")
+async def get_script_template(commercial_type: str = "produto"):
+    """Get script template by commercial type."""
+    try:
+        from app.application.use_cases.script_quality_use_cases import GetScriptTemplateUseCase
+        uc = GetScriptTemplateUseCase()
+        result = uc.execute(commercial_type=commercial_type)
+        
+        if result["ok"]:
+            return success_response(result["data"], "Template retrieved")
+        else:
+            raise error_response("TEMPLATE_NOT_FOUND", result["error"], status_code=404)
+    except Exception as e:
+        logger.error("Template retrieval failed: %s", e)
+        raise error_response("TEMPLATE_FAILED", str(e), status_code=500)
+
+
+@app.post("/api/briefing/enrich")
+async def enrich_briefing(request: dict):
+    """Enrich briefing with suggestions."""
+    try:
+        from app.application.use_cases.script_quality_use_cases import EnrichBriefingUseCase
+        uc = EnrichBriefingUseCase()
+        result = uc.execute(
+            briefing=request.get("briefing", ""),
+            project_id=request.get("project_id", "")
+        )
+        
+        if result["ok"]:
+            return success_response(result["data"], "Briefing enriched")
+        else:
+            raise error_response("BRIEFING_ENRICH_FAILED", result["error"], status_code=500)
+    except Exception as e:
+        logger.error("Briefing enrichment failed: %s", e)
+        raise error_response("BRIEFING_ENRICH_FAILED", str(e), status_code=500)
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host=GRADIO_HOST, port=8000, reload=False)
