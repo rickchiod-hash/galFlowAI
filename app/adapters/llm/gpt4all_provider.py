@@ -9,14 +9,14 @@ from app.adapters.llm.base_provider import BaseLLMProvider
 class GPT4AllProvider(BaseLLMProvider):
     """Provider using GPT4All Python package."""
     
-    def __init__(self, model_dir: str = "K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/models/gpt4all"):
+    def __init__(self, model_dir: str = "K:/AI_VIDEO_COMERCIAL_STUDIO/models/gpt4all"):
         super().__init__("GPT4AllProvider")
         self.model_dir = Path(model_dir)
         self.model = None
         self.model_name = None
     
-    def _select_best_model(self, model_files: List[Path]) -> Path:
-        """Select best model for 6GB VRAM."""
+    def _select_best_model(self, model_files: List[Path]) -> str:
+        """Select best model for 6GB VRAM, return filename string."""
         if not model_files:
             return None
         
@@ -35,29 +35,28 @@ class GPT4AllProvider(BaseLLMProvider):
             return (ext_score, quant_score, size_score)
         
         sorted_files = sorted(model_files, key=model_score)
-        return sorted_files[0]
+        return sorted_files[0].name  # Return filename string, not Path object
     
-        def is_available(self) -> bool:
-            """Check if GPT4All is installed and model exists."""
-            try:
-                from gpt4all import GPT4All
-                if not self.model_dir.exists():
-                    self.last_error = f"Model dir not found: {self.model_dir}"
-                    self.available = False
-                    return False
-                
-                # Check for any model file
-                model_files = list(self.model_dir.glob("*.gguf")) + list(self.model_dir.glob("*.bin"))
-                if not model_files:
-                    self.last_error = "No model files found"
-                    self.available = False
-                    return False
-                
-                # Select best model for 6GB VRAM
-                self.model_name = self._select_best_model(model_files)
-                self.model = GPT4All(self.model_name, model_path=str(self.model_dir))
-                self.available = True
-                return True
+    def is_available(self) -> bool:
+        """Check if GPT4All is installed and model exists."""
+        try:
+            from gpt4all import GPT4All  # Just check if package is installed
+            if not self.model_dir.exists():
+                self.last_error = f"Model dir not found: {self.model_dir}"
+                self.available = False
+                return False
+            
+            # Check for any model file
+            model_files = list(self.model_dir.glob("*.gguf")) + list(self.model_dir.glob("*.bin"))
+            if not model_files:
+                self.last_error = "No model files found"
+                self.available = False
+                return False
+            
+            # Just mark as available if files exist (don't load model here)
+            self.model_name = model_files[0].name  # Use first available
+            self.available = True
+            return True
         except ImportError:
             self.last_error = "gpt4all package not installed"
             self.available = False
@@ -84,9 +83,9 @@ class GPT4AllProvider(BaseLLMProvider):
             
             response = self.model.generate(
                 f"""Voce e um roteirista profissional. Crie um roteiro para comercial:
-
+ 
 {prompt}
-
+ 
 Roteiro:""",
                 max_tokens=1000,
                 temp=0.7
