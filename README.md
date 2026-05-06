@@ -59,6 +59,7 @@
 - Fallback operacional em cadeia para não interromper geração.
 - Estrutura inicial de use cases na camada de aplicação.
 - Job queue com mutex (H11 concluído: 16 testes passando).
+- Metrics & Monitoring (H12 concluído: 10 testes passando).
 - Documentação técnica segmentada em `docs/`.
 
 ### 🟨 Em evolução (não concluído)
