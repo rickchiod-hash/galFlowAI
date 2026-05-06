@@ -60,18 +60,16 @@ def generate_script_with_llm(briefing: str, mode: str = "auto") -> Dict:
             "Script generated using %s (time: %.2fs, quality: %s)",
             result["provider"], result["time"], result["quality"]
         )
-        return result
-    except Exception as e:
-        logger.error("Script generation failed: %s", e)
-        # Ultimate fallback
-        from app.adapters.llm.base_provider import TemplateProvider
-        tp = TemplateProvider()
         return {
-            "script": tp.generate(briefing),
-            "provider": "TemplateProvider",
-            "time": 0,
-            "quality": "fallback"
+            "ok": True,
+            "script": result.get("script", ""),
+            "provider": result.get("provider", "Unknown"),
+            "time": result.get("time", 0),
+            "quality": result.get("quality", "fallback")
         }
+    except Exception as e:
+        logger.error("CAUSA: Script generation failed | CORREÇÃO: Check LLM provider availability")
+        return {"ok": False, "error": str(e)}
 
 
 # ========== Version Management ==========
