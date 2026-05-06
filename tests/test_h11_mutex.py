@@ -98,8 +98,7 @@ class TestGetQueueStatusMutex:
     
     def test_status_shows_running_job(self):
         """Queue status should show running job ID."""
-        with patch('app.application.use_cases.job_use_cases.JobQueue') as mock_class:
-            mock_queue = MagicMock()
+        with patch('app.application.use_cases.job_use_cases.queue') as mock_queue:
             mock_queue.get_status.return_value = {
                 "total": 2,
                 "queued": 1,
@@ -108,7 +107,6 @@ class TestGetQueueStatusMutex:
                 "failed": 0,
                 "running_job_id": "job_001"
             }
-            mock_class.return_value = mock_queue
             
             uc = GetQueueStatusUseCase()
             result = uc.execute()

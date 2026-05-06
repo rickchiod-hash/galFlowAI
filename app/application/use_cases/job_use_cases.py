@@ -1,7 +1,8 @@
 """Use cases for job queue management (H11)."""
 from typing import Dict, Any
 from app.application.use_cases.base import UseCase, UseCaseError
-from app.jobs.queue import JobQueue, JobStatus
+from app.jobs.queue import JobQueue, JobStatus, queue
+
 
 class AddJobUseCase(UseCase):
     """Add job to queue.
@@ -14,7 +15,7 @@ class AddJobUseCase(UseCase):
     
     def __init__(self):
         super().__init__()
-        self.queue = JobQueue()
+        self.queue = queue
     
     def execute(self, project_id: str, job_type: str = "video_render") -> Dict[str, Any]:
         """Execute add job use case."""
@@ -24,7 +25,7 @@ class AddJobUseCase(UseCase):
                 return self._build_error("Invalid project_id or job_type")
             
             # 2. Execute business logic
-            job_id = self.queue.add_job(project_id, job_type)
+            job_id = self.queue.add_job(job_type, project_id)
             
             # 3. Return result with status
             return self._build_success(
@@ -52,7 +53,7 @@ class RemoveJobUseCase(UseCase):
     
     def __init__(self):
         super().__init__()
-        self.queue = JobQueue()
+        self.queue = queue
     
     def execute(self, job_id: str) -> Dict[str, Any]:
         """Execute remove job use case."""
@@ -91,7 +92,7 @@ class ListJobsUseCase(UseCase):
     
     def __init__(self):
         super().__init__()
-        self.queue = JobQueue()
+        self.queue = queue
     
     def execute(self) -> Dict[str, Any]:
         """Execute list jobs use case."""
@@ -123,7 +124,7 @@ class GetQueueStatusUseCase(UseCase):
     
     def __init__(self):
         super().__init__()
-        self.queue = JobQueue()
+        self.queue = queue
     
     def execute(self) -> Dict[str, Any]:
         """Execute get queue status use case."""

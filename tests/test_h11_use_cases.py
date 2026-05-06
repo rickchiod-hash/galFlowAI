@@ -6,15 +6,14 @@ from app.application.use_cases.job_use_cases import (
     ListJobsUseCase, GetQueueStatusUseCase
 )
 
+
 class TestAddJobUseCase:
     """Test AddJob use case."""
     
     def test_execute_success(self):
         """Test successful job addition."""
-        with patch('app.application.use_cases.job_use_cases.JobQueue') as mock_queue_class:
-            mock_queue = MagicMock()
+        with patch('app.application.use_cases.job_use_cases.queue') as mock_queue:
             mock_queue.add_job.return_value = "job_001"
-            mock_queue_class.return_value = mock_queue
             
             uc = AddJobUseCase()
             result = uc.execute(project_id="proj_001", job_type="video_render")
@@ -36,10 +35,8 @@ class TestRemoveJobUseCase:
     
     def test_execute_success(self):
         """Test successful job removal."""
-        with patch('app.application.use_cases.job_use_cases.JobQueue') as mock_queue_class:
-            mock_queue = MagicMock()
+        with patch('app.application.use_cases.job_use_cases.queue') as mock_queue:
             mock_queue.remove_job.return_value = True
-            mock_queue_class.return_value = mock_queue
             
             uc = RemoveJobUseCase()
             result = uc.execute(job_id="job_001")
@@ -49,10 +46,8 @@ class TestRemoveJobUseCase:
     
     def test_execute_job_not_found(self):
         """Test job not found."""
-        with patch('app.application.use_cases.job_use_cases.JobQueue') as mock_queue_class:
-            mock_queue = MagicMock()
+        with patch('app.application.use_cases.job_use_cases.queue') as mock_queue:
             mock_queue.remove_job.return_value = False
-            mock_queue_class.return_value = mock_queue
             
             uc = RemoveJobUseCase()
             result = uc.execute(job_id="job_999")
@@ -65,12 +60,10 @@ class TestListJobsUseCase:
     
     def test_execute_success(self):
         """Test successful job listing."""
-        with patch('app.application.use_cases.job_use_cases.JobQueue') as mock_queue_class:
-            mock_queue = MagicMock()
+        with patch('app.application.use_cases.job_use_cases.queue') as mock_queue:
             mock_queue.list_jobs.return_value = [
                 {"job_id": "job_001", "status": "queued"}
             ]
-            mock_queue_class.return_value = mock_queue
             
             uc = ListJobsUseCase()
             result = uc.execute()
@@ -84,10 +77,8 @@ class TestGetQueueStatusUseCase:
     
     def test_execute_success(self):
         """Test successful status retrieval."""
-        with patch('app.application.use_cases.job_use_cases.JobQueue') as mock_queue_class:
-            mock_queue = MagicMock()
+        with patch('app.application.use_cases.job_use_cases.queue') as mock_queue:
             mock_queue.get_status.return_value = {"total": 0, "running": 0}
-            mock_queue_class.return_value = mock_queue
             
             uc = GetQueueStatusUseCase()
             result = uc.execute()
