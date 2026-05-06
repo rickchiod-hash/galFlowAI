@@ -148,6 +148,23 @@ class JobQueue:
                 return job
         return None
     
+    def get_status(self):
+        """Get queue status summary."""
+        total = len(self.jobs)
+        running = len([j for j in self.jobs.values() if j.status == JobStatus.RUNNING])
+        completed = len([j for j in self.jobs.values() if j.status == JobStatus.COMPLETED])
+        failed = len([j for j in self.jobs.values() if j.status == JobStatus.FAILED])
+        queued = len([j for j in self.jobs.values() if j.status == JobStatus.QUEUED])
+        
+        return {
+            "total": total,
+            "running": running,
+            "completed": completed,
+            "failed": failed,
+            "queued": queued,
+            "running_job_id": self.running_job_id
+        }
+    
     def get_job(self, job_id):
         return self.jobs.get(job_id)
     

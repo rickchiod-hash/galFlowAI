@@ -329,25 +329,13 @@ async def get_hardware_info():
 
 @app.get("/api/jobs/{job_id}")
 async def get_job_status(job_id: str):
-    """Get job status using use case."""
-    try:
-        from app.application.use_cases.job_use_cases import GetQueueStatusUseCase
-        uc = GetQueueStatusUseCase()
-        status = uc.execute()
-        
-        if status["ok"]:
-            # Find specific job
-            jobs = status["data"]["jobs"]
-            job = next((j for j in jobs if j["job_id"] == job_id), None)
-            if job:
-                return success_response(job, "Job status retrieved")
-            else:
-                raise error_response("JOB_NOT_FOUND", "Job not found", status_code=404)
-        else:
-            raise error_response("QUEUE_STATUS_FAILED", status["error"], status_code=500)
-    except Exception as e:
-        logger.error("Job status check failed: %s", e)
-        raise error_response("JOB_STATUS_FAILED", str(e), status_code=500)
+    """Get job status directly from queue."""
+    from app.jobs.queue import queue
+    job = queue.get_job(job_id)
+    if job:
+        return success_response(job.to_dict(), "Job status retrieved")
+    else:
+        return error_response("JOB_NOT_FOUND", "Job not found", status_code=404)
 
 
 @app.post("/api/jobs/{job_id}/cancel")
