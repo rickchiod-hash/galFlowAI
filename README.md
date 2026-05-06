@@ -1,195 +1,192 @@
-# FlowForgeAI - Gerador de Vídeos Comerciais com IA Local
+# GalFlowAI
 
-[![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)]()
-[![Python](https://img.shields.io/badge/python-3.10+-blue)]()
-[![License](https://img.shields.io/badge/license-MIT-green)]()
+<p align="center">
+  <img src="frontend/assets/logo-galflowai.svg" alt="GalFlowAI logo" width="360" />
+</p>
 
-## 🎯 Visão Geral
-
-FlowForgeAI é uma plataforma **100% local** para geração de comerciais curtos para redes sociais, rodando em Windows com hardware modesto (GTX 1660 Super 6GB VRAM).
-
-**Características principais:**
-- ✅ 100% offline (sem APIs pagas)
-- ✅ Hardware-aware (otimizado para 6GB VRAM)
-- ✅ Interface web (Gradio em http://127.0.0.1:7860)
-- ✅ Múltiplos provedores LLM (GPT4All, LM Studio, KoboldCpp)
-- ✅ Fallback robusto (WanGP → FFmpeg → Template)
-
-## 🚀 Status do Projeto
-
-### ✅ Concluído (H1-H8)
-- **H1**: Correção crítica de sintaxe (100+ arquivos)
-- **H2**: Central de logs operacional
-- **H3**: Infraestrutura LLM (ProviderRouter + Strategy + Factory)
-- **H4a**: Download modelo GPT4All (mistral-7b-openorca.Q4_0.gguf - 4.11GB)
-- **H4b**: PyTorch 2.11.0+cpu instalado
-- **H6**: WanGP Adapter funcional (1.3B, 480p para 6GB VRAM)
-- **H7**: 31 testes unitários passando
-
-### ⏳ Em Andamento
-- **H5a**: LM Studio (código pronto, aguardando instalação manual)
-- **H5b**: KoboldCpp (código pronto, aguardando download de modelo)
-- **H8**: Documentação e validação final
-
-### ✅ Concluído (H9-H10)
-- **H9**: Integração Fim-a-Fim (VideoService ✅)
-- **H10**: Application Layer / Use Cases (80% completo)
-  - Estrutura `app/application/use_cases/` criada
-  - 7+ use cases implementados com padrão de 3 pontos
-  - 14 testes H10 passando (100%)
-  - API refatorada para thin controller
-  - Commits atômicos realizados
-
-### 📋 Próximos Passos
-- H11: Sistema de fila de jobs
-- H12: Métricas e monitoramento
-- H13: Hardware-Awareness Integration
-- H14: Observability & Structured Logs
-
-## 🛠️ Instalação
-
-### Pré-requisitos
-- Windows 10/11
-- Python 3.10+ (recomendado 3.10.20 para compatibilidade)
-- 16GB RAM
-- GPU NVIDIA com 6GB+ VRAM (GTX 1660 Super testado)
-- 50GB disco livre (K:)
-
-### Ambiente
-```powershell
-# Criar ambiente virtual
-cd K:\AI_VIDEO_COMERCIAL_STUDIO
-python -m venv envs/studio
-
-# Ativar
-envs\studio\Scripts\Activate.ps1
-
-# Instalar dependências
-pip install -r requirements.txt
-```
-
-### Modelos (Opcional - Fallback Disponível)
-```powershell
-# GPT4All (já baixado automaticamente)
-# Local: K:\AI_VIDEO_COMERCIAL_STUDIO\models\gpt4all\
-
-# WanGP (já existe em engines/Wan2GP)
-# PyTorch CPU instalado via: python.exe -m pip install torch --index-url https://download.pytorch.org/whl/cpu
-```
-
-## 🎮 Como Usar
-
-### Iniciar Aplicação
-```powershell
-cd K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta
-K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe main.py
-```
-
-Acesse: **http://127.0.0.1:7860**
-
-### Gerar Comercial (Linha de Comando)
-```powershell
-python example_video_generation.py
-```
-
-### Rodar Testes
-```powershell
-# Testes H10 (rápido - 14 testes)
-K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe -m pytest tests/test_h10_use_cases.py -v
-
-# Todos os testes (demora ~4 min)
-K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe -m pytest tests/ --collect-only
-
-# Testes específicos
-K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe -m pytest test_all_stories.py -v
-K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe -m pytest test_video_service.py -v
-```
-
-## 🏗️ Arquitetura
-
-```
-FlowForgeAI/
-├── app/
-│   ├── application/      # Camada de aplicação (Use Cases)
-│   │   └── use_cases/      # Casos de uso (padrão 3 pontos)
-│   ├── adapters/          # Adapters para motores externos
-│   │   ├── wangp_adapter.py      # WanGP (vídeo IA)
-│   │   ├── ffmpeg_adapter.py     # FFmpeg (fallback)
-│   │   └── llm/                  # Provedores LLM
-│   ├── services/          # Serviços de negócio
-│   │   ├── video_service.py      # Geração de vídeo
-│   │   └── script_service.py     # Roteiros
-│   ├── pipeline/         # Pipeline de processamento
-│   │   ├── script_generator.py   # Roteiros
-│   │   ├── scene_splitter.py     # Divisão em cenas
-│   │   └── prompt_builder.py     # Prompts para vídeo
-│   └── api.py            # API FastAPI (thin controller)
-├── projects/              # Projetos gerados
-│   └── YYYYMMDD_HHMMSS_nome/
-│       ├── brief/        # Briefing
-│       ├── script/       # Roteiro
-│       ├── prompts/      # Prompts de vídeo
-│       ├── storyboard/   # Cenas
-│       ├── renders/      # Vídeos das cenas
-│       ├── audio/        # Narração
-│       └── final/        # Vídeo final
-└── docs/                 # Documentação
-```
-
-## 🧪 Testes
-
-**Cobertura atual: 212 testes coletados**
-- ✅ test_h10_use_cases.py (14 testes - H10 Use Cases)
-- ✅ test_all_stories.py (15 testes - H1-H8)
-- ✅ test_video_service.py (8 testes)
-- ✅ test_prompt_builder.py (8 testes)
-- ✅ test_scene_splitter.py (9 testes)
-- ✅ test_script_generator.py (6 testes)
-- ✅ test_complete_system.py (integração)
-- ✅ + outros 150+ testes
-
-```powershell
-# Rodar testes H10 (rápido)
-K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe -m pytest tests/test_h10_use_cases.py -v
-
-# Rodar todos (demora ~4 min)
-K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe -m pytest tests/ --collect-only
-```
-
-## 📊 Hardware Suportado
-
-| Componente | Especificação | Status |
-|-------------|---------------|--------|
-| GPU | NVIDIA GTX 1660 Super 6GB | ✅ Testado |
-| RAM | 16GB DDR4 | ✅ OK |
-| CPU | AMD Ryzen 5 5600 6C/12T | ✅ OK |
-| Disco | K: (SSD recomendado) | ✅ OK |
-
-**Configurações automáticas para 6GB VRAM:**
-- Modelo: 1.3B (14B não é padrão)
-- Resolução: 480p/512p
-- Cenas curtas (~5s cada)
-- Uma geração por vez
-- Fallback: WanGP → FFmpeg → Template
-
-## 🤝 Contribuindo
-
-1. Fork o projeto
-2. Crie sua branch (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## 📝 Licença
-
-Distribuído sob licença MIT. Veja `LICENSE` para mais informações.
-
-## 🆘 Suporte
-
-- **Issues**: https://github.com/rickchiod-hash/galFlowAI/issues
-- **Docs**: [docs/VIDEO_SERVICE.md](docs/VIDEO_SERVICE.md)
-- **Logs**: Verifique `projects/*/logs/` para diagnósticos
+<p align="center">
+  <strong>Roteiro → Cenas → IA → Vídeo</strong><br/>
+  Plataforma <strong>local-first</strong> para geração de vídeos comerciais com IA, fallback robusto e foco em operação offline.
+</p>
 
 ---
 
-**Desenvolvido com ❤️ para criação local de conteúdo.**
+## Sumário
+- [Visão do Produto](#visão-do-produto)
+- [Princípios de Arquitetura](#princípios-de-arquitetura)
+- [Status Real do Projeto](#status-real-do-projeto)
+- [Fluxo do Sistema](#fluxo-do-sistema)
+- [Arquitetura Técnica](#arquitetura-técnica)
+- [Começando em 5 minutos](#começando-em-5-minutos)
+- [Execução e Operação](#execução-e-operação)
+- [Qualidade e Testes](#qualidade-e-testes)
+- [Roadmap objetivo](#roadmap-objetivo)
+- [Governança de documentação](#governança-de-documentação)
+
+---
+
+## Visão do Produto
+
+**GalFlowAI** é uma plataforma para criação de comerciais curtos com IA rodando localmente, priorizando:
+
+- privacidade e autonomia (sem dependência obrigatória de API paga);
+- resiliência operacional via fallback;
+- iteração rápida de roteiro e cenas;
+- rastreabilidade técnica do pipeline.
+
+### Naming oficial
+- **Produto e marca:** `GalFlowAI`
+- **Repositório:** `galFlowAI`
+- Referências legadas (ex.: FlowForgeAI) devem aparecer apenas em contexto histórico.
+
+---
+
+## Princípios de Arquitetura
+
+1. **Local-first**: funcional mesmo sem cloud.
+2. **Fail-safe por fallback**: fluxo não deve parar em falha de engine principal.
+3. **Evolução incremental**: mudanças pequenas, testáveis e reversíveis.
+4. **Contrato explícito**: API, erros e estado de job devem ser previsíveis.
+5. **Documentação viva**: README (entrada), BACKLOG (execução), ROADMAP (direção).
+
+---
+
+## Status Real do Projeto
+
+### ✅ Já implementado
+- Pipeline base de criação: roteiro → cenas → render/finalização.
+- Base FastAPI + UI local.
+- Fallback operacional em cadeia para não interromper geração.
+- Estrutura inicial de use cases na camada de aplicação.
+- Documentação técnica segmentada em `docs/`.
+
+### 🟨 Em evolução (não concluído)
+- Contratos de API versionados e testados de ponta a ponta.
+- Padronização formal de envelope de erro.
+- Orquestração de jobs com fila local e estados robustos.
+- Métricas operacionais e observabilidade premium.
+
+---
+
+## Fluxo do Sistema
+
+```mermaid
+flowchart TD
+    A[Briefing] --> B[Geração de roteiro]
+    B --> C[Edição/Aprovação]
+    C --> D[Quebra em cenas]
+    D --> E[Prompts visuais]
+    E --> F[Engine principal de vídeo]
+    F -->|falha| G[Fallback FFmpeg/Template]
+    F -->|sucesso| H[Composição final]
+    G --> H
+    H --> I[Export MP4]
+```
+
+### Estados de alto nível
+
+```mermaid
+stateDiagram-v2
+    [*] --> queued
+    queued --> running
+    running --> succeeded
+    running --> failed
+    failed --> queued: retry
+    running --> canceled
+```
+
+---
+
+## Arquitetura Técnica
+
+```mermaid
+graph LR
+    UI[Frontend/UI] --> API[FastAPI]
+    API --> APP[Application Use Cases]
+    APP --> SVC[Domain Services]
+    SVC --> ADP[Adapters Engines/Providers]
+    ADP --> FS[File System Projects]
+    SVC --> LOG[Log/Metrics]
+```
+
+### Estrutura de diretórios (resumo)
+
+```text
+app/                  # API + camadas de aplicação/serviços
+frontend/             # interface e assets
+docs/                 # documentação técnica por domínio
+tests/                # testes unitários/integrados
+state/                # estado operacional e checkpoints
+scripts/              # automações operacionais
+```
+
+---
+
+## Começando em 5 minutos
+
+## 1) Ambiente
+```bash
+python -m venv .venv
+source .venv/bin/activate   # Linux/macOS
+# .venv\Scripts\activate   # Windows PowerShell
+pip install -r requirements.txt
+```
+
+## 2) Subir aplicação
+```bash
+python run_galFlowAI.py
+```
+
+## 3) Rodar testes básicos
+```bash
+pytest -q
+```
+
+---
+
+## Execução e Operação
+
+- **Entrada recomendada:** `run_galFlowAI.py`
+- **Documentação operacional:** `docs/VIDEO_PIPELINE.md`, `docs/TROUBLESHOOTING.md`
+- **Configuração de provedores locais:** `docs/PROVIDERS_SETUP.md`
+
+---
+
+## Qualidade e Testes
+
+### Estratégia
+- testes unitários para regras de negócio;
+- testes de contrato para API crítica;
+- testes de fallback para cenários de falha;
+- smoke de fluxo local-first.
+
+### Referências
+- Plano de QA: `qa/QA_TEST_PLAN.md`
+- Backlog técnico: `BACKLOG.md`
+
+---
+
+## Roadmap objetivo
+
+Curto prazo:
+1. Contrato de API (`/api/v1`) + testes de contrato.
+2. Envelope padrão de erros.
+3. Fila local de jobs com estados formais.
+
+Médio prazo:
+1. Logs estruturados e métricas por etapa/provider.
+2. observabilidade operacional com diagnóstico rápido.
+
+---
+
+## Governança de documentação
+
+Para cada PR:
+- atualizar docs impactadas no mesmo PR;
+- distinguir claramente **implementado** vs **planejado**;
+- incluir evidência (teste, log, endpoint ou artefato);
+- manter naming oficial **GalFlowAI**.
+
+---
+
+Se algo neste README divergir do comportamento real, abra issue e referencie arquivo/linha para correção rápida.
