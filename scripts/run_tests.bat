@@ -1,5 +1,5 @@
 @echo off
-REM Test Runner for FlowForgeAI - Finds correct Python automatically
+REM Test Runner for GalFlowAI - Finds correct Python automatically
 
 setlocal EnableDelayedExpansion
 
@@ -7,7 +7,7 @@ set BASE_DIR=K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta
 set STUDIO_DIR=K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio
 
 echo ================================
-echo   FlowForgeAI - Test Runner
+echo   GalFlowAI - Test Runner
 echo ================================
 echo.
 

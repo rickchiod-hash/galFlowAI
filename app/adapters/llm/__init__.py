@@ -1,5 +1,5 @@
 """
-LLM Providers package for FlowForgeAI.
+LLM Providers package for GalFlowAI.
 """
 from app.adapters.llm.base_provider import BaseLLMProvider, TemplateProvider
 from app.adapters.llm.provider_router import ProviderRouter

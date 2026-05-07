@@ -1,5 +1,5 @@
 @echo off
-REM Testa pipeline de geração de vídeo FlowForgeAI
+REM Testa pipeline de geração de vídeo GalFlowAI
 
 setlocal EnableDelayedExpansion
 

@@ -1,5 +1,5 @@
 @echo off
-REM FlowForgeAI - Inicialização Direta (sem Microsoft Store)
+REM GalFlowAI - Inicialização Direta (sem Microsoft Store)
 REM Este script não usa a palavra "python" diretamente para evitar o redirecionamento
 
 setlocal EnableDelayedExpansion
@@ -8,7 +8,7 @@ set BASE_DIR=K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta
 set STUDIO_DIR=K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio
 
 echo ================================
-echo   FlowForgeAI - Inicialização
+echo   GalFlowAI - Inicialização
 echo ================================
 echo.
 
@@ -91,7 +91,7 @@ echo ✓ Sintaxe OK
 echo.
 
 REM ========== Subir Aplicação ==========
-echo [3/3] Iniciando FlowForgeAI...
+echo [3/3] Iniciando GalFlowAI...
 echo.
 echo ================================
 echo   ACESSO:

@@ -65,7 +65,7 @@ class TTSAdapter:
             if self.available_engines.get(self.prefer_engine, False):
                 return self.prefer_engine
             else:
-                logger.warning(f"Motor {self.prefer_engine} solicitado, mas não disponível")
+                logger.warning("CAUSA: Motor %s solicitado, mas não disponível | CORREÇÃO: Verifique se motor TTS está instalado", self.prefer_engine)
         
         # Prioridade: kokoro > pyttsx3 > system > silence
         if self.available_engines["kokoro"]:
@@ -120,7 +120,7 @@ class TTSAdapter:
                     "engine": self.selected_engine
                 }
         except Exception as e:
-            logger.error(f"Erro ao gerar áudio: {e}")
+            logger.error("CAUSA: Erro ao gerar áudio: %s | CORREÇÃO: Verifique se motor TTS está funcionando", e)
             return {
                 "success": False,
                 "error": str(e),
@@ -166,7 +166,7 @@ class TTSAdapter:
                 return {"success": False, "error": "Nenhum áudio gerado"}
                 
         except Exception as e:
-            logger.error(f"Erro Kokoro: {e}")
+            logger.error("CAUSA: Erro Kokoro: %s | CORREÇÃO: Verifique se Kokoro TTS está instalado", e)
             return {"success": False, "error": str(e), "engine": "kokoro"}
     
     def _generate_pyttsx3(
@@ -205,7 +205,7 @@ class TTSAdapter:
             }
             
         except Exception as e:
-            logger.error(f"Erro pyttsx3: {e}")
+            logger.error("CAUSA: Erro pyttsx3: %s | CORREÇÃO: Verifique se pyttsx3 está instalado", e)
             return {"success": False, "error": str(e), "engine": "pyttsx3"}
     
     def _generate_system_voice(
@@ -243,7 +243,7 @@ class TTSAdapter:
             }
             
         except Exception as e:
-            logger.error(f"Erro Windows SAPI: {e}")
+            logger.error("CAUSA: Erro Windows SAPI: %s | CORREÇÃO: Verifique se Windows SAPI está acessível", e)
             return {"success": False, "error": str(e), "engine": "system"}
     
     def _generate_silence(
@@ -275,7 +275,7 @@ class TTSAdapter:
             }
             
         except Exception as e:
-            logger.error(f"Erro ao gerar silêncio: {e}")
+            logger.error("CAUSA: Erro ao gerar silêncio: %s | CORREÇÃO: Verifique permissões de escrita", e)
             return {"success": False, "error": str(e), "engine": "silence"}
     
     def get_available_voices(self) -> List[Dict[str, str]]:

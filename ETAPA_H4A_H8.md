@@ -9,7 +9,7 @@
 ## 📋 Visão Geral
 
 - **Objetivo**: Downloads de modelos, configuração de provedores LLM (GPT4All, LM Studio, KoboldCpp, WanGP), validação do sistema
-- **Público**: FlowForgeAI - Sistema de geração de comerciais com IA local
+- **Público**: GalFlowAI - Sistema de geração de comerciais com IA local
 - **Hardware**: Ryzen 5 5600, 16GB RAM, GTX 1660 Super 6GB VRAM
 - **Restrição**: Não usar serviços pagos, rodar 100% local no Windows (disco K:)
 

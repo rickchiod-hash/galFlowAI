@@ -48,7 +48,7 @@ powershell -Command "& 'K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta\scripts\re
 ---
 
 ## Nome do App
-- **Gal AI** (confirmado, não "GalFlow AI" nem "FlowForgeAI")
+- **Gal AI** (confirmado, não "GalFlow AI" nem "GalFlowAI")
 - Interface título: `Gal AI`
 - Janela: `http://127.0.0.1:7860`
 

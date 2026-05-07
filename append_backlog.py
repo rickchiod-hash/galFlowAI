@@ -117,7 +117,7 @@ Critério de aceite:
 ### Front / Gradio
 - precisa usar gr.State para project_id real;
 - remover project_id dummy;
-- padronizar Gal AI em vez de FlowForgeAI;
+- padronizar Gal AI em vez de GalFlowAI;
 - mover textos restantes para PT-BR;
 - separar tabs: Briefing, Roteiro, Consistência Visual, Cenas, Geração, Resultado, Logs e Diagnóstico;
 - melhorar erro por etapa;

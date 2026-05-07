@@ -1,5 +1,5 @@
 @echo off
-REM Instala e configura WanGP para FlowForgeAI
+REM Instala e configura WanGP para GalFlowAI
 REM Destinado para GTX 1660 Super (6GB VRAM) - Modelo 1.3B apenas
 
 setlocal EnableDelayedExpansion
@@ -11,7 +11,7 @@ set MODELS_DIR=%BASE_DIR%\models\wan
 set STUDIO_ENV=%BASE_DIR%\envs\studio
 
 echo ================================
-echo   INSTALAR WAN2GP - FlowForgeAI
+echo   INSTALAR WAN2GP - GalFlowAI
 echo   GTX 1660 Super (6GB VRAM)
 echo ================================
 echo.
@@ -101,7 +101,7 @@ echo ================================
 echo.
 echo Próximos passos:
 echo 1. Execute: scripts\test_wangp_integration.bat
-echo 2. Inicie FlowForgeAI: scripts\start_app_debug.bat
+echo 2. Inicie GalFlowAI: scripts\start_app_debug.bat
 echo 3. Acesse: http://127.0.0.1:7860
 echo 4. Na tab "Gerar Vídeo", o sistema usará WanGP automaticamente se disponível.
 echo.

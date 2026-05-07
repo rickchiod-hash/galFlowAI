@@ -65,7 +65,7 @@ class WanGPAdapter:
             self.available = True
             return True
         except ImportError:
-            logger.warning("PyTorch não encontrado no ambiente")
+            logger.warning("CAUSA: PyTorch não encontrado no ambiente | CORREÇÃO: Instale PyTorch no ambiente studio")
             self.available = False
             return False
     
@@ -94,7 +94,7 @@ class WanGPAdapter:
             duration_seconds: Duração desejada em segundos
             num_frames: Número de frames
             resolution: Resolução (ex: 480p, 512p)
-            model_preset: Modelo (ex: 1.3B, 14B)
+            model_preset: Modelo (ex: 1.3B) - padrão seguro para 6GB VRAM
             progress_callback: Função de callback para progresso
             
         Returns:
@@ -114,10 +114,10 @@ class WanGPAdapter:
         # Validação para hardware limitation
         if self._get_vram_gb() <= 6:
             if model_preset not in ["1.3B"]:
-                logger.warning(f"Modelo {model_preset} muito grande para 6GB VRAM. Usando 1.3B")
+                logger.warning("CAUSA: Modelo %s muito grande para 6GB VRAM | CORREÇÃO: Usando 1.3B (padrão seguro)", model_preset)
                 model_preset = "1.3B"
             if resolution not in ["480p", "512p"]:
-                logger.warning(f"Resolução {resolution} muito alta para 6GB VRAM. Usando 480p")
+                logger.warning("CAUSA: Resolução %s muito alta para 6GB VRAM | CORREÇÃO: Usando 480p (padrão seguro)", resolution)
                 resolution = "480p"
         
         try:
@@ -157,7 +157,7 @@ class WanGPAdapter:
                     "provider": "WanGP"
                 }
             else:
-                logger.error(f"Erro WanGP: {stderr}")
+                logger.error("CAUSA: Erro WanGP: %s | CORREÇÃO: Verifique se WanGP está instalado e configurado", stderr)
                 return {
                     "success": False,
                     "error": stderr,
@@ -165,7 +165,7 @@ class WanGPAdapter:
                 }
                 
         except Exception as e:
-            logger.error(f"Exceção ao executar WanGP: {e}")
+            logger.error("CAUSA: Exceção ao executar WanGP: %s | CORREÇÃO: Verifique ambiente e dependências", e)
             return {
                 "success": False,
                 "error": str(e),

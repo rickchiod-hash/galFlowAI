@@ -94,15 +94,17 @@ class JobQueue:
                     job.params = job_data.get("params", {})
                     job.output_path = job_data.get("output_path")
                     self.jobs[job.job_id] = job
+                self.running_job_id = data.get("running_job_id")
                 logger.info("Fila carregada: %d jobs", len(self.jobs))
             try:
                 retry_with_backoff(do_load, max_retries=3, base_delay=0.2)
             except Exception as e:
-                logger.error("Erro ao carregar fila: %s", e)
+                logger.error("CAUSA: Erro ao carregar fila: %s | CORREÇÃO: Verifique se queue.json não está corrompido", e)
     
     def _save(self):
         data = {
             "jobs": [job.to_dict() for job in self.jobs.values()],
+            "running_job_id": self.running_job_id,
             "updated_at": datetime.now().isoformat()
         }
         
@@ -113,7 +115,7 @@ class JobQueue:
             retry_with_backoff(do_save, max_retries=3, base_delay=0.2)
             logger.info("Fila salva com sucesso")
         except Exception as e:
-            logger.error("Erro ao salvar fila após retries: %s", e)
+            logger.error("CAUSA: Erro ao salvar fila após retries: %s | CORREÇÃO: Verifique permissões de escrita", e)
     
     @staticmethod
     def clear_all():
@@ -134,7 +136,7 @@ class JobQueue:
     
     def get_next_job(self):
         if self.running_job_id is not None:
-            logger.warning("Job %s ainda em execução.", self.running_job_id)
+            logger.warning("CAUSA: Job %s ainda em execução | CORREÇÃO: Aguarde conclusão ou cancele job", self.running_job_id)
             return None
         
         for job in self.jobs.values():
@@ -145,6 +147,23 @@ class JobQueue:
                 self._save()
                 return job
         return None
+    
+    def get_status(self):
+        """Get queue status summary."""
+        total = len(self.jobs)
+        running = len([j for j in self.jobs.values() if j.status == JobStatus.RUNNING])
+        completed = len([j for j in self.jobs.values() if j.status == JobStatus.COMPLETED])
+        failed = len([j for j in self.jobs.values() if j.status == JobStatus.FAILED])
+        queued = len([j for j in self.jobs.values() if j.status == JobStatus.QUEUED])
+        
+        return {
+            "total": total,
+            "running": running,
+            "completed": completed,
+            "failed": failed,
+            "queued": queued,
+            "running_job_id": self.running_job_id
+        }
     
     def get_job(self, job_id):
         return self.jobs.get(job_id)

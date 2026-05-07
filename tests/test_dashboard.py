@@ -1,4 +1,4 @@
-"""Testes para o Dashboard de Projetos - FlowForgeAI"""
+"""Testes para o Dashboard de Projetos - GalFlowAI"""
 
 import sys
 import json
