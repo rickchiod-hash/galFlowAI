@@ -4606,13 +4606,13 @@ Never used •
  This token has no expiration date
 Make sure to copy your personal access token now as you will not be able to see this again.
 
-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 
+[REDACTED PERSONAL ACCESS TOKEN]
 
 ---
 
 ## User
 
-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
+[REDACTED PERSONAL ACCESS TOKEN]
 
 ---
 
