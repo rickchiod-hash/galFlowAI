@@ -208,6 +208,46 @@
 | RC-06 | Falta teste E2E para fallback FFmpeg | Criar teste: mock WanGP falha → verificar se FFmpeg é chamado | P1 |
 | RC-07 | Backups não sistêmicos | Criar `scripts/backup_before_change.bat` automatizado | P2 |
 
+## Item obrigatório de backlog (solicitação direta)
+ 
+Após a etapa atual (`[Pasted ~5 lines]`), executar obrigatoriamente:
+- Criar **3 testes unitários** que validem cenários principais e de falha.
+- Criar cenários de **testes de automação e chamadas de API**.
+- Aumentar cobertura com cenários que simulem a realidade para capturar gaps.
+- Ler `qa/QA_TEST_PLAN.md` e mapear todos os testes implementados até o presente momento.
+- Colocar itens pendentes na fila de revisão/criação/melhoria antes de novas features.
+
+
+---
+
+## Histórias de excelência documental (refinadas e pendentes)
+
+> Escopo desta seção: **apenas histórias pendentes**. Itens já implementados ficam fora do backlog para evitar ruído.
+
+> Objetivo: transformar gaps de qualidade documental em entregas pequenas, auditáveis e com valor direto para operação.
+
+| ID | Prioridade | História | Critérios de aceite objetivos |
+|---|---|---|---|
+| DOC-06 | P1 | Criar seção fixa de riscos técnicos ativos por release | README possui "Riscos Ativos" com top-5; cada risco tem impacto + mitigação + owner. |
+| DOC-07 | P1 | Separar trilha de documentação por persona (operar vs evoluir) | README traz índice "Operação" e "Arquitetura" com links diretos para docs de cada trilha. |
+| DOC-08 | P2 | Quebrar épicos de documentação em histórias executáveis de sprint | 100% dos itens documentais novos têm escopo ≤ 1 sprint e dependências explícitas. |
+| DOC-09 | P1 | Padronizar template de critérios de aceite no backlog | Todas as histórias novas usam padrão: Contexto, Objetivo, Critérios, Evidência. |
+| DOC-10 | P1 | Definir baseline de cobertura por módulo crítico | `qa/QA_TEST_PLAN.md` inclui tabela por módulo com baseline e meta mínima. |
+| DOC-11 | P2 | Implantar ADR leve para decisões arquiteturais | Existe diretório ADR e ao menos 1 ADR para cada mudança estrutural futura. |
+| DOC-12 | P1 | Clarificar prioridades H11-H14 por impacto/risco | `ROADMAP.md` traz ordenação explícita com racional técnico. |
+| DOC-13 | P2 | Criar rastreabilidade roadmap → entrega | Release notes incluem tabela de vínculo entre item planejado e evidência entregue. |
+| DOC-14 | P2 | Definir política de depreciação documental | Docs legadas possuem banner de status: ativa/legada/arquivada + data. |
+| DOC-15 | P1 | Consolidar onboarding em trilha única de quickstart | README oferece quickstart validado em ambiente limpo com no máximo 3 comandos. |
+| DOC-16 | P1 | Formalizar Definition of Done por tipo de mudança | Template de PR com DoD obrigatório para docs, código e testes. |
+| DOC-17 | P2 | Definir SLO/SLA local para operação offline-first | Documento técnico com metas mínimas de disponibilidade e latência local. |
+| DOC-18 | P1 | Adotar checklist de coerência com princípio offline-first | Toda feature nova passa por checklist de dependência externa e fallback. |
+| DOC-19 | P2 | Padronizar playbook de rollback por feature | Existe runbook com passos de rollback e validação pós-reversão. |
+| DOC-20 | P1 | Evoluir guia de contribuição com gates de qualidade | README/CONTRIBUTING exigem docs-sync, evidência e testes mínimos por PR. |
+
+### Sequenciamento recomendado
+1. **Sprint A (P1 crítico):** DOC-06, DOC-07, DOC-09, DOC-12, DOC-15, DOC-16, DOC-18, DOC-20.
+2. **Sprint B (governança):** DOC-10, DOC-11, DOC-13, DOC-14.
+3. **Sprint C (maturidade operacional):** DOC-17, DOC-19.
 ---
 
 ## Sequenciamento recomendado
