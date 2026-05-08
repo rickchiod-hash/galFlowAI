@@ -2,6 +2,24 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
 
+## 2026-05-08 00:05 — Sessão 7: GOV-004 — Padronizar TODOs rastreáveis
+
+### O que fiz
+
+- GOV-004 ✅: Validado 09_GAPS_TODOS_E_DIVIDAS.md (política, formato TODO(GAL-XXX), proibição de genéricos)
+- Criado `tests/test_todo_policy.py` com 4 testes — 4 passed
+- Varredura de código: 0 TODOs genéricos encontrados
+- pytest collect: 462 testes sem erro
+- Atualizados: 00_STATUS_EXECUTIVO.md (4/48, 8%), 05_BACKLOG_PRIORIZADO.md, 06_HISTORIAS_REFINADAS.md, 10_DAILY_LOG.md
+
+### Bloqueios
+
+- Nenhum
+
+### Próximo passo
+
+- GOV-005 — Criar ADR obrigatório para remoções (docs/project-control/11_DECISOES_TECNICAS_ADR.md)
+
 ## 2026-05-07 23:50 — Sessão 5: GOV-002 — Criar fonte de verdade do produto
 
 ### O que fiz

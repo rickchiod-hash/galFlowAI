@@ -5,11 +5,11 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 3/48
+Histórias concluídas: 4/48
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 45
-Percentual concluído: 6%
+Histórias pendentes: 44
+Percentual concluído: 8%
 
 ## Estado atual
 
@@ -17,8 +17,8 @@ Percentual concluído: 6%
 - Último commit analisado: 7017ea8 — "GalFlowAI v0.9 - Phases 1-8 Complete + Phase 9 Partial"
 - Último commit criado pelo agente: 3132eb0 (docs(governance): import GalFlowAI governance pack v2 + GOV-001 checkpoint system)
 - Fase atual: Fase 1 — Antirregressão documental
-- História atual: GOV-003 — Criar matriz de preservação de features ✅ Concluída
-- Próxima ação recomendada: GOV-004 — Padronizar TODOs rastreáveis
+- História atual: GOV-004 — Padronizar TODOs rastreáveis ✅ Concluída
+- Próxima ação recomendada: GOV-005 — Criar ADR obrigatório para remoções
 
 ## Resumo tipo Daily
 
@@ -33,11 +33,14 @@ Percentual concluído: 6%
   - Validado PROJECT_REFERENCE_CONTEXT.md: 8 seções, status "FONTE DE VERDADE DO PRODUTO"
   - Criado teste em `tests/test_product_context.py`: 4 testes — 4 passed
 - GOV-003 ✅: Criado matriz de preservação de features.
-  - Validado FEATURE_PRESERVATION_MATRIX.md: 8 colunas, 10 features obrigatórias (marcadas "Não" removível), 6 features P1
-  - Criado teste em `tests/test_feature_matrix.py`: 5 testes (existence, columns, mandatory, P1, removibility) — 5 passed
-  - Commit: (criado nesta sessão)
+  - Validado FEATURE_PRESERVATION_MATRIX.md: 8 colunas, 10 features obrigatórias, 6 P1
+  - Criado teste em `tests/test_feature_matrix.py`: 5 testes — 5 passed
+- GOV-004 ✅: Padronizado TODOs rastreáveis.
+  - Validado 09_GAPS_TODOS_E_DIVIDAS.md: política, formato obrigatório, padrão TODO(GAL-XXX, proibição de TODO genérico)
+  - Criado teste em `tests/test_todo_policy.py`: 4 testes (existence, sections, pattern, no generic) — 4 passed
+  - Varredura de código: 0 TODOs genéricos encontrados
 - Sessão de importação do Governance Pack v2 concluída.
-- 458 testes coletados sem erro.
+- 462 testes coletados sem erro.
 
 ### O que está sendo feito
 
@@ -67,9 +70,9 @@ Percentual concluído: 6%
 
 - tests/test_checkpoint.py (criado — 3 testes do checkpoint)
 - tests/test_product_context.py (criado — 4 testes do produto)
-- tests/test_feature_matrix.py (criado — 5 testes da matriz)
-- docs/project-control/00_STATUS_EXECUTIVO.md (atualizado — GOV-001/002/003 concluídas)
-- docs/project-control/10_DAILY_LOG.md (atualizado — entrada da sessão GOV-003)
+- tests/test_todo_policy.py (criado — 4 testes da política TODO)
+- docs/project-control/00_STATUS_EXECUTIVO.md (atualizado — GOV-001..004 concluídas)
+- docs/project-control/10_DAILY_LOG.md (atualizado — entrada da sessão GOV-004)
 
 ### Comandos executados
 
@@ -78,6 +81,6 @@ Percentual concluído: 6%
 
 ### Evidências usadas
 
-- Commit HEAD: 19ca21e (docs(governance): GOV-002 criar fonte de verdade do produto)
+- Commit HEAD: f17cbeb (docs(governance): GOV-003 criar matriz de preservacao de features)
 - Branch: master
-- Status: working tree com alterações do usuário (GOV-003 adiciona test_feature_matrix.py)
+- Status: working tree com alterações do usuário (GOV-004 adiciona test_todo_policy.py)
