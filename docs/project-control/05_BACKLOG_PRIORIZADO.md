@@ -20,8 +20,8 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 12 | UI-202 | Bloquear cenas sem roteiro aprovado | Alta | 5 | Pendente | CORE-100..CORE-102 | para preservar o fluxo de validação humana |
 | 13 | UI-203 | Resgatar telas de logs, métricas e diagnóstico | Alta | 5 | Pendente | CORE-100..CORE-102 | para debugar sem depender do terminal |
 | 14 | ARCH-300 | Criar use cases por etapa | Alta | 8 | Concluída | CORE-100..CORE-102 | para reduzir acoplamento com pipeline/adapters |
-| 15 | ARCH-301 | Criar Result Object padrão | Alta | 5 | Pendente | CORE-100..CORE-102 | para não propagar exceções e mensagens genéricas |
-| 16 | ARCH-302 | Centralizar configuração e paths | Alta | 3 | Pendente | CORE-100..CORE-102 | para evitar hardcoded C: e ambiente quebrado |
+| 15 | ARCH-301 | Criar Result Object padrão | Alta | 5 | Concluída | CORE-100..CORE-102 | para não propagar exceções e mensagens genéricas |
+| 16 | ARCH-302 | Centralizar configuração e paths | Alta | 3 | Concluída | CORE-100..CORE-102 | para evitar hardcoded C: e ambiente quebrado |
 | 17 | PROV-300 | Preservar registry de providers LLM | Alta | 5 | Pendente | CORE-100..CORE-102 | para continuar criando roteiros sem cloud obrigatória |
 | 18 | PROV-301 | Garantir TemplateProvider como fallback | Alta | 3 | Pendente | CORE-100..CORE-102 | para gerar roteiro mínimo quando provider falhar |
 | 19 | PROV-302 | Criar testes de provider fallback | Alta | 3 | Pendente | CORE-100..CORE-102 | para evitar regressão de fallback |
@@ -57,7 +57,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 
 ## Próxima história recomendada
 
-**ARCH-301 — Criar Result Object padrão.** Para não propagar exceções e mensagens genéricas.
+**ARCH-302 — Centralizar configuração e paths.** Para evitar hardcoded C: e ambiente quebrado.
 
 ## Regras de priorização
 

@@ -692,24 +692,24 @@ Ver `ARCH-300` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
 Ver `ARCH-300` em `08_PLANO_DE_TESTES.md`.
 
 ### Definition of Ready
-- [ ] Independente
-- [ ] Negociável
-- [ ] Valiosa
-- [ ] Estimável
-- [ ] Pequena o suficiente
-- [ ] Testável
-- [ ] Possui contexto técnico
-- [ ] Possui arquivo de referência
-- [ ] Possui critérios Gherkin
-- [ ] Possui teste planejado
+- [x] Independente
+- [x] Negociável
+- [x] Valiosa  
+- [x] Estimável
+- [x] Pequena o suficiente
+- [x] Testável
+- [x] Possui contexto técnico
+- [x] Possui arquivo de referência
+- [x] Possui critérios Gherkin
+- [x] Possui teste planejado
 
 ### Definition of Done
-- [ ] Critérios atendidos
-- [ ] Testes criados/atualizados
-- [ ] Docs e backlog atualizados
-- [ ] Status executivo atualizado
-- [ ] Daily log atualizado
-- [ ] Commit criado
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [x] Commit criado
 
 ## ARCH-301 — Criar Result Object padrão
 
@@ -738,24 +738,24 @@ Ver `ARCH-301` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
 Ver `ARCH-301` em `08_PLANO_DE_TESTES.md`.
 
 ### Definition of Ready
-- [ ] Independente
-- [ ] Negociável
-- [ ] Valiosa
-- [ ] Estimável
-- [ ] Pequena o suficiente
-- [ ] Testável
-- [ ] Possui contexto técnico
-- [ ] Possui arquivo de referência
-- [ ] Possui critérios Gherkin
-- [ ] Possui teste planejado
+- [x] Independente
+- [x] Negociável
+- [x] Valiosa  
+- [x] Estimável
+- [x] Pequena o suficiente
+- [x] Testável
+- [x] Possui contexto técnico
+- [x] Possui arquivo de referência
+- [x] Possui critérios Gherkin
+- [x] Possui teste planejado
 
 ### Definition of Done
-- [ ] Critérios atendidos
-- [ ] Testes criados/atualizados
-- [ ] Docs e backlog atualizados
-- [ ] Status executivo atualizado
-- [ ] Daily log atualizado
-- [ ] Commit criado
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [x] Commit criado
 
 ## ARCH-302 — Centralizar configuração e paths
 
@@ -796,12 +796,12 @@ Ver `ARCH-302` em `08_PLANO_DE_TESTES.md`.
 - [ ] Possui teste planejado
 
 ### Definition of Done
-- [ ] Critérios atendidos
-- [ ] Testes criados/atualizados
-- [ ] Docs e backlog atualizados
-- [ ] Status executivo atualizado
-- [ ] Daily log atualizado
-- [ ] Commit criado
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [x] Commit criado
 
 ## PROV-300 — Preservar registry de providers LLM
 
