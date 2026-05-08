@@ -2,9 +2,10 @@
 
 from pathlib import Path
 from typing import Dict, Any, Optional
+import os
 
-# Caminhos base
-BASE_DIR = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO")
+# Use BASE_DIR from config for consistency
+from app.config import BASE_DIR
 MODELS_DIR = BASE_DIR / "models"
 ENGINES_DIR = BASE_DIR / "engines"
 

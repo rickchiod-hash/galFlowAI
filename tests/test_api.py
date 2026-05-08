@@ -2,9 +2,10 @@
 Tests for API endpoints.
 """
 import sys
+from pathlib import Path
 import os
 import json
-sys.path.insert(0, "K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta")
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from fastapi.testclient import TestClient
 from app.api import app

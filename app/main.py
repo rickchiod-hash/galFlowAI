@@ -4,7 +4,8 @@ import sys
 from pathlib import Path
 
 # Detect project root
-PROJECT_ROOT = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta")
+from app.config import BASE_DIR
+PROJECT_ROOT = BASE_DIR
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from pipelines.auto_pipeline import run_auto_pipeline
@@ -65,7 +66,7 @@ def create_commercial(briefing, motor_llm="Automático local", progress=gr.Progr
             
             # Se ainda vazio, lê o arquivo diretamente usando Path global
             if not script_text:
-                script_file = Path(f"K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects/{project_id}/script/script.txt")
+                script_file = PROJECT_ROOT / "projects" / project_id / "script/script.txt"
                 if script_file.exists():
                     script_text = script_file.read_text(encoding="utf-8")
             
@@ -611,7 +612,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
             try:
                 import subprocess
                 from pathlib import Path
-                log_file = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/logs/galflowai.log")
+                log_file = PROJECT_ROOT / "logs" / "galflowai.log"
                 if log_file.exists():
                     subprocess.Popen(f'explorer "{log_file}"')
                     return "Arquivo de log aberto."
@@ -716,7 +717,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
                 import json
                 from datetime import datetime
                 
-                projects_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects")
+                projects_dir = PROJECT_ROOT / "projects"
                 if not projects_dir.exists():
                     return [], 0, "Diretório de projetos não encontrado.", {}
                 
@@ -773,7 +774,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
                 from pathlib import Path
                 import subprocess
                 
-                proj_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects") / proj_id
+                proj_dir = PROJECT_ROOT / "projects" / proj_id
                 if proj_dir.exists():
                     subprocess.Popen(f'explorer "{proj_dir}"')
                     return f"Pasta aberta: {proj_dir}"
@@ -787,7 +788,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
                 from pathlib import Path
                 import json
                 
-                proj_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects") / proj_id
+                proj_dir = PROJECT_ROOT / "projects" / proj_id
                 if not proj_dir.exists():
                     return {}, "Projeto não encontrado."
                 
