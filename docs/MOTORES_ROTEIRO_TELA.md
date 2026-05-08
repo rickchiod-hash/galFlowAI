@@ -1,8 +1,8 @@
-# Motores de Roteiro - Gal AI
+# Motores de Roteiro - GalFlowAI
 
 ## Visão Geral
 
-O Gal AI suporta múltiplos motores de roteiro, todos **locais** e **sem API key**.
+O GalFlowAI suporta múltiplos motores de roteiro, todos **locais** e **sem API key**.
 
 ## Motores Disponíveis
 
@@ -104,7 +104,7 @@ GGUF_MODEL_DIR = "K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/models/gguf"
 1. Abra LM Studio → Developer → Local Server
 2. Carregue um modelo → Start Server
 3. Teste: `curl http://localhost:1234/v1/models`
-4. No Gal AI verá: "Motor usado: LMStudioProvider"
+4. No GalFlowAI verá: "Motor usado: LMStudioProvider"
 
 ### Com outros providers:
 - Execute: `scripts\llm\01_detectar_llms_locais.bat`

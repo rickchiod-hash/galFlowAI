@@ -1,1 +1,1 @@
-"""Unit tests for FlowForgeAI."""
+"""Unit tests for GalFlowAI."""

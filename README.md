@@ -47,7 +47,7 @@
 - **Produto e marca:** `GalFlowAI`
 - **Repositório:** `galFlowAI`
 - **Logos:** `galflowai_logo_master.png` (logo principal), `galflowai_app_icon.png` (ícone)
-- Referências legadas (ex.: FlowForgeAI) devem aparecer apenas em contexto histórico.
+- Referências legadas (ex.: GalFlowAI) devem aparecer apenas em contexto histórico.
 
 ---
 
@@ -156,7 +156,7 @@ K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\activate
 ### 2) Subir aplicação
 ```bash
 # Via BAT padrão (configura todas as variáveis)
-scripts\start_flowforgeai_standard.bat
+scripts\start_GalFlowAI_standard.bat
 
 # Ou diretamente
 python run_galFlowAI.py
@@ -175,7 +175,7 @@ pytest -q
 - **Entrada recomendada:** `run_galFlowAI.py`
 - **Documentação operacional:** `docs/VIDEO_PIPELINE.md`, `docs/TROUBLESHOOTING.md`
 - **Configuração de provedores locais:** `docs/PROVIDERS_SETUP.md`
-- **Variáveis obrigatórias:** configuradas via `scripts/start_flowforgeai_standard.bat`
+- **Variáveis obrigatórias:** configuradas via `scripts/start_GalFlowAI_standard.bat`
   - PIP_CACHE_DIR, HF_HOME, TORCH_HOME, XDG_CACHE_HOME, TEMP, TMP, OLLAMA_MODELS, GIT_PYTHON_GIT_EXECUTABLE
 
 ---
@@ -276,7 +276,7 @@ Para cada PR:
 
 1. **Clone o repositório** em K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta
 2. **Ative o ambiente:** `K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\activate`
-3. **Execute:** `scripts\start_flowforgeai_standard.bat`
+3. **Execute:** `scripts\start_GalFlowAI_standard.bat`
 4. **Acesse:** http://127.0.0.1:7860
 5. **Teste:** `pytest -q` (314 testes)
 
@@ -288,9 +288,9 @@ Se algo neste README divergir do comportamento real, abra issue e referencie arq
 
 ## Histórico de Refatoração
 
-### Rename FlowForgeAI → GalFlowAI (06/05/2026)
+### Rename GalFlowAI → GalFlowAI (06/05/2026)
 - **Contexto:** Padronização do nome do projeto conforme AGENTS.md (deve terminar com AI).
-- **Escopo:** Substituído "FlowForgeAI" por "GalFlowAI" em todos os arquivos (.py, .md, .bat).
+- **Escopo:** Substituído "GalFlowAI" por "GalFlowAI" em todos os arquivos (.py, .md, .bat).
 - **Arquivos afetados:** 15+ arquivos incluindo api.py, use_cases, services, testes.
 - **Evidência:** `git diff` mostra substituição completa.
 - **Status:** ✅ Concluído.

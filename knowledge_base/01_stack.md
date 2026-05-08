@@ -1,4 +1,4 @@
-# Stack do FlowForgeAI
+# Stack do GalFlowAI
 
 ## MVP
 - Python modular

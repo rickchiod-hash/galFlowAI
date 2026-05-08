@@ -47,7 +47,7 @@ Abra outro terminal:
 curl http://localhost:5001/api/v1/models
 ```
 
-### 6. Usar no Gal AI
+### 6. Usar no GalFlowAI
 1. Mantenha o KoboldCpp rodando
 2. Execute: `python app/main.py`
 3. Acesse: http://127.0.0.1:7860
@@ -62,7 +62,7 @@ curl http://localhost:5001/api/v1/models
 ## Observações
 - Onde diz "seu_modelo.gguf", substitua pelo nome real do arquivo
 - Feche a janela do KoboldCpp para parar o servidor
-- O Gal AI fará fallback para **TemplateProvider** se o servidor não estiver ativo
+- O GalFlowAI fará fallback para **TemplateProvider** se o servidor não estiver ativo
 
 ---
 

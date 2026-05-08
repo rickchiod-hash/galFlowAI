@@ -1,4 +1,4 @@
-# FastAPI V2 - Gal AI
+# FastAPI V2 - GalFlowAI
 
 ## Visao Geral
 
@@ -20,7 +20,7 @@ Retorno:
 ```json
 {
   "status": "ok",
-  "app": "Gal AI",
+  "app": "GalFlowAI",
   "mode": "local",
   "ui": "gradio",
   "fastapi": true,

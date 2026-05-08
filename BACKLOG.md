@@ -13,7 +13,7 @@
 - Existe documentação base para operação local e setup de providers.
 - ✅ **25+ use cases criados** seguindo padrão 3 pontos (Validate → Execute → Return).
 - ✅ **84+ testes** implementados (H11-H18 completos).
-- ✅ **Refatoração FlowForgeAI → GalFlowAI concluída** (15+ arquivos atualizados).
+- ✅ **Refatoração GalFlowAI → GalFlowAI concluída** (15+ arquivos atualizados).
 - ✅ **20 melhorias no README** implementadas (logs, riscos, onboarding, etc.).
 
 ### Pontos críticos atuais
@@ -76,7 +76,7 @@
 
 | ID | História (3 pontos) | Status | Arquivos | Commit |
 |---|---|---|---|---|
-| REF-01 | **Refatoração Rename FlowForgeAI → GalFlowAI**<br>1. Validate: identificar todas as ocorrências de FlowForgeAI<br>2. Execute: substituir por GalFlowAI em todos os arquivos (.py, .md, .bat)<br>3. Return: 0 ocorrências restantes | ✅ Concluído | 15+ arquivos (api.py, use_cases, testes, etc.) | 18f56de |
+| REF-01 | **Refatoração Rename GalFlowAI → GalFlowAI**<br>1. Validate: identificar todas as ocorrências de GalFlowAI<br>2. Execute: substituir por GalFlowAI em todos os arquivos (.py, .md, .bat)<br>3. Return: 0 ocorrências restantes | ✅ Concluído | 15+ arquivos (api.py, use_cases, testes, etc.) | 18f56de |
 | DOC-21 | **Melhoria README: Logos Oficiais**<br>1. Validate: galflowai_logo_master.png e galflowai_app_icon.png existem<br>2. Execute: atualizar README para usar novas logos<br>3. Return: README exibe logos corretamente | ✅ Concluído | README.md | 18f56de |
 | DOC-22 | **Melhoria README: Total de Testes (314)**<br>1. Validate: pytest coleta 314 testes<br>2. Execute: adicionar nota no Status Real<br>3. Return: README informa 314 testes | ✅ Concluído | README.md | 18f56de |
 | DOC-23 | **Melhoria README: 84+ Novos Testes H11-H18**<br>1. Validate: 84+ testes H11-H18 criados<br>2. Execute: adicionar seção de cobertura<br>3. Return: README detalha testes novos | ✅ Concluído | README.md | 18f56de |
@@ -134,7 +134,7 @@
 - RC-01, RC-02, RC-03, RC-04
 - DOC-06 (CONCLUÍDO), DOC-07, DOC-09, DOC-12, DOC-15 (CONCLUÍDO), DOC-16, DOC-18, DOC-20
 - Atualizar README com total de testes (84+) (CONCLUÍDO)
-- Refatoração FlowForgeAI → GalFlowAI (CONCLUÍDO)
+- Refatoração GalFlowAI → GalFlowAI (CONCLUÍDO)
 - 20 melhorias README (CONCLUÍDO)
 
 ### Sprint B (2 semanas) — **Observabilidade e Cobertura**

@@ -16,7 +16,7 @@
 - [ ] Documento reflete estado real da implementação
 - [ ] Distingue claramente **implementado** vs **planejado**
 - [ ] Inclui evidência (teste, log, endpoint ou artefato)
-- [ ] Naming oficial **GalFlowAI** usado (nunca FlowForgeAI)
+- [ ] Naming oficial **GalFlowAI** usado (nunca GalFlowAI)
 - [ ] Logos oficiais referenciadas (`galflowai_logo_master.png`, `galflowai_app_icon.png`)
 - [ ] Template de critérios de aceite aplicado (Contexto, Objetivo, 3 pontos, Evidência)
 
@@ -34,7 +34,7 @@
 1. **Docs-sync:** Documentação atualizada no mesmo PR
 2. **Evidência:** Teste, log, endpoint ou artefato que comprove a mudança
 3. **Testes mínimos:** Pelo menos 1 teste para cada nova funcionalidade
-4. **Naming:** Uso de **GalFlowAI** (nunca FlowForgeAI)
+4. **Naming:** Uso de **GalFlowAI** (nunca GalFlowAI)
 5. **Logos:** Referência a `galflowai_logo_master.png` e `galflowai_app_icon.png` onde aplicável
 
 ---
@@ -85,7 +85,7 @@ pytest tests/test_h16_*.py -v
 
 ## Ambiente de desenvolvimento
 - **Python:** K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe
-- **Variáveis obrigatórias:** Ver `scripts/start_flowforgeai_standard.bat`
+- **Variáveis obrigatórias:** Ver `scripts/start_GalFlowAI_standard.bat`
 - **IDE recomendada:** VS Code com Python extension
 - **Lint:** `python -m py_compile <file>`
 

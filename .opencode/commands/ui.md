@@ -3,7 +3,7 @@ description: Criar UI Gradio MVP
 agent: build
 ---
 
-Crie a interface Gradio do FlowForgeAI.
+Crie a interface Gradio do GalFlowAI.
 
 Tela única inicialmente, com abas:
 1. Briefing

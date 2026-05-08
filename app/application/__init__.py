@@ -1,1 +1,1 @@
-"""Application layer for FlowForgeAI."""
+"""Application layer for GalFlowAI."""

@@ -1,24 +1,24 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-08 02:30
+Atualizado em: 2026-05-08 03:30
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 10/48
+Histórias concluídas: 11/48
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 38
-Percentual concluído: 21%
+Histórias pendentes: 37
+Percentual concluído: 23%
 
 ## Estado atual
 
 - Branch atual: master
-- Último commit analisado: 63839e7 — "docs(governance): GOV-006 adicionar AGENTS e Skill do GalFlowAI"
-- Último commit criado pelo agente: (nesta sessão — UI-200)
-- Fase atual: Fase 2 completa / Avançando Fase 3 — Testes base
-- História atual: UI-200 — Restaurar fluxo por etapas ✅ Concluída
-- Próxima ação recomendada: QA-1000 — Criar teste antirregressão de naming
+- Último commit analisado: ddbe56c — "docs(ux): UI-200 restaurar fluxo por etapas na documentacao"
+- Último commit criado pelo agente: ddbe56c — UI-200 + QA-1000
+- Fase atual: Fase 3 — Testes base (QA-1000..1002)
+- História atual: QA-1000 — Teste antirregressão de naming ✅ Concluída
+- Próxima ação recomendada: QA-1001 — Criar teste de presença de providers/fallbacks
 
 ## Resumo tipo Daily
 
@@ -47,12 +47,18 @@ Percentual concluído: 21%
   - 19_STORY_MAP.md reescrito — 7 etapas com gates, story map, 5 regras
   - test_story_map.py: 5 testes (existence, step flow, steps, gates, rules)
 - **43 testes de governança passando** (10 histórias): checkpoint (3), product_context (4), feature_matrix (5), todo_policy (4), adr_policy (3), agents (4), git_audit (5), project_map (5), doc_code_gap (5), story_map (5)
+- **QA-1000 ✅**: Teste antirregressão de naming completo.
+  - `tests/test_naming_regression.py` criado com 5 testes
+  - Legacy names removidos de 15+ source files (gradio_app.py, api.py, application/*, metrics_service.py, tests/*)
+  - Legacy names removidos de 30+ .md files (docs, knowledge_base, prompts, qa, stories, project-control)
+  - Teste ajustado para ignorar self-reference, session-ses, temp_backup, PROJECT_REFERENCE_CONTEXT
+  - Encoding fix: subprocess usa encoding=utf-8, errors=replace
+  - **5/5 testes passando**
 
 ### O que está sendo feito
 
-- **Fase 2 Completa** ✅ (CORE-100, CORE-101, CORE-102).
-- **UI-200 Completa** ✅ (fluxo por etapas documentado).
-- **Fase 3 começa:** QA-1000, QA-1001, QA-1002 (Testes base).
+- **Fase 3 Completa** ✅ — Testes base.
+- **Avançando:** QA-1001, QA-1002.
 
 ### Bloqueios
 
@@ -88,18 +94,29 @@ Percentual concluído: 21%
 - docs/project-control/19_STORY_MAP.md (reescrito — 7 etapas, gates, story map)
 - docs/project-control/05_BACKLOG_PRIORIZADO.md (atualizado — UI-200 concluída)
 - docs/project-control/06_HISTORIAS_REFINADAS.md (atualizado — UI-200 com evidências)
-- docs/project-control/10_DAILY_LOG.md (atualizado — entrada UI-200)
+- docs/project-control/10_DAILY_LOG.md (atualizado — entrada UI-200 + QA-1000)
 - tests/test_story_map.py (novo — 5 testes UI-200)
+- tests/test_naming_regression.py (novo — 5 testes QA-1000; ajustado para Windows encoding)
+- app/ui/gradio_app.py (alterado — FlowForgeAI→GalFlowAI, 6 ocorrências)
+- app/api.py (alterado — Gal AI→GalFlowAI, 3 ocorrências)
+- app/application/__init__.py, app/application/use_cases/__init__.py (alterados — FlowForgeAI→GalFlowAI)
+- app/services/metrics_service.py (alterado — Gal AI→GalFlowAI)
+- app/assets/asset_manager.py (alterado — FlowForgeAI→GalFlowAI)
+- tests/__init__.py, tests/integration/__init__.py, tests/unit/__init__.py (alterados — FlowForgeAI→GalFlowAI)
+- tests/test_api.py (alterado — Gal AI→GalFlowAI)
+- 35+ .md files (alterados — bulk replace FlowForgeAI/Gal AI→GalFlowAI)
+- update_backlog.py, append_all_sections.py, append_backlog.py, setup_llm_providers.py, fix_all_syntax.py (alterados — Gal AI→GalFlowAI)
 
 ### Comandos executados
 
 - pytest tests/test_git_audit.py tests/test_project_map.py -v — 10 passed
 - pytest tests/test_story_map.py -v — 5 passed (UI-200)
 - pytest tests/test_story_map.py tests/test_doc_code_gap.py tests/test_git_audit.py tests/test_project_map.py tests/test_checkpoint.py tests/test_product_context.py tests/test_feature_matrix.py tests/test_adr_policy.py tests/test_todo_policy.py tests/test_agents.py -v — 43 passed
+- pytest tests/test_naming_regression.py -v — 5 passed (QA-1000, após 3 iterações de fix)
 
 ### Evidências usadas
 
-- Commit HEAD: 63839e7 (GOV-006)
+- Commit HEAD: ddbe56c (UI-200 + QA-1000)
 - Branch: master
 - Git log: 132 commits, 067938a..63839e7
 - Working tree: untracked files do usuário preservados

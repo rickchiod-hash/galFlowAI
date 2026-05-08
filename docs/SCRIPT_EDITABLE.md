@@ -1,4 +1,4 @@
-# Script Editable (Roteiro Editável) - Gal AI
+# Script Editable (Roteiro Editável) - GalFlowAI
 
 > Este arquivo foi mantido por compatibilidade e agora aponta para a documentação atual.
 

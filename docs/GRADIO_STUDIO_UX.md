@@ -13,18 +13,18 @@
 
 ## Quando usar Interface?
 - Apenas para protótipos rápidos de funções únicas.
-- Não recomendado para fluxos complexos como o Gal AI Studio.
+- Não recomendado para fluxos complexos como o GalFlowAI Studio.
 
 ## Como usar Theme/CSS
 - Usar `gr.theme` base + CSS customizado centralizado em `app/static/gal_ai_theme.css`.
 - Não espalhar CSS inline em componentes.
-- Paleta Gal AI Studio:
+- Paleta GalFlowAI Studio:
   - Fundo principal: #08080B
   - Fundo secundário: #111116
   - Card: #18181F
   - Borda: #343442
   - Texto principal: #F7F7FA
-  - Laranja Gal AI: #FF5A00
+  - Laranja GalFlowAI: #FF5A00
 
 ## Como usar Video
 - Usar `gr.Video` para preview e vídeo final.
@@ -68,7 +68,7 @@
   - Pipeline fim a fim estável.
 
 ## Checklist de Aceite da UI
-- [ ] Branding Gal AI (sem GalFlowAI na UI).
+- [ ] Branding GalFlowAI (sem GalFlowAI na UI).
 - [ ] Layout em Blocks com abas claras.
 - [ ] Preview com gr.Video e estado vazio elegante.
 - [ ] Central de Logs com gr.Dataframe legível.

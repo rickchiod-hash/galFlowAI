@@ -2229,9 +2229,58 @@ Ver `SEC-1100` em `08_PLANO_DE_TESTES.md`.
 - [ ] Daily log atualizado
 - [ ] Commit criado
 
+## QA-1000 — Criar teste antirregressão de naming
+
+**Prioridade:** Alta  
+**Status:** Concluída ✅  
+**Estimativa:** 2 SP  
+**Arquivo de contexto obrigatório:** `docs/reference/PROJECT_REFERENCE_CONTEXT.md`
+
+### História
+Como mantenedor, eu quero um teste automatizado que detecte nomes legados (FlowForgeAI, Gal AI, etc.) em arquivos .py e .md, para preservar a identidade GalFlowAI.
+
+### Contexto técnico
+- Nomes legados estavam espalhados por 15+ arquivos .py e 30+ .md
+- O commit de rename ee05f5c (REF-01) foi incompleto
+- O teste usa git grep e busca recursiva para detectar regressões
+- Windows encoding issue: subprocess requer encoding=utf-8
+
+### Evidências obrigatórias
+- `tests/test_naming_regression.py` — 5 testes
+- 5/5 passando após 3 iterações de fix
+
+### Critérios de aceite
+1. ✅ Teste detecta FlowForgeAI em .py e .md
+2. ✅ Teste detecta Gal AI em .py e .md
+3. ✅ Teste verifica arquivos chave usam GalFlowAI
+4. ✅ Teste verifica commit REF-01 existe
+5. ✅ Teste verifica git grep não encontra FlowForgeAI em tracked files
+
+### Testes
+`tests/test_naming_regression.py` — execução: `pytest tests/test_naming_regression.py -v`
+
+### Definition of Ready
+- [x] Independente
+- [x] Negociável
+- [x] Valiosa
+- [x] Estimável
+- [x] Pequena o suficiente
+- [x] Testável
+- [x] Possui contexto técnico
+- [x] Possui arquivo de referência
+- [x] Possui critérios Gherkin
+- [x] Possui teste planejado
+
+### Definition of Done
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [ ] Commit criado
+
 ## SEC-1101 — Criar política de secrets e arquivos sensíveis
 
-**Épico:** EPIC-1200 Segurança e ferramentas  
 **Prioridade:** Média  
 **Status:** Pendente  
 **Estimativa:** 2 SP  

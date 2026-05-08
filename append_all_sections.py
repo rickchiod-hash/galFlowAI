@@ -15,10 +15,10 @@ Criar os cards abaixo.
 
 -------------------------------------------------------------------------------
 
-### P1-SCRIPT-01 — Criar Prompt Base de Roteiro do Gal AI
+### P1-SCRIPT-01 — Criar Prompt Base de Roteiro do GalFlowAI
 
 Contexto:
-Hoje os providers podem gerar roteiro sem um contrato suficientemente forte. O modelo precisa receber um prompt base padronizado com regras fixas do Gal AI.
+Hoje os providers podem gerar roteiro sem um contrato suficientemente forte. O modelo precisa receber um prompt base padronizado com regras fixas do GalFlowAI.
 
 Objetivo:
 Criar um Prompt Base reutilizável para todos os providers de roteiro.
@@ -58,7 +58,7 @@ Objetivo:
 Separar o prompt em três partes:
 
 1. Prompt Base:
-Regras fixas do Gal AI.
+Regras fixas do GalFlowAI.
 
 2. Prompt do Briefing:
 Dados específicos do usuário.
@@ -239,7 +239,7 @@ O sistema deve inferir:
 Critério de aceite:
 - criar enrich_briefing();
 - mostrar ao usuário:
-  "Briefing curto detectado. A Gal AI completou algumas informações com suposições seguras.";
+  "Briefing curto detectado. A GalFlowAI completou algumas informações com suposições seguras.";
 - nunca inventar dados críticos como preço, garantia, marca ou disponibilidade;
 - tudo em português brasileiro.
 

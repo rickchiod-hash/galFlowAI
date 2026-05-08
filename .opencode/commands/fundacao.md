@@ -1,9 +1,9 @@
 ---
-description: Criar fundação K-only do FlowForgeAI
+description: Criar fundação K-only do GalFlowAI
 agent: build
 ---
 
-Implemente a fundação do FlowForgeAI.
+Implemente a fundação do GalFlowAI.
 
 Crie estrutura modular, se ainda não existir:
 - app/

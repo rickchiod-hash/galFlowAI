@@ -1,6 +1,6 @@
 # Arquitetura
 
-O Gal AI possui duas entradas principais (Gradio e FastAPI), reutilizando a mesma camada de serviços.
+O GalFlowAI possui duas entradas principais (Gradio e FastAPI), reutilizando a mesma camada de serviços.
 
 ```mermaid
 flowchart LR

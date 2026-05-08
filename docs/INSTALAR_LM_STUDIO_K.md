@@ -41,14 +41,14 @@ curl http://localhost:1234/v1/models
 
 Deve retornar um JSON com o modelo carregado.
 
-### 6. Usar no Gal AI
+### 6. Usar no GalFlowAI
 1. Mantenha o LM Studio aberto com servidor ativo
 2. Execute: `python app/main.py`
 3. Acesse: http://127.0.0.1:7860
 4. Crie um comercial
 5. Verá: "Motor usado: LMStudioProvider"
 
-## Configuração no Gal AI
+## Configuração no GalFlowAI
 
 Ou vá até: `app\config.py` e confira:
 ```python
@@ -64,7 +64,7 @@ LMSTUDIO_BASE_URL = "http://localhost:1234/v1"
 
 ## Observações
 - O LM Studio **não precisa** ficar aberto o tempo todo
-- Quando fechar, o Gal AI usará automaticamente o **TemplateProvider**
+- Quando fechar, o GalFlowAI usará automaticamente o **TemplateProvider**
 - Reabra o LM Studio e inicie o servidor quando quiser melhor qualidade
 
 ---

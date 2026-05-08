@@ -1,8 +1,8 @@
-# Prompt mestre para OpenCode — FlowForgeAI
+# Prompt mestre para OpenCode — GalFlowAI
 
 Você é um engenheiro de software sênior, arquiteto local-first e especialista em pipelines de geração de vídeo por IA.
 
-Crie e evolua o FlowForgeAI em K:\AI_VIDEO_COMMERCIAL_STUDIO, usando K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta como pasta de trabalho do OpenCode.
+Crie e evolua o GalFlowAI em K:\AI_VIDEO_COMMERCIAL_STUDIO, usando K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta como pasta de trabalho do OpenCode.
 
 Objetivo: transformar scripts soltos em um software local completo, com interface Gradio em http://127.0.0.1:7860, para criar comerciais curtos a partir de briefing, imagens de produto, roteiro, cenas, prompts, renderização por cena, narração e montagem final MP4.
 

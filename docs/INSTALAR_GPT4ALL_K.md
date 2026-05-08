@@ -31,7 +31,7 @@ response = model.generate("Crie um roteiro para comercial de 30s", max_tokens=50
 print(response)
 ```
 
-### 5. Usar no Gal AI
+### 5. Usar no GalFlowAI
 1. Instale o SDK (passo 1)
 2. Baixe um modelo (passo 3)
 3. Execute: `python app/main.py`
@@ -52,7 +52,7 @@ GPT4ALL_MODEL_DIR = "K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/models/gpt4al
 
 ## Observações
 - Só carrega o modelo quando necessário (pode demorar na primeira vez)
-- O Gal AI usa **TemplateProvider** se o GPT4All não estiver disponível
+- O GalFlowAI usa **TemplateProvider** se o GPT4All não estiver disponível
 
 ---
 

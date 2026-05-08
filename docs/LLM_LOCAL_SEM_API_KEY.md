@@ -1,6 +1,6 @@
 # LLMs Locais Sem API Key
 
-O Gal AI (galFlowAI) foi redesenhado para funcionar **100% sem API key** e **100% offline**.
+O GalFlowAI (galFlowAI) foi redesenhado para funcionar **100% sem API key** e **100% offline**.
 
 ## Arquitetura de Providers
 
@@ -102,7 +102,7 @@ GGUF_MODEL_DIR = "K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/models/gguf"
 3. Carregue um modelo
 4. Clique "Start Server"
 5. Teste: `curl http://localhost:1234/v1/models`
-6. No Gal AI, verá: "Motor usado: LMStudioProvider"
+6. No GalFlowAI, verá: "Motor usado: LMStudioProvider"
 
 ### Com outros providers:
 - Execute: `scripts\llm\01_detectar_llms_locais.bat`
@@ -136,4 +136,4 @@ O **TemplateProvider SEMPRE FUNCIONA** e gera roteiros aceitáveis.
 ---
 
 **Documentação criada em:** 03/05/2026
-**Versão:** Gal AI 1.0 - Local-First Architecture
+**Versão:** GalFlowAI 1.0 - Local-First Architecture

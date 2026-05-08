@@ -1,6 +1,6 @@
 # 01_AUDITORIA_HISTORICO_GIT — GalFlowAI
 
-Atualizado em: 2026-05-08 (CORE-100)
+Atualizado em: 2026-05-08 03:30 (QA-1000)
 
 ## Objetivo
 
@@ -21,10 +21,10 @@ git log --diff-filter=D --name-only --format="%h %s"
 ### Resultados
 
 - Branch: master
-- Total de commits: 132
-- HEAD: 63839e7 "docs(governance): GOV-006 adicionar AGENTS e Skill do GalFlowAI" (Thu May 7 23:59:03 2026 -0300)
+- Total de commits: 136
+- HEAD: ddbe56c "docs(ux): UI-200 restaurar fluxo por etapas na documentacao" (Fri May 8 02:30:00 2026 -0300)
 - Primeiro commit: 067938a "feat: galFlowAI MVP - interface Gradio com barra de progresso" (Sat May 2 14:35:18 2026 -0300)
-- Período: 5 dias de desenvolvimento (02/05 a 07/05/2026)
+- Período: 6 dias de desenvolvimento (02/05 a 08/05/2026)
 - Autores: Henrique Luiz, rickchiod-hash
 - Working tree: untracked files (user's pending work — piper_adapter, checkpoint_manager, job_state, stages/, use_cases, utils/)
 - Branch local logs-feature também existe (Central de Logs na UI)
@@ -54,7 +54,7 @@ git log --diff-filter=D --name-only --format="%h %s"
 | 3ea7b9e | feat | 6 LLM Providers + FastAPI V2 + Script Service | Providers completos |
 | d3c9af6 | refactor | H1+H2: identidade API + bare except removido | Qualidade de código |
 | dbb133f | feat | H3: GPT4All, LMStudio, KoboldCpp, LlamaCpp | Infra LLM completa |
-| ee05f5c | refactor | REF-01: FlowForgeAI → GalFlowAI | Renomeação completa |
+| ee05f5c | refactor | REF-01: GalFlowAI → GalFlowAI | Renomeação completa |
 | b78e025 | feat | Central de Logs na UI | Observabilidade |
 | 3132eb0 | docs | Import governance pack v2 | Governança adicionada |
 | 63839e7 | docs | GOV-006: AGENTS + Skill | Fase 1 completa |

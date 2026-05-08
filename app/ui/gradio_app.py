@@ -1,4 +1,4 @@
-"""Gradio Web Interface for FlowForgeAI"""
+"""Gradio Web Interface for GalFlowAI"""
 
 import sys
 import os
@@ -15,14 +15,14 @@ import gradio as gr
 
 # Configure logging
 from app.logging_config import setup_logger
-logger = setup_logger("flowforgeai", "info")
+logger = setup_logger("galflowai", "info")
 
 from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
 from app.services.log_service import get_recent_logs, get_log_summary, copy_diagnostic_bundle
 
 
 class WebInterface:
-    """Web interface for FlowForgeAI"""
+    """Web interface for GalFlowAI"""
     
     def __init__(self):
         self.pipeline = None
@@ -111,7 +111,7 @@ class WebInterface:
         status = self.get_status()
         
         lines = []
-        lines.append("## FlowForgeAI Status")
+        lines.append("## GalFlowAI Status")
         lines.append(f"- LLM Available: {status.get('llm_available')}")
         lines.append(f"- WanGP Available: {status.get('wangp_available')}")
         lines.append(f"- TTS Available: {status.get('tts_available')}")
@@ -139,9 +139,9 @@ def create_gradio_app():
     }
     """
     
-    with gr.Blocks(css=custom_css, title="FlowForgeAI - Video Commercial Generator") as demo:
+    with gr.Blocks(css=custom_css, title="GalFlowAI - Video Commercial Generator") as demo:
         
-        gr.Markdown("# 🎬 FlowForgeAI - Video Commercial Generator")
+        gr.Markdown("# 🎬 GalFlowAI - Video Commercial Generator")
         gr.Markdown("Generate short video commercials for social media using AI")
         
         with gr.Row():
@@ -303,7 +303,7 @@ if __name__ == "__main__":
         subprocess.check_call([sys.executable, "-m", "pip", "install", "gradio"])
         import gradio
     
-    print("Starting FlowForgeAI Web Interface...")
+    print("Starting GalFlowAI Web Interface...")
     print("Access at: http://127.0.0.1:7860")
     
     demo = create_gradio_app()

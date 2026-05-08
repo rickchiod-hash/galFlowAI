@@ -1,6 +1,6 @@
 # Roteiro Editável
 
-Este documento descreve o fluxo de edição, versionamento e aprovação de roteiro no Gal AI.
+Este documento descreve o fluxo de edição, versionamento e aprovação de roteiro no GalFlowAI.
 
 ## Fluxo
 1. Gerar roteiro inicial (provider local ou template).

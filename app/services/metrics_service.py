@@ -1,4 +1,4 @@
-"""Metrics Service - Métricas do Gal AI Studio."""
+"""Metrics Service - Métricas do GalFlowAI Studio."""
 import time
 import json
 from pathlib import Path

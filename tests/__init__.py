@@ -1,1 +1,1 @@
-"""Tests package for FlowForgeAI."""
+"""Tests package for GalFlowAI."""

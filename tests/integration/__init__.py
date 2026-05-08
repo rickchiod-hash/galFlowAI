@@ -1,1 +1,1 @@
-"""Integration tests for FlowForgeAI."""
+"""Integration tests for GalFlowAI."""

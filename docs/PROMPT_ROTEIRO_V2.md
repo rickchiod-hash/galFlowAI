@@ -1,7 +1,7 @@
 # PROMPT_ROTEIRO_V2 - Planejamento (NÃO IMPLEMENTAR AGORA)
 
 **Status:** Planejamento - NÃO implementar agora.
-**Objetivo:** Melhorar profundamente o motor de geração de roteiro do Gal AI.
+**Objetivo:** Melhorar profundamente o motor de geração de roteiro do GalFlowAI.
 
 ---
 
@@ -41,7 +41,7 @@ Criar uma arquitetura de prompt para roteiro que gere comerciais curtos mais for
 
 ### 1. Prompt Base de Roteiro
 - Template reutilizável para todos os providers
-- Regras fixas do Gal AI
+- Regras fixas do GalFlowAI
 - Tudo em português brasileiro
 
 ### 2. Separação de Prompt

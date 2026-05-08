@@ -10,7 +10,7 @@ Nome oficial do produto: **GalFlowAI**
 Nome do repositório: **galFlowAI**  
 Tagline: **Roteiro → Cenas → IA → Vídeo**
 
-Nomes legados como `FlowForgeAI`, `Gal AI`, `AI Video Comercial Studio` ou variações devem aparecer apenas em histórico, auditoria, compatibilidade ou migração. Qualquer novo arquivo, tela, endpoint, teste, commit, documentação ou prompt deve usar **GalFlowAI**.
+Nomes legados como `GalFlowAI`, `GalFlowAI`, `AI Video Comercial Studio` ou variações devem aparecer apenas em histórico, auditoria, compatibilidade ou migração. Qualquer novo arquivo, tela, endpoint, teste, commit, documentação ou prompt deve usar **GalFlowAI**.
 
 ## Escopo do produto
 

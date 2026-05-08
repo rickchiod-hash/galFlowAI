@@ -1,4 +1,4 @@
-# Relatório de Auditoria do Ambiente — FlowForgeAI
+# Relatório de Auditoria do Ambiente — GalFlowAI
 
 Data: 01/05/2026  
 Autor: Agente OpenCode  
@@ -76,7 +76,7 @@ Autor: Agente OpenCode
 2. **GIT_PYTHON_GIT_EXECUTABLE não definida**: Pode causar erro em operações Git que dependam dessa variável.  
 3. **Caches padrão**: Se as variáveis `PIP_CACHE_DIR` etc. não forem setadas, o Python usará pastas padrão em C:.  
 
-> **Mitigação já implementada**: O módulo `app/config.py` define todas as variáveis obrigatórias ao iniciar o FlowForgeAI.
+> **Mitigação já implementada**: O módulo `app/config.py` define todas as variáveis obrigatórias ao iniciar o GalFlowAI.
 
 ---
 

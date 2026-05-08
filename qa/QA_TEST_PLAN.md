@@ -1,4 +1,4 @@
-# QA / Mapeamento de Testes, Refatoração e Modularização — Gal AI
+# QA / Mapeamento de Testes, Refatoração e Modularização — GalFlowAI
 
 **Data:** 2026-05-04  
 **Objetivo:** guiar evolução técnica sem quebrar fluxo atual, cobrindo testes, refatoração (SOLID), arquitetura modular e padrões de projeto.

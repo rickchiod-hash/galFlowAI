@@ -1,5 +1,5 @@
 """
-FastAPI V2 for Gal AI - local-first internal API.
+FastAPI V2 for GalFlowAI - local-first internal API.
 """
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
@@ -61,7 +61,7 @@ from app.application.use_cases.script_generation import GenerateScriptUseCase, S
 from app.application.use_cases.project_use_cases import CreateProjectUseCase
 
 app = FastAPI(
-    title="Gal AI API",
+    title="GalFlowAI API",
     description="Local-first API for commercial video generation",
     version="2.0"
 )
@@ -84,7 +84,7 @@ async def health_check():
     """Health check endpoint."""
     return success_response({
         "status": "ok",
-        "app": "Gal AI",
+        "app": "GalFlowAI",
         "mode": "local",
         "ui": "gradio",
         "fastapi": True,

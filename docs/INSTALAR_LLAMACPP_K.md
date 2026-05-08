@@ -42,7 +42,7 @@ curl http://localhost:8080/v1/models
 
 Se quiser seguir, veja: https://github.com/ggerganov/llama.cpp
 
-## Usar no Gal AI
+## Usar no GalFlowAI
 1. Instale o pacote (Opção A, passo 1)
 2. Baixe um modelo (passo 2)
 3. Opcionalmente inicie o servidor (passo 3)
@@ -66,7 +66,7 @@ GGUF_MODEL_DIR = "K:/AI_VIDEO_COMERCIAL_STUDIO/opencodegalpasta/models/gguf"
 ## Observações
 - Difícil configuração inicial
 - Requer conhecimento técnico
-- O Gal AI usa **TemplateProvider** se não estiver configurado
+- O GalFlowAI usa **TemplateProvider** se não estiver configurado
 
 ---
 

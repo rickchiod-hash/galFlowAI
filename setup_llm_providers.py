@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Setup script for Gal AI LLM providers.
+Setup script for GalFlowAI LLM providers.
 Run this script to download models for local LLM inference.
 """
 import os
 import sys
 from pathlib import Path
 
-print("=== Gal AI LLM Providers Setup ===")
+print("=== GalFlowAI LLM Providers Setup ===")
 print()
 
 # 1. GPT4All

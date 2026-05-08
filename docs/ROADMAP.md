@@ -1,4 +1,4 @@
-# Roadmap FlowForgeAI
+# Roadmap GalFlowAI
 
 ## Fase 0 — Auditoria e fundação
 Entregável: diagnóstico K-only, mapa de pastas, validação de ambiente, plano de implementação.

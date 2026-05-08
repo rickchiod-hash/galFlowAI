@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Script to fix ALL syntax errors in .py files for Gal AI Studio.
+Script to fix ALL syntax errors in .py files for GalFlowAI Studio.
 Run: python fix_all_syntax.py
 """
 import os

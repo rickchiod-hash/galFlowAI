@@ -1,4 +1,4 @@
-# Fluxo de Implementação Gal AI — Status e Revisão
+# Fluxo de Implementação GalFlowAI — Status e Revisão
 
 ## Comando para Revisar e Executar em Ordem:
 ```
@@ -14,7 +14,7 @@ powershell -Command "& 'K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta\scripts\re
 | 1 | `/inicio` | ✅ 100% | Auditoria concluída, relatório em `docs/RELATORIO_ANALISE_AMBIENTE.md` | Sim |
 | 2 | `/analise` | ✅ 100% | Relatório de análise criado e validado | Sim |
 | 3 | `/fundacao` | ✅ 100% | Estrutura `app/`, `scripts/`, `config.py`, `hardware.py` criados | Sim |
-| 4 | `/ui` | ✅ 100% | Interface Gal AI em português, Gradio Blocks, título "Gal AI" | Sim |
+| 4 | `/ui` | ✅ 100% | Interface GalFlowAI em português, Gradio Blocks, título "GalFlowAI" | Sim |
 | 5 | `/projeto` | ✅ 100% | `project_manager.py` funcionando, pastas em K: | Sim |
 | 6 | `/roteiro` | ✅ 100% | `script_generator.py` funcionando | Sim |
 | 7 | `/storyboard` | ✅ 100% | `scene_splitter.py`, `prompt_builder.py` funcionando | Sim |
@@ -48,8 +48,8 @@ powershell -Command "& 'K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta\scripts\re
 ---
 
 ## Nome do App
-- **Gal AI** (confirmado, não "GalFlow AI" nem "GalFlowAI")
-- Interface título: `Gal AI`
+- **GalFlowAI** (confirmado, não "GalFlow AI" nem "GalFlowAI")
+- Interface título: `GalFlowAI`
 - Janela: `http://127.0.0.1:7860`
 
 ---

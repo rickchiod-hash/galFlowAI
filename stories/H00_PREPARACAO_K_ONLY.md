@@ -1,6 +1,6 @@
 # História H00 — Preparação K-only
 
-Como usuário, quero preparar a pasta de trabalho do FlowForgeAI no disco K: para evitar qualquer uso indevido do C:.
+Como usuário, quero preparar a pasta de trabalho do GalFlowAI no disco K: para evitar qualquer uso indevido do C:.
 
 ## Critérios de aceite
 - Estrutura base criada em K:\AI_VIDEO_COMMERCIAL_STUDIO.

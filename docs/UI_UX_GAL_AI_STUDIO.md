@@ -1,4 +1,4 @@
-# UI/UX Gal AI Studio — Diagnóstico e Objetivos
+# UI/UX GalFlowAI Studio — Diagnóstico e Objetivos
 
 ## Diagnóstico do Visual Atual
 1. UI funcional, mas ainda com cara de formulário técnico.
@@ -9,7 +9,7 @@
 6. Cenas não têm representação visual (cards/gallery).
 7. Estado da sessão não mantido com gr.State.
 
-## Objetivo do Gal AI Studio
+## Objetivo do GalFlowAI Studio
 Transformar a interface atual em um produto premium que pareça um estúdio de IA para criação de comerciais, mantendo a simplicidade do Gradio e a estabilidade do pipeline local.
 
 ## Inspiração
@@ -73,7 +73,7 @@ Transformar a interface atual em um produto premium que pareça um estúdio de I
   - Fluxo Gradio validado.
 
 ## Checklist de Aceite
-- [ ] Branding Gal AI aplicado.
+- [ ] Branding GalFlowAI aplicado.
 - [ ] UI em Blocks com abas claras.
 - [ ] Central de Logs legível sem UNKNOWN.
 - [ ] Preview com estado vazio orientativo.

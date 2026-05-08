@@ -75,11 +75,11 @@
 
 ## V3.1 — Refatoração e Documentação (CONCLUÍDO 06/05/2026)
 
-### REF-01: Refatoração Rename FlowForgeAI → GalFlowAI ✅
+### REF-01: Refatoração Rename GalFlowAI → GalFlowAI ✅
 - **Status:** Concluído
-- **Escopo:** Substituído "FlowForgeAI" por "GalFlowAI" em 15+ arquivos (.py, .md, .bat).
+- **Escopo:** Substituído "GalFlowAI" por "GalFlowAI" em 15+ arquivos (.py, .md, .bat).
 - **Arquivos afetados:** api.py, use_cases, services, testes, README, BACKLOG.
-- **Evidência:** 0 ocorrências restantes de "FlowForgeAI".
+- **Evidência:** 0 ocorrências restantes de "GalFlowAI".
 
 ### DOC-21 a DOC-40: 20 Melhorias README ✅
 | ID | Melhoria | Status |
@@ -164,13 +164,13 @@
 4. **Permitir rollback fácil** (mudanças pequenas, feature flags quando aplicável). 
 5. **Tudo em português brasileiro** - nunca "prompts visuais em inglês". 
 6. **NÃO implementar agora** - apenas backlog/planejamento. 
-7. **Naming oficial:** GalFlowAI (nunca FlowForgeAI). 
+7. **Naming oficial:** GalFlowAI (nunca GalFlowAI). 
 8. **Logos oficiais:** usar `galflowai_logo_master.png` e `galflowai_app_icon.png`. 
 
 ---
 
 ## Resumo de Entregas (06/05/2026)
-- ✅ Refatoração FlowForgeAI → GalFlowAI (REF-01)
+- ✅ Refatoração GalFlowAI → GalFlowAI (REF-01)
 - ✅ 20 melhorias README (DOC-21 a DOC-40)
 - ✅ Atualização BACKLOG.md com novas histórias
 - ✅ Atualização ROADMAP.md com status

@@ -1,6 +1,6 @@
 # Design System
 
-Nome visual: FlowForgeAI.
+Nome visual: GalFlowAI.
 
 Estilo:
 - escuro

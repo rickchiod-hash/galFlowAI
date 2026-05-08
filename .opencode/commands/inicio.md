@@ -1,5 +1,5 @@
 ---
-description: Iniciar o trabalho com análise segura do FlowForgeAI
+description: Iniciar o trabalho com análise segura do GalFlowAI
 agent: build
 ---
 

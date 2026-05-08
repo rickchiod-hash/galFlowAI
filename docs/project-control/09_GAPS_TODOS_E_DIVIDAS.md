@@ -36,7 +36,7 @@ TODO genérico é proibido.
 
 ## Resultado da varredura de código
 
-- **FlowForgeAI|Gal AI**: 0 ocorrências em código funcional (apenas em PROMPT.md do pack).
+- **GalFlowAI|GalFlowAI**: 0 ocorrências em código funcional (apenas em PROMPT.md do pack).
 - **TODO|FIXME|HACK|XXX**: 0 ocorrências em `app/`, `docs/`, `tests/`.
 - **bare except:** encontrado em `app/main.py`, `app/adapters/ffmpeg_adapter.py`, `app/adapters/translator_adapter.py`, `app/adapters/tts_adapter.py`, `app/services/metrics_service.py`, `app/application/use_cases/` (alguns casos), testes. Necessita auditoria para substituir por `except Exception:`.
 - **C: paths**: encontrado em docs de instalação: `docs/INSTALAR_KOBOLDCPP_K.md`, `docs/INSTALAR_LM_STUDIO_K.md`, `docs/LLM_LOCAL_SEM_API_KEY.md`, `docs/MOTORES_ROTEIRO_TELA.md`, `docs/VIDEO_PIPELINE.md`. São referências de instalação de ferramentas, não código funcional.

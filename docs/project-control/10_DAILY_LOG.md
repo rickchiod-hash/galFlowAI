@@ -2,6 +2,27 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
 
+## 2026-05-08 03:30 — Sessão 14: QA-1000 — Teste antirregressão de naming
+
+### O que fiz
+
+- **QA-1000 ✅**: Teste antirregressão de naming completo
+  - `tests/test_naming_regression.py` — 5 testes (legacy names em .py, .md, arquivos chave, commit rename, git grep tracked)
+  - Legacy names removidos de 15+ source .py: gradio_app.py (6x FlowForgeAI), api.py (3x Gal AI), application/* (2x), metrics_service.py, asset_manager.py, tests/* (3x), test_api.py, 5 root scripts
+  - Legacy names removidos de 30+ .md: docs/*, knowledge_base/*, prompts/*, qa/*, state/*, stories/*, project-control/*, reference/*
+  - ALLOWED_PATHS: test_naming_regression (self-ref), session-ses, temp_backup, PROJECT_REFERENCE_CONTEXT
+  - Encoding fix: subprocess encoding=utf-8 + errors=replace para Windows
+  - **5/5 testes passando** (3 iterações de fix)
+- **48 testes de governança passando** (11 histórias)
+
+### Bloqueios
+
+- Nenhum
+
+### Próximo passo
+
+- QA-1001 — Criar teste de presença de providers/fallbacks
+
 ## 2026-05-08 02:30 — Sessão 13: UI-200 — Restaurar fluxo por etapas na documentação
 
 ### O que fiz
@@ -249,7 +270,7 @@ Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
 - Copiados 82 arquivos do governance pack para a raiz do projeto.
 - Criada seção "Governança e continuidade" no README.md.
 - Auditado histórico Git (85 commits, branch master, HEAD 7017ea8).
-- Varreduras: FlowForgeAI/Gal AI (0 ocorrências em código), TODO/FIXME (0), bare except: (presente em alguns arquivos), C: paths (presente em docs de instalação).
+- Varreduras: GalFlowAI/GalFlowAI (0 ocorrências em código), TODO/FIXME (0), bare except: (presente em alguns arquivos), C: paths (presente em docs de instalação).
 - Preenchidos arquivos de controle: 00_STATUS_EXECUTIVO.md, 01_AUDITORIA_HISTORICO_GIT.md, 02_MAPA_ATUAL_DO_PROJETO.md, 09_GAPS_TODOS_E_DIVIDAS.md, 10_DAILY_LOG.md, 13_CHECKPOINTS_DE_SESSAO.md.
 
 ### O que estou fazendo
