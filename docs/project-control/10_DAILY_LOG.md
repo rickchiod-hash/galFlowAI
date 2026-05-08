@@ -23,6 +23,28 @@ Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
 
 - QA-1001 — Criar teste de presença de providers/fallbacks
 
+## 2026-05-08 04:00 — Sessão 15: QA-1001 — Teste de presença de providers/fallbacks
+
+### O que fiz
+
+- **QA-1001 ✅**: Teste de presença de providers/fallbacks completo
+  - `tests/test_provider_presence.py` — 8 testes
+  - Verifica: TemplateProvider, LMStudio, KoboldCpp, LlamaCpp, GPT4All files + classes
+  - Verifica: ProviderRouter fallback chain com TemplateProvider
+  - Verifica: TTSAdapter silence fallback
+  - Verifica: FFmpegAdapter como video fallback (WanGP primario)
+  - Verifica: FEATURE_PRESERVATION_MATRIX.md entradas obrigatorias
+  - **8/8 testes passando**
+- **56 testes de governanca passando** (12 historias)
+
+### Bloqueios
+
+- Nenhum
+
+### Proximo passo
+
+- QA-1002 — Criar teste UI nao chama adapters
+
 ## 2026-05-08 02:30 — Sessão 13: UI-200 — Restaurar fluxo por etapas na documentação
 
 ### O que fiz

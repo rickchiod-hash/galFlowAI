@@ -1,24 +1,24 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-08 03:30
+Atualizado em: 2026-05-08 04:00
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 11/48
+Histórias concluídas: 12/48
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 37
-Percentual concluído: 23%
+Histórias pendentes: 36
+Percentual concluído: 25%
 
 ## Estado atual
 
 - Branch atual: master
 - Último commit analisado: ddbe56c — "docs(ux): UI-200 restaurar fluxo por etapas na documentacao"
-- Último commit criado pelo agente: ddbe56c — UI-200 + QA-1000
+- Último commit criado pelo agente: c842383 — QA-1000 + QA-1001
 - Fase atual: Fase 3 — Testes base (QA-1000..1002)
-- História atual: QA-1000 — Teste antirregressão de naming ✅ Concluída
-- Próxima ação recomendada: QA-1001 — Criar teste de presença de providers/fallbacks
+- História atual: QA-1001 — Teste de presença de providers/fallbacks ✅ Concluída
+- Próxima ação recomendada: QA-1002 — Criar teste UI não chama adapters
 
 ## Resumo tipo Daily
 
@@ -54,11 +54,19 @@ Percentual concluído: 23%
   - Teste ajustado para ignorar self-reference, session-ses, temp_backup, PROJECT_REFERENCE_CONTEXT
   - Encoding fix: subprocess usa encoding=utf-8, errors=replace
   - **5/5 testes passando**
+- **QA-1001 ✅**: Teste de presença de providers/fallbacks completo.
+  - `tests/test_provider_presence.py` criado com 8 testes
+  - Verifica: todos os 5 LLM providers existem (Template, LM Studio, KoboldCpp, LlamaCpp, GPT4All)
+  - Verifica: ProviderRouter referencia TemplateProvider como fallback
+  - Verifica: TTSAdapter tem silence fallback
+  - Verifica: FFmpegAdapter é fallback de vídeo (WanGP primário)
+  - Verifica: FEATURE_PRESERVATION_MATRIX.md contém entradas obrigatórias
+  - **8/8 testes passando**
 
 ### O que está sendo feito
 
-- **Fase 3 Completa** ✅ — Testes base.
-- **Avançando:** QA-1001, QA-1002.
+- **Fase 3 — Testes base:** QA-1000 ✅, QA-1001 ✅.
+- **Próximo:** QA-1002 — Criar teste UI não chama adapters.
 
 ### Bloqueios
 
@@ -106,6 +114,7 @@ Percentual concluído: 23%
 - tests/test_api.py (alterado — Gal AI→GalFlowAI)
 - 35+ .md files (alterados — bulk replace FlowForgeAI/Gal AI→GalFlowAI)
 - update_backlog.py, append_all_sections.py, append_backlog.py, setup_llm_providers.py, fix_all_syntax.py (alterados — Gal AI→GalFlowAI)
+- tests/test_provider_presence.py (novo — 8 testes QA-1001)
 
 ### Comandos executados
 
@@ -113,6 +122,8 @@ Percentual concluído: 23%
 - pytest tests/test_story_map.py -v — 5 passed (UI-200)
 - pytest tests/test_story_map.py tests/test_doc_code_gap.py tests/test_git_audit.py tests/test_project_map.py tests/test_checkpoint.py tests/test_product_context.py tests/test_feature_matrix.py tests/test_adr_policy.py tests/test_todo_policy.py tests/test_agents.py -v — 43 passed
 - pytest tests/test_naming_regression.py -v — 5 passed (QA-1000, após 3 iterações de fix)
+- pytest tests/test_provider_presence.py -v — 8 passed (QA-1001)
+- pytest tests/test_checkpoint.py ... tests/test_provider_presence.py -v — 56 passed (12 histórias)
 
 ### Evidências usadas
 

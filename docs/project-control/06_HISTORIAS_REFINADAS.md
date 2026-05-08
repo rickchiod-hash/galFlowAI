@@ -2279,6 +2279,60 @@ Como mantenedor, eu quero um teste automatizado que detecte nomes legados (FlowF
 - [x] Daily log atualizado
 - [ ] Commit criado
 
+## QA-1001 — Criar teste de presença de providers/fallbacks
+
+**Prioridade:** Alta  
+**Status:** Concluída ✅  
+**Estimativa:** 3 SP  
+**Arquivo de contexto obrigatório:** `docs/reference/FEATURE_PRESERVATION_MATRIX.md`
+
+### História
+Como mantenedor, eu quero um teste que verifique a presença de todos os providers e fallbacks obrigatórios, para preservar a operação local-first.
+
+### Contexto técnico
+- 5 LLM providers: TemplateProvider, LMStudioProvider, KoboldCppProvider, LlamaCppProvider, GPT4AllProvider
+- Fallback chain: LM Studio > KoboldCpp > LlamaCpp > GPT4All > TemplateProvider (sempre disponível)
+- TTS: TTSAdapter com silence fallback (sempre disponível)
+- Vídeo: WanGPAdapter (primário) + FFmpegAdapter (fallback obrigatório)
+- Matrix: FEATURE_PRESERVATION_MATRIX.md com 10 itens obrigatórios
+
+### Evidências obrigatórias
+- `tests/test_provider_presence.py` — 8 testes
+- 8/8 passando
+
+### Critérios de aceite
+1. ✅ Teste verifica todos os 5 LLM provider files existem
+2. ✅ Teste verifica classes dos providers existem nos arquivos
+3. ✅ Teste verifica fallback files existem (TTS, vídeo, router)
+4. ✅ Teste verifica ProviderRouter referencia TemplateProvider como fallback
+5. ✅ Teste verifica TTSAdapter tem silence fallback
+6. ✅ Teste verifica FFmpegAdapter como vídeo fallback + WanGP primário
+7. ✅ Teste verifica FEATURE_PRESERVATION_MATRIX entradas obrigatórias
+8. ✅ Teste verifica referências nos config_models.py
+
+### Testes
+`tests/test_provider_presence.py` — execução: `pytest tests/test_provider_presence.py -v`
+
+### Definition of Ready
+- [x] Independente
+- [x] Negociável
+- [x] Valiosa
+- [x] Estimável
+- [x] Pequena o suficiente
+- [x] Testável
+- [x] Possui contexto técnico
+- [x] Possui arquivo de referência
+- [x] Possui critérios Gherkin
+- [x] Possui teste planejado
+
+### Definition of Done
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [ ] Commit criado
+
 ## SEC-1101 — Criar política de secrets e arquivos sensíveis
 
 **Prioridade:** Média  
