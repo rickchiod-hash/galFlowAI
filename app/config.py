@@ -1,9 +1,15 @@
 from pathlib import Path
+import os
 
-BASE_DIR = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO")
-WORKSPACE_DIR = BASE_DIR / "opencodegalpasta"
-PROJECTS_DIR = WORKSPACE_DIR / "projects"
-LOGS_DIR = WORKSPACE_DIR / "logs"
+# Default: project root (parent of app/ directory)
+_DEFAULT_BASE_DIR = Path(__file__).resolve().parent.parent
+# Allow override via environment variable
+BASE_DIR = Path(os.environ.get("GALFLOWAI_BASE_DIR", _DEFAULT_BASE_DIR))
+
+# Workspace is the project root itself (where app/ is located)
+WORKSPACE_DIR = BASE_DIR
+PROJECTS_DIR = BASE_DIR / "projects"
+LOGS_DIR = BASE_DIR / "logs"
 CACHE_DIR = BASE_DIR / "cache"
 MODELS_DIR = BASE_DIR / "models"
 ENGINES_DIR = BASE_DIR / "engines"
