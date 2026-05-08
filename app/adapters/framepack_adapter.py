@@ -63,11 +63,11 @@ class FramePackAdapter:
                 return {"success": True, "video_path": output_path, "prompt": prompt,
                         "provider": "FramePack", "resolution": resolution}
             else:
-                logger.error("Erro FramePack: %s", stderr)
+                logger.error("CAUSA: Erro FramePack: %s | CORREÇÃO: Verifique se FramePack está instalado e configurado", stderr)
                 return {"success": False, "error": stderr, "fallback_suggested": True}
                 
         except Exception as e:
-            logger.error("Exceção FramePack: %s", str(e))
+            logger.error("CAUSA: Exceção FramePack: %s | CORREÇÃO: Verifique se FramePack e dependências estão instalados", str(e))
             return {"success": False, "error": str(e), "fallback_suggested": True}
     
     def _get_python_executable(self) -> str:

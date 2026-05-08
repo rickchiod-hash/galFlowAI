@@ -32,7 +32,7 @@ class UseCase(ABC):
     
     def _build_error(self, error: str, **extra) -> Dict[str, Any]:
         """Build error response."""
-        logger.error(error)
+        logger.error("CAUSA: %s | CORREÇÃO: Verifique parâmetros de entrada", error)
         return {"ok": False, "error": error, **extra}
 
 

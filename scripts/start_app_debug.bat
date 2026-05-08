@@ -1,5 +1,5 @@
 @echo off
-REM Start FlowForgeAI Gradio UI with required environment variables
+REM Start GalFlowAI Gradio UI with required environment variables
 
 setlocal EnableDelayedExpansion
 
@@ -26,7 +26,7 @@ cd /d "K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta"
 
 REM ========== Start Gradio UI ==========
 echo ================================
-echo   FlowForgeAI - Gradio UI
+echo   GalFlowAI - Gradio UI
 echo ================================
 echo.
 echo Environment variables set:

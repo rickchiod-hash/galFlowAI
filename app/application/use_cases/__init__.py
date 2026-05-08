@@ -1,4 +1,4 @@
-"""Use cases for FlowForgeAI application layer."""
+"""Use cases for GalFlowAI application layer."""
 from app.application.use_cases.base import UseCase, UseCaseError
 from app.application.use_cases.script_generation import (
     GenerateScriptUseCase,

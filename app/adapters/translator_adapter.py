@@ -49,7 +49,7 @@ class TranslatorAdapter:
                     logger.info("Traduzido via Ollama: %s", translated[:50])
                     return translated
             except Exception as e:
-                logger.warning("Erro Ollama: %s. Usando fallback.", str(e))
+                logger.warning("CAUSA: Erro Ollama: %s | CORREÇÃO: Verifique se Ollama está rodando e modelo disponível", str(e))
         
         # Fallback: dicionário
         return self._traduzir_fallback(texto_ptbr)

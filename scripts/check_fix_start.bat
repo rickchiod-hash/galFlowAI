@@ -88,7 +88,7 @@ if errorlevel 1 (
 
 echo.
 echo ================================
-echo   Starting FlowForgeAI...
+echo   Starting GalFlowAI...
 echo ================================
 echo.
 echo URLs:

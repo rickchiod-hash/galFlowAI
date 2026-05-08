@@ -1,4 +1,4 @@
-"""Services package for FlowForgeAI."""
+"""Services package for GalFlowAI."""
 
 from app.services.video_service import VideoService
 from app.services.tts_service import TTSService

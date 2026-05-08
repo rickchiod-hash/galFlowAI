@@ -1,4 +1,4 @@
-# Revisão Crítica - FlowForgeAI
+# Revisão Crítica - GalFlowAI
 
 ## 1. Problemas BLOQUEANTES
 
@@ -60,7 +60,7 @@
    ```
 3. **Atualizar README.md** com contagens de testes reais (212 coletados, 14 H10 passando)
 4. **Adicionar testes E2E** para fallback FFmpeg (mock WanGP falhando)
-5. **Criar `scripts/start_flowforgeai_standard.bat`** que configure TODAS as variáveis do AGENTS.md
+5. **Criar `scripts/start_GalFlowAI_standard.bat`** que configure TODAS as variáveis do AGENTS.md
 6. **Remover 14B** de toda documentação e código (apenas 1.3B deve ser padrão)
 
 ---

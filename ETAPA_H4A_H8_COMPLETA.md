@@ -10,7 +10,7 @@
 
 ## 📋 Visão Geral
 
-**Objetivo**: Downloads de modelos, configuração de provedores LLM (GPT4All, LM Studio, KoboldCpp, WanGP), validação do sistema FlowForgeAI.
+**Objetivo**: Downloads de modelos, configuração de provedores LLM (GPT4All, LM Studio, KoboldCpp, WanGP), validação do sistema GalFlowAI.
 
 **Progresso Geral**:
 - ✅ H1-H3 concluídos (100%)

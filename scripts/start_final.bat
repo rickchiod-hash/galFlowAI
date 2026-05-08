@@ -1,11 +1,11 @@
 @echo off
-REM FlowForgeAI - Start Direct (avoiding Microsoft Store Python)
+REM GalFlowAI - Start Direct (avoiding Microsoft Store Python)
 
 set BASE_DIR=K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta
 set STUDIO_PYTHON=K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe
 
 echo ================================
-echo   FlowForgeAI - Inicializacao
+echo   GalFlowAI - Inicializacao
 echo ================================
 echo.
 
@@ -76,7 +76,7 @@ if not exist "projects" mkdir projects
 if not exist "K:\AI_VIDEO_COMERCIAL_STUDIO\temp" mkdir "K:\AI_VIDEO_COMERCIAL_STUDIO\temp"
 
 echo ================================
-echo   INICIANDO FLOWFORGEAI
+echo   INICIANDO GalFlowAI
 echo ================================
 echo.
 echo URLs de acesso:

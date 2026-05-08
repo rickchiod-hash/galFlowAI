@@ -1,12 +1,12 @@
 @echo off
-REM FlowForgeAI - Corrigir, Configurar e Subir Aplicação
+REM GalFlowAI - Corrigir, Configurar e Subir Aplicação
 setlocal EnableDelayedExpansion
 
 set BASE_DIR=K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta
 set STUDIO_DIR=K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio
 
 echo ================================
-echo   FlowForgeAI - Inicialização
+echo   GalFlowAI - Inicialização
 echo ================================
 echo.
 
@@ -96,7 +96,7 @@ if errorlevel 1 (
 echo.
 
 REM ========== Subir Aplicação ==========
-echo [4/4] Iniciando FlowForgeAI...
+echo [4/4] Iniciando GalFlowAI...
 echo.
 echo ================================
 echo   ACESSO:

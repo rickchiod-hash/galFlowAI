@@ -1,12 +1,12 @@
 @echo off
-REM Final Fix and Start Script for FlowForgeAI
+REM Final Fix and Start Script for GalFlowAI
 setlocal EnableDelayedExpansion
 
 set BASE_DIR=K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta
 set STUDIO_PYTHON=K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\python.exe
 
 echo ================================
-echo   FlowForgeAI - Fix and Start
+echo   GalFlowAI - Fix and Start
 echo ================================
 echo.
 
@@ -40,7 +40,7 @@ REM This uses a simple approach: read line by line and fix common errors
 echo Creating fixed api.py...
 (
 echo """
-echo FastAPI V2 for FlowForgeAI - Local-first internal API.
+echo FastAPI V2 for GalFlowAI - Local-first internal API.
 echo """
 echo from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 echo from fastapi.middleware.cors import CORSMiddleware
@@ -59,7 +59,7 @@ echo.
 echo logger = setup_logger(^)
 echo.
 echo app = FastAPI(
-echo     title="FlowForgeAI API",
+echo     title="GalFlowAI API",
 echo     description="Local-first API for commercial video generation",
 echo     version="2.0"
 echo ^)

@@ -2,7 +2,7 @@
 
 ## Visão Geral
 
-O FlowForgeAI suporta múltiplos provedores LLM locais. Este guia explica como configurar cada um.
+O GalFlowAI suporta múltiplos provedores LLM locais. Este guia explica como configurar cada um.
 
 ## Provedores Suportados
 
@@ -54,7 +54,7 @@ try {
 }
 ```
 
-**Configuração no FlowForgeAI**:
+**Configuração no GalFlowAI**:
 O `lmstudio_provider.py` já está implementado. O sistema detectará automaticamente se o LM Studio estiver rodando.
 
 ---
@@ -75,7 +75,7 @@ Invoke-WebRequest -Uri $url -OutFile $output
 **Uso**:
 1. Execute o KoboldCpp
 2. Carregue o modelo baixado
-3. O FlowForgeAI detectará automaticamente na porta 5001
+3. O GalFlowAI detectará automaticamente na porta 5001
 
 **Teste**:
 ```powershell

@@ -1,9 +1,9 @@
 @echo off
-REM Setup GPT4All for FlowForgeAI
+REM Setup GPT4All for GalFlowAI
 REM Python package already installed, need model files
 
 echo ================================
-echo   FlowForgeAI - Setup GPT4All
+echo   GalFlowAI - Setup GPT4All
 echo ================================
 echo.
 
@@ -39,5 +39,5 @@ echo   gpt4all list
 echo   gpt4all download orca-mini-3b
 echo.
 
-echo Setup complete! After downloading a model, restart FlowForgeAI and select "GPT4All local"
+echo Setup complete! After downloading a model, restart GalFlowAI and select "GPT4All local"
 pause

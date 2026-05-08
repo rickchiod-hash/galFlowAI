@@ -2,7 +2,7 @@
 
 ## Diagnóstico do Visual Atual
 1. UI funcional, mas ainda com cara de formulário técnico.
-2. Nome FlowForgeAI ainda presente na interface.
+2. Nome GalFlowAI ainda presente na interface.
 3. Preview vazio sem orientação ao usuário.
 4. Central de Logs ausente na UI principal.
 5. Sem hierarquia visual de botões.

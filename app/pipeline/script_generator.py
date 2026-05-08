@@ -20,7 +20,7 @@ def generate_script(briefing, project_id=None, mode="auto"):
         )
         return result["script"]
     except Exception as e:
-        logger.error("Falha no servico de roteiro: %s", e)
+        logger.error("CAUSA: Falha no servico de roteiro: %s | CORREÇÃO: Verifique LLM provider disponível", e)
         # Fallback final
         from app.adapters.llm.template_provider import TemplateProvider
         tp = TemplateProvider()

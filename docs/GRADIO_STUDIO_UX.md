@@ -68,7 +68,7 @@
   - Pipeline fim a fim estável.
 
 ## Checklist de Aceite da UI
-- [ ] Branding Gal AI (sem FlowForgeAI na UI).
+- [ ] Branding Gal AI (sem GalFlowAI na UI).
 - [ ] Layout em Blocks com abas claras.
 - [ ] Preview com gr.Video e estado vazio elegante.
 - [ ] Central de Logs com gr.Dataframe legível.

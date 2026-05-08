@@ -147,7 +147,7 @@ class TestH8(unittest.TestCase):
         self.assertTrue(readme.exists())
         
         content = readme.read_text(encoding="utf-8")
-        self.assertIn("FlowForgeAI", content)
+        self.assertIn("GalFlowAI", content)
     
     def test_setup_script_exists(self):
         """Test setup_llm_providers.py exists."""

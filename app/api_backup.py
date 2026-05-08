@@ -1,5 +1,5 @@
 """
-FastAPI V2 for FlowForgeAI - Local-first internal API.
+FastAPI V2 for GalFlowAI - Local-first internal API.
 """
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,7 +18,7 @@ from app.logging_config import setup_logger
 logger = setup_logger()
 
 app = FastAPI(
-    title="FlowForgeAI API",
+    title="GalFlowAI API",
     description="Local-first API for commercial video generation",
     version="2.0"
 )
@@ -49,7 +49,7 @@ async def health_check():
     """Health check endpoint."""
     return {
         "status": "ok",
-        "app": "FlowForgeAI",
+        "app": "GalFlowAI",
         "mode": "local",
         "ui": "gradio",
         "fastapi": True,

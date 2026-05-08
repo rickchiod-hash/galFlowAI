@@ -17,7 +17,7 @@ def progress_callback(progress: int, message: str):
 
 def main():
     """Exemplo principal"""
-    print("=== FlowForgeAI - Exemplo de Geração de Vídeo ===\n")
+    print("=== GalFlowAI - Exemplo de Geração de Vídeo ===\n")
     
     # Importa o serviço
     from app.services.video_service import VideoService
@@ -38,7 +38,7 @@ def main():
     # Configuração do comercial
     print("Configurando geração de comercial...")
     project_id = "20260505_120000_exemplo"
-    product = "FlowForgeAI - Gerador de Vídeos"
+    product = "GalFlowAI - Gerador de Vídeos"
     target_audience = "Criadores de conteúdo, marqueteiros, pequenas empresas"
     
     print(f"Projeto: {project_id}")
