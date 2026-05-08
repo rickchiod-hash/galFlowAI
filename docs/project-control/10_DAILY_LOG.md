@@ -14,11 +14,35 @@ Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
 
 ### Onde estou
 - História atual: ARCH-300 ✅ Concluída (refatoração completa)
-- Próxima ação: Atualizar documentação e commit
+- Commits: 19bc3f4 (refactor), e652e9b (docs update)
+
+## 2026-05-08 15:45 — Sessão 22: ARCH-301 — Result Object padrão
+
+### O que fiz
+- Criei `app/application/result.py` com classe `Result` (herda de `dict` para compatibilidade)
+- Atualizei `app/application/use_cases/base_use_case.py` para usar `Result.success()` e `Result.failure()`
+- `Result` tem propriedades `.ok`, `.data`, `.error` e métodos `is_success()`, `is_failure()`
+- Testes existentes (test_tts_fallback.py) continuam passando (5/5)
 
 ### Onde estou
-- História atual: ARCH-300 (Em andamento).
-- Fase atual: Fase 4 — Refatoração segura.
+- História atual: ARCH-301 ✅ Concluída
+- Commit: 993cf00
+- Próxima ação: Iniciar ARCH-302
+
+## 2026-05-08 16:00 — Sessão 23: ARCH-302 Centralizar configuração e paths
+
+### O que fiz
+- Atualizei `app/config.py` para `BASE_DIR` configurável via variável de ambiente `GALFLOWAI_BASE_DIR`.
+- `BASE_DIR` padrão é o diretório raiz do projeto (pai de `app/config.py`).
+- Atualizei `app/logging_config.py` para usar `BASE_DIR` em vez de caminhos hardcoded.
+- Atualizei `app/main.py` para usar `PROJECT_ROOT = BASE_DIR` e removi caminhos hardcoded (4 ocorrências).
+- Atualizei `app/config_models.py` para importar `BASE_DIR` de `app.config`.
+- Atualizei `tests/test_api.py` para usar caminho dinâmico.
+- Commits: 02cff4e (partial), 9041229 (main.py update).
+
+### Onde estou
+- História atual: ARCH-302 (Em andamento - caminhos hardcoded remanescentes em scripts de download).
+- Próxima ação: Remover caminhos hardcoded em scripts restantes ou marcar como concluída.
 
 ## 2026-05-08 14:54 — Sessão 20: QA-1004 concluída, teste passando
 
