@@ -2,6 +2,50 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
 
+## 2026-05-08 01:30 — Sessão 11: CORE-101 — Mapear estado atual do projeto (Fase 2 completa)
+
+### O que fiz
+
+- CORE-101 ✅: Mapa atual do projeto completo
+  - `02_MAPA_ATUAL_DO_PROJETO.md` reescrito — 6 seções (raiz, tecnologias, diretórios, entrypoints, features, riscos)
+  - Tecnologias mapeadas: 12+ (Python, Gradio, FastAPI, FFmpeg, WanGP, TTS, 6 LLM providers, Piper, etc.)
+  - Estrutura de diretórios documentada (app/ com adapters, use_cases, stages, services, ui)
+  - Riscos identificados: docs/reference/ gap (corrigido), untracked files, dual directory drift, python PATH, test warnings
+- Criado `tests/test_project_map.py` com 5 testes — 5 passed
+- **33 testes de governança passando** (8 histórias — GOV-001..006, CORE-100, CORE-101)
+- Atualizados: 00_STATUS_EXECUTIVO.md (8/48, 17%), 05_BACKLOG_PRIORIZADO.md, 06_HISTORIAS_REFINADAS.md
+
+### Bloqueios
+
+- Nenhum
+
+### Próximo passo
+
+- CORE-102 — Validar diferença entre documentação e código
+
+## 2026-05-08 01:00 — Sessão 10: CORE-100 — Auditar histórico Git (gap docs/reference/ corrigido)
+
+### O que fiz
+
+- CORE-100 ✅: Auditoria do histórico Git completa
+  - `01_AUDITORIA_HISTORICO_GIT.md` atualizado com dados frescos: 132 commits, HEAD 63839e7, 5 dias de desenvolvimento
+  - Tabelas: marcos do histórico (17 principais), arquivos deletados (7), top 10 arquivos mais alterados
+  - 7 perguntas obrigatórias respondidas (telas, providers, fallbacks, docs vs código, TODOs, etc.)
+  - Evidência: NENHUM provider/fallback removido em todo o histórico
+- **Gap crítico corrigido**: `docs/reference/` (PROJECT_REFERENCE_CONTEXT.md, FEATURE_PRESERVATION_MATRIX.md, EXTERNAL_REFERENCES.md) não estava commitado ao git — apenas no governance pack zip
+  - Copiados 3 arquivos do pack para `docs/reference/` e adicionados ao git
+  - Testes GOV-002 e GOV-003 (test_product_context.py, test_feature_matrix.py) agora passam em fresh checkout
+- Criado `tests/test_git_audit.py` com 5 testes — 5 passed
+- Atualizados: 00_STATUS_EXECUTIVO.md, 05_BACKLOG_PRIORIZADO.md, 06_HISTORIAS_REFINADAS.md
+
+### Bloqueios
+
+- Nenhum
+
+### Próximo passo
+
+- CORE-101 — Mapear estado atual do projeto
+
 ## 2026-05-08 00:20 — Sessão 9: GOV-006 — Adicionar AGENTS e Skill do GalFlowAI (Fase 1 completa)
 
 ### O que fiz

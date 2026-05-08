@@ -12,8 +12,8 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 4 | GOV-004 | Padronizar TODOs rastreáveis | Alta | 2 | Concluída | Nenhuma | para que dívida técnica tenha dono, critério e backlog |
 | 5 | GOV-005 | Criar ADR obrigatório para remoções | Alta | 2 | Concluída | Nenhuma | para preservar rastreabilidade e rollback |
 | 6 | GOV-006 | Adicionar AGENTS e Skill do GalFlowAI | Alta | 3 | Concluída | Nenhuma | para que o agente siga o mesmo padrão em toda sessão |
-| 7 | CORE-100 | Auditar histórico Git desde o primeiro commit | Alta | 5 | Pendente | GOV-001..GOV-006 | para resgatar features perdidas com evidência |
-| 8 | CORE-101 | Mapear estado atual do projeto | Alta | 3 | Pendente | GOV-001..GOV-006 | para iniciar refatorações sem suposição |
+| 7 | CORE-100 | Auditar histórico Git desde o primeiro commit | Alta | 5 | Concluída | GOV-001..GOV-006 | para resgatar features perdidas com evidência |
+| 8 | CORE-101 | Mapear estado atual do projeto | Alta | 3 | Concluída | GOV-001..GOV-006 | para iniciar refatorações sem suposição |
 | 9 | CORE-102 | Validar diferença entre documentação e código | Alta | 5 | Pendente | GOV-001..GOV-006 | para separar fato implementado de roadmap |
 | 10 | UI-200 | Restaurar fluxo por etapas na documentação | Alta | 3 | Pendente | CORE-100..CORE-102 | para aprovar roteiro/cenas antes de gastar GPU |
 | 11 | UI-201 | Gerar roteiro sem renderizar vídeo | Alta | 5 | Pendente | CORE-100..CORE-102 | para evitar render caro com roteiro ruim |
@@ -57,7 +57,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 
 ## Próxima história recomendada
 
-**CORE-100 — Auditar histórico Git desde o primeiro commit.** Para resgatar features perdidas com evidência.
+**CORE-102 — Validar diferença entre documentação e código.** Para separar fato implementado de roadmap.
 
 ## Regras de priorização
 

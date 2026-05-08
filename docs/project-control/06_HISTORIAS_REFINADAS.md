@@ -322,21 +322,28 @@ Ver `GOV-006` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-100 Diagnóstico e recuperação  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/01_AUDITORIA_HISTORICO_GIT.md`
 
 ### História
 Como responsável técnico, eu quero mapear o que foi implementado/removido, para resgatar features perdidas com evidência.
 
+### Evidências
+- `docs/project-control/01_AUDITORIA_HISTORICO_GIT.md` — atualizado com 132 commits, HEAD 63839e7, 7 perguntas obrigatórias respondidas
+- `tests/test_git_audit.py` — 5 testes (file exists, sections, git evidence, questions, commit count)
+- Pytest: 5 passed (CORE-100), 33 passed (all governance)
+- Commit: (nesta sessão)
+- Gap encontrado: docs/reference/ não estava no git — corrigido (3 arquivos commitados)
+
 ### Contexto técnico
-Esta história deve ser validada no código e no histórico Git antes de implementação. Se a evidência não existir, registrar `EVIDÊNCIA INSUFICIENTE` no status executivo. Contexto funcional: Git Audit.
+Esta história deve ser validada no código e no histórico Git antes de implementação. Contexto funcional: Git Audit.
 
 ### Evidências obrigatórias
-- Arquivo(s) atual(is) relacionados.
-- Commit(s) que criaram/alteraram/removeram a capacidade.
-- Teste(s) existentes ou ausência documentada.
-- Impacto na Feature Preservation Matrix, se aplicável.
+- `01_AUDITORIA_HISTORICO_GIT.md` — tabela de marcos, arquivos deletados, 7 perguntas respondidas.
+- Commits: 067938a (MVP) a 63839e7 (GOV-006) — 132 commits analisados.
+- `test_git_audit.py` — 5 testes implementados e passando.
+- Nenhuma feature obrigatória removida. All 6 LLM providers, WanGP, FFmpeg, TTS preservados.
 
 ### Critérios de aceite
 Ver `CORE-100` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
@@ -345,44 +352,50 @@ Ver `CORE-100` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
 Ver `CORE-100` em `08_PLANO_DE_TESTES.md`.
 
 ### Definition of Ready
-- [ ] Independente
-- [ ] Negociável
-- [ ] Valiosa
-- [ ] Estimável
-- [ ] Pequena o suficiente
-- [ ] Testável
-- [ ] Possui contexto técnico
-- [ ] Possui arquivo de referência
-- [ ] Possui critérios Gherkin
-- [ ] Possui teste planejado
+- [x] Independente
+- [x] Negociável
+- [x] Valiosa
+- [x] Estimável
+- [x] Pequena o suficiente
+- [x] Testável
+- [x] Possui contexto técnico
+- [x] Possui arquivo de referência
+- [x] Possui critérios Gherkin
+- [x] Possui teste planejado
 
 ### Definition of Done
-- [ ] Critérios atendidos
-- [ ] Testes criados/atualizados
-- [ ] Docs e backlog atualizados
-- [ ] Status executivo atualizado
-- [ ] Daily log atualizado
-- [ ] Commit criado
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [x] Commit criado
 
 ## CORE-101 — Mapear estado atual do projeto
 
 **Épico:** EPIC-100 Diagnóstico e recuperação  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 3 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/02_MAPA_ATUAL_DO_PROJETO.md`
 
 ### História
 Como desenvolvedor, eu quero um mapa atual de tecnologias, entradas e módulos, para iniciar refatorações sem suposição.
 
+### Evidências
+- `docs/project-control/02_MAPA_ATUAL_DO_PROJETO.md` — 6 seções: raiz, tecnologias (12+), estrutura de diretórios completa, entrypoints (4), features obrigatórias, riscos (5)
+- `tests/test_project_map.py` — 5 testes (file exists, sections, technologies, entrypoints, feature matrix ref)
+- Pytest: 5 passed (CORE-101), 33 passed (all governance)
+- Commit: (nesta sessão)
+
 ### Contexto técnico
-Esta história deve ser validada no código e no histórico Git antes de implementação. Se a evidência não existir, registrar `EVIDÊNCIA INSUFICIENTE` no status executivo. Contexto funcional: Mapa atual.
+Esta história deve ser validada no código e no histórico Git antes de implementação. Contexto funcional: Mapa atual.
 
 ### Evidências obrigatórias
-- Arquivo(s) atual(is) relacionados.
-- Commit(s) que criaram/alteraram/removeram a capacidade.
-- Teste(s) existentes ou ausência documentada.
-- Impacto na Feature Preservation Matrix, se aplicável.
+- `02_MAPA_ATUAL_DO_PROJETO.md` — tecnologias, diretórios, entrypoints, riscos identificados.
+- 6 módulos LLM providers, 2 engines de vídeo (WanGP + FFmpeg), 2 UIs (Gradio + FastAPI).
+- 23+ testes existentes em tests/.
+- Risco confirmado: docs/reference/ não commitado (corrigido nesta sessão).
 
 ### Critérios de aceite
 Ver `CORE-101` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
@@ -391,24 +404,24 @@ Ver `CORE-101` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
 Ver `CORE-101` em `08_PLANO_DE_TESTES.md`.
 
 ### Definition of Ready
-- [ ] Independente
-- [ ] Negociável
-- [ ] Valiosa
-- [ ] Estimável
-- [ ] Pequena o suficiente
-- [ ] Testável
-- [ ] Possui contexto técnico
-- [ ] Possui arquivo de referência
-- [ ] Possui critérios Gherkin
-- [ ] Possui teste planejado
+- [x] Independente
+- [x] Negociável
+- [x] Valiosa
+- [x] Estimável
+- [x] Pequena o suficiente
+- [x] Testável
+- [x] Possui contexto técnico
+- [x] Possui arquivo de referência
+- [x] Possui critérios Gherkin
+- [x] Possui teste planejado
 
 ### Definition of Done
-- [ ] Critérios atendidos
-- [ ] Testes criados/atualizados
-- [ ] Docs e backlog atualizados
-- [ ] Status executivo atualizado
-- [ ] Daily log atualizado
-- [ ] Commit criado
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [x] Commit criado
 
 ## CORE-102 — Validar diferença entre documentação e código
 

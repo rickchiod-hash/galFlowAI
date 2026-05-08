@@ -1,57 +1,48 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-07 22:45
+Atualizado em: 2026-05-08 01:30
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 6/48
+Histórias concluídas: 8/48
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 44
-Percentual concluído: 12%
+Histórias pendentes: 40
+Percentual concluído: 17%
 
 ## Estado atual
 
 - Branch atual: master
-- Último commit analisado: 7017ea8 — "GalFlowAI v0.9 - Phases 1-8 Complete + Phase 9 Partial"
-- Último commit criado pelo agente: 3132eb0 (docs(governance): import GalFlowAI governance pack v2 + GOV-001 checkpoint system)
-- Fase atual: Fase 1 — Antirregressão documental
-- História atual: GOV-006 — Adicionar AGENTS e Skill do GalFlowAI ✅ Concluída
-- Próxima ação recomendada: Fase 2 — CORE-100 — Auditar histórico Git
+- Último commit analisado: 63839e7 — "docs(governance): GOV-006 adicionar AGENTS e Skill do GalFlowAI"
+- Último commit criado pelo agente: 63839e7 (GOV-006)
+- Fase atual: Fase 2 — Diagnóstico e recuperação
+- História atual: CORE-100 — Auditar histórico Git ✅ Concluída / CORE-101 — Mapear estado atual do projeto ✅ Concluída
+- Próxima ação recomendada: CORE-102 — Validar diferença entre documentação e código
 
 ## Resumo tipo Daily
 
 ### O que foi feito
 
-- GOV-001 ✅: Criado sistema de checkpoint diário permanente.
-  - Validados arquivos: 00_STATUS_EXECUTIVO.md, 10_DAILY_LOG.md, 13_CHECKPOINTS_DE_SESSAO.md, 20_DEFINITION_OF_READY_DONE.md
-  - Criado teste de checkpoint em `tests/test_checkpoint.py`: 3 testes — 3 passed
-  - 00_STATUS_EXECUTIVO.md contém todas as 10 seções obrigatórias
-  - 10_DAILY_LOG.md em formato padrão com entradas por sessão
-- GOV-002 ✅: Criado fonte de verdade do produto.
-  - Validado PROJECT_REFERENCE_CONTEXT.md: 8 seções, status "FONTE DE VERDADE DO PRODUTO"
-  - Criado teste em `tests/test_product_context.py`: 4 testes — 4 passed
-- GOV-003 ✅: Criado matriz de preservação de features.
-  - Validado FEATURE_PRESERVATION_MATRIX.md: 8 colunas, 10 features obrigatórias, 6 P1
-  - Criado teste em `tests/test_feature_matrix.py`: 5 testes — 5 passed
-- GOV-004 ✅: Padronizado TODOs rastreáveis.
-  - Validado 09_GAPS_TODOS_E_DIVIDAS.md: política, padrão TODO(GAL-XXX)
-  - Criado teste: 4 testes — 4 passed
-  - Varredura: 0 TODOs genéricos
-- GOV-005 ✅: Criado ADR obrigatório para remoções.
-  - Validado 11_DECISOES_TECNICAS_ADR.md: template ADR-000 com 10 campos
-  - Criado teste em `tests/test_adr_policy.py`: 3 testes — 3 passed
-- GOV-006 ✅: Adicionado AGENTS e Skill do GalFlowAI.
-  - AGENTS.md atualizado: GalFlowAI governance (Standing Orders)
-  - .opencode/skills/galflowai/SKILL.md: documentos obrigatórios, guardrails
-  - Criado teste em `tests/test_agents.py`: 4 testes (AGENTS existence, content, SKILL existence, content) — 4 passed
-- **Fase 1 — Antirregressão documental: COMPLETA** ✅
-- 469 testes coletados sem erro.
+- **Fase 1 — Antirregressão documental: COMPLETA** ✅ (GOV-001..006, 6 histórias)
+  - GOV-001: Sistema de checkpoint diário, test_checkpoint.py (3 testes)
+  - GOV-002: Fonte de verdade do produto (PROJECT_REFERENCE_CONTEXT.md), test_product_context.py (4 testes)
+  - GOV-003: Feature Preservation Matrix, test_feature_matrix.py (5 testes)
+  - GOV-004: TODOs rastreáveis, test_todo_policy.py (4 testes, 0 genéricos)
+  - GOV-005: ADR obrigatório, test_adr_policy.py (3 testes)
+  - GOV-006: AGENTS.md + SKILL.md, test_agents.py (4 testes)
+- **Gap corrigido**: docs/reference/ (PROJECT_REFERENCE_CONTEXT.md, FEATURE_PRESERVATION_MATRIX.md, EXTERNAL_REFERENCES.md) não estava commitado — copiado do governance pack e adicionado ao git.
+- **CORE-100 ✅**: Auditoria do histórico Git completa.
+  - 01_AUDITORIA_HISTORICO_GIT.md atualizado: 132 commits, HEAD 63839e7, tabelas de marcos e arquivos deletados, 7 perguntas obrigatórias respondidas
+  - test_git_audit.py: 5 testes (existence, sections, git evidence, questions, commit count)
+- **CORE-101 ✅**: Mapa atual do projeto completo.
+  - 02_MAPA_ATUAL_DO_PROJETO.md: tecnologias, estrutura de diretórios, entrypoints, riscos
+  - test_project_map.py: 5 testes (existence, sections, technologies, entrypoints, feature matrix ref)
+- **33 testes de governança passando** (8 histórias): test_checkpoint (3), test_product_context (4), test_feature_matrix (5), test_todo_policy (4), test_adr_policy (3), test_agents (4), test_git_audit (5), test_project_map (5)
 
 ### O que está sendo feito
 
-- **Fase 1 completa** ✅. Próxima: Fase 2 — CORE-100 — Auditar histórico Git.
+- Fase 2: CORE-100 e CORE-101 completas. Próximo: CORE-102 — Validar diferença entre documentação e código.
 
 ### Bloqueios
 
@@ -63,11 +54,14 @@ Percentual concluído: 12%
 - Agente marcar como concluído sem teste.
 - Agente remover provider/fallback validado.
 - Agente confundir documentação planejada com feature implementada.
+- docs/reference/ arquivos agora commitados (gap resolvido).
 
 ### Gaps encontrados
 
-- Ver docs/01_AUDITORIA_HISTORICO_GIT.md para gaps de auditoria.
-- Ver docs/09_GAPS_TODOS_E_DIVIDAS.md para gaps rastreáveis.
+- docs/reference/ não estava no git (corrigido).
+- User's working tree tem 6+ untracked files que podem divergir.
+- python.exe não está no PATH padrão (usar env específico).
+- Testes de governança retornam bool (warnings PytestReturnNotNoneWarning — padrão aceito do projeto).
 
 ### TODOs rastreáveis
 
@@ -75,21 +69,26 @@ Percentual concluído: 12%
 
 ### Arquivos alterados nesta sessão
 
-- tests/test_checkpoint.py (criado — 3 testes do checkpoint)
-- tests/test_product_context.py (criado — 4 testes do produto)
-- tests/test_agents.py (criado — 4 testes AGENTS + SKILL)
-- AGENTS.md (atualizado — versão governance GalFlowAI)
-- .opencode/skills/galflowai/SKILL.md (criado)
-- docs/project-control/00_STATUS_EXECUTIVO.md (atualizado — GOV-001..006, Fase 1 completa)
-- docs/project-control/10_DAILY_LOG.md (atualizado — entrada da sessão GOV-006)
+- docs/reference/PROJECT_REFERENCE_CONTEXT.md (novo — commitado do governance pack)
+- docs/reference/FEATURE_PRESERVATION_MATRIX.md (novo — commitado do governance pack)
+- docs/reference/EXTERNAL_REFERENCES.md (novo — commitado do governance pack)
+- docs/project-control/01_AUDITORIA_HISTORICO_GIT.md (atualizado — 132 commits, CORE-100)
+- docs/project-control/02_MAPA_ATUAL_DO_PROJETO.md (atualizado — completo, CORE-101)
+- docs/project-control/00_STATUS_EXECUTIVO.md (atualizado — 8/48, 17%)
+- docs/project-control/05_BACKLOG_PRIORIZADO.md (atualizado — CORE-100/101 concluídas)
+- docs/project-control/06_HISTORIAS_REFINADAS.md (atualizado — CORE-100/101 com evidências)
+- docs/project-control/10_DAILY_LOG.md (atualizado — entrada CORE-100 e CORE-101)
+- tests/test_git_audit.py (novo — 5 testes CORE-100)
+- tests/test_project_map.py (novo — 5 testes CORE-101)
 
 ### Comandos executados
 
-- pytest tests/test_checkpoint.py -v — 3 passed
-- pytest --collect-only — 446 tests collected, 0 errors
+- pytest tests/test_git_audit.py tests/test_project_map.py -v — 10 passed
+- pytest tests/test_product_context.py tests/test_feature_matrix.py tests/test_git_audit.py tests/test_project_map.py tests/test_checkpoint.py tests/test_adr_policy.py tests/test_todo_policy.py tests/test_agents.py -v — 33 passed
 
 ### Evidências usadas
 
-- Commit HEAD: f50777c (docs(governance): GOV-005 criar ADR obrigatorio para remocoes)
+- Commit HEAD: 63839e7 (GOV-006)
 - Branch: master
-- Status: working tree com alterações do usuário (GOV-006 adiciona test_agents.py, AGENTS.md, SKILL.md)
+- Git log: 132 commits, 067938a..63839e7
+- Working tree: untracked files do usuário preservados
