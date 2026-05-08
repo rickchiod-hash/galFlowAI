@@ -2,6 +2,23 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
 
+## 2026-05-08 00:10 — Sessão 8: GOV-005 — Criar ADR obrigatório para remoções
+
+### O que fiz
+
+- GOV-005 ✅: Validado 11_DECISOES_TECNICAS_ADR.md (template ADR-000 com 10 campos, ADR-001..ADR-005)
+- Criado `tests/test_adr_policy.py` com 3 testes — 3 passed
+- pytest collect: 465 testes sem erro
+- Atualizados: 00_STATUS_EXECUTIVO.md (5/48, 10%), 05_BACKLOG_PRIORIZADO.md, 06_HISTORIAS_REFINADAS.md
+
+### Bloqueios
+
+- Nenhum
+
+### Próximo passo
+
+- GOV-006 — Adicionar AGENTS e Skill do GalFlowAI
+
 ## 2026-05-08 00:05 — Sessão 7: GOV-004 — Padronizar TODOs rastreáveis
 
 ### O que fiz

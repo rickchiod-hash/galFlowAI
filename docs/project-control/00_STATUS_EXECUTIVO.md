@@ -5,11 +5,11 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 4/48
+Histórias concluídas: 5/48
 Histórias em andamento: 0
 Histórias bloqueadas: 0
 Histórias pendentes: 44
-Percentual concluído: 8%
+Percentual concluído: 10%
 
 ## Estado atual
 
@@ -17,8 +17,8 @@ Percentual concluído: 8%
 - Último commit analisado: 7017ea8 — "GalFlowAI v0.9 - Phases 1-8 Complete + Phase 9 Partial"
 - Último commit criado pelo agente: 3132eb0 (docs(governance): import GalFlowAI governance pack v2 + GOV-001 checkpoint system)
 - Fase atual: Fase 1 — Antirregressão documental
-- História atual: GOV-004 — Padronizar TODOs rastreáveis ✅ Concluída
-- Próxima ação recomendada: GOV-005 — Criar ADR obrigatório para remoções
+- História atual: GOV-005 — Criar ADR obrigatório para remoções ✅ Concluída
+- Próxima ação recomendada: GOV-006 — Adicionar AGENTS e Skill do GalFlowAI
 
 ## Resumo tipo Daily
 
@@ -36,11 +36,14 @@ Percentual concluído: 8%
   - Validado FEATURE_PRESERVATION_MATRIX.md: 8 colunas, 10 features obrigatórias, 6 P1
   - Criado teste em `tests/test_feature_matrix.py`: 5 testes — 5 passed
 - GOV-004 ✅: Padronizado TODOs rastreáveis.
-  - Validado 09_GAPS_TODOS_E_DIVIDAS.md: política, formato obrigatório, padrão TODO(GAL-XXX, proibição de TODO genérico)
-  - Criado teste em `tests/test_todo_policy.py`: 4 testes (existence, sections, pattern, no generic) — 4 passed
-  - Varredura de código: 0 TODOs genéricos encontrados
+  - Validado 09_GAPS_TODOS_E_DIVIDAS.md: política, padrão TODO(GAL-XXX)
+  - Criado teste: 4 testes — 4 passed
+  - Varredura: 0 TODOs genéricos
+- GOV-005 ✅: Criado ADR obrigatório para remoções.
+  - Validado 11_DECISOES_TECNICAS_ADR.md: template ADR-000 com 10 campos, ADR-001..ADR-005 iniciais
+  - Criado teste em `tests/test_adr_policy.py`: 3 testes (existence, template, references) — 3 passed
 - Sessão de importação do Governance Pack v2 concluída.
-- 462 testes coletados sem erro.
+- 465 testes coletados sem erro.
 
 ### O que está sendo feito
 
@@ -70,9 +73,9 @@ Percentual concluído: 8%
 
 - tests/test_checkpoint.py (criado — 3 testes do checkpoint)
 - tests/test_product_context.py (criado — 4 testes do produto)
-- tests/test_todo_policy.py (criado — 4 testes da política TODO)
-- docs/project-control/00_STATUS_EXECUTIVO.md (atualizado — GOV-001..004 concluídas)
-- docs/project-control/10_DAILY_LOG.md (atualizado — entrada da sessão GOV-004)
+- tests/test_adr_policy.py (criado — 3 testes da política ADR)
+- docs/project-control/00_STATUS_EXECUTIVO.md (atualizado — GOV-001..005 concluídas)
+- docs/project-control/10_DAILY_LOG.md (atualizado — entrada da sessão GOV-005)
 
 ### Comandos executados
 
@@ -81,6 +84,6 @@ Percentual concluído: 8%
 
 ### Evidências usadas
 
-- Commit HEAD: f17cbeb (docs(governance): GOV-003 criar matriz de preservacao de features)
+- Commit HEAD: cbe022f (docs(governance): GOV-004 padronizar TODOs rastreaveis)
 - Branch: master
-- Status: working tree com alterações do usuário (GOV-004 adiciona test_todo_policy.py)
+- Status: working tree com alterações do usuário (GOV-005 adiciona test_adr_policy.py)
