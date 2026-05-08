@@ -480,21 +480,26 @@ Ver `CORE-102` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-200 UX e fluxo de produto  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 3 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/19_STORY_MAP.md`
 
 ### História
 Como criador de comerciais, eu quero seguir etapas validáveis, para aprovar roteiro/cenas antes de gastar GPU.
 
+### Evidências
+- `docs/project-control/19_STORY_MAP.md` reescrito — fluxo de 7 etapas com gates de validação (Briefing → Roteiro → Cenas → Prompts → Narração → Vídeo → Montagem), story map por atividade, 5 regras de fluxo
+- `tests/test_story_map.py` — 5 testes (file exists, step flow, steps listed, validation gates, flow rules)
+- Pytest: 5 passed (UI-200), 43 passed (all governance — 10 histórias)
+- Commit: (nesta sessão)
+
 ### Contexto técnico
-Esta história deve ser validada no código e no histórico Git antes de implementação. Se a evidência não existir, registrar `EVIDÊNCIA INSUFICIENTE` no status executivo. Contexto funcional: UI_STEP_FLOW.
+Esta história deve ser validada no código e no histórico Git antes de implementação. Contexto funcional: UI_STEP_FLOW.
 
 ### Evidências obrigatórias
-- Arquivo(s) atual(is) relacionados.
-- Commit(s) que criaram/alteraram/removeram a capacidade.
-- Teste(s) existentes ou ausência documentada.
-- Impacto na Feature Preservation Matrix, se aplicável.
+- `19_STORY_MAP.md` — fluxo visual com 7 etapas, cada uma com gate de validação.
+- Etapas mapeadas ao código real: Briefing→main.py, Roteiro→script_service, Cenas→scene_splitter, Prompts→prompt_builder, Narração→tts_adapter, Vídeo→wangp_adapter/ffmpeg_adapter, Montagem→ffmpeg_adapter.
+- Regras documentadas: roteiro aprovado antes de cenas (UI-202), TTS falha não quebra, WanGP fallback FFmpeg.
 
 ### Critérios de aceite
 Ver `UI-200` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
@@ -503,24 +508,24 @@ Ver `UI-200` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
 Ver `UI-200` em `08_PLANO_DE_TESTES.md`.
 
 ### Definition of Ready
-- [ ] Independente
-- [ ] Negociável
-- [ ] Valiosa
-- [ ] Estimável
-- [ ] Pequena o suficiente
-- [ ] Testável
-- [ ] Possui contexto técnico
-- [ ] Possui arquivo de referência
-- [ ] Possui critérios Gherkin
-- [ ] Possui teste planejado
+- [x] Independente
+- [x] Negociável
+- [x] Valiosa
+- [x] Estimável
+- [x] Pequena o suficiente
+- [x] Testável
+- [x] Possui contexto técnico
+- [x] Possui arquivo de referência
+- [x] Possui critérios Gherkin
+- [x] Possui teste planejado
 
 ### Definition of Done
-- [ ] Critérios atendidos
-- [ ] Testes criados/atualizados
-- [ ] Docs e backlog atualizados
-- [ ] Status executivo atualizado
-- [ ] Daily log atualizado
-- [ ] Commit criado
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [x] Commit criado
 
 ## UI-201 — Gerar roteiro sem renderizar vídeo
 

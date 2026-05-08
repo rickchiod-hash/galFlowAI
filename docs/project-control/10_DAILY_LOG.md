@@ -2,6 +2,26 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
 
+## 2026-05-08 02:30 — Sessão 13: UI-200 — Restaurar fluxo por etapas na documentação
+
+### O que fiz
+
+- UI-200 ✅: Fluxo por etapas documentado
+  - `19_STORY_MAP.md` reescrito — 7 etapas com gates de validação (Briefing → Roteiro → Cenas → Prompts → Narração → Vídeo → Montagem), story map por atividade, 5 regras de fluxo
+  - Etapas mapeadas ao código real: main.py, script_service, scene_splitter, prompt_builder, tts_adapter, wangp_adapter, ffmpeg_adapter
+  - Etapas futuras documentadas: SceneContracts, Visual Bible, Ingredient Registry, PromptPack, RenderPlan, AudioPlan, SRT, VectorMemory
+- Criado `tests/test_story_map.py` com 5 testes — 5 passed
+- **43 testes de governança passando** (10 histórias)
+- **Fase 3 começa:** QA-1000 (teste antirregressão de naming)
+
+### Bloqueios
+
+- Nenhum
+
+### Próximo passo
+
+- QA-1000 — Criar teste antirregressão de naming
+
 ## 2026-05-08 02:00 — Sessão 12: CORE-102 — Validar diferença doc vs código (Fase 2 completa)
 
 ### O que fiz
