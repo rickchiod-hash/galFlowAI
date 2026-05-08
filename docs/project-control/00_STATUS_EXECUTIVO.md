@@ -1,11 +1,11 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-08 04:00
+Atualizado em: 2026-05-08 14:54
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 13/48
+Histórias concluídas: 14/48
 Histórias em andamento: 0
 Histórias bloqueadas: 0
 Histórias pendentes: 35
@@ -55,13 +55,17 @@ Percentual concluído: 27%
   - Encoding fix: subprocess usa encoding=utf-8, errors=replace
   - **5/5 testes passando**
 - **QA-1001 ✅**: Teste de presença de providers/fallbacks completo.
-  - `tests/test_provider_presence.py` criado com 8 testes
-  - Verifica: todos os 5 LLM providers existem (Template, LM Studio, KoboldCpp, LlamaCpp, GPT4All)
-  - Verifica: ProviderRouter referencia TemplateProvider como fallback
-  - Verifica: TTSAdapter tem silence fallback
-  - Verifica: FFmpegAdapter é fallback de vídeo (WanGP primário)
-  - Verifica: FEATURE_PRESERVATION_MATRIX.md contém entradas obrigatórias
-  - **8/8 testes passando**
+   - `tests/test_provider_presence.py` criado com 8 testes
+   - Verifica: todos os 5 LLM providers existem (Template, LM Studio, KoboldCpp, LlamaCpp, GPT4All)
+   - Verifica: ProviderRouter referencia TemplateProvider como fallback
+   - Verifica: TTSAdapter tem silence fallback
+   - Verifica: FFmpegAdapter é fallback de vídeo (WanGP primário)
+   - Verifica: FEATURE_PRESERVATION_MATRIX.md contém entradas obrigatórias
+   - **8/8 testes passando**
+- **QA-1004 ✅**: Teste TTS falha → export sem áudio completo.
+   - `tests/test_tts_fallback.py` criado com 5 testes (file existence, silence fallback, TTS unavailable, TTS available, both unavailable)
+   - Mocks para adapters e serviços (TTSAdapter, WanGPAdapter, FFmpegAdapter, script_service)
+   - **5/5 testes passando**
 
 ### O que está sendo feito
 
@@ -115,6 +119,9 @@ Percentual concluído: 27%
 - 35+ .md files (alterados — bulk replace FlowForgeAI/Gal AI→GalFlowAI)
 - update_backlog.py, append_all_sections.py, append_backlog.py, setup_llm_providers.py, fix_all_syntax.py (alterados — Gal AI→GalFlowAI)
 - tests/test_provider_presence.py (novo — 8 testes QA-1001)
+- tests/test_tts_fallback.py (atualizado — 5 testes QA-1004 corrigidos)
+- docs/project-control/00_STATUS_EXECUTIVO.md (atualizado — QA-1004 concluída, 14/48)
+- docs/project-control/10_DAILY_LOG.md (atualizado — entrada QA-1004 concluída)
 
 ### Comandos executados
 

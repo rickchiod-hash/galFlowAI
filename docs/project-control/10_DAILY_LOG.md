@@ -2,6 +2,18 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
 
+## 2026-05-08 14:54 — Sessão 20: QA-1004 concluída, teste passando
+
+### O que fiz
+- Corrigi `tests/test_tts_fallback.py` para mockar componentes reais (adapters e serviços) em vez de use cases inexistentes
+- Todos os 5 testes passando (file existence, silence fallback, TTS unavailable, TTS available, both unavailable)
+- Pipeline restaurado para versão original (sem use cases)
+- Atualizei `docs/project-control/00_STATUS_EXECUTIVO.md` com QA-1004 concluída (14/48 histórias)
+
+### Onde estou
+- História atual: QA-1004 ✅ Concluída
+- Próxima ação: ARCH-300 — Criar use cases por etapa (DoR validada)
+
 ## 2026-05-08 04:00 — Sessão 19: Iniciando ARCH-300 — Criar use cases por etapa
 
 ### O que fiz
