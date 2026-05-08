@@ -669,7 +669,7 @@ Ver `UI-203` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-300 Arquitetura limpa  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 8 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/04_ARQUITETURA_ALVO.md`
 
