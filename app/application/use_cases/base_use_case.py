@@ -2,6 +2,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Any
 from app.logging_config import setup_logger
+from app.application.result import Result
 
 logger = setup_logger()
 
@@ -15,7 +16,7 @@ class BaseUseCase(ABC):
     """
     
     @abstractmethod
-    def execute(self, **kwargs) -> Dict[str, Any]:
+    def execute(self, **kwargs) -> Result:
         """Execute the use case."""
         pass
     
@@ -23,11 +24,11 @@ class BaseUseCase(ABC):
         """Validate input parameters."""
         return True
     
-    def _build_success(self, data: Any = None, **extra) -> Dict[str, Any]:
+    def _build_success(self, data: Any = None, **extra) -> Result:
         """Build success response."""
-        return {"ok": True, "data": data, **extra}
+        return Result.success(data=data, **extra)
     
-    def _build_error(self, error: str, **extra) -> Dict[str, Any]:
+    def _build_error(self, error: str, **extra) -> Result:
         """Build error response."""
         logger.error(error)
-        return {"ok": False, "error": error, **extra}
+        return Result.failure(error=error, **extra)
