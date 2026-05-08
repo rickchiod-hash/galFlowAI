@@ -21,6 +21,24 @@ Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
 
 - GOV-003 — Criar matriz de preservação de features (docs/reference/FEATURE_PRESERVATION_MATRIX.md)
 
+## 2026-05-07 23:55 — Sessão 6: GOV-003 — Criar matriz de preservação de features
+
+### O que fiz
+
+- GOV-003 ✅: Validado FEATURE_PRESERVATION_MATRIX.md (8 colunas, 10 obrigatórias, 6 P1)
+- Criado `tests/test_feature_matrix.py` com 5 testes — 5 passed
+- pytest collect: 458 testes sem erro
+- Atualizados: 00_STATUS_EXECUTIVO.md (3/48, 6%), 05_BACKLOG_PRIORIZADO.md, 06_HISTORIAS_REFINADAS.md, 10_DAILY_LOG.md
+- Commit: (criado nesta sessão)
+
+### Bloqueios
+
+- Nenhum
+
+### Próximo passo
+
+- GOV-004 — Padronizar TODOs rastreáveis
+
 ## 2026-05-07 22:45 — Sessão 4: GOV-001 — Criar checkpoint diário permanente
 
 ### O que fiz

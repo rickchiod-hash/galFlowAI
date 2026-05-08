@@ -5,11 +5,11 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 2/48
+Histórias concluídas: 3/48
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 46
-Percentual concluído: 4%
+Histórias pendentes: 45
+Percentual concluído: 6%
 
 ## Estado atual
 
@@ -17,8 +17,8 @@ Percentual concluído: 4%
 - Último commit analisado: 7017ea8 — "GalFlowAI v0.9 - Phases 1-8 Complete + Phase 9 Partial"
 - Último commit criado pelo agente: 3132eb0 (docs(governance): import GalFlowAI governance pack v2 + GOV-001 checkpoint system)
 - Fase atual: Fase 1 — Antirregressão documental
-- História atual: GOV-002 — Criar fonte de verdade do produto ✅ Concluída
-- Próxima ação recomendada: GOV-003 — Criar matriz de preservação de features
+- História atual: GOV-003 — Criar matriz de preservação de features ✅ Concluída
+- Próxima ação recomendada: GOV-004 — Padronizar TODOs rastreáveis
 
 ## Resumo tipo Daily
 
@@ -30,15 +30,18 @@ Percentual concluído: 4%
   - 00_STATUS_EXECUTIVO.md contém todas as 10 seções obrigatórias
   - 10_DAILY_LOG.md em formato padrão com entradas por sessão
 - GOV-002 ✅: Criado fonte de verdade do produto.
-  - Validado PROJECT_REFERENCE_CONTEXT.md: 8 seções obrigatórias, status "FONTE DE VERDADE DO PRODUTO", "Alteração permitida somente com ADR"
-  - Criado teste em `tests/test_product_context.py`: 4 testes (existence, sections, keywords, truth source status) — 4 passed
-  - Documento imutável: alteração exige ADR explícita
+  - Validado PROJECT_REFERENCE_CONTEXT.md: 8 seções, status "FONTE DE VERDADE DO PRODUTO"
+  - Criado teste em `tests/test_product_context.py`: 4 testes — 4 passed
+- GOV-003 ✅: Criado matriz de preservação de features.
+  - Validado FEATURE_PRESERVATION_MATRIX.md: 8 colunas, 10 features obrigatórias (marcadas "Não" removível), 6 features P1
+  - Criado teste em `tests/test_feature_matrix.py`: 5 testes (existence, columns, mandatory, P1, removibility) — 5 passed
+  - Commit: (criado nesta sessão)
 - Sessão de importação do Governance Pack v2 concluída.
-- 453 testes coletados sem erro.
+- 458 testes coletados sem erro.
 
 ### O que está sendo feito
 
-- Próxima história: GOV-003 — Criar matriz de preservação de features.
+- Próxima história: GOV-004 — Padronizar TODOs rastreáveis.
 
 ### Bloqueios
 
@@ -64,8 +67,9 @@ Percentual concluído: 4%
 
 - tests/test_checkpoint.py (criado — 3 testes do checkpoint)
 - tests/test_product_context.py (criado — 4 testes do produto)
-- docs/project-control/00_STATUS_EXECUTIVO.md (atualizado — GOV-001/002 concluídas)
-- docs/project-control/10_DAILY_LOG.md (atualizado — entrada da sessão GOV-002)
+- tests/test_feature_matrix.py (criado — 5 testes da matriz)
+- docs/project-control/00_STATUS_EXECUTIVO.md (atualizado — GOV-001/002/003 concluídas)
+- docs/project-control/10_DAILY_LOG.md (atualizado — entrada da sessão GOV-003)
 
 ### Comandos executados
 
@@ -74,6 +78,6 @@ Percentual concluído: 4%
 
 ### Evidências usadas
 
-- Commit HEAD: 3132eb0 (docs(governance): import GalFlowAI governance pack v2 + GOV-001 checkpoint system)
+- Commit HEAD: 19ca21e (docs(governance): GOV-002 criar fonte de verdade do produto)
 - Branch: master
-- Status: working tree com alterações do usuário (GOV-002 adiciona test_product_context.py)
+- Status: working tree com alterações do usuário (GOV-003 adiciona test_feature_matrix.py)

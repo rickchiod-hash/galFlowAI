@@ -8,7 +8,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 |---:|---|---|---|---:|---|---|---|
 | 1 | GOV-001 | Criar checkpoint diário permanente | Alta | 2 | Concluída | Nenhuma | para retomar o projeto em outra sessão sem perda de contexto |
 | 2 | GOV-002 | Criar fonte de verdade do produto | Alta | 2 | Concluída | Nenhuma | para impedir drift de nome, fluxo e arquitetura |
-| 3 | GOV-003 | Criar matriz de preservação de features | Alta | 3 | Pendente | Nenhuma | para impedir remoção silenciosa de providers, fallbacks e telas |
+| 3 | GOV-003 | Criar matriz de preservação de features | Alta | 3 | Concluída | Nenhuma | para impedir remoção silenciosa de providers, fallbacks e telas |
 | 4 | GOV-004 | Padronizar TODOs rastreáveis | Alta | 2 | Pendente | Nenhuma | para que dívida técnica tenha dono, critério e backlog |
 | 5 | GOV-005 | Criar ADR obrigatório para remoções | Alta | 2 | Pendente | Nenhuma | para preservar rastreabilidade e rollback |
 | 6 | GOV-006 | Adicionar AGENTS e Skill do GalFlowAI | Alta | 3 | Pendente | Nenhuma | para que o agente siga o mesmo padrão em toda sessão |
@@ -57,7 +57,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 
 ## Próxima história recomendada
 
-**GOV-003 — Criar matriz de preservação de features.** Impede remoção silenciosa de providers, fallbacks e telas.
+**GOV-004 — Padronizar TODOs rastreáveis.** Para que dívida técnica tenha dono, critério e backlog.
 
 ## Regras de priorização
 
