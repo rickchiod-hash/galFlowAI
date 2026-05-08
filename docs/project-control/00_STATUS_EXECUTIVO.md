@@ -6,19 +6,19 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 ## Progresso geral
 
 Histórias concluídas: 12/48
-Histórias em andamento: 0
+Histórias em andamento: 1
 Histórias bloqueadas: 0
-Histórias pendentes: 36
+Histórias pendentes: 35
 Percentual concluído: 25%
 
 ## Estado atual
 
 - Branch atual: master
 - Último commit analisado: ddbe56c — "docs(ux): UI-200 restaurar fluxo por etapas na documentacao"
-- Último commit criado pelo agente: c842383 — QA-1000 + QA-1001
+- Último commit criado pelo agente: [TO BE UPDATED] — QA-1002 criar teste UI nao chama adapters
 - Fase atual: Fase 3 — Testes base (QA-1000..1002)
-- História atual: QA-1001 — Teste de presença de providers/fallbacks ✅ Concluída
-- Próxima ação recomendada: QA-1002 — Criar teste UI não chama adapters
+- História atual: QA-1002 — Criar teste UI não chama adapters 🔄 Em progresso
+- Próxima ação recomendada: QA-1003 — Criar teste E2E WanGP falha → FFmpeg
 
 ## Resumo tipo Daily
 

@@ -2,6 +2,30 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
 
+## 2026-05-08 04:00 — Sessão 16: QA-1002 — Teste UI não chama adapters
+
+### O que fiz
+
+- **QA-1002 ✅**: Teste UI não chama adapters completo
+  - `tests/test_ui_adapter_separation.py` criado com 4 testes
+  - Verifica: `app/ui/gradio_app.py` não importa de `app.adapters.*`
+  - Verifica: `app/main.py` não importa de `app.adapters.*`
+  - Verifica: `app/api.py` tem apenas 1 import conhecido de `app.adapters.llm.ProviderRouter` (gap G4 documentado)
+  - Verifica: Todos os arquivos UI existem e são acessíveis
+  - **4/4 testes passando**
+- **60 testes de governança passando** (13 histórias)
+
+### O que está sendo feito
+
+- **Fase 3 — Testes base:** QA-1000 ✅, QA-1001 ✅, QA-1002 ✅.
+- **Próximo:** QA-1003 — Criar teste E2E WanGP falha → FFmpeg.
+
+### Bloqueios
+
+- Nenhum.
+
+## 2026-05-08 03:30 — Sessão 15: QA-1001 — Teste de presença de providers/fallbacks
+
 ## 2026-05-08 03:30 — Sessão 14: QA-1000 — Teste antirregressão de naming
 
 ### O que fiz
