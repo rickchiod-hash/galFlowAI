@@ -2,6 +2,24 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
 
+## 2026-05-08 15:10 — Sessão 21: ARCH-300 — Refatorando pipeline para use cases
+
+### O que fiz
+- Refatorei `app/pipeline/video_generation_pipeline.py` para usar use cases existentes:
+  - GenerateScriptUseCase, SplitScenesUseCase, BuildPromptsUseCase
+  - GenerateAudioUseCase, RenderVideoUseCase, CreateStaticVideoUseCase, ConcatVideosUseCase
+- Atualizei `tests/test_tts_fallback.py` para mockar use cases em vez de funções diretas
+- Todos os 5 testes passando (QA-1004 mantido)
+- Pipeline agora segue padrão: UI → API → Use Cases → Adapters
+
+### Onde estou
+- História atual: ARCH-300 ✅ Concluída (refatoração completa)
+- Próxima ação: Atualizar documentação e commit
+
+### Onde estou
+- História atual: ARCH-300 (Em andamento).
+- Fase atual: Fase 4 — Refatoração segura.
+
 ## 2026-05-08 14:54 — Sessão 20: QA-1004 concluída, teste passando
 
 ### O que fiz

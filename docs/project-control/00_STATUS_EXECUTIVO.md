@@ -5,7 +5,7 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 14/48
+Histórias concluídas: 15/48
 Histórias em andamento: 0
 Histórias bloqueadas: 0
 Histórias pendentes: 35
@@ -15,10 +15,10 @@ Percentual concluído: 27%
 
 - Branch atual: master
 - Último commit analisado: ddbe56c — "docs(ux): UI-200 restaurar fluxo por etapas na documentacao"
-- Último commit criado pelo agente: [commit hash will be added after commit]
+- Último commit criado pelo agente: 93c6536 — "test(qa): fix TTS fallback test to mock real components"
 - Fase atual: Fase 4 — Refatoração segura (ARCH-300..)
-- História atual: QA-1004 — Criar teste TTS falha → export sem áudio ✅ Concluída
-- Próxima ação recomendada: ARCH-300 — Criar use cases por etapa
+- História atual: ARCH-300 — Criar use cases por etapa ✅ Concluída
+- Próxima ação recomendada: Continuar ARCH-300
 
 ## Resumo tipo Daily
 
@@ -69,8 +69,9 @@ Percentual concluído: 27%
 
 ### O que está sendo feito
 
-- **Fase 3 — Testes base:** QA-1000 ✅, QA-1001 ✅.
-- **Próximo:** QA-1002 — Criar teste UI não chama adapters.
+- **Fase 4 — Refatoração segura:** ARCH-300 ✅ Concluída.
+- **História atual:** ARCH-300 ✅ Concluída.
+- **Próximo:** Atualizar docs e commit para ARCH-300.
 
 ### Bloqueios
 
