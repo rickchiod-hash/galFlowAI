@@ -1,97 +1,71 @@
-# FlowForgeAI — Regras do Agente OpenCode
+# AGENTS.md — Standing Orders for GalFlowAI
 
-## Missão
-Criar e evoluir um software local-first para geração de comerciais curtos para redes sociais, rodando primeiro em Windows no disco K:, com interface web em http://127.0.0.1:7860.
+Você é um agente técnico sênior trabalhando no projeto **GalFlowAI**.
 
-## Nome do produto
-Nome final: FlowForgeAI.
-O nome do projeto deve terminar com AI.
+## Regra máxima
 
-## Contexto operacional obrigatório
-- Raiz operacional: K:\AI_VIDEO_COMMERCIAL_STUDIO
-- Pasta de trabalho OpenCode: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta
-- Não instalar, baixar, cachear, gerar temporários ou modelos no C:.
-- Usar o ambiente existente quando possível:
-  - K:\AI_VIDEO_COMMERCIAL_STUDIO\envs\studio
-  - Python atual pode ser 3.10.20 se já estiver funcionando com WanGP.
-  - Só propor Python 3.11 em ambiente isolado se não quebrar nada.
-- WanGP/Wan2GP já existe em:
-  - K:\AI_VIDEO_COMMERCIAL_STUDIO\engines\Wan2GP
-- FramePack já existe em:
-  - K:\AI_VIDEO_COMMERCIAL_STUDIO\engines\FramePack
-- Imagens de referência ficam em:
-  - K:\AI_VIDEO_COMMERCIAL_STUDIO\assets\reference
+Não alucine. Não afirme que algo existe, funciona, foi testado ou foi implementado sem evidência no código, no Git, nos arquivos ou nos testes executados nesta sessão.
 
-## Hardware real
-- CPU: AMD Ryzen 5 5600, 6 cores / 12 threads.
-- RAM: 16 GB DDR4.
-- GPU: NVIDIA GTX 1660 Super 6 GB VRAM.
-- Disco principal: K:.
+## Antes de qualquer alteração
 
-## Restrições absolutas
-1. Não usar RunPod.
-2. Não usar serviço pago obrigatório.
-3. Não usar API paga como dependência do MVP.
-4. Não apagar ambientes existentes.
-5. Não reinstalar se já existe.
-6. Não baixar modelos repetidos.
-7. Não usar modelos 14B como padrão.
-8. Não quebrar WanGP já instalado.
-9. Criar backup antes de sobrescrever arquivo.
-10. Toda alteração relevante deve gerar log.
-11. Se VRAM <= 6 GB, usar preset seguro: 1.3B, 480p/512p, cenas curtas, uma geração de vídeo por vez.
-12. Se não tiver certeza, criar relatório e pedir validação antes de alterar algo sensível.
+1. Identifique a raiz real do projeto pelo `.git`.
+2. Rode e registre:
+   ```bash
+   git status --short
+   git branch --show-current
+   git log --oneline --decorate --graph --all --max-count=60
+   ```
+3. Leia:
+   - `docs/reference/PROJECT_REFERENCE_CONTEXT.md`
+   - `docs/reference/FEATURE_PRESERVATION_MATRIX.md`
+   - `docs/project-control/00_STATUS_EXECUTIVO.md`
+   - `docs/project-control/05_BACKLOG_PRIORIZADO.md`
+   - `docs/project-control/06_HISTORIAS_REFINADAS.md`
+   - `docs/project-control/18_IMPLEMENTATION_ORDER.md`
 
-## Variáveis de ambiente obrigatórias
-Configurar sempre que executar scripts:
-- PIP_CACHE_DIR=K:\AI_VIDEO_COMMERCIAL_STUDIO\cache\pip
-- HF_HOME=K:\AI_VIDEO_COMMERCIAL_STUDIO\cache\huggingface
-- TORCH_HOME=K:\AI_VIDEO_COMMERCIAL_STUDIO\cache\torch
-- XDG_CACHE_HOME=K:\AI_VIDEO_COMMERCIAL_STUDIO\cache
-- TEMP=K:\AI_VIDEO_COMMERCIAL_STUDIO\temp
-- TMP=K:\AI_VIDEO_COMMERCIAL_STUDIO\temp
-- OLLAMA_MODELS=K:\AI_VIDEO_COMMERCIAL_STUDIO\models\ollama
-- GIT_PYTHON_GIT_EXECUTABLE=K:\AI_VIDEO_COMMERCIAL_STUDIO\envs\studio\Library\bin\git.exe
+## Política de escopo
 
-## Stack inicial
-- UI: Gradio.
-- Backend: Python modular. FastAPI opcional se necessário para API/WebSocket.
-- Banco local: SQLite.
-- Jobs: fila local no MVP; depois Redis/RQ se viável.
-- Vídeo IA: WanGP/Wan2GP 1.3B como motor principal.
-- Motor experimental: FramePack.
-- Montagem: FFmpeg como prioridade.
-- Fallback: storyboard estático com imagem + texto + narração + FFmpeg.
-- LLM local: Ollama, se disponível; fallback por templates determinísticos.
-- TTS: começar com placeholder ou pyttsx3/offline; depois Kokoro/Coqui se viável.
+- Sem feature nova fora do backlog.
+- Sem refactor big bang.
+- Sem remover provider/fallback/tela/etapa/teste sem ADR.
+- Sem cloud/API paga obrigatória.
+- Sem modelo 14B/16B local como default.
+- Sem React/RQ/Redis/MCP obrigatório no P0.
 
-## Arquitetura alvo
-Fluxo: Briefing -> Roteiro -> Cenas -> Prompts -> Assets -> Render de cenas -> Montagem FFmpeg -> MP4 final.
+## Como trabalhar
 
-Pastas por projeto:
-projects\YYYYMMDD_HHMMSS_nome
-  brief\
-  script\
-  prompts\
-  storyboard\
-  renders\
-  audio\
-  final\
-  logs\
-  project.json
+1. Escolha a próxima história em `05_BACKLOG_PRIORIZADO.md`.
+2. Verifique DoR em `20_DEFINITION_OF_READY_DONE.md`.
+3. Leia os arquivos de contexto vinculados na história.
+4. Faça alteração mínima.
+5. Crie/atualize testes.
+6. Rode validações.
+7. Atualize `00_STATUS_EXECUTIVO.md` e `10_DAILY_LOG.md`.
+8. Faça commit pequeno e semântico.
 
-## Padrão de implementação
-- Primeiro crie um MVP mock funcional.
-- Depois integre motores reais por adaptadores.
-- Nunca acople diretamente UI ao WanGP; use services/adapters.
-- Todo comando de render deve ser reproduzível e salvo em logs.
-- Toda cena deve ter ID, duração, prompt positivo, prompt negativo, status e caminho de saída.
-- Deve ser possível refazer apenas uma cena.
+## Padrão de resposta final
 
-## Padrão de resposta do agente
-Ao terminar uma tarefa, sempre informar:
-1. arquivos criados/alterados;
-2. comandos executados;
-3. riscos encontrados;
-4. como testar;
-5. próximo comando recomendado.
+Sempre responda como daily técnico:
+
+- O que fiz.
+- O que estou fazendo.
+- Bloqueios.
+- Arquivos alterados.
+- Testes executados e resultado.
+- Histórias atualizadas.
+- Próximo passo.
+- Commit criado.
+
+## Padrão de TODO
+
+TODO permitido somente com história vinculada:
+
+```python
+# TODO(GAL-XXX, type=blocked|debt|follow-up): resumo
+# Contexto: ...
+# Dependência: ...
+# Critério de aceite: ...
+# Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md#gal-xxx
+```
+
+TODO genérico é proibido.

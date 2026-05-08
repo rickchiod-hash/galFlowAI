@@ -11,7 +11,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 3 | GOV-003 | Criar matriz de preservação de features | Alta | 3 | Concluída | Nenhuma | para impedir remoção silenciosa de providers, fallbacks e telas |
 | 4 | GOV-004 | Padronizar TODOs rastreáveis | Alta | 2 | Concluída | Nenhuma | para que dívida técnica tenha dono, critério e backlog |
 | 5 | GOV-005 | Criar ADR obrigatório para remoções | Alta | 2 | Concluída | Nenhuma | para preservar rastreabilidade e rollback |
-| 6 | GOV-006 | Adicionar AGENTS e Skill do GalFlowAI | Alta | 3 | Pendente | Nenhuma | para que o agente siga o mesmo padrão em toda sessão |
+| 6 | GOV-006 | Adicionar AGENTS e Skill do GalFlowAI | Alta | 3 | Concluída | Nenhuma | para que o agente siga o mesmo padrão em toda sessão |
 | 7 | CORE-100 | Auditar histórico Git desde o primeiro commit | Alta | 5 | Pendente | GOV-001..GOV-006 | para resgatar features perdidas com evidência |
 | 8 | CORE-101 | Mapear estado atual do projeto | Alta | 3 | Pendente | GOV-001..GOV-006 | para iniciar refatorações sem suposição |
 | 9 | CORE-102 | Validar diferença entre documentação e código | Alta | 5 | Pendente | GOV-001..GOV-006 | para separar fato implementado de roadmap |
@@ -57,7 +57,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 
 ## Próxima história recomendada
 
-**GOV-006 — Adicionar AGENTS e Skill do GalFlowAI.** Para que o agente siga o mesmo padrão em toda sessão.
+**CORE-100 — Auditar histórico Git desde o primeiro commit.** Para resgatar features perdidas com evidência.
 
 ## Regras de priorização
 

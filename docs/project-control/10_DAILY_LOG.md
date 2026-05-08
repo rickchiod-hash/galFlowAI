@@ -2,6 +2,24 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
 
+## 2026-05-08 00:20 — Sessão 9: GOV-006 — Adicionar AGENTS e Skill do GalFlowAI (Fase 1 completa)
+
+### O que fiz
+
+- GOV-006 ✅: AGENTS.md atualizado (Standing Orders GalFlowAI), SKILL.md criado (.opencode/skills/galflowai/)
+- Criado `tests/test_agents.py` com 4 testes — 4 passed
+- pytest collect: 469 testes sem erro
+- **Fase 1 — Antirregressão documental: COMPLETA** ✅ (6 histórias)
+- Atualizado 00_STATUS_EXECUTIVO.md (6/48, 12%), agora apontando Fase 2
+
+### Bloqueios
+
+- Nenhum
+
+### Próximo passo
+
+- Fase 2 — CORE-100 — Auditar histórico Git desde o primeiro commit
+
 ## 2026-05-08 00:10 — Sessão 8: GOV-005 — Criar ADR obrigatório para remoções
 
 ### O que fiz

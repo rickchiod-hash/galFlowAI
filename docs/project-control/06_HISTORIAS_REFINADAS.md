@@ -269,12 +269,19 @@ Ver `GOV-005` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-000 Proteção contra regressão  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 3 SP  
 **Arquivo de contexto obrigatório:** `AGENTS.md e .opencode/skills/galflowai/SKILL.md`
 
 ### História
 Como operador do OpenCode, eu quero instruções permanentes do projeto, para que o agente siga o mesmo padrão em toda sessão.
+
+### Evidências
+- `AGENTS.md` — GalFlowAI governance, Standing Orders, TODO policy
+- `.opencode/skills/galflowai/SKILL.md` — documentos obrigatórios, ordem, guardrails
+- `tests/test_agents.py` — 4 testes (AGENTS existence, content, SKILL existence, content)
+- Pytest: 4 passed, 469 coletados sem erro
+- Commit: (nesta sessão)
 
 ### Contexto técnico
 Esta história deve ser validada no código e no histórico Git antes de implementação. Se a evidência não existir, registrar `EVIDÊNCIA INSUFICIENTE` no status executivo. Contexto funcional: AGENTS/SKILL.
@@ -292,24 +299,24 @@ Ver `GOV-006` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
 Ver `GOV-006` em `08_PLANO_DE_TESTES.md`.
 
 ### Definition of Ready
-- [ ] Independente
-- [ ] Negociável
-- [ ] Valiosa
-- [ ] Estimável
-- [ ] Pequena o suficiente
-- [ ] Testável
-- [ ] Possui contexto técnico
-- [ ] Possui arquivo de referência
-- [ ] Possui critérios Gherkin
-- [ ] Possui teste planejado
+- [x] Independente
+- [x] Negociável
+- [x] Valiosa
+- [x] Estimável
+- [x] Pequena o suficiente
+- [x] Testável
+- [x] Possui contexto técnico
+- [x] Possui arquivo de referência
+- [x] Possui critérios Gherkin
+- [x] Possui teste planejado
 
 ### Definition of Done
-- [ ] Critérios atendidos
-- [ ] Testes criados/atualizados
-- [ ] Docs e backlog atualizados
-- [ ] Status executivo atualizado
-- [ ] Daily log atualizado
-- [ ] Commit criado
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [x] Commit criado
 
 ## CORE-100 — Auditar histórico Git desde o primeiro commit
 

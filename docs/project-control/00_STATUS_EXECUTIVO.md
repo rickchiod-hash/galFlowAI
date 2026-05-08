@@ -5,11 +5,11 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 5/48
+Histórias concluídas: 6/48
 Histórias em andamento: 0
 Histórias bloqueadas: 0
 Histórias pendentes: 44
-Percentual concluído: 10%
+Percentual concluído: 12%
 
 ## Estado atual
 
@@ -17,8 +17,8 @@ Percentual concluído: 10%
 - Último commit analisado: 7017ea8 — "GalFlowAI v0.9 - Phases 1-8 Complete + Phase 9 Partial"
 - Último commit criado pelo agente: 3132eb0 (docs(governance): import GalFlowAI governance pack v2 + GOV-001 checkpoint system)
 - Fase atual: Fase 1 — Antirregressão documental
-- História atual: GOV-005 — Criar ADR obrigatório para remoções ✅ Concluída
-- Próxima ação recomendada: GOV-006 — Adicionar AGENTS e Skill do GalFlowAI
+- História atual: GOV-006 — Adicionar AGENTS e Skill do GalFlowAI ✅ Concluída
+- Próxima ação recomendada: Fase 2 — CORE-100 — Auditar histórico Git
 
 ## Resumo tipo Daily
 
@@ -40,14 +40,18 @@ Percentual concluído: 10%
   - Criado teste: 4 testes — 4 passed
   - Varredura: 0 TODOs genéricos
 - GOV-005 ✅: Criado ADR obrigatório para remoções.
-  - Validado 11_DECISOES_TECNICAS_ADR.md: template ADR-000 com 10 campos, ADR-001..ADR-005 iniciais
-  - Criado teste em `tests/test_adr_policy.py`: 3 testes (existence, template, references) — 3 passed
-- Sessão de importação do Governance Pack v2 concluída.
-- 465 testes coletados sem erro.
+  - Validado 11_DECISOES_TECNICAS_ADR.md: template ADR-000 com 10 campos
+  - Criado teste em `tests/test_adr_policy.py`: 3 testes — 3 passed
+- GOV-006 ✅: Adicionado AGENTS e Skill do GalFlowAI.
+  - AGENTS.md atualizado: GalFlowAI governance (Standing Orders)
+  - .opencode/skills/galflowai/SKILL.md: documentos obrigatórios, guardrails
+  - Criado teste em `tests/test_agents.py`: 4 testes (AGENTS existence, content, SKILL existence, content) — 4 passed
+- **Fase 1 — Antirregressão documental: COMPLETA** ✅
+- 469 testes coletados sem erro.
 
 ### O que está sendo feito
 
-- Próxima história: GOV-004 — Padronizar TODOs rastreáveis.
+- **Fase 1 completa** ✅. Próxima: Fase 2 — CORE-100 — Auditar histórico Git.
 
 ### Bloqueios
 
@@ -73,9 +77,11 @@ Percentual concluído: 10%
 
 - tests/test_checkpoint.py (criado — 3 testes do checkpoint)
 - tests/test_product_context.py (criado — 4 testes do produto)
-- tests/test_adr_policy.py (criado — 3 testes da política ADR)
-- docs/project-control/00_STATUS_EXECUTIVO.md (atualizado — GOV-001..005 concluídas)
-- docs/project-control/10_DAILY_LOG.md (atualizado — entrada da sessão GOV-005)
+- tests/test_agents.py (criado — 4 testes AGENTS + SKILL)
+- AGENTS.md (atualizado — versão governance GalFlowAI)
+- .opencode/skills/galflowai/SKILL.md (criado)
+- docs/project-control/00_STATUS_EXECUTIVO.md (atualizado — GOV-001..006, Fase 1 completa)
+- docs/project-control/10_DAILY_LOG.md (atualizado — entrada da sessão GOV-006)
 
 ### Comandos executados
 
@@ -84,6 +90,6 @@ Percentual concluído: 10%
 
 ### Evidências usadas
 
-- Commit HEAD: cbe022f (docs(governance): GOV-004 padronizar TODOs rastreaveis)
+- Commit HEAD: f50777c (docs(governance): GOV-005 criar ADR obrigatorio para remocoes)
 - Branch: master
-- Status: working tree com alterações do usuário (GOV-005 adiciona test_adr_policy.py)
+- Status: working tree com alterações do usuário (GOV-006 adiciona test_agents.py, AGENTS.md, SKILL.md)
