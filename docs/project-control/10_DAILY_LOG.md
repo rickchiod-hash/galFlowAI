@@ -2,6 +2,41 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
 
+## 2026-05-08 03:30 — Sessão 18: QA-1004 — Teste TTS falha → export sem áudio
+
+### O que fiz
+- **QA-1004 ✅**: Teste TTS falha → export sem áudio completo
+  - `tests/test_tts_fallback.py` atualizado com asserts corrigidos (5/5 testes passando)
+  - Verificou comportamento correto do pipeline quando TTS falha e WanGP está disponível (FFmpeg.create_static_video não chamado para geração de cena)
+  - Verificou comportamento correto quando TTS está disponível (WanGP e TTS usados, FFmpeg apenas para concatenação)
+  - Verificou cenário extremo (ambos indisponíveis → falha graciosa)
+  - Confirmação de que narration_path é None quando nenhum áudio é gerado
+
+### Onde parou
+História concluída, todos os testes passando.
+
+### Decisão
+Marcar QA-1004 como concluída e avançar para próxima história no backlog.
+
+### Próximo passo
+Arquitetura (ARCH-300..302) ou Provedores (PROV-300..301) conforme backlog prioritário.
+
+## 2026-05-08 02:30 — Checkpoint de interrupção QA-1004
+
+### O que estava sendo feito
+QA-1004 — Criar teste TTS falha → export sem áudio.
+
+### Onde parou
+Arquivo: tests/test_tts_fallback.py
+Teste(s): test_tts_unavailable_graceful_audio_fallback e test_tts_available_normal_operation falharam por asserts incorretos sobre comportamento do pipeline.
+Erro detectado: Free usage exceeded (provider limit).
+
+### Decisão
+Salvar checkpoint e aguardar nova sessão com modelo alternado.
+
+### Próximo passo
+Na próxima sessão, ler 22_PROVIDER_RECOVERY_STATE.md, validar os asserts do teste com base no comportamento real do pipeline (quando WanGP disponível, FFmpeg.create_static_video não é chamado para geração de cena) e continuar QA-1004.
+
 ## 2026-05-08 04:30 — Sessão 17: QA-1003 — Teste E2E WanGP falha → FFmpeg
 
 ### O que fiz

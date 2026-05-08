@@ -2141,7 +2141,7 @@ Ver `QA-1003` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-1100 QA contínuo  
 **Prioridade:** Média  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 3 SP  
 **Arquivo de contexto obrigatório:** `docs/playbooks/AUDIO_TTS_PROVIDER_PLAYBOOK.md`
 

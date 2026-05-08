@@ -51,7 +51,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 43 | QA-1001 | Criar teste de presença de providers/fallbacks | Alta | 3 | Concluída | Arquitetura/base P0 validada | para preservar operação local-first |
 | 44 | QA-1002 | Criar teste UI não chama adapters | Média | 3 | Concluída | Arquitetura/base P0 validada | para proteger separação de responsabilidades |
 | 45 | QA-1003 | Criar teste E2E WanGP falha → FFmpeg | Média | 5 | Pendente | Arquitetura/base P0 validada | para garantir MP4 mesmo sem IA de vídeo |
-| 46 | QA-1004 | Criar teste TTS falha → export sem áudio | Média | 3 | Pendente | Arquitetura/base P0 validada | para preservar entrega final |
+| 46 | QA-1004 | Criar teste TTS falha → export sem áudio | Média | 3 | Concluída | Arquitetura/base P0 validada | para preservar entrega final |
 | 47 | SEC-1100 | Criar política MCP seguro | Média | 2 | Pendente | Arquitetura/base P0 validada | para evitar ferramentas amplas sem revisão |
 | 48 | SEC-1101 | Criar política de secrets e arquivos sensíveis | Média | 2 | Pendente | Arquitetura/base P0 validada | para proteger ambiente e clientes |
 

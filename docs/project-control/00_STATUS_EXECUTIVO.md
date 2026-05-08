@@ -17,8 +17,8 @@ Percentual concluído: 27%
 - Último commit analisado: ddbe56c — "docs(ux): UI-200 restaurar fluxo por etapas na documentacao"
 - Último commit criado pelo agente: 8d35e02 — QA-1002 criar teste UI nao chama adapters
 - Fase atual: Fase 3 — Testes base (QA-1000..1002)
-- História atual: QA-1002 — Criar teste UI não chama adapters ✅ Concluída
-- Próxima ação recomendada: QA-1003 — Criar teste E2E WanGP falha → FFmpeg
+- História atual: QA-1004 — Criar teste TTS falha → export sem áudio ✅ Concluída
+- Próxima ação recomendada: ARCH-300 — Validar documentação vs código atual
 
 ## Resumo tipo Daily
 
