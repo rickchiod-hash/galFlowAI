@@ -14,7 +14,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 6 | GOV-006 | Adicionar AGENTS e Skill do GalFlowAI | Alta | 3 | Concluída | Nenhuma | para que o agente siga o mesmo padrão em toda sessão |
 | 7 | CORE-100 | Auditar histórico Git desde o primeiro commit | Alta | 5 | Concluída | GOV-001..GOV-006 | para resgatar features perdidas com evidência |
 | 8 | CORE-101 | Mapear estado atual do projeto | Alta | 3 | Concluída | GOV-001..GOV-006 | para iniciar refatorações sem suposição |
-| 9 | CORE-102 | Validar diferença entre documentação e código | Alta | 5 | Pendente | GOV-001..GOV-006 | para separar fato implementado de roadmap |
+| 9 | CORE-102 | Validar diferença entre documentação e código | Alta | 5 | Concluída | GOV-001..GOV-006 | para separar fato implementado de roadmap |
 | 10 | UI-200 | Restaurar fluxo por etapas na documentação | Alta | 3 | Pendente | CORE-100..CORE-102 | para aprovar roteiro/cenas antes de gastar GPU |
 | 11 | UI-201 | Gerar roteiro sem renderizar vídeo | Alta | 5 | Pendente | CORE-100..CORE-102 | para evitar render caro com roteiro ruim |
 | 12 | UI-202 | Bloquear cenas sem roteiro aprovado | Alta | 5 | Pendente | CORE-100..CORE-102 | para preservar o fluxo de validação humana |
@@ -57,7 +57,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 
 ## Próxima história recomendada
 
-**CORE-102 — Validar diferença entre documentação e código.** Para separar fato implementado de roadmap.
+**UI-200 — Restaurar fluxo por etapas na documentação.** Para aprovar roteiro/cenas antes de gastar GPU.
 
 ## Regras de priorização
 

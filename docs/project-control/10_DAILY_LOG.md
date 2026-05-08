@@ -2,7 +2,29 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
 
-## 2026-05-08 01:30 — Sessão 11: CORE-101 — Mapear estado atual do projeto (Fase 2 completa)
+## 2026-05-08 02:00 — Sessão 12: CORE-102 — Validar diferença doc vs código (Fase 2 completa)
+
+### O que fiz
+
+- CORE-102 ✅: Validação doc vs código completa
+  - `03_ARQUITETURA_ATUAL.md` reescrito — 22 claims validadas sistematicamente
+  - Resultado: 16 PRESENTE, 5 DIFERENTE, 0 AUSENTE
+  - 6 gaps documentados (G1-G6): GPT-compatible não implementado, Piper doc desatualizada, fluxo superdimensionado, API chama adapter direto, docs/reference gap (corrigido), testes gitignorados
+  - Acoplamentos encontrados: API→Adapter (app/api.py:110), Pipeline→WanGP
+  - Fluxo real documentado: 4-5 etapas vs 22 documentadas
+- Criado `tests/test_doc_code_gap.py` com 5 testes — 5 passed
+- **38 testes de governança passando** (9 histórias — GOV-001..006, CORE-100..102)
+- **Fase 2 — Diagnóstico e recuperação: COMPLETA** ✅ (3 histórias)
+
+### Bloqueios
+
+- Nenhum
+
+### Próximo passo
+
+- UI-200 — Restaurar fluxo por etapas na documentação (Próxima história do backlog)
+
+## 2026-05-08 01:30 — Sessão 11: CORE-101 — Mapear estado atual do projeto
 
 ### O que fiz
 

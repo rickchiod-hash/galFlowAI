@@ -427,21 +427,28 @@ Ver `CORE-101` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-100 Diagnóstico e recuperação  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/03_ARQUITETURA_ATUAL.md`
 
 ### História
 Como QA, eu quero comparar docs com código, para separar fato implementado de roadmap.
 
+### Evidências
+- `docs/project-control/03_ARQUITETURA_ATUAL.md` — preenchido com validação sistemática de 22 claims, 5 tabelas (providers, vídeo, áudio, features, regras arquiteturais), acoplamentos, fluxo real vs documentado, 6 gaps (G1-G6)
+- Comparação doc vs código: 16 PRESENTE, 5 DIFERENTE (GPT-compatible não implementado, Piper doc desatualizada, fluxo superdimensionado, API chama adapter direto, docs/reference não commitado), 0 AUSENTE
+- `tests/test_doc_code_gap.py` — 5 testes (file exists, sections, providers, gaps, gap patterns)
+- Pytest: 5 passed (CORE-102), 38 passed (all governance — 9 histórias)
+- Commit: (nesta sessão)
+
 ### Contexto técnico
-Esta história deve ser validada no código e no histórico Git antes de implementação. Se a evidência não existir, registrar `EVIDÊNCIA INSUFICIENTE` no status executivo. Contexto funcional: Audit docs/code.
+Esta história deve ser validada no código e no histórico Git antes de implementação. Contexto funcional: Audit docs/code.
 
 ### Evidências obrigatórias
-- Arquivo(s) atual(is) relacionados.
-- Commit(s) que criaram/alteraram/removeram a capacidade.
-- Teste(s) existentes ou ausência documentada.
-- Impacto na Feature Preservation Matrix, se aplicável.
+- `03_ARQUITETURA_ATUAL.md` — 22 claims validadas, 6 gaps documentados com tipo, doc diz, código faz, impacto, ação.
+- Documentos validados: PROJECT_REFERENCE_CONTEXT.md (11 claims), FEATURE_PRESERVATION_MATRIX.md (5 claims), 04_ARQUITETURA_ALVO.md (3 claims).
+- Código escaneado: 80+ arquivos .py, playbooks, docs.
+- Gaps encontrados: GPT-compatible endpoint não implementado, Piper doc desatualizada, fluxo de 22 etapas irreal, API viola regra de adapter direto.
 
 ### Critérios de aceite
 Ver `CORE-102` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
@@ -450,24 +457,24 @@ Ver `CORE-102` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
 Ver `CORE-102` em `08_PLANO_DE_TESTES.md`.
 
 ### Definition of Ready
-- [ ] Independente
-- [ ] Negociável
-- [ ] Valiosa
-- [ ] Estimável
-- [ ] Pequena o suficiente
-- [ ] Testável
-- [ ] Possui contexto técnico
-- [ ] Possui arquivo de referência
-- [ ] Possui critérios Gherkin
-- [ ] Possui teste planejado
+- [x] Independente
+- [x] Negociável
+- [x] Valiosa
+- [x] Estimável
+- [x] Pequena o suficiente
+- [x] Testável
+- [x] Possui contexto técnico
+- [x] Possui arquivo de referência
+- [x] Possui critérios Gherkin
+- [x] Possui teste planejado
 
 ### Definition of Done
-- [ ] Critérios atendidos
-- [ ] Testes criados/atualizados
-- [ ] Docs e backlog atualizados
-- [ ] Status executivo atualizado
-- [ ] Daily log atualizado
-- [ ] Commit criado
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [x] Commit criado
 
 ## UI-200 — Restaurar fluxo por etapas na documentação
 

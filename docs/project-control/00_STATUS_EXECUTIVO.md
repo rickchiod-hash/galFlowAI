@@ -1,24 +1,24 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-08 01:30
+Atualizado em: 2026-05-08 02:00
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 8/48
+Histórias concluídas: 9/48
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 40
-Percentual concluído: 17%
+Histórias pendentes: 39
+Percentual concluído: 19%
 
 ## Estado atual
 
 - Branch atual: master
 - Último commit analisado: 63839e7 — "docs(governance): GOV-006 adicionar AGENTS e Skill do GalFlowAI"
-- Último commit criado pelo agente: 63839e7 (GOV-006)
-- Fase atual: Fase 2 — Diagnóstico e recuperação
-- História atual: CORE-100 — Auditar histórico Git ✅ Concluída / CORE-101 — Mapear estado atual do projeto ✅ Concluída
-- Próxima ação recomendada: CORE-102 — Validar diferença entre documentação e código
+- Último commit criado pelo agente: (nesta sessão — CORE-102)
+- Fase atual: Fase 2 — Diagnóstico e recuperação ✅ Completa
+- História atual: CORE-102 — Validar diferença doc vs código ✅ Concluída
+- Próxima ação recomendada: UI-200 — Restaurar fluxo por etapas na documentação
 
 ## Resumo tipo Daily
 
@@ -38,11 +38,17 @@ Percentual concluído: 17%
 - **CORE-101 ✅**: Mapa atual do projeto completo.
   - 02_MAPA_ATUAL_DO_PROJETO.md: tecnologias, estrutura de diretórios, entrypoints, riscos
   - test_project_map.py: 5 testes (existence, sections, technologies, entrypoints, feature matrix ref)
-- **33 testes de governança passando** (8 histórias): test_checkpoint (3), test_product_context (4), test_feature_matrix (5), test_todo_policy (4), test_adr_policy (3), test_agents (4), test_git_audit (5), test_project_map (5)
+- **CORE-102 ✅**: Validação doc vs código completa.
+  - 03_ARQUITETURA_ATUAL.md reescrito: 22 claims validadas, 16 PRESENTE, 5 DIFERENTE
+  - 6 gaps documentados (G1-G6): GPT-compatible não implementado, Piper doc desatualizada, fluxo irreal, API→adapter direto, docs/reference gap, testes gitignorados
+  - test_doc_code_gap.py: 5 testes (existence, sections, providers, gaps, gap patterns)
+- **Fase 2 — Diagnóstico e recuperação: COMPLETA** ✅ (3 histórias)
+- **38 testes de governança passando** (9 histórias): checkpoint (3), product_context (4), feature_matrix (5), todo_policy (4), adr_policy (3), agents (4), git_audit (5), project_map (5), doc_code_gap (5)
 
 ### O que está sendo feito
 
-- Fase 2: CORE-100 e CORE-101 completas. Próximo: CORE-102 — Validar diferença entre documentação e código.
+- **Fase 2 — Diagnóstico e recuperação: COMPLETA** ✅ (CORE-100, CORE-101, CORE-102).
+- Próximo: UI-200 — Restaurar fluxo por etapas na documentação (Phase 3 starts: QA-1000..1002).
 
 ### Bloqueios
 
@@ -74,17 +80,17 @@ Percentual concluído: 17%
 - docs/reference/EXTERNAL_REFERENCES.md (novo — commitado do governance pack)
 - docs/project-control/01_AUDITORIA_HISTORICO_GIT.md (atualizado — 132 commits, CORE-100)
 - docs/project-control/02_MAPA_ATUAL_DO_PROJETO.md (atualizado — completo, CORE-101)
-- docs/project-control/00_STATUS_EXECUTIVO.md (atualizado — 8/48, 17%)
-- docs/project-control/05_BACKLOG_PRIORIZADO.md (atualizado — CORE-100/101 concluídas)
-- docs/project-control/06_HISTORIAS_REFINADAS.md (atualizado — CORE-100/101 com evidências)
-- docs/project-control/10_DAILY_LOG.md (atualizado — entrada CORE-100 e CORE-101)
-- tests/test_git_audit.py (novo — 5 testes CORE-100)
-- tests/test_project_map.py (novo — 5 testes CORE-101)
+- docs/project-control/00_STATUS_EXECUTIVO.md (atualizado — 9/48, 19%, Fase 2 completa)
+- docs/project-control/03_ARQUITETURA_ATUAL.md (reescrito — 22 claims, 6 gaps)
+- docs/project-control/05_BACKLOG_PRIORIZADO.md (atualizado — CORE-102 concluída)
+- docs/project-control/06_HISTORIAS_REFINADAS.md (atualizado — CORE-102 com evidências)
+- docs/project-control/10_DAILY_LOG.md (atualizado — entrada CORE-102)
+- tests/test_doc_code_gap.py (novo — 5 testes CORE-102)
 
 ### Comandos executados
 
 - pytest tests/test_git_audit.py tests/test_project_map.py -v — 10 passed
-- pytest tests/test_product_context.py tests/test_feature_matrix.py tests/test_git_audit.py tests/test_project_map.py tests/test_checkpoint.py tests/test_adr_policy.py tests/test_todo_policy.py tests/test_agents.py -v — 33 passed
+- pytest tests/test_doc_code_gap.py tests/test_git_audit.py tests/test_project_map.py tests/test_checkpoint.py tests/test_product_context.py tests/test_feature_matrix.py tests/test_adr_policy.py tests/test_todo_policy.py tests/test_agents.py -v — 38 passed
 
 ### Evidências usadas
 
