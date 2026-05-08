@@ -19,7 +19,7 @@ Como mantenedor do GalFlowAI, eu quero um arquivo único de continuidade atualiz
 - `docs/project-control/13_CHECKPOINTS_DE_SESSAO.md` — presente
 - `tests/test_checkpoint.py` — 3 testes criados (existence, sections, format)
 - Pytest: 3 passed, 446 coletados sem erro
-- Commit: 53f1977
+- Commit: 3132eb0
 
 ### Contexto técnico
 Esta história deve ser validada no código e no histórico Git antes de implementação. Se a evidência não existir, registrar `EVIDÊNCIA INSUFICIENTE` no status executivo. Contexto funcional: 00_STATUS_EXECUTIVO.md.
@@ -60,12 +60,18 @@ Ver `GOV-001` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-000 Proteção contra regressão  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 2 SP  
 **Arquivo de contexto obrigatório:** `docs/reference/PROJECT_REFERENCE_CONTEXT.md`
 
 ### História
 Como responsável de produto, eu quero um documento imutável de escopo, para impedir drift de nome, fluxo e arquitetura.
+
+### Evidências
+- `docs/reference/PROJECT_REFERENCE_CONTEXT.md` — 8 seções obrigatórias, status "FONTE DE VERDADE DO PRODUTO", "Alteração permitida somente com ADR"
+- `tests/test_product_context.py` — 4 testes (existence, sections, keywords, truth source)
+- Pytest: 4 passed, 453 coletados sem erro
+- Commit: 3132eb0
 
 ### Contexto técnico
 Esta história deve ser validada no código e no histórico Git antes de implementação. Se a evidência não existir, registrar `EVIDÊNCIA INSUFICIENTE` no status executivo. Contexto funcional: PROJECT_REFERENCE_CONTEXT.md.
@@ -83,24 +89,24 @@ Ver `GOV-002` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
 Ver `GOV-002` em `08_PLANO_DE_TESTES.md`.
 
 ### Definition of Ready
-- [ ] Independente
-- [ ] Negociável
-- [ ] Valiosa
-- [ ] Estimável
-- [ ] Pequena o suficiente
-- [ ] Testável
-- [ ] Possui contexto técnico
-- [ ] Possui arquivo de referência
-- [ ] Possui critérios Gherkin
-- [ ] Possui teste planejado
+- [x] Independente
+- [x] Negociável
+- [x] Valiosa
+- [x] Estimável
+- [x] Pequena o suficiente
+- [x] Testável
+- [x] Possui contexto técnico
+- [x] Possui arquivo de referência
+- [x] Possui critérios Gherkin
+- [x] Possui teste planejado
 
 ### Definition of Done
-- [ ] Critérios atendidos
-- [ ] Testes criados/atualizados
-- [ ] Docs e backlog atualizados
-- [ ] Status executivo atualizado
-- [ ] Daily log atualizado
-- [ ] Commit criado
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [x] Commit criado
 
 ## GOV-003 — Criar matriz de preservação de features
 
