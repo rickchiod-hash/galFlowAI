@@ -2,6 +2,19 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
 
+## 2026-05-08 04:00 — Sessão 19: Iniciando ARCH-300 — Criar use cases por etapa
+
+### O que fiz
+- Concluí QA-1004 — Criar teste TTS falha → export sem áudio
+  - Testes atualizados e passando (5/5)
+  - Documentação de status atualizada
+  - Commit criado: test(qa): add TTS fallback export without audio coverage
+
+### Onde estou
+- História atual: ARCH-300 — Criar use cases por etapa (DoR pendente)
+- Fase atual: Fase 4 — Refatoração segura
+- Próxima ação: Validar DoR para ARCH-300 em 20_DEFINITION_OF_READY_DONE.md
+
 ## 2026-05-08 03:30 — Sessão 18: QA-1004 — Teste TTS falha → export sem áudio
 
 ### O que fiz
