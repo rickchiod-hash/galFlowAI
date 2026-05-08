@@ -2,6 +2,28 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
 
+## 2026-05-08 04:30 — Sessão 17: QA-1003 — Teste E2E WanGP falha → FFmpeg
+
+### O que fiz
+
+- **QA-1003 ✅**: Teste E2E WanGP falha → FFmpeg completo
+  - `tests/test_e2e_wangp_fallback.py` criado com 4 testes
+  - Verifica: arquivos de adapters WanGP e FFmpeg existem
+  - Verifica: WanGP indisponível → FFmpeg usado como fallback (cenário principal)
+  - Verifica: FFmpeg indisponível → falha graciosa (sem crash)
+  - Verifica: Ambos disponíveis → WanGP usado (preferência de arquitetura)
+  - **4/4 testes passando**
+- **64 testes de governança passando** (14 histórias)
+
+### O que está sendo feito
+
+- **Fase 3 — Testes base:** QA-1000 ✅, QA-1001 ✅, QA-1002 ✅, QA-1003 ✅.
+- **Próximo:** QA-1004 — Criar teste TTS falha → export sem áudio.
+
+### Bloqueios
+
+- Nenhum.
+
 ## 2026-05-08 04:00 — Sessão 16: QA-1002 — Teste UI não chama adapters
 
 ### O que fiz
