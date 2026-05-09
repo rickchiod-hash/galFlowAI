@@ -13,12 +13,12 @@ Percentual concluído: 27%
 
 ## Estado atual
 
-- Branch atual: feature/PIPE-400-jobstate-formal
-- Último commit analisado: f713ca6 — "feat(ui): block scene splitting without approved script (UI-202)"
-- Último commit criado pelo agente: f713ca6 — feat(ui): block scene splitting without approved script (UI-202)
+- Branch atual: master
+- Último commit analisado: 1257228 — "fix(arch): return JobStatus enum value for JSON serialization compatibility"
+- Último commit criado pelo agente: 1257228 — fix(arch): return JobStatus enum value for JSON serialization compatibility
 - Fase atual: Fase 5 — Pipeline e produto
-- História atual: PIPE-400 — Criar JobState formal (em andamento)
-- Próxima ação recomendada: Commit PIPE-400 e merge para master
+- História atual: PIPE-400 — Criar JobState formal ✅
+- Próxima ação recomendada: Selecionar próxima história (PIPE-401 ou RND-600)
 
 ## Resumo tipo Daily
 
