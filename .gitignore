@@ -40,6 +40,6 @@ Thumbs.db
 Desktop.ini
 $DN_
 
-# Arquivos de teste temporarios
-test_*.py
-temp_*.py
+# Arquivos de teste temporarios (apenas raiz)
+/test_*.py
+/temp_*.py

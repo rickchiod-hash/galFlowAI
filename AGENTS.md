@@ -45,6 +45,14 @@ Não alucine. Não afirme que algo existe, funciona, foi testado ou foi implemen
 9. Faça commit pequeno e semântico na branch.
 10. **Faça merge da branch de volta para master (ou squash): `git checkout master && git merge <id-da-história>`.**
 
+## Política do Daily Log
+
+O arquivo `docs/project-control/10_DAILY_LOG.md` é o histórico narrativo do projeto:
+
+- **Nunca apagar entradas anteriores.** Sempre adicionar nova entrada no topo ou no fim.
+- Cada entrada deve ser descritiva: contexto do que foi feito, por quê, arquivos alterados, decisões, bloqueios, próximo passo.
+- O daily log serve como contexto de continuidade entre sessões — deve conter informação suficiente para um agente retomar o trabalho sem ler todo o código.
+
 ## Padrão de resposta final
 
 Sempre responda como daily técnico:

@@ -1,6 +1,6 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-08 14:54
+Atualizado em: 2026-05-08 19:00
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
@@ -14,11 +14,11 @@ Percentual concluído: 27%
 ## Estado atual
 
 - Branch atual: master
-- Último commit analisado: ddbe56c — "docs(ux): UI-200 restaurar fluxo por etapas na documentacao"
-- Último commit criado pelo agente: 93c6536 — "test(qa): fix TTS fallback test to mock real components"
-- Fase atual: Fase 4 — Refatoração segura (ARCH-300..)
-- História atual: PROV-301 — Garantir TemplateProvider como fallback (Em andamento)
-- Próxima ação recomendada: Continuar ARCH-300
+- Último commit analisado: 3e18729 — "checkpoint: pre-unificacao das pastas K:"
+- Último commit criado pelo agente: 3e18729 — checkpoint pre-unificação
+- Fase atual: Diagnóstico de infraestrutura — Unificação de pastas K:
+- História atual: Diagnóstico — unificação K:\AI_VIDEO_COMERCIAL_STUDIO → COMMERCIAL
+- Próxima ação recomendada: Corrigir hardcoded K: paths (ARCH-302)
 
 ## Resumo tipo Daily
 
@@ -69,9 +69,13 @@ Percentual concluído: 27%
 
 ### O que está sendo feito
 
-- **Fase 4 — Refatoração segura:** ARCH-302 iniciada.
-- **História atual:** ARCH-302 (Em andamento).
-- **Próximo:** Centralizar configuração e paths (evitar hardcoded C:).
+- **Sessão atual: Diagnóstico e unificação de pastas K:**
+  - Checkpoint git: commit `3e18729` com 34 arquivos (9 modificados + 25 novos)
+  - Correção `.gitignore`: `/test_*.py` (só raiz, não `tests/`)
+  - Migração concluída: `tools/ffmpeg/` (301 MB) e `models/gpt4all/*.gguf` (3.9 GB) para pasta correta
+  - Limpeza: removidos 6 itens duplicados/junk
+  - `K:\AI_VIDEO_COMERCIAL_STUDIO` não renomeada (bloqueada por handles do sistema)
+- **Próximo:** Corrigir hardcoded K: paths em adapters (ARCH-302) e rodar testes.
 
 ### Bloqueios
 
@@ -88,9 +92,11 @@ Percentual concluído: 27%
 ### Gaps encontrados
 
 - docs/reference/ não estava no git (corrigido).
-- User's working tree tem 6+ untracked files que podem divergir.
+- User's working tree tem 6+ untracked files que podem divergir (resolvido — commitados).
 - python.exe não está no PATH padrão (usar env específico).
 - Testes de governança retornam bool (warnings PytestReturnNotNoneWarning — padrão aceito do projeto).
+- **Duas pastas K:** `AI_VIDEO_COMMERCIAL_STUDIO` (correta) e `AI_VIDEO_COMERCIAL_STUDIO` (errata). Itens únicos migrados. Pasta incorreta mantida (bloqueada por handles — necessário reboot para renomear).
+- `.gitignore` tinha `test_*.py` sem `/`, afetando `tests/test_*.py` — corrigido para `/test_*.py`.
 
 ### TODOs rastreáveis
 

@@ -1,6 +1,48 @@
 # 10_DAILY_LOG — GalFlowAI
 
-Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
+Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
+
+## 2026-05-08 19:00 — Sessão Diagnóstico: Unificação de pastas K: + Git Checkpoint
+
+### Contexto
+Duas pastas coexistiam em `K:\`: `AI_VIDEO_COMMERCIAL_STUDIO` (correta, 19 subpastas, repo avançado) e `AI_VIDEO_COMERCIAL_STUDIO` (errata ortográfica, 10 subpastas, clone divergente). Risco de confusão e perda de funcionalidades.
+
+### O que fiz
+
+**1. Git Checkpoint (commit `3e18729`)**
+- 34 arquivos: 9 modificados (AGENTS.md, result.py, template_provider.py, 3 docs, 3 tests) + 25 novos
+- Novos: piper_adapter.py, 5 use cases, 8 pipeline stages, checkpoint_manager, filesystem_helper, job_state, voice_script_optimizer, utils/timeout_retry
+- Novos testes: test_e2e_wangp_fallback.py, test_template_fallback.py, test_concat_videos_use_case.py, test_create_static_video_use_case.py, test_provider_registry.py, test_result.py, test_tts_fallback.py
+- `.gitignore` fix: `test_*.py` → `/test_*.py` (não afetava `tests/`)
+
+**2. Análise forense das duas pastas**
+- COMMERCIAL (correta): 43 commits locais não no origin/master, 32 untracked importantes, Wan2GP completo, FramePack, env Python 3.10 full, studio_package
+- COMERCIAL (errata): clone divergente (5 commits próprios), Wan2GP vazio (só main.py), env venz minimal
+- **Itens únicos migrados da COMERCIAL**: `tools/ffmpeg/` (301 MB, 45 arquivos) e `models/gpt4all/mistral-7b-openorca.Q4_0.gguf` (3.9 GB)
+
+**3. Limpeza da pasta correta**
+- Removido: GalFlowAI_Governance_Backlog_Checkpoint_Pack_v2/ (duplicata), FlowForgeAI_opencodegalpasta_pack (1)/ + .zip, opencodegal/ (governance duplicado), temp_backup/, backup_20260501_215007/, _archive/, lixo técnico (fix_indent.py, refactor_pipeline.py, update_method.py, temp_commit.patch, pipeline.backup)
+
+**4. AGENTS.md**
+- Adicionada seção "Política do Daily Log": nunca apagar histórico, descritivo como contexto do projeto
+
+### Bloqueios
+- `K:\AI_VIDEO_COMERCIAL_STUDIO` não renomeada (bloqueada por handles — necessário reboot)
+- `pytest` não disponível no PATH — necessário python.exe via caminho completo
+
+### Arquivos alterados
+- AGENTS.md (nova seção "Política do Daily Log")
+- .gitignore (fix `/test_*.py`)
+- docs/project-control/00_STATUS_EXECUTIVO.md (atualizado)
+- docs/project-control/10_DAILY_LOG.md (esta entrada)
+
+### Commit criado
+- `3e18729` — "checkpoint: pre-unificacao das pastas K"
+
+### Próximo passo
+- Corrigir hardcoded `K:\` paths em `wangp_adapter.py` e `ffmpeg_adapter.py` (ARCH-302)
+- Corrigir path duplicado `/opencodegalpasta` em `config.py` (GPT4ALL_MODEL_DIR)
+- Rodar testes via Python direto
 
 ## 2026-05-08 15:10 — Sessão 21: ARCH-300 — Refatorando pipeline para use cases
 
