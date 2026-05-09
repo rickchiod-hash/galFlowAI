@@ -29,7 +29,7 @@ class AddJobUseCase(UseCase):
             
             # 3. Return result with status
             return self._build_success(
-                data={"job_id": job_id, "status": JobStatus.QUEUED},
+                data={"job_id": job_id, "status": JobStatus.QUEUED.value},
                 project_id=project_id
             )
         except Exception as e:
