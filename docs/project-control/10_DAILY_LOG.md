@@ -2,6 +2,55 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-09 — Sessão 4: PIPE-400 (Criar JobState formal)
+
+### Contexto
+Após UI-202, implementei PIPE-400 — formalizar o sistema de JobState com enum, transições guardadas, progress tracking, e integração com a fila.
+
+### O que fiz
+1. **Branch**: `feature/PIPE-400-jobstate-formal`
+2. **`JobState`** (`app/pipeline/job_state.py`):
+   - Adicionado `COMPLETED` ao enum `JobStatus` (além de `SUCCEEDED`)
+   - Adicionados campos: `job_type`, `output_path`, `params`
+   - `VALID_TRANSITIONS` — mapa de transições permitidas entre estados
+   - `_transition()` — guarda que valida e lança `ValueError` para transições inválidas
+   - Métodos: `start()`, `complete()`, `succeed()`, `fail()`, `cancel()`, `update_progress()`
+   - Serialização: `to_dict()` / `from_dict()` com todos os campos
+
+3. **`JobQueue`** (`app/jobs/queue.py`):
+   - Substituída classe `Job` (simples) por `JobState` (formal com enum + transições)
+   - Adicionado `cancel_job()` — cancela job QUEUED ou RUNNING
+   - Adicionado `remove_job()` — remove job da fila (antes causava AttributeError)
+   - `complete_job()` e `fail_job()` com fallback via try/except para transições inválidas
+   - `get_status()` conta `completed` + `succeeded`
+
+4. **`ManageQueueUseCase`** (`app/application/use_cases/manage_queue_use_case.py`):
+   - Reescrito: suporta `cancel`, `remove`, `add`, `list`, `status`
+   - Bug fix: `_add_job` agora usa `job_type` e `project_id` na ordem correta
+   - Bug fix: `_cancel_job` chama `queue.cancel_job()` (antes `remove_job()` inexistente)
+
+5. **`app/api.py`**: endpoint `/api/jobs/{job_id}/cancel` agora chama `queue.cancel_job()` diretamente
+
+6. **Testes**: 20 novos testes de JobState + todos existentes atualizados
+
+### Testes executados
+- 211/211 passed, 0 falhas (antes: 190/191)
+- 20 testes JobState (criação, transições válidas, transições inválidas, progresso, serialização)
+- 5 testes mutex (todos passam com JobState)
+- 6 testes use cases (todos passam)
+- 13 testes API (sem regressão)
+
+### Arquivos alterados
+- `app/pipeline/job_state.py` — JobState formal com enum, transições, progresso
+- `app/jobs/queue.py` — usa JobState em vez de Job, add cancel_job/remove_job
+- `app/application/use_cases/manage_queue_use_case.py` — reescrito com suporte a cancel
+- `app/api.py` — cancel endpoint usa cancel_job
+- `tests/test_job_state.py` — 20 testes novos
+- `docs/project-control/*.md` — status e daily log
+
+### Próximo passo
+Selecionar próxima história: PIPE-401 (idempotency key) ou RND-600 (RenderPlan mínimo)
+
 ## 2026-05-09 — Sessão 3: UI-202 (Bloquear cenas sem roteiro aprovado)
 
 ### Contexto

@@ -13,12 +13,12 @@ Percentual concluído: 27%
 
 ## Estado atual
 
-- Branch atual: feature/UI-202-bloquear-cenas-sem-roteiro
-- Último commit analisado: cde0ce2 — "feat(ui): implement script-only generation endpoint (UI-201)"
-- Último commit criado pelo agente: cde0ce2 — feat(ui): implement script-only generation endpoint (UI-201)
+- Branch atual: feature/PIPE-400-jobstate-formal
+- Último commit analisado: f713ca6 — "feat(ui): block scene splitting without approved script (UI-202)"
+- Último commit criado pelo agente: f713ca6 — feat(ui): block scene splitting without approved script (UI-202)
 - Fase atual: Fase 5 — Pipeline e produto
-- História atual: UI-202 — Bloquear cenas sem roteiro aprovado (em andamento)
-- Próxima ação recomendada: Commit UI-202 e merge para master
+- História atual: PIPE-400 — Criar JobState formal (em andamento)
+- Próxima ação recomendada: Commit PIPE-400 e merge para master
 
 ## Resumo tipo Daily
 

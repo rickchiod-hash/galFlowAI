@@ -463,16 +463,14 @@ async def get_job_status(job_id: str):
 
 @app.post("/api/jobs/{job_id}/cancel")
 async def cancel_job(job_id: str):
-    """Cancel a job using use case."""
+    """Cancel a job (PIPE-400: formal cancel via queue)."""
     try:
-        from app.application.use_cases.job_use_cases import RemoveJobUseCase
-        uc = RemoveJobUseCase()
-        result = uc.execute(job_id=job_id)
-        
-        if result["ok"]:
+        from app.jobs.queue import queue
+        cancelled = queue.cancel_job(job_id)
+        if cancelled:
             return success_response({"job_id": job_id}, "Job cancelled")
         else:
-            raise error_response("CANCEL_FAILED", result["error"], status_code=500)
+            raise error_response("CANCEL_FAILED", "Job not found or cannot be cancelled", status_code=500)
     except Exception as e:
         logger.error("Job cancellation failed: %s", e)
         raise error_response("CANCEL_FAILED", str(e), status_code=500)
