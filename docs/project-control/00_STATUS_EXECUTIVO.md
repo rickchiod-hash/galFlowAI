@@ -13,12 +13,12 @@ Percentual concluído: 27%
 
 ## Estado atual
 
-- Branch atual: master
-- Último commit analisado: 1257228 — "fix(arch): return JobStatus enum value for JSON serialization compatibility"
-- Último commit criado pelo agente: 1257228 — fix(arch): return JobStatus enum value for JSON serialization compatibility
+- Branch atual: feature/PIPE-401-idempotency-key
+- Último commit analisado: c3cd591 — "docs: mark PIPE-400 as completed in status"
+- Último commit criado pelo agente: c3cd591 — docs: mark PIPE-400 as completed in status
 - Fase atual: Fase 5 — Pipeline e produto
-- História atual: PIPE-400 — Criar JobState formal ✅
-- Próxima ação recomendada: Selecionar próxima história (PIPE-401 ou RND-600)
+- História atual: PIPE-401 — Criar idempotency key por etapa (em andamento)
+- Próxima ação recomendada: Commit PIPE-401 e criar PR → merge
 
 ## Resumo tipo Daily
 
