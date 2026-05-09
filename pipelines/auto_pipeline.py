@@ -41,7 +41,6 @@ def run_auto_pipeline(project_name, briefing, commercial_type="produto", duratio
         proj = create_project(project_name)
         project_id = proj["id"]
         result["project_id"] = project_id
-<<<<<<< HEAD
         proj_dir = PROJECTS_DIR / project_id
         result["project_path"] = str(proj_dir)
         result["logs"].append("Projeto criado: {}".format(project_id))

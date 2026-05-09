@@ -72,10 +72,15 @@ class TestGenerateScriptUseCase:
         assert uc._validate(briefing="", project_id="proj_001") is False
         assert uc._validate(briefing="short", project_id="proj_001") is False
     
-    def test_validate_invalid_project_id(self):
-        """Test validation with invalid project_id."""
+    @patch('app.application.use_cases.script_generation.generate_script_with_llm')
+    @patch('app.application.use_cases.script_generation.save_script')
+    def test_validate_invalid_project_id(self, mock_save, mock_generate):
+        """Test that generation works without project_id (it's optional)."""
+        mock_generate.return_value = {"script": "test", "provider": "TemplateProvider"}
         uc = GenerateScriptUseCase()
-        assert uc._validate(briefing="Valid briefing text here", project_id="") is False
+        result = uc.execute(briefing="Valid briefing text here", project_id="")
+        assert result["ok"] is True
+        mock_save.assert_not_called()
 
 class TestCreateProjectUseCase:
     """Test create project use case."""

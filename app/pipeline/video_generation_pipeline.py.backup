@@ -1,0 +1,361 @@
+"""Pipeline de geração de vídeo completo"""
+
+import os
+import sys
+import logging
+import json
+from pathlib import Path
+from typing import Optional, Dict, Any, List
+from datetime import datetime
+
+from app.adapters.wangp_adapter import WanGPAdapter
+from app.adapters.tts_adapter import TTSAdapter
+from app.adapters.ffmpeg_adapter import FFmpegAdapter
+from app.pipeline.script_generator import generate_script
+from app.pipeline.scene_splitter import split_script_into_scenes
+from app.pipeline.prompt_builder import build_prompts_for_scenes
+from app.pipeline.voice_script_optimizer import VoiceScriptOptimizer
+from app.config import BASE_DIR, PROJECTS_DIR
+
+logger = logging.getLogger(__name__)
+
+
+from app.pipeline.job_state import JobState, JobStatus
+
+
+# TODO_TECNICO(VIDEO_PIPELINE):
+# 1) Quebrar etapas em casos de uso independentes - CONCLUÍDO (7 stages criados e integrados)
+# 2) Padronizar estado de job (queued/running/succeeded/failed/cancelled) - CONCLUÍDO (JobState implementado e integrado)
+# 3) Adicionar testes e2e com mocks para fallback WanGP -> FFmpeg - CONCLUÍDO
+# 4) Isolar operações de filesystem em helpers - CONCLUÍDO (FilesystemHelper criado e integrado)
+# 5) AUDIO-004: Implementado - Geração de áudio por cena usando TTSAdapter (com PiperAdapter opcional)
+# 6) FramePack integrado como motor experimental - CONCLUÍDO (VideoGenerationStage atualizado)
+
+
+class VideoGenerationPipeline:
+    """Pipeline completo: Briefing -> Roteiro -> Cenas -> Vídeo -> Final"""
+    
+    def __init__(self, llm_provider=None):
+        """
+        Inicializa o pipeline.
+        
+        Args:
+            llm_provider: Provider LLM para geração de roteiro (opcional)
+        """
+        self.llm_provider = llm_provider
+        self.wangp_adapter = WanGPAdapter()
+        self.tts_adapter = TTSAdapter()
+        self.ffmpeg_adapter = FFmpegAdapter()
+        
+        # Job state management
+        self.current_job: Optional[JobState] = None
+        
+        # Filesystem helper for isolated operations (TODO #4)
+        from app.pipeline.filesystem_helper import FilesystemHelper
+        self.fs_helper = FilesystemHelper()
+        
+        # Checkpoint manager for pipeline resumption
+        self.checkpoint_manager = None  # Will be initialized per project
+        
+        # Checkpoint manager for pipeline resumption
+        from app.pipeline.checkpoint_manager import CheckpointManager
+        # Will be initialized per project in generate_commercial
+        
+        # Retry configuration
+        self.max_retries = 3
+        self.retry_delay = 2  # seconds between retries
+        
+        # Initialize stages for independent use cases
+        from app.pipeline.stages.script_generation_stage import ScriptGenerationStage
+        from app.pipeline.stages.scene_splitting_stage import SceneSplittingStage 
+        from app.pipeline.stages.prompt_building_stage import PromptBuildingStage
+        from app.pipeline.stages.text_optimization_stage import TextOptimizationStage
+        from app.pipeline.stages.audio_generation_stage import AudioGenerationStage 
+        from app.pipeline.stages.video_generation_stage import VideoGenerationStage
+        from app.pipeline.stages.video_concatenation_stage import VideoConcatenationStage
+        from app.adapters.framepack_adapter import FramePackAdapter
+        
+        self.script_generation_stage = ScriptGenerationStage()
+        self.scene_splitting_stage = SceneSplittingStage()
+        self.prompt_building_stage = PromptBuildingStage()
+        self.text_optimization_stage = TextOptimizationStage(max_chars_per_scene=150)
+        self.audio_generation_stage = AudioGenerationStage(self.tts_adapter)
+        
+        # FramePack as experimental engine
+        self.framepack_adapter = FramePackAdapter()
+        self.video_generation_stage = VideoGenerationStage(
+            self.wangp_adapter, 
+            self.ffmpeg_adapter,
+            framepack_adapter=self.framepack_adapter
+        )
+        
+        self.video_concatenation_stage = VideoConcatenationStage(self.ffmpeg_adapter)
+        
+    def generate_commercial(
+        self,
+        project_id: str,
+        product: str,
+        target_audience: str,
+        duration_seconds: int = 30,
+        style: str = "viral",
+        keywords: Optional[List[str]] = None,
+        progress_callback: Optional[callable] = None
+    ) -> Dict[str, Any]:
+        """
+        Gera um comercial completo usando stages independentes.
+        
+        Args:
+            project_id: ID do projeto
+            product: Nome do produto
+            target_audience: Público-alvo
+            duration_seconds: Duração total em segundos
+            style: Estilo (viral, premium, direct)
+            keywords: Palavras-chave
+            progress_callback: Função de callback para progresso
+            
+        Returns:
+            Dict com status e caminhos dos arquivos gerados
+        """
+        try:
+            self.current_job = JobState(job_id=f"job_{project_id}", project_id=project_id)
+            self.current_job.start()
+            
+            project_dir = Path(PROJECTS_DIR) / project_id
+        self.fs_helper.ensure_dir_exists(project_dir)
+        
+        # Initialize checkpoint manager for this project
+        from app.pipeline.checkpoint_manager import CheckpointManager
+        self.checkpoint_manager = CheckpointManager(project_dir)
+        logger.info(f"Checkpoint manager initialized for project {project_id}")
+            
+            # 1. Gerar roteiro (Stage 1)
+            self._report_progress(progress_callback, 10, "Gerando roteiro...")
+            self.current_job.update_progress(10, "Gerando roteiro...", "script_generation")
+            script_result = self.script_generation_stage.execute(
+                briefing=f"{product}. {target_audience}",
+                mode="safe"
+            )
+            
+            if not script_result["success"]:
+                if self.current_job:
+                    self.current_job.fail(f"Falha ao gerar roteiro: {script_result.get('error', 'Erro desconhecido')}")
+                return {"success": False, "error": f"Falha ao gerar roteiro: {script_result.get('error', 'Erro desconhecido')}", 
+                        "job_state": self.current_job.to_dict() if self.current_job else None}
+            
+            script_text = script_result["data"]["script"]
+            script_path = project_dir / "script" / "script_approved.md"
+            if self.fs_helper.write_text(script_path, script_text, encoding="utf-8"):
+                logger.info(f"Script saved to {script_path}")
+            else:
+                logger.warning(f"Failed to save script to {script_path}")
+            
+            # 2. Dividir em cenas (Stage 2)
+            self._report_progress(progress_callback, 20, "Dividindo em cenas...")
+            self.current_job.update_progress(20, "Dividindo em cenas...", "scene_splitting")
+            scenes_result = self.scene_splitting_stage.execute(
+                script_text=script_text,
+                project_id=project_id
+            )
+            
+            if not scenes_result["success"]:
+                if self.current_job:
+                    self.current_job.fail(f"Falha ao dividir em cenas: {scenes_result.get('error', 'Erro desconhecido')}")
+                return {"success": False, "error": f"Falha ao dividir em cenas: {scenes_result.get('error', 'Erro desconhecido')}", 
+                        "job_state": self.current_job.to_dict() if self.current_job else None}
+            
+            scenes = scenes_result["data"]["scenes"]
+            
+            scenes_path = project_dir / "storyboard" / "scenes.json"
+            if not self.fs_helper.write_json(scenes_path, scenes):
+                logger.warning(f"Failed to save scenes to {scenes_path}")
+            
+            # 3. Gerar prompts para cada cena (Stage 3)
+            self._report_progress(progress_callback, 30, "Gerando prompts de vídeo...")
+            self.current_job.update_progress(30, "Gerando prompts...", "prompt_building")
+            prompts_result = self.prompt_building_stage.execute(
+                scenes=scenes,
+                project_id=project_id
+            )
+            
+            if not prompts_result["success"]:
+                if self.current_job:
+                    self.current_job.fail(f"Falha ao gerar prompts: {prompts_result.get('error', 'Erro desconhecido')}")
+                return {"success": False, "error": f"Falha ao gerar prompts: {prompts_result.get('error', 'Erro desconhecido')}", 
+                        "job_state": self.current_job.to_dict() if self.current_job else None}
+            
+            scene_prompts = prompts_result["data"]["scene_prompts"]
+            
+            prompts_path = project_dir / "prompts" / "prompts.json"
+            if not self.fs_helper.write_json(prompts_path, scene_prompts):
+                logger.warning(f"Failed to save prompts to {prompts_path}")
+            
+            # 3.5. Otimizar textos de narração para TTS (Stage 4 - AUDIO-002)
+            self._report_progress(progress_callback, 35, "Otimizando textos para narração...")
+            self.current_job.update_progress(35, "Otimizando textos...", "text_optimization")
+            optimization_result = self.text_optimization_stage.execute(
+                scene_prompts=scene_prompts
+            )
+            
+            if not optimization_result["success"]:
+                if self.current_job:
+                    self.current_job.fail(f"Falha ao otimizar textos: {optimization_result.get('error', 'Erro desconhecido')}")
+                return {"success": False, "error": f"Falha ao otimizar textos: {optimization_result.get('error', 'Erro desconhecido')}", 
+                        "job_state": self.current_job.to_dict() if self.current_job else None}
+            
+            optimized_scenes = optimization_result["data"]["optimized_scenes"]
+            
+            optimized_prompts_path = project_dir / "prompts" / "prompts_optimized.json"
+            if not self.fs_helper.write_json(optimized_prompts_path, optimized_scenes):
+                logger.warning(f"Failed to save optimized prompts to {optimized_prompts_path}")
+            
+            scene_prompts = optimized_scenes
+            
+            # 4. Gerar narração por cena (Stage 5 - AUDIO-004)
+            self._report_progress(progress_callback, 40, "Gerando narração por cena...")
+            self.current_job.update_progress(40, "Gerando narração...", "audio_generation")
+            audio_result = self.audio_generation_stage.execute(
+                scene_prompts=scene_prompts,
+                project_id=project_id,
+                projects_dir=PROJECTS_DIR
+            )
+            
+            if not audio_result["success"]:
+                logger.warning(f"Falha na geração de áudio: {audio_result.get('error')}")
+            
+            scene_prompts = audio_result["data"].get("scenes_with_audio", scene_prompts)
+            audio_dir = audio_result["data"].get("audio_dir", str(project_dir / "audio"))
+            self.fs_helper.ensure_dir_exists(Path(audio_dir))
+            
+            # 5. Gerar vídeos das cenas (Stage 6) com retry
+            self._report_progress(progress_callback, 50, "Gerando vídeos das cenas...")
+            self.current_job.update_progress(50, "Gerando vídeos das cenas...", "video_generation")
+            
+            # Retry logic for failed scenes
+            max_retries = self.max_retries
+            retry_delay = self.retry_delay
+            video_result = None
+            
+            for attempt in range(max_retries):
+                logger.info(f"Tentativa {attempt + 1}/{max_retries} para gerar vídeos")
+                video_result = self.video_generation_stage.execute(
+                    scene_prompts=scene_prompts,
+                    project_id=project_id,
+                    projects_dir=PROJECTS_DIR
+                )
+                
+                if video_result.get("success"):
+                    break
+                
+                # Check which scenes failed
+                rendered = video_result.get("data", {}).get("rendered_scenes", [])
+                failed_scenes = [s for s in rendered if s.get("status") == "failed"]
+                
+                if not failed_scenes:
+                    break
+                    
+                logger.warning(f"Tentativa {attempt + 1} falhou. Cenas com falha: {len(failed_scenes)}")
+                if attempt < max_retries - 1:
+                    logger.info(f"Aguardando {retry_delay}s antes da próxima tentativa...")
+                    import time
+                    time.sleep(retry_delay)
+                    # Save checkpoint before retry
+                    checkpoint_data = {
+                        "scene_prompts": scene_prompts,
+                        "rendered_scenes": rendered,
+                        "attempt": attempt + 1
+                    }
+                    self.checkpoint_manager.save_checkpoint("video_generation_retry", checkpoint_data)
+            
+            # Save checkpoint after video generation
+            if video_result and video_result.get("success"):
+                checkpoint_data = {
+                    "scene_prompts": scene_prompts,
+                    "rendered_scenes": video_result.get("data", {}).get("rendered_scenes", []),
+                    "completed": True
+                }
+                self.checkpoint_manager.save_checkpoint("video_generation_complete", checkpoint_data)
+            
+            if not video_result["success"]:
+                if self.current_job:
+                    self.current_job.fail(f"Falha ao gerar vídeos: {video_result.get('error', 'Erro desconhecido')}")
+                return {"success": False, "error": f"Falha ao gerar vídeos: {video_result.get('error', 'Erro desconhecido')}", 
+                        "job_state": self.current_job.to_dict() if self.current_job else None}
+            
+            rendered_scenes = video_result["data"]["rendered_scenes"]
+            
+            # Atualiza prompts com status
+            prompts_path = project_dir / "prompts" / "prompts.json"
+            if not self.fs_helper.write_json(prompts_path, scene_prompts):
+                logger.warning(f"Failed to save updated prompts to {prompts_path}")
+            
+            # 6. Montar vídeo final com FFmpeg (Stage 7)
+            self._report_progress(progress_callback, 85, "Montando vídeo final...")
+            self.current_job.update_progress(85, "Montando vídeo final...", "video_concatenation")
+            concat_result = self.video_concatenation_stage.execute(
+                rendered_scenes=rendered_scenes,
+                project_id=project_id,
+                projects_dir=PROJECTS_DIR
+            )
+            
+            if not concat_result["success"]:
+                if self.current_job:
+                    self.current_job.fail(concat_result.get("error", "Falha ao montar vídeo final"))
+                return {
+                    "success": False,
+                    "error": concat_result.get("error", "Falha ao montar vídeo final"),
+                    "job_state": self.current_job.to_dict() if self.current_job else None
+                }
+            
+            final_video_path = concat_result["data"]["final_video_path"]
+            
+            # 7. Finalizado
+            self._report_progress(progress_callback, 100, "Comercial gerado com sucesso!")
+            self.current_job.succeed(metadata={
+                "final_video": str(final_video_path),
+                "script_path": str(script_path),
+                "scenes_count": len(rendered_scenes),
+                "scenes_succeeded": len([s for s in rendered_scenes if s.get("status") == "completed"]),
+                "scenes_with_audio": len([s for s in rendered_scenes if s.get("audio_success") == True]),
+                "audio_dir": str(audio_dir),
+                "provider_used": "WanGP" if self.wangp_adapter.is_available() else "FFmpeg Fallback"
+            })
+            
+            return {
+                "success": True,
+                "project_id": project_id,
+                "final_video": str(final_video_path),
+                "script_path": str(script_path),
+                "scenes_count": len(rendered_scenes),
+                "scenes_succeeded": len([s for s in rendered_scenes if s.get("status") == "completed"]),
+                "scenes_with_audio": len([s for s in rendered_scenes if s.get("audio_success") == True]),
+                "audio_dir": str(audio_dir),
+                "provider_used": "WanGP" if self.wangp_adapter.is_available() else "FFmpeg Fallback",
+                "job_state": self.current_job.to_dict()
+            }
+            
+        except Exception as e:
+            logger.error(f"Erro no pipeline: {e}", exc_info=True)
+            if self.current_job:
+                self.current_job.fail(str(e))
+            return {"success": False, "error": str(e), "job_state": self.current_job.to_dict() if self.current_job else None}
+    
+    def _report_progress(
+        self,
+        callback: Optional[callable],
+        progress: int,
+        message: str
+    ):
+        """Reporta progresso se callback fornecido"""
+        if callback:
+            callback(progress, message)
+        logger.info(f"Progresso: {progress}% - {message}")
+    
+    def get_pipeline_status(self) -> Dict[str, Any]:
+        """Retorna status dos componentes do pipeline"""
+        return {
+            "llm_available": self.llm_provider is not None,
+            "wangp_available": self.wangp_adapter.is_available(),
+            "tts_available": self.tts_adapter.is_available(),
+            "ffmpeg_available": self.ffmpeg_adapter.is_available(),
+            "selected_tts_engine": self.tts_adapter.selected_engine
+        }

@@ -181,7 +181,7 @@ class VideoGenerationPipeline:
                 # Fallback: FFmpeg (vídeo estático com texto)
                 logger.info(f"WanGP não disponível, usando FFmpeg para cena {i}")
                 # Usa scene_text ou prompt como texto
-                text_for_video = scene_prompt.get("scene_text") or scene_prompt.get("prompt", "Cena")
+                text_for_video = scene_prompt.get("scene_text") or scene_prompt.get("prompt") or "Cena"
                 static_video_result = self.create_static_video_use_case.execute(
                     project_id=project_id,
                     text=text_for_video,

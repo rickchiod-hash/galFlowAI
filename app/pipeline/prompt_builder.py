@@ -15,8 +15,10 @@ def build_prompts_for_scenes(scenes, project_id=None):
         negative_prompt = "blurry, low quality, static, bad anatomy"
         duration = scene.get("duration", 5)
         
+        scene_id = scene.get("id", "unknown")
         prompts.append({
-            "scene_id": scene.get("id", "unknown"),
+            "id": scene_id,
+            "scene_id": scene_id,
             "prompt": prompt_text,
             "negative_prompt": negative_prompt,
             "duration": duration,

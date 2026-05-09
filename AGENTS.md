@@ -35,7 +35,7 @@ Não alucine. Não afirme que algo existe, funciona, foi testado ou foi implemen
 ## Como trabalhar
 
 1. Escolha a próxima história em `05_BACKLOG_PRIORIZADO.md`.
-2. **Crie uma branch nomeada pelo ID da história: `git checkout -b <id-da-história>`.**
+2. **Crie uma branch nomeada pelo padrão `feature/<id-da-história>-<contexto-resumido>`: `git checkout -b feature/<id-da-história>-<contexto-resumido>`.**
 3. Verifique DoR em `20_DEFINITION_OF_READY_DONE.md`.
 4. Leia os arquivos de contexto vinculados na história.
 5. Faça alteração mínima.
@@ -44,7 +44,7 @@ Não alucine. Não afirme que algo existe, funciona, foi testado ou foi implemen
 8. Atualize `00_STATUS_EXECUTIVO.md` e `10_DAILY_LOG.md`.
 9. Faça commit pequeno e semântico na branch.
 10. **Abra um Pull Request da branch no GitHub (via `gh pr create`).** O título do PR deve conter o ID da história (ex: `GAL-123`).
-11. **Após aprovação (ou se unificado), faça merge da branch para master: `git checkout master && git merge <id-da-história>`.**
+11. **Após aprovação (ou se unificado), faça merge da branch para master: `git checkout master && git merge feature/<id-da-história>-<contexto-resumido>`.**
 
 ## Política do Daily Log
 
