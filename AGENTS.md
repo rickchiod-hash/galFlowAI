@@ -43,7 +43,8 @@ Não alucine. Não afirme que algo existe, funciona, foi testado ou foi implemen
 7. Rode validações.
 8. Atualize `00_STATUS_EXECUTIVO.md` e `10_DAILY_LOG.md`.
 9. Faça commit pequeno e semântico na branch.
-10. **Faça merge da branch de volta para master (ou squash): `git checkout master && git merge <id-da-história>`.**
+10. **Abra um Pull Request da branch no GitHub (via `gh pr create`).** O título do PR deve conter o ID da história (ex: `GAL-123`).
+11. **Após aprovação (ou se unificado), faça merge da branch para master: `git checkout master && git merge <id-da-história>`.**
 
 ## Política do Daily Log
 
