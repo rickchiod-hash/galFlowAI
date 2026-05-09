@@ -24,8 +24,8 @@ LLM_QUALITY_TIMEOUT_SECONDS = 15
 LMSTUDIO_BASE_URL = "http://localhost:1234/v1"
 KOBOLDCPP_BASE_URL = "http://localhost:5001"
 LLAMACPP_BASE_URL = "http://localhost:8080/v1"
-GPT4ALL_MODEL_DIR = str(BASE_DIR / "opencodegalpasta/models/gpt4all")
-GGUF_MODEL_DIR = str(BASE_DIR / "opencodegalpasta/models/gguf")
+GPT4ALL_MODEL_DIR = str(MODELS_DIR / "gpt4all")
+GGUF_MODEL_DIR = str(MODELS_DIR / "gguf")
 
 GRADIO_HOST = "127.0.0.1"
 GRADIO_PORT = 7860
