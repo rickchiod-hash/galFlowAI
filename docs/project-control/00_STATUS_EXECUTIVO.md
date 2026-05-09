@@ -13,12 +13,12 @@ Percentual concluído: 27%
 
 ## Estado atual
 
-- Branch atual: feature/PIPE-401-idempotency-key
-- Último commit analisado: c3cd591 — "docs: mark PIPE-400 as completed in status"
-- Último commit criado pelo agente: c3cd591 — docs: mark PIPE-400 as completed in status
+- Branch atual: master
+- Último commit analisado: 851aaa1 — "feat(pipeline): add idempotency key service and use cases (PIPE-401)"
+- Último commit criado pelo agente: 851aaa1 — feat(pipeline): add idempotency key service and use cases (PIPE-401)
 - Fase atual: Fase 5 — Pipeline e produto
-- História atual: PIPE-401 — Criar idempotency key por etapa (em andamento)
-- Próxima ação recomendada: Commit PIPE-401 e criar PR → merge
+- História atual: PIPE-401 — Criar idempotency key por etapa ✅
+- Próxima ação recomendada: Selecionar próxima história (PIPE-402 ou RND-600)
 
 ## Resumo tipo Daily
 
