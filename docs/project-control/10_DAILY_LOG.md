@@ -2,6 +2,60 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-09 — Sessão: Baseline verde + UI-201 (Gerar roteiro sem renderizar)
+
+### Contexto
+Retomada da sessão anterior com baseline 186/186 testes verdes e 2 E2E pendentes. Após análise, as 2 falhas E2E tinham causas mais profundas que exigiam correções em múltiplas camadas. Após corrigir a cadeia completa, implementei a próxima história do backlog: UI-201.
+
+### O que fiz
+
+**1. Correção da cadeia de falhas E2E (QA-1003)**
+- `app/pipeline/scene_splitter.py:save_scenes()`: agora cria `project.json` se ausente (antes FileNotFoundError ao ler)
+- `app/pipeline/prompt_builder.py`: adicionou campo `id` (antes só `scene_id`, quebrava validação do `RenderVideoUseCase._validate()`)
+- `app/pipeline/video_generation_pipeline.py:184`: fallback `text_for_video` corrigido de `.get("prompt", "Cena")` para `.get("prompt") or "Cena"` — o default de `.get()` nunca era usado porque a key existia com valor vazio
+- `tests/test_e2e_wangp_fallback.py`: refatorado com `ExitStack`, helper compartilhado `_pipeline_test_setup()`, patches nos módulos dos use cases (resolve `from X import Y`), mocks de `render_scene` com dict serializável, assertions corrigidas
+
+**2. UI-201 — Gerar roteiro sem renderizar vídeo**
+- Novo endpoint: `POST /api/projects/{project_id}/script/generate`
+  - Valida projeto existe via `LoadProjectUseCase`
+  - Gera roteiro via `GenerateScriptUseCase` (salva em `script/script.txt`)
+  - Divide em cenas via `SplitScenesUseCase` (salva em `storyboard/scenes.json`)
+  - Retorna script + cenas sem disparar renderização de vídeo/áudio
+- 2 novos testes em `tests/test_api.py`:
+  - `test_api_generate_script_for_project`: happy path com verificação de salvamento em disco
+  - `test_api_generate_script_for_project_not_found`: 404 para projeto inexistente
+- Ajuste de import na API: novo endpoint usa `generate_script_use_case` (com `mode`), mantendo endpoint antigo `/api/llm/script` com `script_generation` (com `provider`) — compatibilidade preservada
+
+**3. Atualização de gov docs**
+- `01_AUDITORIA_HISTORICO_GIT.md`: commit count 160→161, HEAD b0b42e8→ee79166
+- `00_STATUS_EXECUTIVO.md`: branch, fase, história atual, próxima ação
+- `05_BACKLOG_PRIORIZADO.md`: UI-201 marcada como "Em andamento"
+
+### Arquivos alterados
+- `app/pipeline/scene_splitter.py` — `save_scenes()` refatorada
+- `app/pipeline/prompt_builder.py` — adicionado campo `id`
+- `app/pipeline/video_generation_pipeline.py:184` — fix fallback text
+- `tests/test_e2e_wangp_fallback.py` — refatorado com mocks nos use cases
+- `app/api.py` — novo endpoint `POST /api/projects/{project_id}/script/generate` (UI-201)
+- `tests/test_api.py` — 2 novos testes para UI-201
+- `docs/project-control/01_AUDITORIA_HISTORICO_GIT.md` — commit 160→161
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — atualizado
+- `docs/project-control/10_DAILY_LOG.md` — este registro
+
+### Testes executados
+- 188/188 passaram (0 falhas)
+- Baseline completo com 2 novos testes de UI-201
+- E2E fallback: todos 4 passam (antes 2 falhas)
+
+### Bloqueios
+- Branch `feature/UI-201-gerar-roteiro-sem-render` ainda não commitada — aguarda aprovação do usuário
+
+### Próximo passo
+- Fazer commit da branch UI-201
+- Criar PR no GitHub
+- Merge para master
+- Selecionar próxima história (UI-202 ou PROV-302)
+
 ## 2026-05-08 19:00 — Sessão Diagnóstico: Unificação de pastas K: + Git Checkpoint
 
 ### Contexto

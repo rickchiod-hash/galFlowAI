@@ -1,24 +1,24 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-08 19:00
+Atualizado em: 2026-05-09
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
 Histórias concluídas: 18/48
-Histórias em andamento: 0
+Histórias em andamento: 1 (UI-201: Gerar roteiro sem renderizar)
 Histórias bloqueadas: 0
-Histórias pendentes: 35
+Histórias pendentes: 34
 Percentual concluído: 27%
 
 ## Estado atual
 
-- Branch atual: master
-- Último commit analisado: 3e18729 — "checkpoint: pre-unificacao das pastas K:"
-- Último commit criado pelo agente: 3e18729 — checkpoint pre-unificação
-- Fase atual: Diagnóstico de infraestrutura — Unificação de pastas K:
-- História atual: Diagnóstico — unificação K:\AI_VIDEO_COMERCIAL_STUDIO → COMMERCIAL
-- Próxima ação recomendada: Corrigir hardcoded K: paths (ARCH-302)
+- Branch atual: feature/UI-201-gerar-roteiro-sem-render
+- Último commit analisado: b0b42e8 — "docs: add PR creation step to workflow in AGENTS.md"
+- Último commit criado pelo agente: ee79166 — "fix(e2e): corrige cadeia de falhas nos testes E2E e baseline"
+- Fase atual: Fase 5 — Pipeline e produto (UI-201)
+- História atual: UI-201 — Gerar roteiro sem renderizar vídeo
+- Próxima ação recomendada: Fazer commit da branch UI-201 e criar PR
 
 ## Resumo tipo Daily
 

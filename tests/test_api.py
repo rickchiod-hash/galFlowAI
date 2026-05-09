@@ -232,6 +232,51 @@ def test_pipeline_ffmpeg_fallback_when_wangp_unavailable():
     
     print("test_pipeline_ffmpeg_fallback_when_wangp_unavailable: PASSED")
 
+def test_api_generate_script_for_project():
+    """Test UI-201: generate script for project without rendering."""
+    project_id = "test_ui_201_generate"
+    
+    try:
+        proj_dir = setup_test_project(project_id)
+        
+        # Generate script for this project
+        response = client.post(f"/api/projects/{project_id}/script/generate", json={})
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
+        data = response.json()
+        assert data["ok"] == True
+        details = data.get("details", {})
+        assert details["project_id"] == project_id
+        assert details["script"] is not None
+        assert len(details["script"]) > 0
+        assert details["script_only"] == True
+        assert "scenes" in details
+        assert details["scenes_count"] > 0
+        
+        # Verify script was saved to disk
+        script_file = proj_dir / "script" / "script.txt"
+        assert script_file.exists(), "Script file should have been saved"
+        saved_script = script_file.read_text(encoding="utf-8")
+        assert len(saved_script) > 0
+        
+        # Verify scenes were saved
+        scenes_file = proj_dir / "storyboard" / "scenes.json"
+        assert scenes_file.exists(), "Scenes file should have been saved"
+        
+        print("test_api_generate_script_for_project: PASSED")
+    finally:
+        teardown_test_project(project_id)
+
+
+def test_api_generate_script_for_project_not_found():
+    """Test UI-201: project not found returns 404."""
+    response = client.post("/api/projects/nonexistent_ui201/script/generate", json={})
+    assert response.status_code == 404
+    data = response.json()
+    assert "detail" in data
+    
+    print("test_api_generate_script_for_project_not_found: PASSED")
+
+
 if __name__ == "__main__":
     test_api_health_and_llm_providers_contract()
     test_api_generate_script_success()
@@ -240,4 +285,6 @@ if __name__ == "__main__":
     test_api_video_status_malformed_prompts_json()
     test_api_pipeline_status_error_path()
     test_pipeline_generate_video_happy_path_with_mocks()
+    test_api_generate_script_for_project()
+    test_api_generate_script_for_project_not_found()
     print("\nAll API tests PASSED!")

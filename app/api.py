@@ -59,6 +59,8 @@ def error_response(code: str, message: str, details: Any = None, status_code: in
 # Import use cases
 from app.application.use_cases.script_generation import GenerateScriptUseCase, SaveManualEditUseCase
 from app.application.use_cases.project_use_cases import CreateProjectUseCase
+from app.application.use_cases.split_scenes_use_case import SplitScenesUseCase
+from app.application.use_cases.project_use_cases import LoadProjectUseCase
 
 app = FastAPI(
     title="GalFlowAI API",
@@ -310,6 +312,79 @@ async def get_script_versions(project_id: str):
         return success_response({"versions": versions}, "Script versions loaded")
     except Exception as e:
         raise error_response("LOAD_VERSIONS_FAILED", str(e), status_code=500)
+
+
+# ========== Script-Only Generation (UI-201) ==========
+
+class ScriptGenerateForProjectRequest(BaseModel):
+    briefing: Optional[str] = None
+
+
+@app.post("/api/projects/{project_id}/script/generate")
+async def generate_script_for_project(project_id: str, request: ScriptGenerateForProjectRequest = None):
+    """Generate script for a project without triggering video rendering.
+    
+    UI-201: Gerar roteiro sem renderizar vídeo.
+    - Validates project exists
+    - Generates script via GenerateScriptUseCase (saves to project)
+    - Splits into scenes via SplitScenesUseCase (saves scenes.json)
+    - Returns script + scenes
+    - Does NOT trigger video/audio rendering
+    """
+    try:
+        # 1. Validate project exists
+        load_uc = LoadProjectUseCase()
+        project_result = load_uc.execute(project_id=project_id)
+        
+        if not project_result["ok"]:
+            raise error_response("PROJECT_NOT_FOUND", 
+                               f"Project '{project_id}' not found", status_code=404)
+        
+        project_data = project_result.get("data", {})
+        
+        # 2. Build briefing from project data or override
+        briefing = request.briefing if (request and request.briefing) else project_data.get("name", "produto")
+        
+        # 3. Generate and save script (use generate_script_use_case which accepts mode)
+        from app.application.use_cases.generate_script_use_case import GenerateScriptUseCase as ScriptGenUC
+        script_uc = ScriptGenUC()
+        script_result = script_uc.execute(
+            briefing=briefing,
+            project_id=project_id,
+            mode="auto"
+        )
+        
+        if not script_result["ok"]:
+            raise error_response("SCRIPT_GENERATION_FAILED", 
+                               script_result.get("error", "Script generation failed"), 
+                               status_code=500)
+        
+        script = script_result.get("data", {}).get("script", "")
+        provider = script_result.get("data", {}).get("provider", "Unknown")
+        
+        # 4. Split into scenes and save
+        scenes_uc = SplitScenesUseCase()
+        scenes_result = scenes_uc.execute(
+            script=script,
+            project_id=project_id
+        )
+        
+        scenes = scenes_result.get("data", {}).get("scenes", []) if scenes_result.get("ok") else []
+        
+        return success_response({
+            "project_id": project_id,
+            "script": script,
+            "scenes": scenes,
+            "scenes_count": len(scenes),
+            "provider_used": provider,
+            "script_only": True
+        }, "Script generated successfully (no rendering)")
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error("Script generation for project failed: %s", e)
+        raise error_response("GENERATE_SCRIPT_FAILED", str(e), status_code=500)
 
 
 # ========== Hardware ==========

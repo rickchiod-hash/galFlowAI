@@ -1,6 +1,6 @@
 # 01_AUDITORIA_HISTORICO_GIT — GalFlowAI
 
-Atualizado em: 2026-05-08 03:30 (QA-1000)
+Atualizado em: 2026-05-09
 
 ## Objetivo
 
@@ -21,8 +21,8 @@ git log --diff-filter=D --name-only --format="%h %s"
 ### Resultados
 
 - Branch: master
-- Total de commits: 160
-- HEAD: b0b42e8 "docs: add PR creation step to workflow in AGENTS.md" (Sat May 9 2026)
+- Total de commits: 161
+- HEAD: ee79166 "fix(e2e): corrige cadeia de falhas nos testes E2E e baseline" (Sat May 9 2026)
 - Primeiro commit: 067938a "feat: galFlowAI MVP - interface Gradio com barra de progresso" (Sat May 2 14:35:18 2026 -0300)
 - Período: 6 dias de desenvolvimento (02/05 a 08/05/2026)
 - Autores: Henrique Luiz, rickchiod-hash
