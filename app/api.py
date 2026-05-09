@@ -325,11 +325,11 @@ async def generate_script_for_project(project_id: str, request: ScriptGenerateFo
     """Generate script for a project without triggering video rendering.
     
     UI-201: Gerar roteiro sem renderizar vídeo.
+    UI-202: Script generation only — scenes require approval before splitting.
     - Validates project exists
     - Generates script via GenerateScriptUseCase (saves to project)
-    - Splits into scenes via SplitScenesUseCase (saves scenes.json)
-    - Returns script + scenes
-    - Does NOT trigger video/audio rendering
+    - Returns script
+    - Does NOT trigger video/audio rendering or scene splitting
     """
     try:
         # 1. Validate project exists
@@ -362,29 +362,77 @@ async def generate_script_for_project(project_id: str, request: ScriptGenerateFo
         script = script_result.get("data", {}).get("script", "")
         provider = script_result.get("data", {}).get("provider", "Unknown")
         
-        # 4. Split into scenes and save
-        scenes_uc = SplitScenesUseCase()
-        scenes_result = scenes_uc.execute(
-            script=script,
-            project_id=project_id
-        )
-        
-        scenes = scenes_result.get("data", {}).get("scenes", []) if scenes_result.get("ok") else []
-        
         return success_response({
             "project_id": project_id,
             "script": script,
-            "scenes": scenes,
-            "scenes_count": len(scenes),
+            "scenes": [],
+            "scenes_count": 0,
             "provider_used": provider,
             "script_only": True
-        }, "Script generated successfully (no rendering)")
+        }, "Script generated successfully (approve before splitting scenes)")
         
     except HTTPException:
         raise
     except Exception as e:
         logger.error("Script generation for project failed: %s", e)
         raise error_response("GENERATE_SCRIPT_FAILED", str(e), status_code=500)
+
+
+# ========== Scene Splitting (UI-202) ==========
+
+class SplitScenesRequest(BaseModel):
+    script: Optional[str] = None
+
+
+@app.post("/api/projects/{project_id}/scenes/split")
+async def split_project_scenes(project_id: str, request: SplitScenesRequest = None):
+    """Split approved script into scenes.
+    
+    UI-202: Bloquear cenas sem roteiro aprovado.
+    - Validates project exists
+    - Checks script is approved (script/script_approved.md)
+    - Splits into scenes via SplitScenesUseCase (saves scenes.json)
+    - Returns scenes
+    """
+    try:
+        # 1. Validate project exists
+        load_uc = LoadProjectUseCase()
+        project_result = load_uc.execute(project_id=project_id)
+        
+        if not project_result["ok"]:
+            raise error_response("PROJECT_NOT_FOUND", 
+                               f"Project '{project_id}' not found", status_code=404)
+        
+        # 2. Load script (from request, approved file, or current)
+        from app.services.script_service import load_current_script
+        script_result = load_current_script(project_id)
+        script = request.script if (request and request.script) else script_result.get("script", "")
+        
+        if not script:
+            raise error_response("NO_SCRIPT", "No script found for project", status_code=400)
+        
+        # 3. Split into scenes (SplitScenesUseCase checks approval)
+        scenes_uc = SplitScenesUseCase()
+        result = scenes_uc.execute(script=script, project_id=project_id)
+        
+        if not result["ok"]:
+            error_msg = result.get("error", "Scene splitting failed")
+            if "not approved" in error_msg.lower():
+                raise error_response("SCRIPT_NOT_APPROVED", error_msg, status_code=400)
+            raise error_response("SCENE_SPLIT_FAILED", error_msg, status_code=500)
+        
+        scenes = result.get("data", {}).get("scenes", [])
+        return success_response({
+            "project_id": project_id,
+            "scenes": scenes,
+            "scenes_count": len(scenes)
+        }, "Scenes split successfully")
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error("Scene splitting for project failed: %s", e)
+        raise error_response("SCENE_SPLIT_FAILED", str(e), status_code=500)
 
 
 # ========== Hardware ==========

@@ -2,6 +2,58 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-09 — Sessão 3: UI-202 (Bloquear cenas sem roteiro aprovado)
+
+### Contexto
+Após merge do UI-201 para master, iniciei UI-202 — implementar o gate de aprovação antes de dividir roteiro em cenas.
+
+### O que fiz
+1. **Branch**: `feature/UI-202-bloquear-cenas-sem-roteiro`
+2. **`SplitScenesUseCase`** (`app/application/use_cases/split_scenes_use_case.py`):
+   - Adicionado `_is_script_approved()` que verifica `script/script_approved.md`
+   - Se script não aprovado, retorna erro: "Script not approved. Approve script before splitting into scenes."
+3. **UI-201 endpoint** (`POST /api/projects/{project_id}/script/generate`):
+   - Removeu auto-divisão de cenas — agora só gera roteiro (script-only)
+   - Retorna `scenes_count: 0, scenes: []`
+   - Usuário precisa aprovar antes de dividir cenas
+4. **Novo endpoint** `POST /api/projects/{project_id}/scenes/split`:
+   - Valida projeto existe
+   - Carrega script via `load_current_script` ou request body
+   - Chama `SplitScenesUseCase` (que valida aprovação)
+   - Retorna cenas
+5. **Testes**: 3 novos testes + 1 atualizado
+   - `test_split_scenes_happy_path` — aprova script, divide cenas, verifica disco
+   - `test_split_scenes_blocked_without_approval` — tenta dividir sem aprovação → 400
+   - `test_split_scenes_project_not_found` — projeto inexistente → 404
+   - `test_api_generate_script_for_project` — atualizado: espera `scenes_count == 0`, verifica que scenes.json NÃO foi salvo
+
+### Testes executados
+- 190/191 passed, 1 expected failure (commit count 161→162, já corrigido)
+
+### Bloqueios
+- `K:\AI_VIDEO_COMERCIAL_STUDIO` ainda não renomeada (reboot necessário)
+
+### Próximo passo
+- Fazer commit da branch, push e merge para master
+
+## 2026-05-09 — Sessão 2: Commit UI-201 + merge para master
+
+### Contexto
+Continuação da sessão anterior — UI-201 implementada mas não commitada. Realizei commit, merge para master, e atualização dos docs de governança.
+
+### O que fiz
+1. Commit na branch `feature/UI-201-gerar-roteiro-sem-render`: `cde0ce2`
+2. Merge fast-forward para `master`
+3. Atualização de `00_STATUS_EXECUTIVO.md` (commit cde0ce2, UI-201 concluída)
+4. Tentativa de push bloqueada por GitHub push protection (secret em commit antigo `3d0636d7 session-ses_2156.md`)
+
+### Bloqueios
+- Push para GitHub bloqueado — usuário precisa autorizar via URL ou force push
+
+### Próximo passo
+- Após push liberado: criar PR. Alternativa: push direto na master com bypass.
+- Selecionar próxima história (UI-202 ou PROV-302)
+
 ## 2026-05-09 — Sessão: Baseline verde + UI-201 (Gerar roteiro sem renderizar)
 
 ### Contexto

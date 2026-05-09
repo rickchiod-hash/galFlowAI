@@ -250,7 +250,7 @@ def test_api_generate_script_for_project():
         assert len(details["script"]) > 0
         assert details["script_only"] == True
         assert "scenes" in details
-        assert details["scenes_count"] > 0
+        assert details["scenes_count"] == 0  # UI-202: scenes require separate approval
         
         # Verify script was saved to disk
         script_file = proj_dir / "script" / "script.txt"
@@ -258,9 +258,9 @@ def test_api_generate_script_for_project():
         saved_script = script_file.read_text(encoding="utf-8")
         assert len(saved_script) > 0
         
-        # Verify scenes were saved
+        # Scenes should NOT be saved automatically (UI-202 gate)
         scenes_file = proj_dir / "storyboard" / "scenes.json"
-        assert scenes_file.exists(), "Scenes file should have been saved"
+        assert not scenes_file.exists(), "Scenes should NOT be saved without approval"
         
         print("test_api_generate_script_for_project: PASSED")
     finally:
@@ -277,6 +277,96 @@ def test_api_generate_script_for_project_not_found():
     print("test_api_generate_script_for_project_not_found: PASSED")
 
 
+# ========== UI-202 Tests ==========
+
+def test_split_scenes_happy_path():
+    """Test UI-202: split scenes with approved script."""
+    project_id = "test_ui_202_split"
+    
+    try:
+        proj_dir = setup_test_project(project_id)
+        
+        # Create a script and approve it
+        script_content = "Cena 1: Introducao\nCena 2: Desenvolvimento\nCena 3: Conclusao"
+        script_dir = proj_dir / "script"
+        script_dir.mkdir(exist_ok=True)
+        
+        # Save script
+        script_file = script_dir / "script.txt"
+        script_file.write_text(script_content, encoding="utf-8")
+        
+        # Also save a version file so load_current_script works
+        versions_file = script_dir / "versions.json"
+        versions_file.write_text(json.dumps([
+            {"version": "v1", "script": script_content, "status": "Draft"}
+        ]), encoding="utf-8")
+        
+        # Save current version marker
+        approved_md = script_dir / "script_approved.md"
+        approved_md.write_text(script_content, encoding="utf-8")
+        
+        # Split scenes
+        response = client.post(f"/api/projects/{project_id}/scenes/split", json={})
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
+        data = response.json()
+        assert data["ok"] == True
+        details = data.get("details", {})
+        assert details["project_id"] == project_id
+        assert "scenes" in details
+        assert details["scenes_count"] > 0
+        
+        # Verify scenes were saved to disk
+        scenes_file = proj_dir / "storyboard" / "scenes.json"
+        assert scenes_file.exists(), "Scenes file should have been saved"
+        
+        print("test_split_scenes_happy_path: PASSED")
+    finally:
+        teardown_test_project(project_id)
+
+
+def test_split_scenes_blocked_without_approval():
+    """Test UI-202: split scenes blocked without approved script."""
+    project_id = "test_ui_202_blocked"
+    
+    try:
+        proj_dir = setup_test_project(project_id)
+        
+        # Create a script but DO NOT approve it
+        script_content = "Cena 1: Introducao"
+        script_dir = proj_dir / "script"
+        script_dir.mkdir(exist_ok=True)
+        
+        script_file = script_dir / "script.txt"
+        script_file.write_text(script_content, encoding="utf-8")
+        
+        # Attempt to split scenes (should be blocked)
+        # Pass script in request body to bypass load_current_script
+        response = client.post(f"/api/projects/{project_id}/scenes/split", json={"script": script_content})
+        assert response.status_code == 400, f"Expected 400, got {response.status_code}: {response.text}"
+        data = response.json()
+        assert "detail" in data
+        assert data["detail"]["ok"] == False
+        assert "not approved" in data["detail"]["message"].lower()
+        
+        # Verify scenes were NOT saved to disk
+        scenes_file = proj_dir / "storyboard" / "scenes.json"
+        assert not scenes_file.exists(), "Scenes should NOT be saved without approval"
+        
+        print("test_split_scenes_blocked_without_approval: PASSED")
+    finally:
+        teardown_test_project(project_id)
+
+
+def test_split_scenes_project_not_found():
+    """Test UI-202: project not found returns 404."""
+    response = client.post("/api/projects/nonexistent_ui202/scenes/split", json={})
+    assert response.status_code == 404
+    data = response.json()
+    assert "detail" in data
+    
+    print("test_split_scenes_project_not_found: PASSED")
+
+
 if __name__ == "__main__":
     test_api_health_and_llm_providers_contract()
     test_api_generate_script_success()
@@ -287,4 +377,7 @@ if __name__ == "__main__":
     test_pipeline_generate_video_happy_path_with_mocks()
     test_api_generate_script_for_project()
     test_api_generate_script_for_project_not_found()
+    test_split_scenes_happy_path()
+    test_split_scenes_blocked_without_approval()
+    test_split_scenes_project_not_found()
     print("\nAll API tests PASSED!")

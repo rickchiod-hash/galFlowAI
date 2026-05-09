@@ -13,12 +13,12 @@ Percentual concluído: 27%
 
 ## Estado atual
 
-- Branch atual: feature/UI-201-gerar-roteiro-sem-render
-- Último commit analisado: b0b42e8 — "docs: add PR creation step to workflow in AGENTS.md"
-- Último commit criado pelo agente: ee79166 — "fix(e2e): corrige cadeia de falhas nos testes E2E e baseline"
-- Fase atual: Fase 5 — Pipeline e produto (UI-201)
-- História atual: UI-201 — Gerar roteiro sem renderizar vídeo
-- Próxima ação recomendada: Fazer commit da branch UI-201 e criar PR
+- Branch atual: feature/UI-202-bloquear-cenas-sem-roteiro
+- Último commit analisado: cde0ce2 — "feat(ui): implement script-only generation endpoint (UI-201)"
+- Último commit criado pelo agente: cde0ce2 — feat(ui): implement script-only generation endpoint (UI-201)
+- Fase atual: Fase 5 — Pipeline e produto
+- História atual: UI-202 — Bloquear cenas sem roteiro aprovado (em andamento)
+- Próxima ação recomendada: Commit UI-202 e merge para master
 
 ## Resumo tipo Daily
 
