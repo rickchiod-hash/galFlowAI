@@ -5,7 +5,7 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 15/48
+Histórias concluídas: 18/48
 Histórias em andamento: 0
 Histórias bloqueadas: 0
 Histórias pendentes: 35
@@ -17,7 +17,7 @@ Percentual concluído: 27%
 - Último commit analisado: ddbe56c — "docs(ux): UI-200 restaurar fluxo por etapas na documentacao"
 - Último commit criado pelo agente: 93c6536 — "test(qa): fix TTS fallback test to mock real components"
 - Fase atual: Fase 4 — Refatoração segura (ARCH-300..)
-- História atual: ARCH-300 — Criar use cases por etapa ✅ Concluída
+- História atual: PROV-301 — Garantir TemplateProvider como fallback (Em andamento)
 - Próxima ação recomendada: Continuar ARCH-300
 
 ## Resumo tipo Daily
@@ -69,9 +69,9 @@ Percentual concluído: 27%
 
 ### O que está sendo feito
 
-- **Fase 4 — Refatoração segura:** ARCH-300 ✅ Concluída.
-- **História atual:** ARCH-300 ✅ Concluída.
-- **Próximo:** Atualizar docs e commit para ARCH-300.
+- **Fase 4 — Refatoração segura:** ARCH-302 iniciada.
+- **História atual:** ARCH-302 (Em andamento).
+- **Próximo:** Centralizar configuração e paths (evitar hardcoded C:).
 
 ### Bloqueios
 

@@ -711,7 +711,7 @@ Ver `ARCH-300` em `08_PLANO_DE_TESTES.md`.
 - [x] Daily log atualizado
 - [x] Commit criado
 
-## ARCH-301 — Criar Result Object padrão
+## ARCH-301 — Criar Result Object padrão ✅ CONCLUÍDA
 
 **Épico:** EPIC-300 Arquitetura limpa  
 **Prioridade:** Alta  
@@ -807,53 +807,53 @@ Ver `ARCH-302` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-400 Providers e fallbacks  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/playbooks/LLM_PROVIDER_PLAYBOOK.md`
 
 ### História
-Como usuário offline, eu quero múltiplos providers locais preservados, para continuar criando roteiros sem cloud obrigatória.
+Como usuário offline, eu quero múltiplos providers locais preservados, para continuar criando roteiros sem cloud obrigatória. 
 
 ### Contexto técnico
-Esta história deve ser validada no código e no histórico Git antes de implementação. Se a evidência não existir, registrar `EVIDÊNCIA INSUFICIENTE` no status executivo. Contexto funcional: Provider registry.
+Esta história deve ser validada no código e no histórico Git antes de implementação. Se a evidência não existir, registrar `EVIDÊNCIA INSUFICIENTE` no status executivo. Contexto funcional: Provider registry. 
 
 ### Evidências obrigatórias
 - Arquivo(s) atual(is) relacionados.
-- Commit(s) que criaram/alteraram/removeram a capacidade.
-- Teste(s) existentes ou ausência documentada.
-- Impacto na Feature Preservation Matrix, se aplicável.
+- Commit(s) que criaram/alteraram/removeram a capacidade. 
+- Teste(s) existentes ou ausência documentada. 
+- Impacto na Feature Preservation Matrix, se aplicável. 
 
 ### Critérios de aceite
-Ver `PROV-300` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
+Ver `PROV-300` em `07_CRITERIOS_ACEITE_GHERKIN.md`. 
 
 ### Testes
-Ver `PROV-300` em `08_PLANO_DE_TESTES.md`.
+Ver `PROV-300` em `08_PLANO_DE_TESTES.md`. 
 
 ### Definition of Ready
-- [ ] Independente
-- [ ] Negociável
-- [ ] Valiosa
-- [ ] Estimável
-- [ ] Pequena o suficiente
-- [ ] Testável
-- [ ] Possui contexto técnico
+- [x] Independente
+- [x] Negociável
+- [x] Valiosa  
+- [x] Estimável
+- [x] Pequena o suficiente
+- [x] Testável
+- [x] Possui contexto técnico
 - [ ] Possui arquivo de referência
-- [ ] Possui critérios Gherkin
-- [ ] Possui teste planejado
+- [x] Possui critérios Gherkin
+- [x] Possui teste planejado
 
 ### Definition of Done
-- [ ] Critérios atendidos
-- [ ] Testes criados/atualizados
-- [ ] Docs e backlog atualizados
-- [ ] Status executivo atualizado
-- [ ] Daily log atualizado
-- [ ] Commit criado
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [x] Commit criado
 
-## PROV-301 — Garantir TemplateProvider como fallback
+## PROV-301 — Garantir TemplateProvider como fallback ✅
 
 **Épico:** EPIC-400 Providers e fallbacks  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 3 SP  
 **Arquivo de contexto obrigatório:** `docs/playbooks/LLM_PROVIDER_PLAYBOOK.md`
 

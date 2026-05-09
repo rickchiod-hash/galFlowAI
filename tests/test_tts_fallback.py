@@ -11,17 +11,13 @@ REPO_ROOT = Path(__file__).parent.parent
 
 
 def test_tts_adapter_files_exist():
-    """Verify that the TTS adapter file exists"""
     tts_path = REPO_ROOT / "app/adapters/tts_adapter.py"
     assert tts_path.exists(), f"TTS adapter not found: {tts_path}"
-    
     logger.info(f"  OK: {tts_path.name} encontrado")
-    
     return True
 
 
 def test_tts_has_silence_fallback():
-    """Test that TTSAdapter has silence fallback mechanism"""
     tts_path = REPO_ROOT / "app/adapters/tts_adapter.py"
     assert tts_path.exists(), f"TTSAdapter not found: {tts_path}"
     content = tts_path.read_text(encoding="utf-8", errors="ignore")
@@ -30,15 +26,12 @@ def test_tts_has_silence_fallback():
     assert has_silence, "TTSAdapter missing silence fallback"
     assert has_fallback, "TTSAdapter missing fallback mechanism"
     logger.info("TTS SILENCE FALLBACK: OK")
-    
     return True
 
 
 def test_tts_unavailable_graceful_audio_fallback():
-    """Test E2E graceful fallback: TTS indisponível → áudio silencioso"""
     logger.info("Testando fallback TTS indisponível → silêncio")
-    
-    # Mock the use cases and adapters that the pipeline uses internally
+
     with patch('app.pipeline.video_generation_pipeline.GenerateScriptUseCase') as mock_script_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.SplitScenesUseCase') as mock_split_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.BuildPromptsUseCase') as mock_build_uc_cls, \
@@ -50,8 +43,7 @@ def test_tts_unavailable_graceful_audio_fallback():
          patch('app.pipeline.video_generation_pipeline.TTSAdapter') as mock_tts_cls, \
          patch('app.pipeline.video_generation_pipeline.FFmpegAdapter') as mock_ffmpeg_cls, \
          patch('app.pipeline.prompt_builder.build_prompts_for_scenes') as mock_build_prompts:
-        
-        # Configure mocks for use case classes
+
         mock_script_uc = MagicMock()
         mock_script_uc.execute.return_value = {
             'ok': True,
@@ -60,7 +52,7 @@ def test_tts_unavailable_graceful_audio_fallback():
             }
         }
         mock_script_uc_cls.return_value = mock_script_uc
-        
+
         mock_split_uc = MagicMock()
         mock_split_uc.execute.return_value = {
             'ok': True,
@@ -72,7 +64,7 @@ def test_tts_unavailable_graceful_audio_fallback():
             }
         }
         mock_split_uc_cls.return_value = mock_split_uc
-        
+
         mock_build_uc = MagicMock()
         mock_build_uc.execute.return_value = {
             'ok': True,
@@ -84,103 +76,93 @@ def test_tts_unavailable_graceful_audio_fallback():
             }
         }
         mock_build_uc_cls.return_value = mock_build_uc
-        
+
         mock_audio_uc = MagicMock()
         mock_audio_uc.execute.return_value = {
             'ok': False,
             'error': 'TTS not available'
         }
         mock_audio_uc_cls.return_value = mock_audio_uc
-        
+
         mock_render_uc = MagicMock()
         mock_render_uc.execute.return_value = {
             'ok': True,
             'data': {
-                'video_path': 'K:\\AI_VIDEO_COMMERCIAL_STUDIO\\opencodegalpasta\\projects\\test_e2e_tts_fail\\renders\\scene_001.mp4',
+                'video_path': str(REPO_ROOT / 'projects' / 'test_e2e_tts_fail' / 'renders' / 'scene_001.mp4'),
                 'scene_id': 1,
                 'preset': '1.3B'
             }
         }
         mock_render_uc_cls.return_value = mock_render_uc
-        
+
         mock_static_uc = MagicMock()
         mock_static_uc.execute.return_value = {
             'ok': False,
-            'error': 'FFmpeg not available'  # This shouldn't be called in this test
+            'error': 'FFmpeg not available'
         }
         mock_static_uc_cls.return_value = mock_static_uc
-        
+
         mock_concat_uc = MagicMock()
         mock_concat_uc.execute.return_value = {
             'ok': True,
             'data': {
-                'video_path': 'K:\\AI_VIDEO_COMMERCIAL_STUDIO\\opencodegalpasta\\projects\\test_e2e_tts_fail\\final\\commercial.mp4',
+                'video_path': str(REPO_ROOT / 'projects' / 'test_e2e_tts_fail' / 'final' / 'commercial.mp4'),
                 'input_count': 2,
                 'has_audio': False
             }
         }
         mock_concat_uc_cls.return_value = mock_concat_uc
-        
-        # Configure mocks for adapters (for status checking)
+
         mock_wangp = MagicMock()
         mock_wangp.is_available.return_value = True
         mock_wangp_cls.return_value = mock_wangp
-        
+
         mock_tts = MagicMock()
         mock_tts.is_available.return_value = False
         mock_tts_cls.return_value = mock_tts
-        
+
         mock_ffmpeg = MagicMock()
         mock_ffmpeg.is_available.return_value = True
         mock_ffmpeg_cls.return_value = mock_ffmpeg
-        
-        # Mock build_prompts_for_scenes
+
         mock_build_prompts.return_value = [
             {'id': 1, 'prompt': 'Prompt 1', 'scene_text': 'Scene 1 text', 'duration': 5},
             {'id': 2, 'prompt': 'Prompt 2', 'scene_text': 'Scene 2 text', 'duration': 5}
         ]
-        
+
         from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
-        
+
         pipeline = VideoGenerationPipeline()
-        
-        # Execute pipeline
+
         result = pipeline.generate_commercial(
             project_id='test_e2e_tts_fail',
             product='Teste Produto',
             target_audience='Teste Audiência',
             progress_callback=None
         )
-        
-        # Should succeed (vídeo gerado, mesmo sem áudio)
+
         assert result.get('success') is True, f"Pipeline falhou: {result.get('error')}"
         logger.info("  SUCESSO! Pipeline executado mesmo com TTS indisponível")
-        
-        # Verify narration_path is None or points to silent audio
+
         narration_path = result.get('narration_path')
-        # When TTS fails, we expect either None or a path to silent audio
         logger.info(f"  Narration path: {narration_path}")
-        
-        # Verify FFmpeg was called for concatenation (scene generation uses WanGP when available)
+
         assert not mock_static_uc.execute.called, "CreateStaticVideoUseCase não deveria ser chamado quando WanGP está disponível"
         assert mock_concat_uc.execute.called, "ConcatVideosUseCase não foi chamado"
         logger.info("  ✓ FFmpeg usado apenas para concatenação (WanGP usado para geração de cena)")
-        
-        # Verify WanGP was used for video (since it was available)
+
         assert mock_render_uc.execute.called, "RenderVideoUseCase não foi chamado"
         logger.info("  ✓ WanGP foi usado para geração de vídeo (disponível)")
-        
-        # Verify TTS was attempted but failed
+
         assert mock_audio_uc.execute.called, "GenerateAudioUseCase não foi chamado"
         logger.info("  ✓ TTS foi tentado (mas indisponível)")
-        
+
         return True
 
 
 def test_tts_available_normal_operation():
-    """Test normal case: TTS disponível → operação normal"""
     logger.info("Testando operação normal: TTS disponível")
-    
+
     with patch('app.pipeline.video_generation_pipeline.GenerateScriptUseCase') as mock_script_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.SplitScenesUseCase') as mock_split_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.BuildPromptsUseCase') as mock_build_uc_cls, \
@@ -192,8 +174,7 @@ def test_tts_available_normal_operation():
          patch('app.pipeline.video_generation_pipeline.TTSAdapter') as mock_tts_cls, \
          patch('app.pipeline.video_generation_pipeline.FFmpegAdapter') as mock_ffmpeg_cls, \
          patch('app.pipeline.prompt_builder.build_prompts_for_scenes') as mock_build_prompts:
-        
-        # Configure mocks for use case classes
+
         mock_script_uc = MagicMock()
         mock_script_uc.execute.return_value = {
             'ok': True,
@@ -202,7 +183,7 @@ def test_tts_available_normal_operation():
             }
         }
         mock_script_uc_cls.return_value = mock_script_uc
-        
+
         mock_split_uc = MagicMock()
         mock_split_uc.execute.return_value = {
             'ok': True,
@@ -214,7 +195,7 @@ def test_tts_available_normal_operation():
             }
         }
         mock_split_uc_cls.return_value = mock_split_uc
-        
+
         mock_build_uc = MagicMock()
         mock_build_uc.execute.return_value = {
             'ok': True,
@@ -226,100 +207,92 @@ def test_tts_available_normal_operation():
             }
         }
         mock_build_uc_cls.return_value = mock_build_uc
-        
+
         mock_audio_uc = MagicMock()
         mock_audio_uc.execute.return_value = {
             'ok': True,
             'data': {
-                'audio_path': 'K:\\AI_VIDEO_COMMERCIAL_STUDIO\\opencodegalpasta\\projects\\test_e2e_tts_normal\\audio\\narration.wav',
+                'audio_path': str(REPO_ROOT / 'projects' / 'test_e2e_tts_normal' / 'audio' / 'narration.wav'),
                 'text_length': 40
             }
         }
         mock_audio_uc_cls.return_value = mock_audio_uc
-        
+
         mock_render_uc = MagicMock()
         mock_render_uc.execute.return_value = {
             'ok': True,
             'data': {
-                'video_path': 'K:\\AI_VIDEO_COMMERCIAL_STUDIO\\opencodegalpasta\\projects\\test_e2e_tts_normal\\renders\\scene_001.mp4',
+                'video_path': str(REPO_ROOT / 'projects' / 'test_e2e_tts_normal' / 'renders' / 'scene_001.mp4'),
                 'scene_id': 1,
                 'preset': '1.3B'
             }
         }
         mock_render_uc_cls.return_value = mock_render_uc
-        
+
         mock_static_uc = MagicMock()
         mock_static_uc.execute.return_value = {
             'ok': False,
-            'error': 'FFmpeg not available'  # This shouldn't be called in this test
+            'error': 'FFmpeg not available'
         }
         mock_static_uc_cls.return_value = mock_static_uc
-        
+
         mock_concat_uc = MagicMock()
         mock_concat_uc.execute.return_value = {
             'ok': True,
             'data': {
-                'video_path': 'K:\\AI_VIDEO_COMMERCIAL_STUDIO\\opencodegalpasta\\projects\\test_e2e_tts_normal\\final\\commercial.mp4',
+                'video_path': str(REPO_ROOT / 'projects' / 'test_e2e_tts_normal' / 'final' / 'commercial.mp4'),
                 'input_count': 2,
                 'has_audio': True
             }
         }
         mock_concat_uc_cls.return_value = mock_concat_uc
-        
-        # Configure mocks for adapters
+
         mock_wangp = MagicMock()
         mock_wangp.is_available.return_value = True
         mock_wangp_cls.return_value = mock_wangp
-        
+
         mock_tts = MagicMock()
         mock_tts.is_available.return_value = True
         mock_tts_cls.return_value = mock_tts
-        
+
         mock_ffmpeg = MagicMock()
         mock_ffmpeg.is_available.return_value = True
         mock_ffmpeg_cls.return_value = mock_ffmpeg
-        
-        # Mock build_prompts_for_scenes
+
         mock_build_prompts.return_value = [
             {'id': 1, 'prompt': 'Prompt 1', 'scene_text': 'Scene 1 text', 'duration': 5},
             {'id': 2, 'prompt': 'Prompt 2', 'scene_text': 'Scene 2 text', 'duration': 5}
         ]
-        
+
         from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
-        
+
         pipeline = VideoGenerationPipeline()
-        
-        # Execute pipeline
+
         result = pipeline.generate_commercial(
             project_id='test_e2e_tts_normal',
             product='Teste Produto',
             target_audience='Teste Audiência',
             progress_callback=None
         )
-        
-        # Should succeed
+
         assert result.get('success') is True, f"Pipeline falhou: {result.get('error')}"
         logger.info("  SUCESSO! Pipeline executado normalmente com TTS disponível")
-        
-        # Verify narration_path points to audio file
+
         narration_path = result.get('narration_path')
         logger.info(f"  Narration path: {narration_path}")
-        
-        # Verify all components were called appropriately
+
         assert mock_render_uc.execute.called, "RenderVideoUseCase não foi chamado"
         assert mock_audio_uc.execute.called, "GenerateAudioUseCase não foi chamado"
-        # When WanGP is available and successful, CreateStaticVideoUseCase should NOT be called for scene generation
         assert not mock_static_uc.execute.called, "CreateStaticVideoUseCase não deveria ser chamado quando WanGP está disponível e funcionando"
         assert mock_concat_uc.execute.called, "ConcatVideosUseCase não foi chamado"
         logger.info("  ✓ WanGP e TTS usados para geração, FFmpeg apenas para concatenação final")
-        
+
         return True
 
 
 def test_both_wangp_and_tts_unavailable():
-    """Test case: WanGP indisponível → FFmpeg fallback, TTS indisponível → silêncio"""
     logger.info("Testando cenário extremo: WanGP e TTS indisponíveis")
-    
+
     with patch('app.pipeline.video_generation_pipeline.GenerateScriptUseCase') as mock_script_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.SplitScenesUseCase') as mock_split_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.BuildPromptsUseCase') as mock_build_uc_cls, \
@@ -331,8 +304,7 @@ def test_both_wangp_and_tts_unavailable():
          patch('app.pipeline.video_generation_pipeline.TTSAdapter') as mock_tts_cls, \
          patch('app.pipeline.video_generation_pipeline.FFmpegAdapter') as mock_ffmpeg_cls, \
          patch('app.pipeline.prompt_builder.build_prompts_for_scenes') as mock_build_prompts:
-        
-        # Configure mocks - WanGP indisponível, TTS indisponível, FFmpeg disponível
+
         mock_script_uc = MagicMock()
         mock_script_uc.execute.return_value = {
             'ok': True,
@@ -341,7 +313,7 @@ def test_both_wangp_and_tts_unavailable():
             }
         }
         mock_script_uc_cls.return_value = mock_script_uc
-        
+
         mock_split_uc = MagicMock()
         mock_split_uc.execute.return_value = {
             'ok': True,
@@ -353,7 +325,7 @@ def test_both_wangp_and_tts_unavailable():
             }
         }
         mock_split_uc_cls.return_value = mock_split_uc
-        
+
         mock_build_uc = MagicMock()
         mock_build_uc.execute.return_value = {
             'ok': True,
@@ -365,21 +337,21 @@ def test_both_wangp_and_tts_unavailable():
             }
         }
         mock_build_uc_cls.return_value = mock_build_uc
-        
+
         mock_audio_uc = MagicMock()
         mock_audio_uc.execute.return_value = {
             'ok': False,
             'error': 'TTS not available'
         }
         mock_audio_uc_cls.return_value = mock_audio_uc
-        
+
         mock_render_uc = MagicMock()
         mock_render_uc.execute.return_value = {
             'ok': False,
             'error': 'WanGP not available'
         }
         mock_render_uc_cls.return_value = mock_render_uc
-        
+
         mock_static_uc = MagicMock()
         mock_static_uc.execute.return_value = {
             'ok': True,
@@ -388,7 +360,7 @@ def test_both_wangp_and_tts_unavailable():
             }
         }
         mock_static_uc_cls.return_value = mock_static_uc
-        
+
         mock_concat_uc = MagicMock()
         mock_concat_uc.execute.return_value = {
             'ok': True,
@@ -399,54 +371,48 @@ def test_both_wangp_and_tts_unavailable():
             }
         }
         mock_concat_uc_cls.return_value = mock_concat_uc
-        
+
         mock_wangp = MagicMock()
         mock_wangp.is_available.return_value = False
         mock_wangp_cls.return_value = mock_wangp
-        
+
         mock_tts = MagicMock()
         mock_tts.is_available.return_value = False
         mock_tts_cls.return_value = mock_tts
-        
+
         mock_ffmpeg = MagicMock()
         mock_ffmpeg.is_available.return_value = True
         mock_ffmpeg_cls.return_value = mock_ffmpeg
-        
-        # Mock build_prompts_for_scenes
+
         mock_build_prompts.return_value = [
             {'id': 1, 'prompt': 'Prompt 1', 'scene_text': 'Scene 1 text', 'duration': 5},
             {'id': 2, 'prompt': 'Prompt 2', 'scene_text': 'Scene 2 text', 'duration': 5}
         ]
-        
+
         from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
-        
+
         pipeline = VideoGenerationPipeline()
-        
-        # Execute pipeline
+
         result = pipeline.generate_commercial(
             project_id='test_e2e_both_fail',
             product='Teste Produto',
             target_audience='Teste Audiência',
             progress_callback=None
         )
-        
-        # Should succeed (vídeo gerado com FFmpeg e silêncio)
+
         assert result.get('success') is True, f"Pipeline falhou: {result.get('error')}"
         logger.info("  SUCESSO! Pipeline executado com FFmpeg fallback e silêncio")
-        
-        # Verify FFmpeg was used for video (WanGP fallback)
+
         assert mock_static_uc.execute.called, "CreateStaticVideoUseCase não foi chamado"
         assert mock_concat_uc.execute.called, "ConcatVideosUseCase não foi chamado"
         logger.info("  ✓ FFmpeg usado para vídeo (WanGP fallback) e concatenação")
-        
-        # Verify WanGP was NOT used for video
+
         assert not mock_render_uc.execute.called or not mock_render_uc.execute.return_value.get('ok'), "RenderVideoUseCase foi chamado inesperadamente"
         logger.info("  ✓ WanGP não foi usado para vídeo (corretamente indisponível)")
-        
-        # Verify TTS was attempted but failed
+
         assert mock_audio_uc.execute.called, "GenerateAudioUseCase não foi chamado"
         logger.info("  ✓ TTS foi tentado (mas indisponível → silêncio)")
-        
+
         return True
 
 
@@ -463,13 +429,13 @@ if __name__ == "__main__":
             result = fn()
             results.append((name, result))
             if result:
-                logger.info(f"✅ {name}: PASSOU")
+                logger.info(f"{name}: PASSOU")
             else:
-                logger.error(f"❌ {name}: FALHOU")
+                logger.error(f"{name}: FALHOU")
         except Exception as e:
-            logger.error(f"❌ {name}: FALHOU com exceção: {e}")
+            logger.error(f"{name}: FALHOU com exceção: {e}")
             results.append((name, False))
-    
+
     print("\n" + "="*60)
     print("RESULTADOS QA-1004: Teste TTS falha → export sem áudio")
     print("="*60)
@@ -477,14 +443,14 @@ if __name__ == "__main__":
         status = "PASSOU" if result else "FALHOU"
         print(f"{name:<50} {status}")
     print("="*60)
-    
+
     passed = sum(1 for _, result in results if result)
     total = len(results)
     print(f"\nPASSOU: {passed}/{total}")
-    
+
     if passed == total:
-        print("🎉 TODOS OS TESTES QA-1004 PASSARAM!")
+        print("TODOS OS TESTES QA-1004 PASSARAM!")
         sys.exit(0)
     else:
-        print("💥 ALGUNS TESTES QA-1004 FALHARAM!")
+        print("ALGUNS TESTES QA-1004 FALHARAM!")
         sys.exit(1)

@@ -1,5 +1,3 @@
-"""Tests for the standardized Result class."""
-
 import sys
 from pathlib import Path
 
@@ -9,10 +7,9 @@ from app.application.result import Result
 
 
 def test_result_success():
-    """Test creating a success result."""
     r = Result.success(data={"script": "test"}, provider="test_provider")
     assert r.ok is True
-    assert r["ok"] is True  # dict access works
+    assert r["ok"] is True
     assert r.data == {"script": "test"}
     assert r["data"] == {"script": "test"}
     assert r.provider == "test_provider"
@@ -25,7 +22,6 @@ def test_result_success():
 
 
 def test_result_failure():
-    """Test creating a failure result."""
     r = Result.failure(error="something went wrong", project_id="123")
     assert r.ok is False
     assert r["ok"] is False
@@ -40,15 +36,12 @@ def test_result_failure():
 
 
 def test_result_dict_compatibility():
-    """Test that Result behaves like a dict for backward compatibility."""
     r = Result.success(data={"key": "value"}, extra="extra")
-    # Should be able to use .get()
     assert r.get("ok") is True
     assert r.get("data") == {"key": "value"}
     assert r.get("extra") == "extra"
     assert r.get("nonexistent") is None
     assert r.get("nonexistent", "default") == "default"
-    # Should be iterable as dict
     assert "ok" in r
     assert "data" in r
     assert "extra" in r
@@ -57,32 +50,30 @@ def test_result_dict_compatibility():
 
 
 def test_result_boolean_context():
-    """Test using Result in boolean context."""
     success = Result.success(data="test")
     failure = Result.failure(error="fail")
-    
+
     if success:
-        pass  # Should enter
+        pass
     else:
         assert False, "Success result should be truthy"
-    
+
     if failure:
         assert False, "Failure result should be falsy"
     else:
-        pass  # Should enter
-    
+        pass
+
     print("PASS: test_result_boolean_context passed")
     return True
 
 
 def test_result_repr():
-    """Test Result representation."""
     success = Result.success(data="test")
     failure = Result.failure(error="oops")
-    
+
     repr_success = repr(success)
     repr_failure = repr(failure)
-    
+
     assert "ok=True" in repr_success
     assert "ok=False" in repr_failure
     print("PASS: test_result_repr passed")
@@ -108,7 +99,7 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"FAIL: {name} with exception: {e}")
             results.append((name, False))
-    
+
     print("\n" + "="*60)
     print("RESULTS: Result class tests")
     print("="*60)
@@ -116,11 +107,11 @@ if __name__ == "__main__":
         status = "PASSED" if result else "FAILED"
         print(f"{name:<50} {status}")
     print("="*60)
-    
+
     passed = sum(1 for _, result in results if result)
     total = len(results)
     print(f"\nPASSED: {passed}/{total}")
-    
+
     if passed == total:
         print("ALL TESTS PASSED!")
         sys.exit(0)

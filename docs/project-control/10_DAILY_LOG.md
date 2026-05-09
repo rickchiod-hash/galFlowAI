@@ -41,8 +41,19 @@ Sempre adicionar nova entrada no topo ou no fim, mantendo histórico.
 - Commits: 02cff4e (partial), 9041229 (main.py update).
 
 ### Onde estou
-- História atual: ARCH-302 (Em andamento - caminhos hardcoded remanescentes em scripts de download).
-- Próxima ação: Remover caminhos hardcoded em scripts restantes ou marcar como concluída.
+- História atual: ARCH-302 ✅ Concluída
+- Commits: 02cff4e, 9041229, fb22286, 2acddd1
+
+## 2026-05-08 17:00 — Sessão 24: PROV-300 — Preservar registry de providers LLM
+
+### O que fiz
+- Iniciei PROV-300: Preservar registry de providers LLM.
+- Próximo passo: Ler história e critérios Gherkin.
+
+### Onde estou
+- História atual: PROV-301 ✅ Concluída
+- Commits: 2da23f1 (provider registry), ac2c0ee (TemplateProvider adapter)
+- Próxima ação: Iniciar PROV-302
 
 ## 2026-05-08 14:54 — Sessão 20: QA-1004 concluída, teste passando
 

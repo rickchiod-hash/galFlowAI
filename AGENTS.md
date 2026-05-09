@@ -35,13 +35,15 @@ Não alucine. Não afirme que algo existe, funciona, foi testado ou foi implemen
 ## Como trabalhar
 
 1. Escolha a próxima história em `05_BACKLOG_PRIORIZADO.md`.
-2. Verifique DoR em `20_DEFINITION_OF_READY_DONE.md`.
-3. Leia os arquivos de contexto vinculados na história.
-4. Faça alteração mínima.
-5. Crie/atualize testes.
-6. Rode validações.
-7. Atualize `00_STATUS_EXECUTIVO.md` e `10_DAILY_LOG.md`.
-8. Faça commit pequeno e semântico.
+2. **Crie uma branch nomeada pelo ID da história: `git checkout -b <id-da-história>`.**
+3. Verifique DoR em `20_DEFINITION_OF_READY_DONE.md`.
+4. Leia os arquivos de contexto vinculados na história.
+5. Faça alteração mínima.
+6. Crie/atualize testes.
+7. Rode validações.
+8. Atualize `00_STATUS_EXECUTIVO.md` e `10_DAILY_LOG.md`.
+9. Faça commit pequeno e semântico na branch.
+10. **Faça merge da branch de volta para master (ou squash): `git checkout master && git merge <id-da-história>`.**
 
 ## Padrão de resposta final
 
