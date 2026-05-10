@@ -1224,47 +1224,41 @@ Ver `VIS-501` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-600 Consistência visual  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
 
 ### História
 Como pipeline, eu quero contratos por cena, para transformar roteiro em instruções testáveis.
 
-### Contexto técnico
-Esta história deve ser validada no código e no histórico Git antes de implementação. Se a evidência não existir, registrar `EVIDÊNCIA INSUFICIENTE` no status executivo. Contexto funcional: SceneContract.
-
-### Evidências obrigatórias
-- Arquivo(s) atual(is) relacionados.
-- Commit(s) que criaram/alteraram/removeram a capacidade.
-- Teste(s) existentes ou ausência documentada.
-- Impacto na Feature Preservation Matrix, se aplicável.
+### Evidências de implementação
+- `app/domain/scene_contract.py` — SceneContract schema com CameraDirective, IngredientAssignment, TransitionType, ShotSize, CameraMovement, SceneContractService
+- `tests/test_scene_contract.py` — 42 testes (schemas, CRUD, search, filter, reorder, versioning)
+- Branch: `feature/VIS-502-scene-contract`
 
 ### Critérios de aceite
-Ver `VIS-502` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
+- ✅ Schema SceneContract criado com campos: id, scene_number, description, prompts, duration, transitions, camera, ingredients, style, status, version, metadata, timestamps
+- ✅ CameraDirective com angle, movement (6 tipos), shot_size (6 tipos), notes
+- ✅ IngredientAssignment com ingredient_id, ingredient_name, placement, visual_bible_ref
+- ✅ SceneContractService com CRUD, search, filter por status, reorder, get_by_scene_number, get_contracts_for_ingredient
+- ✅ Versionamento automático (incremento em update)
+- ✅ Proteção de campos imutáveis (id, scene_number, created_at, version)
+- ✅ 42 testes passando (0 falhas)
 
 ### Testes
-Ver `VIS-502` em `08_PLANO_DE_TESTES.md`.
-
-### Definition of Ready
-- [ ] Independente
-- [ ] Negociável
-- [ ] Valiosa
-- [ ] Estimável
-- [ ] Pequena o suficiente
-- [ ] Testável
-- [ ] Possui contexto técnico
-- [ ] Possui arquivo de referência
-- [ ] Possui critérios Gherkin
-- [ ] Possui teste planejado
+42 testes em `tests/test_scene_contract.py`:
+- Schema: CameraDirective (2), IngredientAssignment (2), SceneContract (9)
+- Service CRUD: create (4), get (2), get_by_scene_number (1), update (8), delete (2)
+- Service query: list (3), search (4), get_contracts_for_ingredient (1)
+- Service mutations: reorder (3), count (1), clear (1), version increment (1), ingredients vazio (1)
 
 ### Definition of Done
-- [ ] Critérios atendidos
-- [ ] Testes criados/atualizados
-- [ ] Docs e backlog atualizados
-- [ ] Status executivo atualizado
-- [ ] Daily log atualizado
-- [ ] Commit criado
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [x] Commit criado
 
 ## VIS-503 — Criar Prompt Compiler por engine
 

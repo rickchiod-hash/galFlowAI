@@ -13,7 +13,7 @@ Engines de renderização:
 
 | Story ID | Título | Status | SP | Prioridade | DoR completo |
 |----------|--------|--------|----|-----------|-------------|
-| VIS-502 | Criar schema SceneContract | Pendente | 5 | Alta | Não |
+| VIS-502 | Criar schema SceneContract | Concluída | 5 | Alta | Sim |
 | VIS-503 | Criar Prompt Compiler por engine | Pendente | 8 | Média | Não |
 | RND-600 | Criar RenderPlan mínimo | Pendente | 5 | Alta | Não |
 | RND-601 | Manter FFmpeg como fallback universal | Pendente | 3 | Alta | Não |
@@ -23,13 +23,17 @@ Engines de renderização:
 
 ### VIS-502 — Criar schema SceneContract
 
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Épico:** EPIC-600 Consistência visual  
 **Gherkin:** `07_CRITERIOS_ACEITE_GHERKIN.md#vis-502`  
 **Testes:** `08_PLANO_DE_TESTES.md#vis-502`  
 
 Schema que define contrato por cena: descrição visual, ingredients referenciados, duração, transição. Transforma roteiro em instruções testáveis para a engine de render.
+
+**Arquivos:**
+- `app/domain/scene_contract.py` — SceneContract, CameraDirective, IngredientAssignment, SceneContractService
+- `tests/test_scene_contract.py` — 42 testes (schemas, CRUD, search, filter, reorder, versioning)
 
 ### VIS-503 — Criar Prompt Compiler por engine
 
