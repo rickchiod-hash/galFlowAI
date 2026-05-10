@@ -29,8 +29,8 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 21 | PIPE-401 | Criar idempotency key por etapa | Alta | 5 | Concluída | Arquitetura/base P0 validada | commit 851aaa1 — IdempotencyKeyService |
 | 22 | PIPE-402 | Criar cache por hash de artefatos | Média | 5 | Concluída | Arquitetura/base P0 validada | commit [hash_do_commit] — cache de artefatos por hash SHA-256 integrado nas etapas do pipeline |
 | 23 | PIPE-403 | Definir SQLite WAL/job ledger P1 | Média | 5 | Concluída | Arquitetura/base P0 validada | para rastrear progresso sem Redis obrigatório |
-| 24 | VIS-500 | Criar schema Ingredient Registry | Alta | 5 | Pendente | Arquitetura/base P0 validada | para manter consistência entre cenas |
-| 25 | VIS-501 | Criar schema Visual Bible | Alta | 5 | Pendente | Arquitetura/base P0 validada | para reduzir drift visual |
+| 24 | VIS-500 | Criar schema Ingredient Registry | Alta | 5 | Concluída | Arquitetura/base P0 validada | commit a1d2c09 — IngredientRegistry com CRUD versionado e 27 testes |
+| 25 | VIS-501 | Criar schema Visual Bible | Alta | 5 | Concluída | Arquitetura/base P0 validada | para reduzir drift visual |
 | 26 | VIS-502 | Criar schema SceneContract | Alta | 5 | Pendente | Arquitetura/base P0 validada | para transformar roteiro em instruções testáveis |
 | 27 | VIS-503 | Criar Prompt Compiler por engine | Média | 8 | Pendente | Arquitetura/base P0 validada | para usar FFmpeg/WanGP/VACE sem gambiarra |
 | 28 | RND-600 | Criar RenderPlan mínimo | Alta | 5 | Pendente | Arquitetura/base P0 validada | para usar GPU e fallback com previsibilidade |
@@ -57,7 +57,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 
 ## Próxima história recomendada
 
-**VIS-500 — Criar schema Ingredient Registry.** Para manter consistência entre cenas.
+**VIS-502 — Criar schema SceneContract.** Para transformar roteiro em instruções testáveis.
 
 ## Regras de priorização
 

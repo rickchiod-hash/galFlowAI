@@ -1177,7 +1177,7 @@ Ver `VIS-500` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-600 Consistência visual  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/VECTOR_MEMORY_PLAYBOOK.md`
 
@@ -1187,11 +1187,12 @@ Como diretor visual, eu quero fixar referências aprovadas, para reduzir drift v
 ### Contexto técnico
 Esta história deve ser validada no código e no histórico Git antes de implementação. Se a evidência não existir, registrar `EVIDÊNCIA INSUFICIENTE` no status executivo. Contexto funcional: Visual Bible.
 
-### Evidências obrigatórias
-- Arquivo(s) atual(is) relacionados.
-- Commit(s) que criaram/alteraram/removeram a capacidade.
-- Teste(s) existentes ou ausência documentada.
-- Impacto na Feature Preservation Matrix, se aplicável.
+### Evidências
+- `app/domain/visual_bible.py` — Schema Visual Bible com BibleEntry (status APPROVED/DRAFT/ARCHIVED), ApprovedReference (angle, lighting_notes, is_primary), VisualBible com CRUD, busca, filtro por status/ingredient_id, versionamento automático
+- `tests/test_visual_bible.py` — 33 testes (schema validation, CRUD, search, filter, versioning, edge cases)
+- Pytest: 33/33 passed
+- Branch: `feature/VIS-501-visual-bible`
+- Commit: PREENCHER_NO_COMMIT
 
 ### Critérios de aceite
 Ver `VIS-501` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
@@ -1200,20 +1201,20 @@ Ver `VIS-501` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
 Ver `VIS-501` em `08_PLANO_DE_TESTES.md`.
 
 ### Definition of Ready
-- [ ] Independente
-- [ ] Negociável
-- [ ] Valiosa
-- [ ] Estimável
-- [ ] Pequena o suficiente
-- [ ] Testável
-- [ ] Possui contexto técnico
-- [ ] Possui arquivo de referência
-- [ ] Possui critérios Gherkin
-- [ ] Possui teste planejado
+- [x] Independente
+- [x] Negociável
+- [x] Valiosa
+- [x] Estimável
+- [x] Pequena o suficiente
+- [x] Testável
+- [x] Possui contexto técnico
+- [x] Possui arquivo de referência
+- [x] Possui critérios Gherkin
+- [x] Possui teste planejado
 
 ### Definition of Done
-- [ ] Critérios atendidos
-- [ ] Testes criados/atualizados
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
 - [ ] Docs e backlog atualizados
 - [ ] Status executivo atualizado
 - [ ] Daily log atualizado
