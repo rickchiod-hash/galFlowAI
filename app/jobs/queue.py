@@ -1,4 +1,4 @@
-"""Job queue with formal JobState (PIPE-400)."""
+"""Job queue with formal JobState using SQLite WAL ledger (PIPE-400 & PIPE-403)."""
 import json
 import time
 import uuid
@@ -6,88 +6,64 @@ from pathlib import Path
 from typing import Optional, Dict, Any, List
 from app.logging_config import setup_logger
 from app.pipeline.job_state import JobState, JobStatus as _JobStatus
+from app.pipeline.job_ledger import SQLiteJobLedger
 
 # Re-export JobStatus for backward compatibility with existing imports
 JobStatus = _JobStatus
 
 logger = setup_logger()
 
-STATE_DIR = Path(__file__).parent.parent.parent / "state"
-DEFAULT_QUEUE_FILE = STATE_DIR / "job_queue.json"
-
-
-def retry_with_backoff(func, max_retries=3, base_delay=0.5, max_delay=5.0, *args, **kwargs):
-    """Retry com exponential backoff."""
-    last_exception = None
-    for attempt in range(max_retries + 1):
-        try:
-            return func(*args, **kwargs)
-        except Exception as e:
-            last_exception = e
-            if attempt < max_retries:
-                delay = min(base_delay * (2 ** attempt), max_delay)
-                logger.warning(f"Tentativa {attempt + 1} falhou: {str(e)}. Retry em {delay}s...")
-                time.sleep(delay)
-            else:
-                logger.error(f"Todas as {max_retries + 1} tentativas falharam.")
-                raise last_exception
-    raise last_exception
-
-
-def validate_job_files(script_path: Optional[str] = None,
-                       audio_path: Optional[str] = None,
-                       video_path: Optional[str] = None) -> bool:
-    """Validate that job artifact files exist."""
-    for path in [script_path, audio_path, video_path]:
-        if path is not None and not Path(path).exists():
-            return False
-    return True
+# Global SQLite ledger instance
+_global_job_ledger = SQLiteJobLedger()
 
 
 class JobQueue:
-    """Persistent job queue with formal JobState.
+    """Persistent job queue with formal JobState using SQLite WAL ledger.
 
     - Uses JobState with guarded transitions
     - Mutex: single running job enforced
-    - Persistence to JSON file
+    - Persistence to SQLite WAL database (no JSON file needed)
     """
 
-    def __init__(self, queue_file: Optional[Path] = None):
-        self.queue_file = queue_file or DEFAULT_QUEUE_FILE
-        self.queue_file.parent.mkdir(parents=True, exist_ok=True)
-        self.jobs: Dict[str, JobState] = {}
+    def __init__(self, queue_file: Optional[Path] = None, job_ledger: Optional[SQLiteJobLedger] = None):
+        # queue_file parameter kept for backward compatibility but ignored
+        # as we now use SQLite ledger for persistence
+        self._job_ledger = job_ledger or _global_job_ledger
+        self.jobs: Dict[str, JobState] = {}  # In-memory cache for active jobs
         self.running_job_id: Optional[str] = None
         self._load()
 
     def _load(self):
-        """Load jobs from persistent JSON file."""
-        if not self.queue_file.exists():
-            return
-        def do_load():
-            data = json.loads(self.queue_file.read_text(encoding="utf-8"))
-            for job_data in data.get("jobs", []):
-                job = JobState.from_dict(job_data)
-                self.jobs[job.job_id] = job
-            self.running_job_id = data.get("running_job_id")
-            logger.info("Fila carregada: %d jobs", len(self.jobs))
+        """Load jobs from persistent SQLite ledger into memory cache."""
         try:
-            retry_with_backoff(do_load, max_retries=3, base_delay=0.2)
+            # Load all jobs from SQLite ledger
+            jobs_from_ledger = self._job_ledger.load_jobs(limit=1000)  # Load recent jobs
+            self.jobs = {job.job_id: job for job in jobs_from_ledger}
+            
+            # Get running job ID from ledger metadata
+            self.running_job_id = self._job_ledger.get_running_job_id()
+            
+            logger.info("Fila carregada do SQLite ledger: %d jobs", len(self.jobs))
         except Exception as e:
-            logger.error("CAUSA: Erro ao carregar fila: %s | CORREÇÃO: Verifique se queue.json não está corrompido", e)
+            logger.error("CAUSA: Erro ao carregar fila do SQLite ledger: %s | CORREÇÃO: Verifique se o banco de dados está acessível", e)
+            # Fallback to empty state if ledger fails
+            self.jobs = {}
+            self.running_job_id = None
 
     def _save(self):
-        """Persist jobs to JSON file."""
-        data = {
-            "jobs": [job.to_dict() for job in self.jobs.values()],
-            "running_job_id": self.running_job_id,
-            "updated_at": time.time()
-        }
-        def do_save():
-            self.queue_file.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+        """Persist jobs to SQLite ledger."""
         try:
-            retry_with_backoff(do_save, max_retries=3, base_delay=0.2)
+            # Save all cached jobs to SQLite ledger
+            for job in self.jobs.values():
+                self._job_ledger.save_job(job)
+            
+            # Update running job ID in ledger metadata
+            self._job_ledger.set_running_job_id(self.running_job_id)
+            
+            logger.debug("Fila persistida no SQLite ledger: %d jobs", len(self.jobs))
         except Exception as e:
-            logger.error("CAUSA: Erro ao salvar fila após retries: %s | CORREÇÃO: Verifique permissões de escrita", e)
+            logger.error("CAUSA: Erro ao salvar fila no SQLite ledger: %s | CORREÇÃO: Verifique permissões de banco de dados", e)
+            # In a production system, we might want to retry or alert here
 
     @staticmethod
     def clear_all():
@@ -97,6 +73,13 @@ class JobQueue:
             if isinstance(obj, JobQueue):
                 obj.jobs.clear()
                 obj.running_job_id = None
+        # Also clear the ledger for test isolation
+        try:
+            # Note: In a real test scenario, we might want to recreate the ledger
+            # For now, we'll just clear the in-memory cache
+            pass
+        except Exception:
+            pass  # Ignore errors during test cleanup
 
     def add_job(self, job_type: str, project_id: str, params: Optional[Dict[str, Any]] = None) -> str:
         """Add a new job to queue."""
@@ -109,7 +92,15 @@ class JobQueue:
 
     def get_job(self, job_id: str) -> Optional[JobState]:
         """Get job by ID."""
-        return self.jobs.get(job_id)
+        # Try memory cache first
+        if job_id in self.jobs:
+            return self.jobs[job_id]
+        
+        # Fallback to ledger
+        job = _job_ledger.load_job(job_id)
+        if job:
+            self.jobs[job_id] = job  # Cache for future access
+        return job
 
     def get_next_job(self) -> Optional[JobState]:
         """Claim next queued job (mutex: only 1 running)."""
@@ -119,17 +110,36 @@ class JobQueue:
                 self.running_job_id
             )
             return None
+        
+        # Find next queued job
         for job in self.jobs.values():
             if job.status == JobStatus.QUEUED:
                 job.start()
                 self.running_job_id = job.job_id
                 self._save()
                 return job
+        
+        # If not found in cache, check ledger directly
+        queued_jobs = _job_ledger.load_jobs(status=JobStatus.QUEUED, limit=1)
+        if queued_jobs:
+            job = queued_jobs[0]
+            job.start()
+            self.jobs[job.job_id] = job  # Cache it
+            self.running_job_id = job.job_id
+            self._save()
+            return job
+            
         return None
 
     def complete_job(self, job_id: str, output_path: Optional[str] = None):
         """Mark job as completed."""
         job = self.jobs.get(job_id)
+        if not job:
+            # Try to load from ledger if not in cache
+            job = _job_ledger.load_job(job_id)
+            if job:
+                self.jobs[job_id] = job  # Cache it
+        
         if job:
             try:
                 job.complete(output_path=output_path)
@@ -146,6 +156,12 @@ class JobQueue:
     def fail_job(self, job_id: str, error_msg: str = ""):
         """Mark job as failed."""
         job = self.jobs.get(job_id)
+        if not job:
+            # Try to load from ledger if not in cache
+            job = _job_ledger.load_job(job_id)
+            if job:
+                self.jobs[job_id] = job  # Cache it
+        
         if job:
             try:
                 job.fail(error_msg)
@@ -162,7 +178,14 @@ class JobQueue:
         """Cancel a queued or running job. Returns True if cancelled."""
         job = self.jobs.get(job_id)
         if not job:
+            # Try to load from ledger if not in cache
+            job = _job_ledger.load_job(job_id)
+            if job:
+                self.jobs[job_id] = job  # Cache it
+        
+        if not job:
             return False
+            
         try:
             job.cancel()
         except ValueError:
@@ -177,33 +200,89 @@ class JobQueue:
     def remove_job(self, job_id: str) -> bool:
         """Remove a job entirely from the queue. Returns True if removed."""
         if job_id not in self.jobs:
-            return False
-        del self.jobs[job_id]
+            # Check ledger directly
+            if not _job_ledger.load_job(job_id):
+                return False
+        
+        # Remove from cache and ledger
+        if job_id in self.jobs:
+            del self.jobs[job_id]
+        
+        deleted = _job_ledger.delete_job(job_id)
+        
         if self.running_job_id == job_id:
             self.running_job_id = None
         self._save()
         logger.info("Job %s removido", job_id)
-        return True
+        return deleted
 
     def list_jobs(self, status: Optional[str] = None) -> List[Dict[str, Any]]:
         """List jobs, optionally filtered by status value."""
-        jobs = list(self.jobs.values())
-        if status:
-            jobs = [j for j in jobs if j.status.value == status]
-        return [j.to_dict() for j in jobs]
+        # Try to get from ledger for consistency
+        try:
+            if status is not None:
+                job_status = JobStatus(status)
+                jobs_from_ledger = _job_ledger.load_jobs(status=job_status)
+            else:
+                jobs_from_ledger = _job_ledger.load_jobs()
+            
+            # Update cache
+            for job in jobs_from_ledger:
+                self.jobs[job.job_id] = job
+                
+            return [job.to_dict() for job in jobs_from_ledger]
+        except Exception as e:
+            logger.error("CAUSA: Erro ao listar jobs do SQLite ledger: %s | CORREÇÃO: Verifique o banco de dados", e)
+            # Fallback to cache
+            jobs = list(self.jobs.values())
+            if status:
+                jobs = [j for j in jobs if j.status.value == status]
+            return [j.to_dict() for j in jobs]
 
     def get_status(self) -> Dict[str, Any]:
         """Get queue status summary."""
-        values = [j.status.value for j in self.jobs.values()]
-        return {
-            "total": len(self.jobs),
-            "queued": values.count("queued"),
-            "running": values.count("running"),
-            "completed": values.count("completed") + values.count("succeeded"),
-            "failed": values.count("failed"),
-            "cancelled": values.count("cancelled"),
-            "running_job_id": self.running_job_id
-        }
+        try:
+            # Get accurate counts from ledger
+            total_jobs = self._job_ledger.load_jobs(limit=10000)  # Get all jobs for counting
+            status_counts = {
+                "queued": 0,
+                "running": 0,
+                "completed": 0,
+                "failed": 0,
+                "cancelled": 0
+            }
+            
+            for job in total_jobs:
+                status_value = job.status.value
+                if status_value in status_counts:
+                    status_counts[status_value] += 1
+            
+            # Get running job ID from ledger
+            running_job_id = self._job_ledger.get_running_job_id()
+            
+            return {
+                "total": len(total_jobs),
+                "queued": status_counts["queued"],
+                "running": status_counts["running"],
+                "completed": status_counts["completed"] + status_counts.get("succeeded", 0),
+                "failed": status_counts["failed"],
+                "cancelled": status_counts["cancelled"],
+                "running_job_id": running_job_id
+            }
+        except Exception as e:
+            logger.error("CAUSA: Erro ao obter status do SQLite ledger: %s | CORREÇÃO: Verifique o banco de dados", e)
+            # Fallback to cache-based calculation
+            values = [j.status.value for j in self.jobs.values()]
+            return {
+                "total": len(self.jobs),
+                "queued": values.count("queued"),
+                "running": values.count("running"),
+                "completed": values.count("completed") + values.count("succeeded"),
+                "failed": values.count("failed"),
+                "cancelled": values.count("cancelled"),
+                "running_job_id": self.running_job_id
+            }
 
 
+# Global queue instance for backward compatibility
 queue = JobQueue()

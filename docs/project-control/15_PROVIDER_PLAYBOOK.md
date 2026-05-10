@@ -1,23 +1,39 @@
 # 15_PROVIDER_PLAYBOOK — GalFlowAI
 
-Este arquivo aponta para os playbooks específicos.
+Este arquivo é o roteador central para todos os playbooks específicos de provider.
+
+## Resumo de stories
+
+| Playbook | Stories vinculadas | Status |
+|----------|-------------------|--------|
+| `LLM_PROVIDER_PLAYBOOK.md` | PROV-300, PROV-301, PROV-302 | 2 Concluídas, 1 Pendente |
+| `VIDEO_RENDER_PROVIDER_PLAYBOOK.md` | VIS-502, VIS-503, RND-600, RND-601, RND-602, RND-603, QA-1003 | Todas Pendentes |
+| `AUDIO_TTS_PROVIDER_PLAYBOOK.md` | AUD-700, AUD-701, AUD-702, AUD-703, QA-1004 | 1 Concluída, 4 Pendentes |
+| `VECTOR_MEMORY_PLAYBOOK.md` | VIS-500, VIS-501, VEC-800, VEC-801, VEC-802, VEC-803 | Todas Pendentes |
+| `QA_ANTI_HALLUCINATION_PLAYBOOK.md` | QA-1000, QA-1001, QA-1002 | 2 Concluídas, 1 Pendente |
+
+**Total de histórias cobertas: 21** (das 48 do backlog)
 
 ## Providers LLM
 
-Ver `docs/playbooks/LLM_PROVIDER_PLAYBOOK.md`.
+Ver `docs/project-control/LLM_PROVIDER_PLAYBOOK.md`.
 
 ## Vídeo/render
 
-Ver `docs/playbooks/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`.
+Ver `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`.
 
 ## Áudio/TTS
 
-Ver `docs/playbooks/AUDIO_TTS_PROVIDER_PLAYBOOK.md`.
+Ver `docs/project-control/AUDIO_TTS_PROVIDER_PLAYBOOK.md`.
 
 ## IA vetorial
 
-Ver `docs/playbooks/VECTOR_MEMORY_PLAYBOOK.md`.
+Ver `docs/project-control/VECTOR_MEMORY_PLAYBOOK.md`.
+
+## QA e anti-alucinação
+
+Ver `docs/project-control/QA_ANTI_HALLUCINATION_PLAYBOOK.md`.
 
 ## Regra geral
 
-Provider novo deve ser opcional. Provider existente não pode ser removido sem ADR.
+Provider novo deve ser opcional. Provider existente não pode ser removido sem ADR (ver `11_DECISOES_TECNICAS_ADR.md`).

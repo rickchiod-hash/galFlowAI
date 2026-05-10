@@ -5,20 +5,35 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 18/48
-Histórias em andamento: 1 (UI-201: Gerar roteiro sem renderizar)
+Histórias concluídas: 19/48
+Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 34
-Percentual concluído: 27%
+Histórias pendentes: 29 (48 - 19 concluídas - 0 em andamento)
+Percentual concluído: 39,6%
+
+**Aritmética:** 48 histórias únicas no backlog. 19 Concluídas + 0 Em andamento + 29 Pendentes = 48.
 
 ## Estado atual
 
 - Branch atual: master
 - Último commit analisado: 851aaa1 — "feat(pipeline): add idempotency key service and use cases (PIPE-401)"
-- Último commit criado pelo agente: 851aaa1 — feat(pipeline): add idempotency key service and use cases (PIPE-401)
 - Fase atual: Fase 5 — Pipeline e produto
-- História atual: PIPE-401 — Criar idempotency key por etapa ✅
-- Próxima ação recomendada: Selecionar próxima história (PIPE-402 ou RND-600)
+- História atual: PIPE-402 — Criar cache por hash de artefatos ✅
+- Próxima ação recomendada: Selecionar próxima história (PIPE-403 ou RND-600)
+
+### Playbooks criados nesta sessão
+
+| Arquivo | Stories | Concluídas | Pendentes |
+|---------|---------|-----------|----------|
+| `LLM_PROVIDER_PLAYBOOK.md` | PROV-300, PROV-301, PROV-302 | 2 | 1 |
+| `VIDEO_RENDER_PROVIDER_PLAYBOOK.md` | VIS-502, VIS-503, RND-600..603, QA-1003 | 0 | 7 |
+| `AUDIO_TTS_PROVIDER_PLAYBOOK.md` | AUD-700..703, QA-1004 | 1 | 4 |
+| `VECTOR_MEMORY_PLAYBOOK.md` | VIS-500, VIS-501, VEC-800..803 | 0 | 6 |
+| `QA_ANTI_HALLUCINATION_PLAYBOOK.md` | QA-1000, QA-1001, QA-1002 | 2 | 1 |
+| **Total** | **21 histórias cobertas** | **5** | **19** |
+
+> **Nota:** 4 histórias com evidência de implementação no Git (UI-201, UI-202, PIPE-400, PIPE-401) ainda marcadas como Pendentes no backlog — pendente de correção de status.
+> **Nova funcionalidade:** Serviço de cache de artefatos por hash implementado (PIPE-402) em `app/services/artifact_cache_service.py` e integrado nas etapas de geração de roteiro, divisão de cenas, construção de prompts e geração de áudio.
 
 ## Resumo tipo Daily
 

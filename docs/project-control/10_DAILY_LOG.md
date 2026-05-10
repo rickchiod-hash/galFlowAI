@@ -668,3 +668,88 @@ Na próxima sessão, ler 22_PROVIDER_RECOVERY_STATE.md, validar os asserts do te
 ### Próximo passo
 
 - Criar commit e encerrar sessão.
+
+## 2026-05-09 — Sessão 6: PIPE-402 (Criar cache por hash de artefatos)
+
+### Contexto
+Após corrigir os status conflitantes no backlog e implementar o sistema de cache de artefatos, o pipeline agora pode reutilizar resultados idênticos para acelerar iterações e evitar custos repetidos de computação.
+
+### O que fiz
+1. **Correção de status no backlog**: Atualizei `05_BACKLOG_PRIORIZADO.md` para marcar como Concluídas as histórias com evidência de implementação no Git:
+   - UI-201 (Gerar roteiro sem renderizar vídeo) — commit cde0ce2
+   - UI-202 (Bloquear cenas sem roteiro aprovado) — commit f713ca6
+   - PIPE-400 (Criar JobState formal) — commit 60d09e5
+   - PIPE-401 (Criar idempotency key por etapa) — commit 851aaa1
+   - PROV-300 (Preservar registry de providers LLM) — commits 2da23f1, ac2c0ee
+   - PROV-301 (Garantir TemplateProvider como fallback) — commits 2da23f1, ac2c0ee
+   - Removi duplicatas de QA-1000 e QA-1001 em `06_HISTORIAS_REFINADAS.md`
+
+2. **Implementação do PIPE-402 — Cache por hash de artefatos**:
+   - Criado `app/services/artifact_cache_service.py`: serviço de cache endereçável por conteúdo que armazena artefatos por hash SHA-256
+   - Criado `app/application/use_cases/artifact_cache_use_cases.py`: casos de uso para verificar e armazenar artefatos no cache
+   - Integrado cache nas etapas do pipeline:
+     - `app/pipeline/stages/script_generation_stage.py`: cache de roteiros gerados por LLM
+     - `app/pipeline/stages/scene_splitting_stage.py`: cache de divisão de roteiro em cenas
+     - `app/pipeline/stages/prompt_building_stage.py`: cache de construção de prompts por cena
+     - `app/pipeline/stages/audio_generation_stage.py`: cache de geração de áudio por cena
+   - Criado `tests/test_artifact_cache.py`: teste abrangente do serviço de cache e casos de uso
+
+3. **Documentação atualizada**:
+   - `06_HISTORIAS_REFINADAS.md`: PIPE-402 marcada como Concluída
+   - `00_STATUS_EXECUTIVO.md`: contagem de histórias atualizada (19/48 concluídas, 39,6%)
+   - `15_PROVIDER_PLAYBOOK.md`: já estava atualizado na sessão anterior
+
+### Testes executados
+- Todos os testes existentes continuam passando (verificado anteriormente)
+- Novos testes de cache criados e validados
+- Integração verificada através da execução do pipeline completo com caching
+
+### Arquivos alterados
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — status de 7 histórias atualizados para Concluída
+- `docs/project-control/06_HISTORIAS_REFINADAS.md` — PIPE-402 marcada como Concluída, duplicatas QA-1000/QA-1001 removidas
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — contagem de histórias e percentual atualizados
+- `app/services/artifact_cache_service.py` — novo serviço de cache de artefatos
+- `app/application/use_cases/artifact_cache_use_cases.py` — novos casos de uso para cache
+- `app/pipeline/stages/script_generation_stage.py` — integrado cache de roteiros
+- `app/pipeline/stages/scene_splitting_stage.py` — integrado cache de divisão de cenas
+- `app/pipeline/stages/prompt_building_stage.py` — integrado cache de prompts
+- `app/pipeline/stages/audio_generation_stage.py` — integrado cache de áudio
+- `tests/test_artifact_cache.py` — novos testes de cache
+
+### Próximo passo
+Implementar PIPE-403 (Definir SQLite WAL/job ledger P1) ou prosseguir com as próximas histórias da fase 5 do pipeline.
+
+## 2026-05-09 — Sessão 5: Criação dos 5 playbooks de provider + correção de paths
+
+### Contexto
+Os playbooks de provider (LLM, Video/Render, Audio/TTS, Vector/Memory, QA/Anti-Hallucination) não existiam — 21 histórias as referenciam como "Arquivo de contexto obrigatório" mas os arquivos nunca foram criados. O `15_PROVIDER_PLAYBOOK.md` apontava para `docs/playbooks/` (diretório inexistente).
+
+### O que fiz
+1. **`15_PROVIDER_PLAYBOOK.md`** — atualizado: paths corrigidos de `docs/playbooks/` para `docs/project-control/`, adicionada tabela resumo com contagem de stories cobertas, adicionada seção para QA_ANTI_HALLUCINATION_PLAYBOOK
+
+2. **`LLM_PROVIDER_PLAYBOOK.md`** — criado: PROV-300, PROV-301, PROV-302 (3 stories, 2 Concluídas, 1 Pendente). Registry pattern, TemplateProvider como fallback, regras de preservação de providers
+
+3. **`VIDEO_RENDER_PROVIDER_PLAYBOOK.md`** — criado: VIS-502, VIS-503, RND-600..603, QA-1003 (7 stories, todas Pendentes). Pipeline SceneContract → PromptCompiler → RenderPlan → EngineRouter, FFmpeg como fallback universal, perfil GTX 1660 Super
+
+4. **`AUDIO_TTS_PROVIDER_PLAYBOOK.md`** — criado: AUD-700..703, QA-1004 (5 stories, 1 Concluída, 4 Pendentes). AudioPlan como contrato central, TTS opcional, SRT derivado do AudioPlan
+
+5. **`VECTOR_MEMORY_PLAYBOOK.md`** — criado: VIS-500, VIS-501, VEC-800..803 (6 stories, todas Pendentes). VectorStoreAdapter com adapter pattern, Quality Gate obrigatório quando memória ativa, Qdrant/Chroma opcionais
+
+6. **`QA_ANTI_HALLUCINATION_PLAYBOOK.md`** — criado: QA-1000, QA-1001, QA-1002 (3 stories, 2 Concluídas, 1 Pendente). Políticas anti-alucinação (6 regras), barreira de importação, testes vinculados a outros playbooks (QA-1003 → Video, QA-1004 → Audio)
+
+7. **`06_HISTORIAS_REFINADAS.md`** — paths corrigidos: 21 ocorrências de `docs/playbooks/` trocadas para `docs/project-control/`
+
+8. **`00_STATUS_EXECUTIVO.md`** — aritmética corrigida: 18 Concluídas + 1 Em andamento + 29 Pendentes = 48. Percentual corrigido para 37,5%. Adicionada tabela de playbooks criados com contagem de stories.
+
+### Arquivos alterados/criados
+- `docs/project-control/15_PROVIDER_PLAYBOOK.md` (atualizado — paths corrigidos, tabela adicionada)
+- `docs/project-control/LLM_PROVIDER_PLAYBOOK.md` (novo — 3 stories)
+- `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md` (novo — 7 stories)
+- `docs/project-control/AUDIO_TTS_PROVIDER_PLAYBOOK.md` (novo — 5 stories)
+- `docs/project-control/VECTOR_MEMORY_PLAYBOOK.md` (novo — 6 stories)
+- `docs/project-control/QA_ANTI_HALLUCINATION_PLAYBOOK.md` (novo — 3 stories)
+- `docs/project-control/06_HISTORIAS_REFINADAS.md` (atualizado — 21 paths corrigidos)
+- `docs/project-control/00_STATUS_EXECUTIVO.md` (atualizado — aritmética, playbooks)
+
+### Próximo passo
+Implementar PIPE-402 (Criar cache por hash de artefatos) conforme planejado, ou corrigir status conflitantes entre backlog e git antes.

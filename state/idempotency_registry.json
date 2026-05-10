@@ -1,0 +1,33 @@
+{
+  "entries": {
+    "8da3cf60a699ca7ab82f10bad15bec81c714df01ae635b3d7656a3b15006c262": {
+      "stage": "s",
+      "output": {
+        "result": "ok"
+      },
+      "timestamp": 457268.546
+    },
+    "17669a2d9ee9218c3adf68cbdc6e05281d815539bbdada358ac29b8f35bc33c4": {
+      "stage": "script_gen",
+      "output": {
+        "script": "..."
+      },
+      "timestamp": 512078.609
+    },
+    "49f7e8df1630feb872f8b3eeb2e66d95e80a19a7c25d5c7f3d8b5675e9dcfdf2": {
+      "stage": "script_gen",
+      "output": {
+        "script": "..."
+      },
+      "timestamp": 512078.609
+    },
+    "80bbb819bc5fcb886a3cb1c72b6c8c0a5783db500087584993aadedebd0b729f": {
+      "stage": "render",
+      "output": {
+        "path": "/out.mp4"
+      },
+      "timestamp": 512078.609
+    }
+  },
+  "updated_at": 512078.609
+}

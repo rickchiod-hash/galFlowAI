@@ -1,10 +1,11 @@
 """Base use case class following 3-point standard."""
 from abc import ABC, abstractmethod
 from typing import Dict, Any
-from app.logging_config import setup_logger
 from app.application.result import Result
+import logging
 
-logger = setup_logger()
+logger = logging.getLogger('app.application.use_cases.base_use_case')
+
 
 class BaseUseCase(ABC):
     """Base class for all use cases.

@@ -809,7 +809,7 @@ Ver `ARCH-302` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Alta  
 **Status:** Concluída  
 **Estimativa:** 5 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/LLM_PROVIDER_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/LLM_PROVIDER_PLAYBOOK.md`
 
 ### História
 Como usuário offline, eu quero múltiplos providers locais preservados, para continuar criando roteiros sem cloud obrigatória. 
@@ -855,7 +855,7 @@ Ver `PROV-300` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Alta  
 **Status:** Concluída  
 **Estimativa:** 3 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/LLM_PROVIDER_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/LLM_PROVIDER_PLAYBOOK.md`
 
 ### História
 Como usuário sem LLM local, eu quero fallback template, para gerar roteiro mínimo quando provider falhar.
@@ -901,7 +901,7 @@ Ver `PROV-301` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Alta  
 **Status:** Pendente  
 **Estimativa:** 3 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/LLM_PROVIDER_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/LLM_PROVIDER_PLAYBOOK.md`
 
 ### História
 Como QA, eu quero teste de falha de LLM → template, para evitar regressão de fallback.
@@ -1037,7 +1037,7 @@ Ver `PIPE-401` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-500 Pipeline confiável  
 **Prioridade:** Média  
-**Status:** Pendente  
+**Status:** Concluída ✅  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/17_REFACTORING_PLAN.md`
 
@@ -1131,7 +1131,7 @@ Ver `PIPE-403` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Alta  
 **Status:** Pendente  
 **Estimativa:** 5 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/VECTOR_MEMORY_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/VECTOR_MEMORY_PLAYBOOK.md`
 
 ### História
 Como criador de comerciais, eu quero registrar produtos/personagens/cenários, para manter consistência entre cenas.
@@ -1177,7 +1177,7 @@ Ver `VIS-500` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Alta  
 **Status:** Pendente  
 **Estimativa:** 5 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/VECTOR_MEMORY_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/VECTOR_MEMORY_PLAYBOOK.md`
 
 ### História
 Como diretor visual, eu quero fixar referências aprovadas, para reduzir drift visual.
@@ -1223,7 +1223,7 @@ Ver `VIS-501` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Alta  
 **Status:** Pendente  
 **Estimativa:** 5 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
 
 ### História
 Como pipeline, eu quero contratos por cena, para transformar roteiro em instruções testáveis.
@@ -1269,7 +1269,7 @@ Ver `VIS-502` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Média  
 **Status:** Pendente  
 **Estimativa:** 8 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
 
 ### História
 Como engine router, eu quero prompts específicos por provider, para usar FFmpeg/WanGP/VACE sem gambiarra.
@@ -1315,7 +1315,7 @@ Ver `VIS-503` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Alta  
 **Status:** Pendente  
 **Estimativa:** 5 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
 
 ### História
 Como render planner, eu quero escolher engine por cena com motivo, para usar GPU e fallback com previsibilidade.
@@ -1361,7 +1361,7 @@ Ver `RND-600` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Alta  
 **Status:** Pendente  
 **Estimativa:** 3 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
 
 ### História
 Como usuário, eu quero exportar mesmo sem engine IA, para sempre obter um MP4 mínimo.
@@ -1407,7 +1407,7 @@ Ver `RND-601` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Alta  
 **Status:** Pendente  
 **Estimativa:** 3 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
 
 ### História
 Como usuário com 6GB VRAM, eu quero perfil seguro 480p/512p, para evitar OOM e travamentos.
@@ -1453,7 +1453,7 @@ Ver `RND-602` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Baixa  
 **Status:** Pendente  
 **Estimativa:** 2 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
 
 ### História
 Como arquiteto, eu quero documentar VACE como futuro adapter, para não forçar engine pesada agora.
@@ -1499,7 +1499,7 @@ Ver `RND-603` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Alta  
 **Status:** Pendente  
 **Estimativa:** 5 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/AUDIO_TTS_PROVIDER_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/AUDIO_TTS_PROVIDER_PLAYBOOK.md`
 
 ### História
 Como produtor de vídeo, eu quero roteiro de narração por cena, para controlar TTS, SRT e revisão humana.
@@ -1545,7 +1545,7 @@ Ver `AUD-700` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Média  
 **Status:** Pendente  
 **Estimativa:** 5 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/AUDIO_TTS_PROVIDER_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/AUDIO_TTS_PROVIDER_PLAYBOOK.md`
 
 ### História
 Como usuário, eu quero audio/scene_XXX.wav quando TTS funcionar, para sincronizar narração com cenas.
@@ -1591,7 +1591,7 @@ Ver `AUD-701` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Média  
 **Status:** Pendente  
 **Estimativa:** 3 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/AUDIO_TTS_PROVIDER_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/AUDIO_TTS_PROVIDER_PLAYBOOK.md`
 
 ### História
 Como criador de conteúdo, eu quero legendas básicas, para usar vídeo em redes sociais sem áudio.
@@ -1637,7 +1637,7 @@ Ver `AUD-702` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Baixa  
 **Status:** Pendente  
 **Estimativa:** 3 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/AUDIO_TTS_PROVIDER_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/AUDIO_TTS_PROVIDER_PLAYBOOK.md`
 
 ### História
 Como produtor, eu quero registrar licença e origem de SFX, para evitar uso indevido de assets.
@@ -1683,7 +1683,7 @@ Ver `AUD-703` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Média  
 **Status:** Pendente  
 **Estimativa:** 3 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/VECTOR_MEMORY_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/VECTOR_MEMORY_PLAYBOOK.md`
 
 ### História
 Como arquiteto, eu quero uma porta vetorial opcional, para preparar memória sem acoplar backend.
@@ -1729,7 +1729,7 @@ Ver `VEC-800` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Média  
 **Status:** Pendente  
 **Estimativa:** 5 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/VECTOR_MEMORY_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/VECTOR_MEMORY_PLAYBOOK.md`
 
 ### História
 Como QA de dados, eu quero impedir indexação de rascunho ruim, para evitar contaminação semântica.
@@ -1775,7 +1775,7 @@ Ver `VEC-801` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Baixa  
 **Status:** Pendente  
 **Estimativa:** 3 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/VECTOR_MEMORY_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/VECTOR_MEMORY_PLAYBOOK.md`
 
 ### História
 Como arquiteto, eu quero Qdrant local como backend alvo, para evoluir com payload e filtros.
@@ -1821,7 +1821,7 @@ Ver `VEC-802` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Baixa  
 **Status:** Pendente  
 **Estimativa:** 2 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/VECTOR_MEMORY_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/VECTOR_MEMORY_PLAYBOOK.md`
 
 ### História
 Como desenvolvedor, eu quero Chroma como caminho rápido, para testar retrieval textual com baixo atrito.
@@ -1953,98 +1953,6 @@ Ver `OBS-901` em `08_PLANO_DE_TESTES.md`.
 - [ ] Daily log atualizado
 - [ ] Commit criado
 
-## QA-1000 — Criar teste antirregressão de naming
-
-**Épico:** EPIC-1100 QA contínuo  
-**Prioridade:** Alta  
-**Status:** Pendente  
-**Estimativa:** 2 SP  
-**Arquivo de contexto obrigatório:** `docs/reference/FEATURE_PRESERVATION_MATRIX.md`
-
-### História
-Como QA, eu quero falhar build se nomes legados vazarem, para preservar identidade GalFlowAI.
-
-### Contexto técnico
-Esta história deve ser validada no código e no histórico Git antes de implementação. Se a evidência não existir, registrar `EVIDÊNCIA INSUFICIENTE` no status executivo. Contexto funcional: Naming test.
-
-### Evidências obrigatórias
-- Arquivo(s) atual(is) relacionados.
-- Commit(s) que criaram/alteraram/removeram a capacidade.
-- Teste(s) existentes ou ausência documentada.
-- Impacto na Feature Preservation Matrix, se aplicável.
-
-### Critérios de aceite
-Ver `QA-1000` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
-
-### Testes
-Ver `QA-1000` em `08_PLANO_DE_TESTES.md`.
-
-### Definition of Ready
-- [ ] Independente
-- [ ] Negociável
-- [ ] Valiosa
-- [ ] Estimável
-- [ ] Pequena o suficiente
-- [ ] Testável
-- [ ] Possui contexto técnico
-- [ ] Possui arquivo de referência
-- [ ] Possui critérios Gherkin
-- [ ] Possui teste planejado
-
-### Definition of Done
-- [ ] Critérios atendidos
-- [ ] Testes criados/atualizados
-- [ ] Docs e backlog atualizados
-- [ ] Status executivo atualizado
-- [ ] Daily log atualizado
-- [ ] Commit criado
-
-## QA-1001 — Criar teste de presença de providers/fallbacks
-
-**Épico:** EPIC-1100 QA contínuo  
-**Prioridade:** Alta  
-**Status:** Pendente  
-**Estimativa:** 3 SP  
-**Arquivo de contexto obrigatório:** `docs/reference/FEATURE_PRESERVATION_MATRIX.md`
-
-### História
-Como QA, eu quero detectar remoção de providers, para preservar operação local-first.
-
-### Contexto técnico
-Esta história deve ser validada no código e no histórico Git antes de implementação. Se a evidência não existir, registrar `EVIDÊNCIA INSUFICIENTE` no status executivo. Contexto funcional: Provider preservation.
-
-### Evidências obrigatórias
-- Arquivo(s) atual(is) relacionados.
-- Commit(s) que criaram/alteraram/removeram a capacidade.
-- Teste(s) existentes ou ausência documentada.
-- Impacto na Feature Preservation Matrix, se aplicável.
-
-### Critérios de aceite
-Ver `QA-1001` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
-
-### Testes
-Ver `QA-1001` em `08_PLANO_DE_TESTES.md`.
-
-### Definition of Ready
-- [ ] Independente
-- [ ] Negociável
-- [ ] Valiosa
-- [ ] Estimável
-- [ ] Pequena o suficiente
-- [ ] Testável
-- [ ] Possui contexto técnico
-- [ ] Possui arquivo de referência
-- [ ] Possui critérios Gherkin
-- [ ] Possui teste planejado
-
-### Definition of Done
-- [ ] Critérios atendidos
-- [ ] Testes criados/atualizados
-- [ ] Docs e backlog atualizados
-- [ ] Status executivo atualizado
-- [ ] Daily log atualizado
-- [ ] Commit criado
-
 ## QA-1002 — Criar teste UI não chama adapters
 
 **Épico:** EPIC-1100 QA contínuo  
@@ -2097,7 +2005,7 @@ Ver `QA-1002` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Média  
 **Status:** Pendente  
 **Estimativa:** 5 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
 
 ### História
 Como QA, eu quero validar fallback real do pipeline, para garantir MP4 mesmo sem IA de vídeo.
@@ -2143,7 +2051,7 @@ Ver `QA-1003` em `08_PLANO_DE_TESTES.md`.
 **Prioridade:** Média  
 **Status:** Concluída  
 **Estimativa:** 3 SP  
-**Arquivo de contexto obrigatório:** `docs/playbooks/AUDIO_TTS_PROVIDER_PLAYBOOK.md`
+**Arquivo de contexto obrigatório:** `docs/project-control/AUDIO_TTS_PROVIDER_PLAYBOOK.md`
 
 ### História
 Como QA, eu quero validar que TTS não bloqueia MP4, para preservar entrega final.

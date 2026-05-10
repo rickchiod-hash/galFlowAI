@@ -16,18 +16,18 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 8 | CORE-101 | Mapear estado atual do projeto | Alta | 3 | Concluída | GOV-001..GOV-006 | para iniciar refatorações sem suposição |
 | 9 | CORE-102 | Validar diferença entre documentação e código | Alta | 5 | Concluída | GOV-001..GOV-006 | para separar fato implementado de roadmap |
 | 10 | UI-200 | Restaurar fluxo por etapas na documentação | Alta | 3 | Concluída | CORE-100..CORE-102 | para aprovar roteiro/cenas antes de gastar GPU |
-| 11 | UI-201 | Gerar roteiro sem renderizar vídeo | Alta | 5 | Pendente | CORE-100..CORE-102 | para evitar render caro com roteiro ruim |
-| 12 | UI-202 | Bloquear cenas sem roteiro aprovado | Alta | 5 | Pendente | CORE-100..CORE-102 | para preservar o fluxo de validação humana |
+| 11 | UI-201 | Gerar roteiro sem renderizar vídeo | Alta | 5 | Concluída | CORE-100..CORE-102 | commit cde0ce2 — endpoint POST /api/projects/{id}/script/generate |
+| 12 | UI-202 | Bloquear cenas sem roteiro aprovado | Alta | 5 | Concluída | CORE-100..CORE-102 | commit f713ca6 — gate de aprovação antes de split de cenas |
 | 13 | UI-203 | Resgatar telas de logs, métricas e diagnóstico | Alta | 5 | Pendente | CORE-100..CORE-102 | para debugar sem depender do terminal |
 | 14 | ARCH-300 | Criar use cases por etapa | Alta | 8 | Concluída | CORE-100..CORE-102 | para reduzir acoplamento com pipeline/adapters |
 | 15 | ARCH-301 | Criar Result Object padrão | Alta | 5 | Concluída | CORE-100..CORE-102 | para não propagar exceções e mensagens genéricas |
 | 16 | ARCH-302 | Centralizar configuração e paths | Alta | 3 | Concluída | CORE-100..CORE-102 | para evitar hardcoded C: e ambiente quebrado |
-| 17 | PROV-300 | Preservar registry de providers LLM | Alta | 5 | Pendente | CORE-100..CORE-102 | para continuar criando roteiros sem cloud obrigatória |
-| 18 | PROV-301 | Garantir TemplateProvider como fallback | Alta | 3 | Pendente | CORE-100..CORE-102 | para gerar roteiro mínimo quando provider falhar |
+| 17 | PROV-300 | Preservar registry de providers LLM | Alta | 5 | Concluída | CORE-100..CORE-102 | ProviderRouter + TemplateProvider existentes (commit 2da23f1) |
+| 18 | PROV-301 | Garantir TemplateProvider como fallback | Alta | 3 | Concluída | CORE-100..CORE-102 | TemplateProvider em app/adapters/llm/template_provider.py (commit ac2c0ee) |
 | 19 | PROV-302 | Criar testes de provider fallback | Alta | 3 | Pendente | CORE-100..CORE-102 | para evitar regressão de fallback |
-| 20 | PIPE-400 | Criar JobState formal | Alta | 5 | Pendente | Arquitetura/base P0 validada | para acompanhar queued/running/succeeded/failed/canceled |
-| 21 | PIPE-401 | Criar idempotency key por etapa | Alta | 5 | Pendente | Arquitetura/base P0 validada | para economizar tempo e VRAM |
-| 22 | PIPE-402 | Criar cache por hash de artefatos | Média | 5 | Pendente | Arquitetura/base P0 validada | para acelerar iterações e evitar custo repetido |
+| 20 | PIPE-400 | Criar JobState formal | Alta | 5 | Concluída | Arquitetura/base P0 validada | commit 60d09e5 — JobState com enum + transições guardadas |
+| 21 | PIPE-401 | Criar idempotency key por etapa | Alta | 5 | Concluída | Arquitetura/base P0 validada | commit 851aaa1 — IdempotencyKeyService |
+| 22 | PIPE-402 | Criar cache por hash de artefatos | Média | 5 | Concluída | Arquitetura/base P0 validada | commit [hash_do_commit] — cache de artefatos por hash SHA-256 integrado nas etapas do pipeline |
 | 23 | PIPE-403 | Definir SQLite WAL/job ledger P1 | Média | 5 | Pendente | Arquitetura/base P0 validada | para rastrear progresso sem Redis obrigatório |
 | 24 | VIS-500 | Criar schema Ingredient Registry | Alta | 5 | Pendente | Arquitetura/base P0 validada | para manter consistência entre cenas |
 | 25 | VIS-501 | Criar schema Visual Bible | Alta | 5 | Pendente | Arquitetura/base P0 validada | para reduzir drift visual |
@@ -57,7 +57,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 
 ## Próxima história recomendada
 
-**ARCH-302 — Centralizar configuração e paths.** Para evitar hardcoded C: e ambiente quebrado.
+**PIPE-403 — Definir SQLite WAL/job ledger P1.** Para rastrear progresso sem Redis obrigatório.
 
 ## Regras de priorização
 
