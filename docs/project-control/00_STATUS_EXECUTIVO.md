@@ -5,21 +5,21 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 20/48
+Histórias concluídas: 21/48
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 28 (48 - 20 concluídas - 0 em andamento)
-Percentual concluído: 41,7%
+Histórias pendentes: 27 (48 - 21 concluídas - 0 em andamento)
+Percentual concluído: 43,8%
 
-**Aritmética:** 48 histórias únicas no backlog. 20 Concluídas + 0 Em andamento + 28 Pendentes = 48.
+**Aritmética:** 48 histórias únicas no backlog. 21 Concluídas + 0 Em andamento + 27 Pendentes = 48.
 
 ## Estado atual
 
-- Branch atual: feature/VIS-500-ingredient-registry
+- Branch atual: feature/VIS-501-visual-bible
 - Último commit analisado: 59e927c — "feat(PIPE-403): Implementar SQLite WAL/job ledger para persistência de jobs sem Redis"
 - Fase atual: Fase 5 — Pipeline e produto
-- História atual: VIS-500 — Criar schema Ingredient Registry ✅
-- Próxima ação recomendada: VIS-501 (Criar schema Visual Bible) ou RND-600 (Criar RenderPlan mínimo)
+- História atual: VIS-501 — Criar schema Visual Bible ✅
+- Próxima ação recomendada: VIS-502 (Criar schema SceneContract) ou RND-600 (Criar RenderPlan mínimo)
 
 ### Playbooks criados nesta sessão
 
@@ -28,11 +28,11 @@ Percentual concluído: 41,7%
 | `LLM_PROVIDER_PLAYBOOK.md` | PROV-300, PROV-301, PROV-302 | 2 | 1 |
 | `VIDEO_RENDER_PROVIDER_PLAYBOOK.md` | VIS-502, VIS-503, RND-600..603, QA-1003 | 0 | 7 |
 | `AUDIO_TTS_PROVIDER_PLAYBOOK.md` | AUD-700..703, QA-1004 | 1 | 4 |
-| `VECTOR_MEMORY_PLAYBOOK.md` | VIS-500, VIS-501, VEC-800..803 | 1 | 5 |
+| `VECTOR_MEMORY_PLAYBOOK.md` | VIS-500, VIS-501, VEC-800..803 | 2 | 4 |
 | `QA_ANTI_HALLUCINATION_PLAYBOOK.md` | QA-1000, QA-1001, QA-1002 | 2 | 1 |
-| **Total** | **21 histórias cobertas** | **6** | **18** |
+| **Total** | **21 histórias cobertas** | **7** | **17** |
 
-> **Novas funcionalidades:** SQLite WAL/job ledger (PIPE-403) e Schema Ingredient Registry (VIS-500) implementados.
+> **Novas funcionalidades:** SQLite WAL/job ledger (PIPE-403), Ingredient Registry (VIS-500) e Visual Bible (VIS-501) implementados.
 
 ## Resumo tipo Daily
 
@@ -83,11 +83,11 @@ Percentual concluído: 41,7%
 
 ### O que está sendo feito
 
-- **Sessão atual: VIS-500 — Ingredient Registry implementado.**
-  - Schema com 4 tipos (PRODUCT, CHARACTER, SCENARIO, OBJECT), VisualReference, CRUD versionado
-  - 27 testes passando (schema validation, CRUD, search, filter, versioning)
-  - Branch: `feature/VIS-500-ingredient-registry` (pendente de commit e merge)
-- **Próximo:** Rodar full test suite, commitar, criar PR, merge para master. Depois VIS-501 ou RND-600.
+- **Sessão atual: VIS-501 — Visual Bible implementado.**
+  - Schema BibleEntry (status APPROVED/DRAFT/ARCHIVED), ApprovedReference (angle, lighting, is_primary), VisualBible
+  - 33 testes passando (schema validation, CRUD, search, filter, versioning)
+  - Branch: `feature/VIS-501-visual-bible` (pendente de PR e merge)
+- **Próximo:** Commitar, criar PR, merge para master. Depois VIS-502 ou RND-600.
 
 ### Bloqueios
 
@@ -116,22 +116,20 @@ Percentual concluído: 41,7%
 
 ### Arquivos alterados nesta sessão
 
-- `app/domain/ingredient_registry.py` — Novo: schema Ingredient Registry
-- `app/domain/__init__.py` — Init do pacote domain
-- `tests/test_ingredient_registry.py` — Novo: 27 testes do ingredient registry
-- `docs/project-control/06_HISTORIAS_REFINADAS.md` — VIS-500 marcada como Concluída
-- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — PIPE-403 → Concluída
-- `docs/project-control/10_DAILY_LOG.md` — Histórico restaurado + entrada VIS-500
-- `docs/project-control/00_STATUS_EXECUTIVO.md` — Atualizado (20/48, 41,7%)
-- `.gitignore` — Adicionado `*.db`
+- `app/domain/visual_bible.py` — Novo: schema Visual Bible
+- `tests/test_visual_bible.py` — Novo: 33 testes do visual bible
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — VIS-500/VIS-501 → Concluída, ordem atualizada
+- `docs/project-control/06_HISTORIAS_REFINADAS.md` — VIS-501 → Concluída
+- `docs/project-control/10_DAILY_LOG.md` — Entrada VIS-501
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — Atualizado (21/48, 43,8%)
 
 ### Comandos executados
 
-- `pytest tests/test_ingredient_registry.py -v` — 27 passed (VIS-500)
+- `pytest tests/test_visual_bible.py -v` — 33 passed (VIS-501)
 
 ### Evidências usadas
 
-- Commit base: 59e927c (PIPE-403 — SQLite job ledger)
-- Branch: feature/VIS-500-ingredient-registry
-- Schema: `app/domain/ingredient_registry.py` — Ingredient, IngredientType, VisualReference, IngredientRegistry
-- Testes: 27/27 passando
+- Commit base: d35b57e (fix test failures on master)
+- Branch: feature/VIS-501-visual-bible
+- Schema: `app/domain/visual_bible.py` — BibleEntry, ApprovedReference, BibleEntryStatus, VisualBible
+- Testes: 33/33 passando

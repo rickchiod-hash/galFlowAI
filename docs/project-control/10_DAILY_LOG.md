@@ -807,3 +807,58 @@ Após merge do PIPE-403 (SQLite job ledger) para master, iniciei a próxima hist
 
 ### Commits pendentes
 - Implementação do Ingredient Registry com schema, CRUD versionado e 27 testes
+
+## 2026-05-09 — Sessão 8: VIS-501 — Criar schema Visual Bible ✅
+
+### Contexto
+Após merge do VIS-500 e correção de 8 falhas de teste (dependências ausentes requests/gradio/torch, audit desatualizado), implementei a próxima história do backlog — VIS-501 (Visual Bible), que fixa referências visuais aprovadas por ingrediente.
+
+### O que fiz
+
+**1. Correção de 8 falhas de teste:**
+   - Instalado `requests` e `gradio` (5 testes de importação de providers + 2 de detecção LLM)
+   - Corrigido `test_wangp_integration.py` — adicionado mock de `import torch` via `patch.dict('sys.modules', {'torch': mock_torch})`
+   - Atualizado `01_AUDITORIA_HISTORICO_GIT.md` — commit count 166 → 171
+   - Todos os 8 testes agora passam
+
+**2. Implementação do Visual Bible** (`app/domain/visual_bible.py`):
+   - `BibleEntryStatus` enum: APPROVED, DRAFT, ARCHIVED
+   - `ApprovedReference` schema: file_path, description, angle, lighting_notes, is_primary
+   - `BibleEntry` schema: ingredient_id, ingredient_name, references, status, notes, version, metadata
+   - `VisualBible` service: add, get, get_by_ingredient, update, delete, list (filtro por status), search (case-insensitive por nome/notas), count, count_by_ingredient, clear
+   - Versionamento automático: todo update incrementa version
+   - Proteção de campos imutáveis: id, ingredient_id, created_at
+
+**3. Testes abrangentes** (`tests/test_visual_bible.py`): 33 testes
+   - Schema: ApprovedReference (minimal, full, multiple), BibleEntry (minimal, com referências, todos os status, unique IDs, version, metadata)
+   - CRUD: add, get (existente/inexistente), get_by_ingredient, update (status, notes, campos protegidos, nonexistent), delete (existente/inexistente)
+   - Search: por nome, notas, sem resultados
+   - Filtro: list por status, list vazio por status
+   - Analytics: count_by_ingredient
+   - Utilitários: count, clear
+
+### Testes executados
+- Visual Bible: 33/33 passed
+- 8 testes previamente falhos: todos passando (requests, gradio, torch mock, audit count)
+- Testes de VIS-500 (Ingredient Registry): 27/27 passando
+
+### Arquivos alterados
+- `app/domain/visual_bible.py` — Novo: schema Visual Bible (BibleEntry, ApprovedReference, BibleEntryStatus, VisualBible)
+- `tests/test_visual_bible.py` — Novo: 33 testes do schema e service
+- `tests/integration/test_wangp_integration.py` — Fix: mock de import torch para ambientes sem PyTorch
+- `docs/project-control/01_AUDITORIA_HISTORICO_GIT.md` — Commit count 166 → 171
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — VIS-500/VIS-501 → Concluída, próxima VIS-502
+- `docs/project-control/06_HISTORIAS_REFINADAS.md` — VIS-501 → Concluída com evidências
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — Atualizado (21/48, 43,8%)
+- `docs/project-control/10_DAILY_LOG.md` — Esta entrada
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- Fazer commit na branch `feature/VIS-501-visual-bible`
+- Criar PR e merge para master
+- Próxima história recomendada: VIS-502 (Criar schema SceneContract) ou RND-600 (Criar RenderPlan mínimo)
+
+### Commits pendentes
+- Implementação do Visual Bible com schema, CRUD versionado e 33 testes
