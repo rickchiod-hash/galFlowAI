@@ -808,6 +808,64 @@ Após merge do PIPE-403 (SQLite job ledger) para master, iniciei a próxima hist
 ### Commits pendentes
 - Implementação do Ingredient Registry com schema, CRUD versionado e 27 testes
 
+## 2026-05-09 — Sessão 9: VIS-502 — Criar schema SceneContract ✅
+
+### Contexto
+Após merge do PR #8 (VIS-501) para master, iniciei a próxima história do backlog — VIS-502. O SceneContract transforma roteiro em instruções testáveis para a engine de render, vinculando ingredientes do Registry e referências da Visual Bible.
+
+### O que fiz
+
+**1. Merge do PR #8 (VIS-501) para master:**
+   - PR #8 já existia (aberto, mergeable, sem reviews)
+   - Merge via `gh pr merge 8 --merge`
+   - Commit: `006ca21` no master
+   - Branch local atualizada com `git pull origin master`
+
+**2. Implementação do SceneContract** (`app/domain/scene_contract.py`):
+   - `SceneContractStatus` enum: DRAFT, FINALIZED, APPROVED
+   - `TransitionType` enum: CUT, FADE, DISSOLVE, WIPE
+   - `ShotSize` enum: EXTREME_WIDE, WIDE, FULL, MEDIUM, CLOSE_UP, EXTREME_CLOSE_UP
+   - `CameraMovement` enum: STATIC, PAN, TILT, TRACK, DOLLY, CRANE, HANDHELD
+   - `CameraDirective` schema: angle, movement, shot_size, notes
+   - `IngredientAssignment` schema: ingredient_id, ingredient_name, placement, visual_bible_ref
+   - `SceneContract` schema: id (prefix `sc_`), scene_number, description, prompts, duration, transitions, camera, ingredients, style, status, version, metadata, timestamps
+   - `SceneContractService` service: create, get, get_by_scene_number, update (com proteção de campos imutáveis), delete, list (filtro por status, ordenado por cena), search (case-insensitive), get_contracts_for_ingredient, reorder (reatribuição sequencial de números), count, clear
+   - Versionamento automático: todo update incrementa version
+   - Proteção de campos imutáveis: id, scene_number, created_at, version
+
+**3. Testes abrangentes** (`tests/test_scene_contract.py`): 42 testes
+   - Schema: CameraDirective (default/custom), IngredientAssignment (minimal/full), SceneContract (minimal/all fields/unique IDs/all status/transitions/shot sizes/camera movements)
+   - CRUD: create, get (existente/inexistente), get_by_scene_number, update (description/status/camera/campos protegidos/nonexistent), delete (existente/inexistente)
+   - Search: por descrição, notas, case-insensitive, sem resultados
+   - Filtro: list por status, list vazio
+   - Analytics: get_contracts_for_ingredient
+   - Reorder: reordenação, version increment, skip de IDs inválidos
+   - Utilitários: count, clear, version increments, ingredients vazios
+
+### Testes executados
+- SceneContract: 42/42 passed
+- Visual Bible (VIS-501): 33/33 passed
+- Ingredient Registry (VIS-500): 27/27 passed
+- Governance (checkpoint, ADR, agents): 10/10 passed
+- Total: 112/112 passed, 0 falhas
+
+### Arquivos alterados
+- `app/domain/scene_contract.py` — Novo: schema SceneContract (SceneContract, CameraDirective, IngredientAssignment, SceneContractService)
+- `tests/test_scene_contract.py` — Novo: 42 testes do schema e service
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — VIS-502 → Concluída
+- `docs/project-control/06_HISTORIAS_REFINADAS.md` — VIS-502 → Concluída (pendente)
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — Atualizado (22/48, 45,8%)
+- `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md` — VIS-502 → Concluída
+- `docs/project-control/10_DAILY_LOG.md` — Esta entrada
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- Fazer commit na branch `feature/VIS-502-scene-contract`
+- Criar PR e merge para master
+- Próxima história recomendada: VIS-503 (Criar Prompt Compiler por engine) ou RND-600 (Criar RenderPlan mínimo)
+
 ## 2026-05-09 — Sessão 8: VIS-501 — Criar schema Visual Bible ✅
 
 ### Contexto

@@ -5,28 +5,28 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 21/48
+Histórias concluídas: 22/48
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 27 (48 - 21 concluídas - 0 em andamento)
-Percentual concluído: 43,8%
+Histórias pendentes: 26 (48 - 22 concluídas - 0 em andamento)
+Percentual concluído: 45,8%
 
-**Aritmética:** 48 histórias únicas no backlog. 21 Concluídas + 0 Em andamento + 27 Pendentes = 48.
+**Aritmética:** 48 histórias únicas no backlog. 22 Concluídas + 0 Em andamento + 26 Pendentes = 48.
 
 ## Estado atual
 
-- Branch atual: feature/VIS-501-visual-bible
-- Último commit analisado: 59e927c — "feat(PIPE-403): Implementar SQLite WAL/job ledger para persistência de jobs sem Redis"
+- Branch atual: feature/VIS-502-scene-contract
+- Último commit analisado: 006ca21 — "Merge PR #8: feat(domain): implement Visual Bible schema with approved references and versioning (VIS-501)"
 - Fase atual: Fase 5 — Pipeline e produto
-- História atual: VIS-501 — Criar schema Visual Bible ✅
-- Próxima ação recomendada: VIS-502 (Criar schema SceneContract) ou RND-600 (Criar RenderPlan mínimo)
+- História atual: VIS-502 — Criar schema SceneContract ✅
+- Próxima ação recomendada: VIS-503 (Criar Prompt Compiler por engine) ou RND-600 (Criar RenderPlan mínimo)
 
 ### Playbooks criados nesta sessão
 
 | Arquivo | Stories | Concluídas | Pendentes |
 |---------|---------|-----------|----------|
 | `LLM_PROVIDER_PLAYBOOK.md` | PROV-300, PROV-301, PROV-302 | 2 | 1 |
-| `VIDEO_RENDER_PROVIDER_PLAYBOOK.md` | VIS-502, VIS-503, RND-600..603, QA-1003 | 0 | 7 |
+| `VIDEO_RENDER_PROVIDER_PLAYBOOK.md` | VIS-502, VIS-503, RND-600..603, QA-1003 | 1 | 6 |
 | `AUDIO_TTS_PROVIDER_PLAYBOOK.md` | AUD-700..703, QA-1004 | 1 | 4 |
 | `VECTOR_MEMORY_PLAYBOOK.md` | VIS-500, VIS-501, VEC-800..803 | 2 | 4 |
 | `QA_ANTI_HALLUCINATION_PLAYBOOK.md` | QA-1000, QA-1001, QA-1002 | 2 | 1 |
