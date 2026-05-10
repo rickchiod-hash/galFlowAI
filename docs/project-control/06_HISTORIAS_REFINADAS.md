@@ -1145,7 +1145,7 @@ Esta história deve ser validada no código e no histórico Git antes de impleme
 - `tests/test_ingredient_registry.py` — 27 testes (schema validation, CRUD, search, filter, versioning, edge cases)
 - Pytest: 27/27 passed, 0 deprecação warnings
 - Branch: `feature/VIS-500-ingredient-registry`
-- Commit: PREENCHER_NO_COMMIT
+- Commit: a1d2c09
 
 ### Critérios de aceite
 Ver `VIS-500` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
