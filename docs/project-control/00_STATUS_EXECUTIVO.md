@@ -81,13 +81,20 @@ Percentual concluído: 50,0%
    - Mocks para adapters e serviços (TTSAdapter, WanGPAdapter, FFmpegAdapter, script_service)
    - **5/5 testes passando**
 
-### O que está sendo feito
+### O que foi feito nesta sessão
 
-- **Sessão atual: VIS-501 — Visual Bible implementado.**
-  - Schema BibleEntry (status APPROVED/DRAFT/ARCHIVED), ApprovedReference (angle, lighting, is_primary), VisualBible
-  - 33 testes passando (schema validation, CRUD, search, filter, versioning)
-  - Branch: `feature/VIS-501-visual-bible` (pendente de PR e merge)
-- **Próximo:** Commitar, criar PR, merge para master. Depois VIS-502 ou RND-600.
+- **VIS-501 (merge):** PR #8 mergeado para master (`006ca21`). Visual Bible já estava implementado (33 testes).
+- **VIS-502 ✅:** SceneContract schema criado — `app/domain/scene_contract.py` (205 linhas). CameraDirective, IngredientAssignment, SceneContract, SceneContractService com CRUD/search/reorder/versioning. 42 testes. PR #9 merged → `c7c0842`.
+- **VIS-503 ✅:** PromptCompiler criado — `app/domain/prompt_compiler.py` (254 linhas). EngineType (WAN_GP/FFMPEG/VACE), CompiledPrompt, PromptCompilerService com compilação específica por engine. 44 testes. PR #10 merged → `0ed7bdf`.
+- **PROV-302 ✅:** Testes de fallback chain — `tests/test_provider_fallback.py` (21 testes). TemplateProvider, config, ProviderRouter mockado. PR #11 merged → `0d95b8f`.
+- **Total:** 107 testes novos, 4 PRs mergeados, 3 histórias concluídas.
+
+### Estado atual
+
+- **Branch atual:** master (`0d95b8f`)
+- **Fase:** Fase 4 (Refatoração segura) / Fase 5 (Pipeline e produto)
+- **Histórias concluídas:** 24/48 (50,0%)
+- **Próxima recomendada:** UI-203 (ordem 13) — Resgatar telas de logs, métricas e diagnóstico
 
 ### Bloqueios
 
@@ -99,37 +106,35 @@ Percentual concluído: 50,0%
 - Agente marcar como concluído sem teste.
 - Agente remover provider/fallback validado.
 - Agente confundir documentação planejada com feature implementada.
-- docs/reference/ arquivos agora commitados (gap resolvido).
 
-### Gaps encontrados
+### Gaps encontrados nesta sessão
 
-- docs/reference/ não estava no git (corrigido).
-- User's working tree tem 6+ untracked files que podem divergir (resolvido — commitados).
-- python.exe não está no PATH padrão (usar env específico).
-- Testes de governança retornam bool (warnings PytestReturnNotNoneWarning — padrão aceito do projeto).
-- **Duas pastas K:** `AI_VIDEO_COMMERCIAL_STUDIO` (correta) e `AI_VIDEO_COMERCIAL_STUDIO` (errata). Itens únicos migrados. Pasta incorreta mantida (bloqueada por handles — necessário reboot para renomear).
-- `.gitignore` tinha `test_*.py` sem `/`, afetando `tests/test_*.py` — corrigido para `/test_*.py`.
+- `00_STATUS_EXECUTIVO.md` estava desatualizado (referenciava VIS-501 como "sessão atual").
+- `05_BACKLOG_PRIORIZADO.md` recomendava VIS-502 como próxima (já concluída).
+- Ambos corrigidos nesta revisão.
 
 ### TODOs rastreáveis
 
 - Nenhum TODO/FIXME/HACK/XXX encontrado em app/ ou tests/.
 
-### Arquivos alterados nesta sessão
+### Arquivos criados nesta sessão
 
-- `app/domain/visual_bible.py` — Novo: schema Visual Bible
-- `tests/test_visual_bible.py` — Novo: 33 testes do visual bible
-- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — VIS-500/VIS-501 → Concluída, ordem atualizada
-- `docs/project-control/06_HISTORIAS_REFINADAS.md` — VIS-501 → Concluída
-- `docs/project-control/10_DAILY_LOG.md` — Entrada VIS-501
-- `docs/project-control/00_STATUS_EXECUTIVO.md` — Atualizado (21/48, 43,8%)
+- `app/domain/scene_contract.py` — Novo: 205 linhas (VIS-502)
+- `tests/test_scene_contract.py` — Novo: 42 testes (VIS-502)
+- `app/domain/prompt_compiler.py` — Novo: 254 linhas (VIS-503)
+- `tests/test_prompt_compiler.py` — Novo: 44 testes (VIS-503)
+- `tests/test_provider_fallback.py` — Novo: 21 testes (PROV-302)
 
 ### Comandos executados
 
-- `pytest tests/test_visual_bible.py -v` — 33 passed (VIS-501)
+- `pytest tests/test_scene_contract.py -v` — 42/42 passed
+- `pytest tests/test_prompt_compiler.py -v` — 44/44 passed
+- `pytest tests/test_provider_fallback.py -v` — 21/21 passed
+- `pytest (todos os domínios + governança)` — 177/177 passed
 
 ### Evidências usadas
 
-- Commit base: d35b57e (fix test failures on master)
-- Branch: feature/VIS-501-visual-bible
-- Schema: `app/domain/visual_bible.py` — BibleEntry, ApprovedReference, BibleEntryStatus, VisualBible
-- Testes: 33/33 passando
+- Commit base: d35b57e (início da sessão)
+- Master final: 0d95b8f (PROV-302 merged)
+- Branches mergeadas: feature/VIS-502-scene-contract, feature/VIS-503-prompt-compiler, feature/PROV-302-fallback-tests
+- Testes: 177/177 passando (0 falhas)

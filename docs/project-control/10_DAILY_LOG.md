@@ -1019,3 +1019,100 @@ Após merge do VIS-500 e correção de 8 falhas de teste (dependências ausentes
 
 ### Commits pendentes
 - Implementação do Visual Bible com schema, CRUD versionado e 33 testes
+
+## 2026-05-09 — REVIEW FINAL DE SESSAO
+> Esta entrada NÃO substitui entradas anteriores. É uma revisão consolidada do que foi implementado nesta sessão, com verificação de código, testes e status.
+
+### O que foi implementado nesta sessão (VIS-501 → VIS-502 → VIS-503 → PROV-302)
+
+**VIS-501 — Visual Bible (merge + conclusão)**
+- Já estava implementado da sessão anterior (branch `feature/VIS-501-visual-bible`, commit `81b9169`, PR #8)
+- Feito merge para master via `gh pr merge 8`
+- Verificado: `app/domain/visual_bible.py` existe, 33 testes passam
+- Status: Concluída (já estava antes da sessão, apenas merge pendente)
+
+**VIS-502 — SceneContract (NOVO)**
+- `app/domain/scene_contract.py` — 205 linhas
+  - Enums: SceneContractStatus (DRAFT/FINALIZED/APPROVED), TransitionType (CUT/FADE/DISSOLVE/WIPE), ShotSize (6 valores), CameraMovement (7 valores)
+  - Schemas: CameraDirective (angle/movement/shot_size/notes), IngredientAssignment (ingredient_id/name/placement/visual_bible_ref), SceneContract (16 campos)
+  - Service: SceneContractService com create/get/get_by_scene_number/update/delete/list/search/get_contracts_for_ingredient/reorder/count/clear
+  - Versionamento automático, proteção de campos imutáveis
+- `tests/test_scene_contract.py` — 42 testes, 100% passando
+- Branch: `feature/VIS-502-scene-contract`, PR #9, merged via `gh pr merge 9`
+- Commit no master: `c7c0842`
+- Status: **Concluída** ✅
+
+**VIS-503 — PromptCompiler (NOVO)**
+- `app/domain/prompt_compiler.py` — 254 linhas
+  - Enums: EngineType (WAN_GP/FFMPEG/VACE), PromptFormat (PLAIN_TEXT/STRUCTURED/JSON)
+  - Schemas: EngineParameter (key/value/description), CompiledPrompt (11 campos)
+  - Service: PromptCompilerService com compile()/compile_all()/compile_multi_engine(), compilação específica por engine, registry interno
+  - WanGP: descrição cinematográfica + câmera + ingredientes + estilo + prompts + parâmetros (duração, transições, visual bible refs)
+  - FFmpeg: texto + text_overlay (truncado 200 chars) + duração + transições + estilo opcional
+  - VACE: estrutura com metadados de câmera + ingredientes
+- `tests/test_prompt_compiler.py` — 44 testes, 100% passando
+- Branch: `feature/VIS-503-prompt-compiler`, PR #10, merged via `gh pr merge 10`
+- Commit no master: `0ed7bdf`
+- Status: **Concluída** ✅
+
+**PROV-302 — Provider Fallback Tests (NOVO)**
+- `tests/test_provider_fallback.py` — 195 linhas, 21 testes pytest
+  - TestTemplateProviderAvailability (2): is_available sempre True, nome correto
+  - TestTemplateProviderGenerate (10): geração de roteiro para 7 estilos (viral/fantasia/futurista/geek/premium/3d/serviço_local), script com múltiplas cenas
+  - TestConfigProviderFallback (3): template no config com priority=999, todos os 5 providers (template/lm_studio/koboldcpp/llamacpp/gpt4all)
+  - TestProviderFallbackMocked (7): ProviderRouter mockado via `__new__` + strategies diretas (evitando init complexo), fallback em falha/unavailable/None, detect_available, estratégia sem provider
+- Branch: `feature/PROV-302-fallback-tests`, PR #11, merged via `gh pr merge 11`
+- Commit no master: `0d95b8f`
+- Status: **Concluída** ✅
+
+### Testes executados (validação final)
+
+```
+tests/test_scene_contract.py ........ 42/42 passed
+tests/test_prompt_compiler.py ....... 44/44 passed
+tests/test_provider_fallback.py ..... 21/21 passed
+tests/test_visual_bible.py ......... 33/33 passed
+tests/test_ingredient_registry.py ... 27/27 passed
+tests/test_checkpoint.py ........... 3/3 passed
+tests/test_adr_policy.py ........... 3/3 passed
+tests/test_agents.py ............... 4/4 passed
+Total: 177/177 passed, 0 failed
+```
+
+### Arquivos criados nesta sessão (4 novos)
+
+| Arquivo | História | Linhas | Testes |
+|---------|----------|--------|--------|
+| `app/domain/scene_contract.py` | VIS-502 | 205 | 42 |
+| `tests/test_scene_contract.py` | VIS-502 | 417 | - |
+| `app/domain/prompt_compiler.py` | VIS-503 | 254 | 44 |
+| `tests/test_prompt_compiler.py` | VIS-503 | 423 | - |
+| `tests/test_provider_fallback.py` | PROV-302 | 195 | 21 |
+| **Total** | **3 histórias** | **~1494** | **107** |
+
+### Branches criadas e mergeadas (3)
+
+| Branch | PR | Status |
+|--------|----|--------|
+| `feature/VIS-502-scene-contract` | #9 | Merged → `c7c0842` |
+| `feature/VIS-503-prompt-compiler` | #10 | Merged → `0ed7bdf` |
+| `feature/PROV-302-fallback-tests` | #11 | Merged → `0d95b8f` |
+
+### Status do backlog (verificado no código)
+
+- **Concluídas nesta sessão:** VIS-501 (merge), VIS-502, VIS-503, PROV-302
+- **Total:** 24/48 (50,0%)
+- **Próxima pendente por ordem:** UI-203 (ordem 13) — Resgatar telas de logs, métricas e diagnóstico
+- **Próxima recomendada pelo status:** RND-600 (ordem 28) — Criar RenderPlan mínimo
+
+### Bloqueios
+- Nenhum
+
+### Gaps detectados
+- `docs/project-control/00_STATUS_EXECUTIVO.md` ainda contém seções desatualizadas da sessão VIS-501 (linhas 84-135 precisam de rewrite)
+- `05_BACKLOG_PRIORIZADO.md` linha 58 recomenda VIS-502 como próxima — desatualizado (já concluída nesta sessão)
+
+### Próximo passo
+- Rewrite completo de `00_STATUS_EXECUTIVO.md` para refletir estado atual (24/48)
+- Corrigir "Próxima história recomendada" em `05_BACKLOG_PRIORIZADO.md`
+- Selecionar próxima história: UI-203 (logs/métricas/diagnóstico) ou RND-600 (RenderPlan mínimo)

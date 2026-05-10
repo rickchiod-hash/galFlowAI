@@ -57,7 +57,8 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 
 ## Próxima história recomendada
 
-**VIS-502 — Criar schema SceneContract.** Para transformar roteiro em instruções testáveis.
+**UI-203 — Resgatar telas de logs, métricas e diagnóstico (ordem 13).** Para debugar sem depender do terminal.
+Ou **RND-600 — Criar RenderPlan mínimo (ordem 28).** Para usar GPU e fallback com previsibilidade.
 
 ## Regras de priorização
 
