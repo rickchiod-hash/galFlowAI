@@ -5,11 +5,12 @@ import time
 from typing import Optional, List
 from pathlib import Path
 from app.adapters.llm.base_provider import BaseLLMProvider
+from app.config import GPT4ALL_MODEL_DIR
 
 class GPT4AllProvider(BaseLLMProvider):
     """Provider using GPT4All Python package."""
     
-    def __init__(self, model_dir: str = "K:/AI_VIDEO_COMERCIAL_STUDIO/models/gpt4all"):
+    def __init__(self, model_dir: str = GPT4ALL_MODEL_DIR):
         super().__init__("GPT4AllProvider")
         self.model_dir = Path(model_dir)
         self.model = None

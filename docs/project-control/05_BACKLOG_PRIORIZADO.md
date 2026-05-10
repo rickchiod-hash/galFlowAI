@@ -33,7 +33,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 25 | VIS-501 | Criar schema Visual Bible | Alta | 5 | Concluída | Arquitetura/base P0 validada | para reduzir drift visual |
 | 26 | VIS-502 | Criar schema SceneContract | Alta | 5 | Concluída | Arquitetura/base P0 validada | para transformar roteiro em instruções testáveis |
 | 27 | VIS-503 | Criar Prompt Compiler por engine | Média | 8 | Concluída | Arquitetura/base P0 validada | para usar FFmpeg/WanGP/VACE sem gambiarra |
-| 28 | RND-600 | Criar RenderPlan mínimo | Alta | 5 | Pendente | Arquitetura/base P0 validada | para usar GPU e fallback com previsibilidade |
+| 28 | RND-600 | Criar RenderPlan mínimo | Alta | 5 | Concluída | Arquitetura/base P0 validada | para usar GPU e fallback com previsibilidade |
 | 29 | RND-601 | Manter FFmpeg como fallback universal | Alta | 3 | Pendente | Arquitetura/base P0 validada | para sempre obter um MP4 mínimo |
 | 30 | RND-602 | Adicionar perfil GTX 1660 Super | Alta | 3 | Pendente | Arquitetura/base P0 validada | para evitar OOM e travamentos |
 | 31 | RND-603 | Registrar Wan VACE 1.3B como futuro opcional | Baixa | 2 | Pendente | Arquitetura/base P0 validada | para não forçar engine pesada agora |
@@ -57,7 +57,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 
 ## Próxima história recomendada
 
-**RND-600 — Criar RenderPlan mínimo (ordem 28).** Para usar GPU e fallback com previsibilidade.
+**RND-601 — Manter FFmpeg como fallback universal (ordem 29).** Para testar fallback WanGP → FFmpeg.
 
 ## Regras de priorização
 

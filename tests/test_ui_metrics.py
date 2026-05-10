@@ -162,7 +162,7 @@ class TestGradioAppTabStructure:
         from app.ui.gradio_app import create_gradio_app
         demo = create_gradio_app()
         assert demo is not None
-        assert demo.title == "GalFlowAI - Video Commercial Generator"
+        assert demo.title == "GalFlowAI - Gerador de Comerciais"
 
     def test_metrics_service_import(self):
         from app.services.metrics_service import get_metrics_service

@@ -22,6 +22,97 @@ logger = setup_logger()
 
 # ========== Generation ==========
 
+_PROVIDER_CLASSES = {
+    "template": ("app.adapters.llm.base_provider", "TemplateProvider"),
+    "lm_studio": ("app.adapters.llm.lmstudio_provider", "LMStudioProvider"),
+    "koboldcpp": ("app.adapters.llm.koboldcpp_provider", "KoboldCppProvider"),
+    "llamacpp": ("app.adapters.llm.llamacpp_provider", "LlamaCppProvider"),
+    "gpt4all": ("app.adapters.llm.gpt4all_provider", "GPT4AllProvider"),
+}
+
+
+def generate_script_with_provider(briefing: str, provider_name: str = "auto") -> Dict:
+    """Generate script using a specific named provider.
+
+    Args:
+        briefing: The product briefing text (min 10 chars)
+        provider_name: One of "auto", "template", "lm_studio",
+                       "koboldcpp", "llamacpp", "gpt4all"
+
+    Returns:
+        Dict with keys: ok, script, provider, time, quality, error
+    """
+    if provider_name == "auto":
+        return generate_script_with_llm(briefing, mode="auto")
+
+    if provider_name not in _PROVIDER_CLASSES:
+        return {"ok": False, "error": f"Provider desconhecido: {provider_name}"}
+
+    mod_path, cls_name = _PROVIDER_CLASSES[provider_name]
+    try:
+        mod = __import__(mod_path, fromlist=[cls_name])
+        cls = getattr(mod, cls_name)
+        provider = cls()
+        actual_cls_name = cls_name
+
+        if not provider.is_available() and provider_name != "template":
+            logger.warning(
+                "Provider %s nao disponivel, usando TemplateProvider como fallback",
+                provider_name
+            )
+            fallback_mod = __import__("app.adapters.llm.base_provider", fromlist=["TemplateProvider"])
+            fallback_cls = getattr(fallback_mod, "TemplateProvider")
+            provider = fallback_cls()
+            actual_cls_name = "TemplateProvider"
+
+        start = time.time()
+        result = provider.generate(briefing)
+        elapsed = time.time() - start
+
+        script_text = result if isinstance(result, str) else result.get("script", "")
+
+        logger.info(
+            "Script generated via %s (time: %.2fs)",
+            actual_cls_name, elapsed
+        )
+        return {
+            "ok": True,
+            "script": script_text,
+            "provider": actual_cls_name,
+            "time": elapsed,
+            "quality": "template",
+        }
+    except Exception as e:
+        logger.error("Falha ao gerar roteiro com %s: %s", provider_name, e)
+        return {"ok": False, "error": str(e)}
+
+
+def get_provider_diagnostics() -> Dict[str, Any]:
+    """Get full provider diagnostics including router's detect_available."""
+    from app.adapters.llm import ProviderRouter
+    status = get_provider_status()
+    router = ProviderRouter("auto")
+    available = router.detect_available()
+    return {
+        "status": status,
+        "router_available": available,
+    }
+
+
+def get_provider_status() -> Dict[str, bool]:
+    """Check availability of all providers."""
+    status = {}
+    for name, (mod_path, cls_name) in _PROVIDER_CLASSES.items():
+        try:
+            mod = __import__(mod_path, fromlist=[cls_name])
+            cls = getattr(mod, cls_name)
+            provider = cls()
+            status[name] = provider.is_available()
+        except Exception:
+            status[name] = False
+    return status
+
+
 def generate_script_with_llm(briefing: str, mode: str = "auto") -> Dict:
     """
     Generate script using available LLM providers.

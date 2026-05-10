@@ -2,6 +2,43 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-10 — Sessão 5: RND-600 + GPT4All fix + API/provider bugfixes
+
+### Contexto
+Sessão focada em: (1) corrigir path hardcoded e typo no GPT4All provider, (2) corrigir bug na API que ignorava provider explícito, (3) remover import direto de adapters na UI Gradio, (4) implementar RND-600 (RenderPlan mínimo).
+
+### O que fiz
+- **GPT4All fix:** Corrigi path hardcoded com typo (`COMERCIAL` → `COMMERCIAL`) no provider. Agora usa `config.GPT4ALL_MODEL_DIR`. Modelo `orca-mini-3b-gguf2-q4_0.gguf` detectado corretamente.
+- **API bug fix:** `script_generation.py` passava `provider` como `mode` para `generate_script_with_llm()`, fazendo o provider explícito ser ignorado (fallthrough para auto-detection → GPT4All). Corrigido para usar `generate_script_with_provider()` quando provider é especificado.
+- **generate_script_use_case.py:** Mesmo bug — não aceitava `provider` como parâmetro. Adicionado suporte a provider explícito.
+- **Separação UI/adapters:** `gradio_app.py` importava `ProviderRouter` de `app.adapters.llm` diretamente (violação de arquitetura). Movido para `get_provider_diagnostics()` em `script_service.py`.
+- **RND-600 (RenderPlan mínimo):** `app/domain/render_plan.py` — SceneRenderAssignment, RenderPlan, RenderPlanService. Engine selection: WanGP (preferido) > FFmpeg (fallback universal). Critérios: disponibilidade, VRAM (6GB GTX 1660 Super), perfil de qualidade. Cada atribuição registra motivo. 18 testes.
+- **Testes:** 219/219 passed (core domains + API + UI + governança).
+
+### Arquivos alterados
+- `app/adapters/llm/gpt4all_provider.py` — Path hardcoded corrigido
+- `app/application/use_cases/script_generation.py` — Provider explícito respeitado
+- `app/application/use_cases/generate_script_use_case.py` — Provider explícito respeitado
+- `app/services/script_service.py` — +`get_provider_diagnostics()`
+- `app/ui/gradio_app.py` — ProviderRouter removido do import direto
+- `tests/test_ui_metrics.py` — Título atualizado para pt-br
+- `app/domain/render_plan.py` — Novo (RND-600)
+- `tests/test_render_plan.py` — Novo (18 testes, RND-600)
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — Atualizado
+- `docs/project-control/10_DAILY_LOG.md` — Esta entrada
+
+### Decisões
+- `get_provider_diagnostics()` criado em `script_service.py` para evitar import direto de `app.adapters.llm` no Gradio, mantendo a separação UI/adapters.
+- RenderPlan usa `EngineType` do `prompt_compiler` (reuso, não duplicação).
+- WanGP é engine preferida, FFmpeg é fallback universal. VACE não é selecionado automaticamente.
+
+### Bloqueios
+- Nenhum.
+
+### Próximo passo
+- RND-601: Manter FFmpeg como fallback universal (criar testes que provam que FFmpegAdapter sempre funciona)
+- Fazer merge do PR `feature/RND-600-renderplan-minimo` para master
+
 ## 2026-05-09 — Sessão 4: PIPE-400 (Criar JobState formal)
 
 ### Contexto

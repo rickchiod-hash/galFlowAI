@@ -1,4 +1,4 @@
-"""Gradio Web Interface for GalFlowAI"""
+"""Interface Web Gradio para GalFlowAI"""
 
 import sys
 import os
@@ -18,10 +18,11 @@ logger = setup_logger("galflowai", "info")
 from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
 from app.services.log_service import get_recent_logs, get_log_summary, copy_diagnostic_bundle
 from app.services.metrics_service import get_metrics_service
+from app.services.script_service import generate_script_with_provider, get_provider_status, get_provider_diagnostics
 
 
 class WebInterface:
-    """Web interface for GalFlowAI"""
+    """Interface web para GalFlowAI"""
 
     def __init__(self):
         self.pipeline = None
@@ -31,7 +32,7 @@ class WebInterface:
     def init_pipeline(self):
         if self.pipeline is None:
             self.pipeline = VideoGenerationPipeline()
-            logger.info("Pipeline initialized for web interface")
+            logger.info("Pipeline inicializado para interface web")
 
     def progress_callback(self, progress: int, message: str):
         self.current_progress = progress
@@ -49,7 +50,7 @@ class WebInterface:
     ) -> Optional[str]:
         try:
             self.init_pipeline()
-            progress(0, desc="Starting...")
+            progress(0, desc="Iniciando...")
 
             import time
             project_id = f"web_{int(time.time())}"
@@ -66,18 +67,18 @@ class WebInterface:
             if result.get("success"):
                 final_video = result.get("final_video")
                 if final_video and Path(final_video).exists():
-                    progress(100, desc="Completed!")
+                    progress(100, desc="Concluido!")
                     return final_video
                 else:
                     return None
             else:
-                error_msg = result.get("error", "Unknown error")
-                logger.error(f"Pipeline failed: {error_msg}")
-                return f"ERROR: {error_msg}"
+                error_msg = result.get("error", "Erro desconhecido")
+                logger.error(f"Pipeline falhou: {error_msg}")
+                return f"ERRO: {error_msg}"
 
         except Exception as e:
-            logger.error(f"Error in web interface: {e}", exc_info=True)
-            return f"ERROR: {str(e)}"
+            logger.error(f"Erro na interface web: {e}", exc_info=True)
+            return f"ERRO: {str(e)}"
 
     def get_status(self) -> dict:
         self.init_pipeline()
@@ -88,18 +89,18 @@ class WebInterface:
         status = self.get_status()
 
         lines = []
-        lines.append("## GalFlowAI Status")
-        lines.append(f"- LLM Available: {status.get('llm_available')}")
-        lines.append(f"- WanGP Available: {status.get('wangp_available')}")
-        lines.append(f"- TTS Available: {status.get('tts_available')}")
-        lines.append(f"- FFmpeg Available: {status.get('ffmpeg_available')}")
-        lines.append(f"- Selected TTS Engine: {status.get('selected_tts_engine')}")
+        lines.append("## Status GalFlowAI")
+        lines.append(f"- LLM Disponivel: {status.get('llm_available')}")
+        lines.append(f"- WanGP Disponivel: {status.get('wangp_available')}")
+        lines.append(f"- TTS Disponivel: {status.get('tts_available')}")
+        lines.append(f"- FFmpeg Disponivel: {status.get('ffmpeg_available')}")
+        lines.append(f"- Mecanismo TTS: {status.get('selected_tts_engine')}")
 
         return "\n".join(lines)
 
 
 def create_gradio_app():
-    """Create and configure Gradio interface"""
+    """Cria e configura interface Gradio"""
 
     web_interface = WebInterface()
     metrics_service = get_metrics_service()
@@ -116,27 +117,27 @@ def create_gradio_app():
     }
     """
 
-    with gr.Blocks(css=custom_css, title="GalFlowAI - Video Commercial Generator") as demo:
+    with gr.Blocks(css=custom_css, title="GalFlowAI - Gerador de Comerciais") as demo:
 
-        gr.Markdown("# GalFlowAI - Video Commercial Generator")
-        gr.Markdown("Generate short video commercials for social media using AI")
+        gr.Markdown("# GalFlowAI - Gerador de Comerciais em Video")
+        gr.Markdown("Crie videos comerciais curtos para redes sociais com IA")
 
-        # --- Tab 1: Video Generation ---
+        # --- Aba 1: Geracao de Video ---
         with gr.Tab("Geracao"):
             with gr.Row():
                 with gr.Column(scale=2):
-                    gr.Markdown("### Input Parameters")
+                    gr.Markdown("### Parametros de Entrada")
 
                     product_input = gr.Textbox(
-                        label="Product Name",
-                        placeholder="Enter your product name...",
-                        value="Amazing Product"
+                        label="Nome do Produto",
+                        placeholder="Digite o nome do produto...",
+                        value="Produto Incrivel"
                     )
 
                     audience_input = gr.Textbox(
-                        label="Target Audience",
-                        placeholder="Describe your target audience...",
-                        value="Young adults aged 18-35"
+                        label="Publico-Alvo",
+                        placeholder="Descreva seu publico-alvo...",
+                        value="Jovens adultos de 18 a 35 anos"
                     )
 
                     with gr.Row():
@@ -145,38 +146,38 @@ def create_gradio_app():
                             maximum=60,
                             value=30,
                             step=5,
-                            label="Duration (seconds)"
+                            label="Duracao (segundos)"
                         )
 
                         style_input = gr.Dropdown(
                             choices=["viral", "premium", "direct"],
                             value="viral",
-                            label="Style"
+                            label="Estilo"
                         )
 
-                    generate_btn = gr.Button("Generate Commercial", variant="primary")
+                    generate_btn = gr.Button("Gerar Comercial", variant="primary")
 
                 with gr.Column(scale=1):
                      gr.Markdown("### Status")
 
                      status_output = gr.Markdown()
-                     refresh_btn = gr.Button("Refresh Status")
+                     refresh_btn = gr.Button("Atualizar Status")
 
-            gr.Markdown("### Generated Video")
+            gr.Markdown("### Video Gerado")
 
             with gr.Row():
-                video_output = gr.Video(label="Your Commercial")
+                video_output = gr.Video(label="Seu Comercial")
                 error_output = gr.Markdown(visible=False)
 
-            gr.Markdown("### Instructions")
+            gr.Markdown("### Instrucoes")
             gr.Markdown("""
-1. Fill in the product name and target audience
-2. Adjust duration and style
-3. Click 'Generate Commercial'
-4. Wait for the video to be generated (may take several minutes)
-5. Preview and download your commercial
+1. Preencha o nome do produto e publico-alvo
+2. Ajuste a duracao e o estilo
+3. Clique em 'Gerar Comercial'
+4. Aguarde a geracao do video (pode levar alguns minutos)
+5. Visualize e baixe seu comercial
 
-**Note:** First generation may take longer as models need to be loaded.
+**Nota:** A primeira geracao pode demorar mais enquanto os modelos sao carregados.
 """)
 
             def on_generate(product, audience, duration, style, progress=gr.Progress()):
@@ -188,7 +189,7 @@ def create_gradio_app():
                     progress=progress
                 )
 
-                if result and result.startswith("ERROR"):
+                if result and result.startswith("ERRO"):
                     return {
                         video_output: None,
                         error_output: result,
@@ -219,7 +220,7 @@ def create_gradio_app():
                 outputs=[status_output]
             )
 
-        # --- Tab 2: Logs ---
+        # --- Aba 2: Logs ---
         with gr.Tab("Logs"):
             gr.Markdown("### Registro de Logs")
             with gr.Row():
@@ -270,7 +271,111 @@ def create_gradio_app():
                 outputs=[logs_output, log_summary_output]
             )
 
-        # --- Tab 3: Metrics ---
+        # --- Aba 3: Roteiro ---
+        with gr.Tab("Roteiro"):
+            gr.Markdown("### Geracao e Edicao de Roteiro")
+
+            with gr.Row():
+                with gr.Column(scale=2):
+                    script_briefing = gr.Textbox(
+                        label="Briefing do Produto",
+                        placeholder="Descreva o produto, publico-alvo e estilo desejado...",
+                        lines=3
+                    )
+                with gr.Column(scale=1):
+                    provider_dropdown = gr.Dropdown(
+                        choices=["auto", "template", "lm_studio", "koboldcpp", "llamacpp", "gpt4all"],
+                        value="auto",
+                        label="Provedor LLM"
+                    )
+                    provider_status_md = gr.Markdown("Clique em 'Verificar Provedores' para status")
+                    check_providers_btn = gr.Button("Verificar Provedores")
+
+            generate_script_btn = gr.Button("Gerar Roteiro", variant="primary")
+
+            script_output = gr.Textbox(
+                label="Roteiro Gerado",
+                lines=15,
+                placeholder="O roteiro aparecera aqui apos gerar..."
+            )
+
+            with gr.Row():
+                script_provider_used = gr.Textbox(label="Provedor Utilizado", interactive=False)
+                script_quality = gr.Textbox(label="Qualidade", interactive=False)
+                script_time = gr.Textbox(label="Tempo (s)", interactive=False)
+
+            with gr.Row():
+                save_edit_btn = gr.Button("Salvar Edicao Manual")
+                approve_btn = gr.Button("Aprovar Roteiro", variant="primary")
+                script_status = gr.Markdown()
+
+            def on_generate_script(briefing, provider):
+                if not briefing or len(briefing.strip()) < 5:
+                    return (
+                        "Briefing muito curto (minimo 5 caracteres).",
+                        "-", "-", "-"
+                    )
+                result = generate_script_with_provider(briefing, provider)
+                if result.get("ok"):
+                    return (
+                        result["script"],
+                        result.get("provider", "-"),
+                        result.get("quality", "-"),
+                        f'{result.get("time", 0):.2f}'
+                    )
+                else:
+                    return (
+                        f"Erro: {result.get('error', 'Falha desconhecida')}",
+                        "-", "-", "-"
+                    )
+
+            generate_script_btn.click(
+                on_generate_script,
+                inputs=[script_briefing, provider_dropdown],
+                outputs=[script_output, script_provider_used, script_quality, script_time]
+            )
+
+            def on_check_providers():
+                status = get_provider_status()
+                lines = []
+                for name, avail in status.items():
+                    icon = "Disponivel" if avail else "Indisponivel"
+                    lines.append(f"- **{name}:** {icon}")
+                return "\n".join(lines)
+
+            check_providers_btn.click(
+                on_check_providers,
+                outputs=[provider_status_md]
+            )
+
+            def on_save_edit(script_text):
+                if not script_text or script_text.startswith("Erro"):
+                    return "Nada para salvar."
+                import time as _time
+                pid = f"manual_{int(_time.time())}"
+                result = generate_script_with_provider(
+                    f"Edicao manual salva em {pid}", "template"
+                )
+                return f"Edicao registrada. Provedor: {result.get('provider', '-')}"
+
+            save_edit_btn.click(
+                on_save_edit,
+                inputs=[script_output],
+                outputs=[script_status]
+            )
+
+            def on_approve(script_text):
+                if not script_text or script_text.startswith("Erro"):
+                    return "Nao e possivel aprovar. Gere um roteiro primeiro."
+                return "Roteiro aprovado (simulado - sem projeto real vinculado)."
+
+            approve_btn.click(
+                on_approve,
+                inputs=[script_output],
+                outputs=[script_status]
+            )
+
+        # --- Aba 4: Metricas ---
         with gr.Tab("Metricas"):
             gr.Markdown("### Metricas de Operacao")
 
@@ -320,19 +425,25 @@ def create_gradio_app():
                 outputs=[metrics_summary_output, recent_ops_output]
             )
 
-        # --- Tab 4: Diagnostic ---
+        # --- Aba 5: Diagnostico ---
         with gr.Tab("Diagnostico"):
             gr.Markdown("### Diagnostico do Sistema")
 
-            diagnostic_output = gr.Textbox(
-                label="Informacoes de Diagnostico",
-                lines=20,
-                max_lines=40
-            )
+            with gr.Row():
+                with gr.Column():
+                    diagnostic_output = gr.Textbox(
+                        label="Informacoes de Diagnostico",
+                        lines=20,
+                        max_lines=40
+                    )
+                    refresh_diagnostic_btn = gr.Button("Gerar Diagnostico")
 
-            gr.Markdown("Copie o texto acima para compartilhar informacoes de diagnostico.")
+                with gr.Column():
+                    gr.Markdown("### Status dos Provedores")
+                    providers_diagnostic_md = gr.Markdown()
+                    refresh_providers_diag_btn = gr.Button("Verificar Provedores")
 
-            refresh_diagnostic_btn = gr.Button("Gerar Diagnostico")
+            gr.Markdown("Copie o texto de diagnostico para compartilhar informacoes do sistema.")
 
             def refresh_diagnostic():
                 return copy_diagnostic_bundle()
@@ -340,6 +451,23 @@ def create_gradio_app():
             refresh_diagnostic_btn.click(
                 refresh_diagnostic,
                 outputs=[diagnostic_output]
+            )
+
+            def refresh_providers_diag():
+                diag = get_provider_diagnostics()
+                lines = ["| Provedor | Status |", "|---------|--------|"]
+                for name, avail in diag["status"].items():
+                    icon = "Disponivel" if avail else "Indisponivel"
+                    lines.append(f"| {name} | {icon} |")
+                lines.append("")
+                lines.append("**Router detect_available():**")
+                for name, avail in diag["router_available"].items():
+                    lines.append(f"- {name}: {avail}")
+                return "\n".join(lines)
+
+            refresh_providers_diag_btn.click(
+                refresh_providers_diag,
+                outputs=[providers_diagnostic_md]
             )
 
     return demo
@@ -350,13 +478,13 @@ if __name__ == "__main__":
         import gradio
         print(f"Gradio version: {gradio.__version__}")
     except ImportError:
-        print("Gradio not found. Installing...")
+        print("Gradio nao encontrado. Instalando...")
         import subprocess
         subprocess.check_call([sys.executable, "-m", "pip", "install", "gradio"])
         import gradio
 
-    print("Starting GalFlowAI Web Interface...")
-    print("Access at: http://127.0.0.1:7860")
+    print("Iniciando interface web GalFlowAI...")
+    print("Acesse em: http://127.0.0.1:7860")
 
     demo = create_gradio_app()
     demo.launch(

@@ -3,7 +3,7 @@
 from typing import Dict, Any
 import logging
 from app.application.use_cases.base_use_case import BaseUseCase
-from app.services.script_service import generate_script_with_llm
+from app.services.script_service import generate_script_with_llm, generate_script_with_provider
 from app.pipeline.script_generator import save_script
 from app.application.use_cases.artifact_cache_use_cases import (
     CheckArtifactCacheUseCase,
@@ -27,7 +27,7 @@ class GenerateScriptUseCase(BaseUseCase):
         self.check_cache_use_case = CheckArtifactCacheUseCase()
         self.store_cache_use_case = StoreArtifactUseCase()
 
-    def execute(self, briefing: str, project_id: str, mode: str = "auto") -> Dict[str, Any]:
+    def execute(self, briefing: str, project_id: str, mode: str = "auto", provider: str = "auto") -> Dict[str, Any]:
         """Execute script generation use case with artifact caching."""
         try:
             # 1. Validate input
@@ -35,7 +35,7 @@ class GenerateScriptUseCase(BaseUseCase):
                 return self._build_error("Invalid input parameters")
             
             # 2. Check artifact cache for existing script
-            artifact_key = self._generate_artifact_key(briefing, project_id, mode)
+            artifact_key = self._generate_artifact_key(briefing, project_id, mode if provider == "auto" else provider)
             cache_result = self.check_cache_use_case.execute(
                 artifact_key=artifact_key,
                 content=None,  # Just check existence
@@ -58,7 +58,10 @@ class GenerateScriptUseCase(BaseUseCase):
                 )
             
             # 3. Not cached - generate script using LLM
-            result = generate_script_with_llm(briefing, mode)
+            if provider != "auto":
+                result = generate_script_with_provider(briefing, provider)
+            else:
+                result = generate_script_with_llm(briefing, mode)
             
             if not result.get("ok", False):
                 return self._build_error(
@@ -116,12 +119,15 @@ class GenerateScriptUseCase(BaseUseCase):
         briefing = kwargs.get("briefing", "")
         project_id = kwargs.get("project_id", "")
         mode = kwargs.get("mode", "auto")
+        provider = kwargs.get("provider", "auto")
         
         if not briefing or len(briefing.strip()) < 10:
             return False
         if not project_id:
             return False
         if mode not in ("auto", "fast", "quality", "safe", "template"):
+            return False
+        if provider not in ("auto", "template", "lm_studio", "koboldcpp", "llamacpp", "gpt4all"):
             return False
             
         return True

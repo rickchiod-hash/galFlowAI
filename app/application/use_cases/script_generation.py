@@ -4,7 +4,7 @@ Use case for script generation.
 """
 from typing import Dict, Any
 from app.application.use_cases.base import UseCase, UseCaseError
-from app.services.script_service import generate_script_with_llm
+from app.services.script_service import generate_script_with_llm, generate_script_with_provider
 from app.pipeline.script_generator import save_script
 
 
@@ -35,7 +35,10 @@ class GenerateScriptUseCase(UseCase):
                 return self._build_error("Invalid briefing or project_id")
             
             # 2. Execute business logic
-            result = generate_script_with_llm(briefing, provider)
+            if provider and provider != "auto":
+                result = generate_script_with_provider(briefing, provider)
+            else:
+                result = generate_script_with_llm(briefing, "auto")
             if project_id:
                 save_script(project_id, result.get("script", ""))
             

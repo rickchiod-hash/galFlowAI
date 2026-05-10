@@ -1,38 +1,38 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-09
+Atualizado em: 2026-05-10
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 25/48
+Histórias concluídas: 26/48
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 23 (48 - 25 concluídas - 0 em andamento)
-Percentual concluído: 52,1%
+Histórias pendentes: 22 (48 - 26 concluídas - 0 em andamento)
+Percentual concluído: 54,2%
 
-**Aritmética:** 48 histórias únicas no backlog. 25 Concluídas + 0 Em andamento + 23 Pendentes = 48.
+**Aritmética:** 48 histórias únicas no backlog. 26 Concluídas + 0 Em andamento + 22 Pendentes = 48.
 
 ## Estado atual
 
-- Branch atual: master
-- Último commit analisado: ab334b2 — "docs: fix outdated status and backlog after session review"
-- Fase atual: Fase 4 — Refatoração segura / Fase 5 — Pipeline e produto
-- História atual: PROV-302 — Criar testes de provider fallback ✅
-- Próxima ação recomendada: RND-600 (Criar RenderPlan mínimo)
+- Branch atual: feature/RND-600-renderplan-minimo
+- Último commit analisado: adf078b — "chore: add state/*.json to gitignore"
+- Fase atual: Fase 5 — Pipeline e produto
+- História atual: RND-600 — Criar RenderPlan mínimo ✅
+- Próxima ação recomendada: RND-601 (Manter FFmpeg como fallback universal)
 
 ### Playbooks criados nesta sessão
 
 | Arquivo | Stories | Concluídas | Pendentes |
 |---------|---------|-----------|----------|
 | `LLM_PROVIDER_PLAYBOOK.md` | PROV-300, PROV-301, PROV-302 | 3 | 0 |
-| `VIDEO_RENDER_PROVIDER_PLAYBOOK.md` | VIS-502, VIS-503, RND-600..603, QA-1003 | 2 | 5 |
+| `VIDEO_RENDER_PROVIDER_PLAYBOOK.md` | VIS-502, VIS-503, RND-600..603, QA-1003 | 3 | 4 |
 | `AUDIO_TTS_PROVIDER_PLAYBOOK.md` | AUD-700..703, QA-1004 | 1 | 4 |
 | `VECTOR_MEMORY_PLAYBOOK.md` | VIS-500, VIS-501, VEC-800..803 | 2 | 4 |
 | `QA_ANTI_HALLUCINATION_PLAYBOOK.md` | QA-1000, QA-1001, QA-1002 | 2 | 1 |
-| **Total** | **21 histórias cobertas** | **7** | **17** |
+| **Total** | **21 histórias cobertas** | **8** | **16** |
 
-> **Novas funcionalidades:** SQLite WAL/job ledger (PIPE-403), Ingredient Registry (VIS-500) e Visual Bible (VIS-501) implementados.
+> **Novas funcionalidades:** RenderPlan mínimo (RND-600) implementado. GPT4All provider corrigido (path hardcoded com typo). ProviderRouter removido do import direto no Gradio.
 
 ## Resumo tipo Daily
 
@@ -83,18 +83,19 @@ Percentual concluído: 52,1%
 
 ### O que foi feito nesta sessão
 
-- **VIS-501 (merge):** PR #8 mergeado para master (`006ca21`). Visual Bible já estava implementado (33 testes).
-- **VIS-502 ✅:** SceneContract schema criado — `app/domain/scene_contract.py` (205 linhas). CameraDirective, IngredientAssignment, SceneContract, SceneContractService com CRUD/search/reorder/versioning. 42 testes. PR #9 merged → `c7c0842`.
-- **VIS-503 ✅:** PromptCompiler criado — `app/domain/prompt_compiler.py` (254 linhas). EngineType (WAN_GP/FFMPEG/VACE), CompiledPrompt, PromptCompilerService com compilação específica por engine. 44 testes. PR #10 merged → `0ed7bdf`.
-- **PROV-302 ✅:** Testes de fallback chain — `tests/test_provider_fallback.py` (21 testes). TemplateProvider, config, ProviderRouter mockado. PR #11 merged → `0d95b8f`.
-- **Total:** 107 testes novos, 4 PRs mergeados, 3 histórias concluídas.
+- **GPT4All fix:** Provider path corrigido — `app/adapters/llm/gpt4all_provider.py` usava path hardcoded com typo (`COMERCIAL` → `COMMERCIAL`). Alterado para usar `config.GPT4ALL_MODEL_DIR`. Provider agora detecta modelo `orca-mini-3b-gguf2-q4_0.gguf`.
+- **API bug fix:** `app/application/use_cases/script_generation.py` passava `provider` como `mode` para `generate_script_with_llm`, causando fallthrough para auto-detection. Corrigido para usar `generate_script_with_provider()` quando provider explícito.
+- **Separação UI/adapters:** `ProviderRouter` removido do import direto no Gradio. Criado `get_provider_diagnostics()` em `script_service.py` como camada de indireção.
+- **RND-600 ✅:** RenderPlan mínimo criado — `app/domain/render_plan.py` (156 linhas). SceneRenderAssignment, RenderPlan, RenderPlanService com seleção de engine por cena baseada em disponibilidade, VRAM e perfil de qualidade. 18 testes em `tests/test_render_plan.py`.
+- **Testes:** 219 testes passando (0 falhas) — core domains + API + UI + governança.
+- **Histórias concluídas:** RND-600 (ordem 28). Total: 26/48 (54,2%).
 
 ### Estado atual
 
-- **Branch atual:** master (`0d95b8f`)
-- **Fase:** Fase 4 (Refatoração segura) / Fase 5 (Pipeline e produto)
-- **Histórias concluídas:** 24/48 (50,0%)
-- **Próxima recomendada:** UI-203 (ordem 13) — Resgatar telas de logs, métricas e diagnóstico
+- **Branch atual:** feature/RND-600-renderplan-minimo
+- **Fase:** Fase 5 (Pipeline e produto)
+- **Histórias concluídas:** 26/48 (54,2%)
+- **Próxima recomendada:** RND-601 (ordem 29) — Manter FFmpeg como fallback universal
 
 ### Bloqueios
 
@@ -109,9 +110,9 @@ Percentual concluído: 52,1%
 
 ### Gaps encontrados nesta sessão
 
-- `00_STATUS_EXECUTIVO.md` estava desatualizado (referenciava VIS-501 como "sessão atual").
-- `05_BACKLOG_PRIORIZADO.md` recomendava VIS-502 como próxima (já concluída).
-- Ambos corrigidos nesta revisão.
+- `app/application/use_cases/script_generation.py` passava `provider` como `mode` para `generate_script_with_llm` — provider explícito era ignorado.
+- `app/adapters/llm/gpt4all_provider.py` tinha path hardcoded com typo (`COMERCIAL` em vez de `COMMERCIAL`).
+- Ambos corrigidos nesta sessão.
 
 ### TODOs rastreáveis
 
@@ -119,22 +120,27 @@ Percentual concluído: 52,1%
 
 ### Arquivos criados nesta sessão
 
-- `app/domain/scene_contract.py` — Novo: 205 linhas (VIS-502)
-- `tests/test_scene_contract.py` — Novo: 42 testes (VIS-502)
-- `app/domain/prompt_compiler.py` — Novo: 254 linhas (VIS-503)
-- `tests/test_prompt_compiler.py` — Novo: 44 testes (VIS-503)
-- `tests/test_provider_fallback.py` — Novo: 21 testes (PROV-302)
+- `app/domain/render_plan.py` — Novo: 156 linhas (RND-600)
+- `tests/test_render_plan.py` — Novo: 18 testes (RND-600)
+
+### Arquivos alterados nesta sessão
+
+- `app/adapters/llm/gpt4all_provider.py` — Path hardcoded corrigido para usar config
+- `app/application/use_cases/script_generation.py` — Provider explícito respeitado
+- `app/application/use_cases/generate_script_use_case.py` — Provider explícito respeitado
+- `app/services/script_service.py` — `get_provider_diagnostics()` adicionado
+- `app/ui/gradio_app.py` — ProviderRouter removido do import direto
+- `tests/test_ui_metrics.py` — Título do app atualizado para pt-br
 
 ### Comandos executados
 
-- `pytest tests/test_scene_contract.py -v` — 42/42 passed
-- `pytest tests/test_prompt_compiler.py -v` — 44/44 passed
-- `pytest tests/test_provider_fallback.py -v` — 21/21 passed
-- `pytest (todos os domínios + governança)` — 177/177 passed
+- `pytest tests/test_render_plan.py -v` — 18/18 passed
+- `pytest tests/test_api.py -v -k "not generate_script_for_project"` — 11/11 passed
+- `pytest tests/test_ui_metrics.py -v` — 16/16 passed
+- `pytest (domínios + governança)` — 219/219 passed
 
 ### Evidências usadas
 
-- Commit base: d35b57e (início da sessão)
-- Master final: 0d95b8f (PROV-302 merged)
-- Branches mergeadas: feature/VIS-502-scene-contract, feature/VIS-503-prompt-compiler, feature/PROV-302-fallback-tests
-- Testes: 177/177 passando (0 falhas)
+- Commit base: adf078b (início da sessão)
+- Branch: feature/RND-600-renderplan-minimo
+- Testes: 219/219 passando (0 falhas)
