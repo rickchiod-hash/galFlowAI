@@ -5,18 +5,18 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 24/48
+Histórias concluídas: 25/48
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 24 (48 - 24 concluídas - 0 em andamento)
-Percentual concluído: 50,0%
+Histórias pendentes: 23 (48 - 25 concluídas - 0 em andamento)
+Percentual concluído: 52,1%
 
-**Aritmética:** 48 histórias únicas no backlog. 24 Concluídas + 0 Em andamento + 24 Pendentes = 48.
+**Aritmética:** 48 histórias únicas no backlog. 25 Concluídas + 0 Em andamento + 23 Pendentes = 48.
 
 ## Estado atual
 
-- Branch atual: feature/PROV-302-fallback-tests
-- Último commit analisado: 0ed7bdf — "Merge PR #10: feat(domain): implement PromptCompiler with engine-specific prompts (VIS-503)"
+- Branch atual: master
+- Último commit analisado: ab334b2 — "docs: fix outdated status and backlog after session review"
 - Fase atual: Fase 4 — Refatoração segura / Fase 5 — Pipeline e produto
 - História atual: PROV-302 — Criar testes de provider fallback ✅
 - Próxima ação recomendada: RND-600 (Criar RenderPlan mínimo)

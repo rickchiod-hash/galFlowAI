@@ -36,8 +36,9 @@ class MetricsService:
         try:
             return json.loads(self.metrics_file.read_text(encoding="utf-8"))
         except:
+            self.metrics_file.unlink(missing_ok=True)
             self._ensure_file()
-            return self._load_data()
+            return json.loads(self.metrics_file.read_text(encoding="utf-8"))
     
     def _save_data(self, data: Dict[str, Any]):
         """Salva dados no arquivo."""

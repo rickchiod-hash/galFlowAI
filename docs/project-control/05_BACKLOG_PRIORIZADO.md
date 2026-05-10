@@ -18,7 +18,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 10 | UI-200 | Restaurar fluxo por etapas na documentação | Alta | 3 | Concluída | CORE-100..CORE-102 | para aprovar roteiro/cenas antes de gastar GPU |
 | 11 | UI-201 | Gerar roteiro sem renderizar vídeo | Alta | 5 | Concluída | CORE-100..CORE-102 | commit cde0ce2 — endpoint POST /api/projects/{id}/script/generate |
 | 12 | UI-202 | Bloquear cenas sem roteiro aprovado | Alta | 5 | Concluída | CORE-100..CORE-102 | commit f713ca6 — gate de aprovação antes de split de cenas |
-| 13 | UI-203 | Resgatar telas de logs, métricas e diagnóstico | Alta | 5 | Pendente | CORE-100..CORE-102 | para debugar sem depender do terminal |
+| 13 | UI-203 | Resgatar telas de logs, métricas e diagnóstico | Alta | 5 | Concluída | CORE-100..CORE-102 | para debugar sem depender do terminal |
 | 14 | ARCH-300 | Criar use cases por etapa | Alta | 8 | Concluída | CORE-100..CORE-102 | para reduzir acoplamento com pipeline/adapters |
 | 15 | ARCH-301 | Criar Result Object padrão | Alta | 5 | Concluída | CORE-100..CORE-102 | para não propagar exceções e mensagens genéricas |
 | 16 | ARCH-302 | Centralizar configuração e paths | Alta | 3 | Concluída | CORE-100..CORE-102 | para evitar hardcoded C: e ambiente quebrado |
@@ -57,8 +57,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 
 ## Próxima história recomendada
 
-**UI-203 — Resgatar telas de logs, métricas e diagnóstico (ordem 13).** Para debugar sem depender do terminal.
-Ou **RND-600 — Criar RenderPlan mínimo (ordem 28).** Para usar GPU e fallback com previsibilidade.
+**RND-600 — Criar RenderPlan mínimo (ordem 28).** Para usar GPU e fallback com previsibilidade.
 
 ## Regras de priorização
 

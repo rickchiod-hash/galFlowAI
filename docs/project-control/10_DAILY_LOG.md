@@ -1116,3 +1116,41 @@ Total: 177/177 passed, 0 failed
 - Rewrite completo de `00_STATUS_EXECUTIVO.md` para refletir estado atual (24/48)
 - Corrigir "Próxima história recomendada" em `05_BACKLOG_PRIORIZADO.md`
 - Selecionar próxima história: UI-203 (logs/métricas/diagnóstico) ou RND-600 (RenderPlan mínimo)
+
+---
+
+## 2026-05-09 — UI-203: Restaurar telas de logs, métricas e diagnóstico
+
+### O que foi feito
+
+- **UI-203 concluída:** `app/ui/gradio_app.py` refatorado com 4 abas (Geração, Logs, Métricas, Diagnóstico).
+  - Aba "Logs" dedicada com filtros (nível, busca, limite) + resumo INFO/WARN/ERROR herdado.
+  - Aba "Métricas" nova — exibe resumo de operações via MetricsService + operações recentes em tabela.
+  - Aba "Diagnóstico" nova — exibe `copy_diagnostic_bundle()` em textbox copiável.
+  - Aba "Geração" mantém o fluxo principal (input, status, vídeo) intacto.
+  - Gradio UI agora usa `gr.Tab`/`gr.TabItem` para organização.
+- **Bug fix:** `app/services/metrics_service.py` — recursão infinita em `_load_data()` quando arquivo JSON está corrompido. Agora deleta arquivo corrompido e recria.
+- **Testes:** `tests/test_ui_metrics.py` (16 testes):
+  - 7 testes de sumário/operações do MetricsService
+  - 2 testes negativos (limite inválido, arquivo corrompido)
+  - 3 testes para log_service (sumário, estrutura, diagnóstico)
+  - 3 testes de estrutura do Gradio app (imports, tabs)
+  - 1 teste de regressão (UI não importa adapters)
+
+### Testes executados
+
+- `pytest tests/test_ui_metrics.py -v` — 16/16 passed
+- `pytest tests/ (domínios + governança)` — 191/191 passed (0 falhas)
+
+### Arquivos alterados
+
+- `app/ui/gradio_app.py` — Refatorado com 4 abas (Geração, Logs, Métricas, Diagnóstico)
+- `app/services/metrics_service.py` — Fix recursão `_load_data` em arquivo corrompido
+- `tests/test_ui_metrics.py` — Novo: 16 testes para UI-203
+
+### Histórias atualizadas
+
+- **UI-203:** Pendente → Concluída (25/48 = 52.1%)
+
+### Próximo passo
+- Iniciar próxima história por ordem: RND-600 (ordem 28, Criar RenderPlan mínimo)
