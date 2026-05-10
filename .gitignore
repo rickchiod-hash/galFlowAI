@@ -44,5 +44,8 @@ $DN_
 /test_*.py
 /temp_*.py
 
+# Runtime state (regenerado a cada execucao)
+state/*.json
+
 # Bancos de dados SQLite
 *.db
