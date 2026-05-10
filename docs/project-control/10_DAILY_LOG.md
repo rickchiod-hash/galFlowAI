@@ -808,6 +808,63 @@ Após merge do PIPE-403 (SQLite job ledger) para master, iniciei a próxima hist
 ### Commits pendentes
 - Implementação do Ingredient Registry com schema, CRUD versionado e 27 testes
 
+## 2026-05-09 — Sessão 10: VIS-503 — Criar Prompt Compiler por engine ✅
+
+### Contexto
+Após merge do PR #9 (VIS-502) para master, implementei a próxima história — VIS-503. O PromptCompiler traduz SceneContracts em prompts específicos para cada engine de render (WanGP, FFmpeg, VACE).
+
+### O que fiz
+
+**1. Merge do PR #9 (VIS-502) para master:**
+   - PR #9 já existia (aberto, mergeable)
+   - Merge via `gh pr merge 9 --merge`
+   - Commit: `c7c0842` no master
+   - Branch local atualizada com `git pull origin master`
+
+**2. Implementação do PromptCompiler** (`app/domain/prompt_compiler.py`):
+   - `EngineType` enum: WAN_GP, FFMPEG, VACE
+   - `PromptFormat` enum: PLAIN_TEXT, STRUCTURED, JSON
+   - `EngineParameter` schema: key, value, description
+   - `CompiledPrompt` schema: id (prefix `cp_`), scene_contract_id, engine, prompt_text, negative_prompt, parameters, format, version, created_at
+   - `PromptCompilerService`:
+     - `compile(contract, engine)`: compila para engine específica
+     - `compile_all(contracts, engine)`: múltiplos contratos para mesma engine
+     - `compile_multi_engine(contract, engines)`: um contrato para múltiplas engines
+     - Compilação WanGP: descrição cinematográfica + câmera + ingredientes + estilo + prompts + parâmetros (duração, transições, visual bible refs)
+     - Compilação FFmpeg: texto + text_overlay (truncado 200 chars) + duração + transições + estilo opcional
+     - Compilação VACE: estrutura com metadados de câmera + ingredientes
+     - Registry: save, get, list_by_engine, list_by_contract, clear
+
+**3. Testes** (`tests/test_prompt_compiler.py`): 44 testes
+   - EngineTypes, PromptFormat, CompiledPrompt schema
+   - WanGP: descrição, câmera, ingredientes, estilo, prompts, parâmetros, visual bible refs
+   - FFmpeg: texto, text_overlay, duração, transições, estilo, negative vazio, truncamento
+   - VACE: estrutura, câmera, ingredientes, duração
+   - Multi-engine, registry, parâmetros, erro de engine
+
+### Testes executados
+- PromptCompiler: 44/44 passed
+- SceneContract (VIS-502): 42/42 passed
+- Visual Bible (VIS-501): 33/33 passed
+- Ingredient Registry (VIS-500): 27/27 passed
+- Governance: 10/10 passed
+- Total: 156/156 passed
+
+### Arquivos alterados
+- `app/domain/prompt_compiler.py` — Novo: PromptCompiler (EngineType, CompiledPrompt, EngineParameter, PromptCompilerService)
+- `tests/test_prompt_compiler.py` — Novo: 44 testes
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — VIS-503 → Concluída
+- `docs/project-control/06_HISTORIAS_REFINADAS.md` — VIS-503 → Concluída
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — Atualizado (23/48, 47,9%)
+- `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md` — VIS-503 → Concluída
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- Fazer commit, criar PR, merge para master
+- Próxima história recomendada: RND-600 (Criar RenderPlan mínimo)
+
 ## 2026-05-09 — Sessão 9: VIS-502 — Criar schema SceneContract ✅
 
 ### Contexto
