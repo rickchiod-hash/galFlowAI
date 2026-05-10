@@ -1264,47 +1264,47 @@ Como pipeline, eu quero contratos por cena, para transformar roteiro em instruç
 
 **Épico:** EPIC-600 Consistência visual  
 **Prioridade:** Média  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 8 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
 
 ### História
 Como engine router, eu quero prompts específicos por provider, para usar FFmpeg/WanGP/VACE sem gambiarra.
 
-### Contexto técnico
-Esta história deve ser validada no código e no histórico Git antes de implementação. Se a evidência não existir, registrar `EVIDÊNCIA INSUFICIENTE` no status executivo. Contexto funcional: PromptCompiler.
-
-### Evidências obrigatórias
-- Arquivo(s) atual(is) relacionados.
-- Commit(s) que criaram/alteraram/removeram a capacidade.
-- Teste(s) existentes ou ausência documentada.
-- Impacto na Feature Preservation Matrix, se aplicável.
+### Evidências de implementação
+- `app/domain/prompt_compiler.py` — EngineType, PromptFormat, CompiledPrompt, EngineParameter, PromptCompilerService
+- `tests/test_prompt_compiler.py` — 44 testes
+- Branch: `feature/VIS-503-prompt-compiler`
 
 ### Critérios de aceite
-Ver `VIS-503` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
+- ✅ EngineType enum: WAN_GP, FFMPEG, VACE (3 engines)
+- ✅ PromptFormat enum: PLAIN_TEXT, STRUCTURED, JSON
+- ✅ CompiledPrompt schema com id, scene_contract_id, engine, prompt_text, negative_prompt, parameters, format, version
+- ✅ Compilação WanGP: descrição, câmera, ingredientes, estilo, prompt positivo/negativo, duração, transições, referências visual bible
+- ✅ Compilação FFmpeg: texto, text_overlay truncado (200 chars), duração, transições, estilo (opcional), sem negative prompt
+- ✅ Compilação VACE: estrutura com metadados de câmera, ingredientes, duração
+- ✅ Multi-engine: compile_all (mesma engine) e compile_multi_engine (múltiplas engines)
+- ✅ Registry: save, get, list_by_engine, list_by_contract, clear
+- ✅ 44 testes passando (0 falhas)
 
 ### Testes
-Ver `VIS-503` em `08_PLANO_DE_TESTES.md`.
-
-### Definition of Ready
-- [ ] Independente
-- [ ] Negociável
-- [ ] Valiosa
-- [ ] Estimável
-- [ ] Pequena o suficiente
-- [ ] Testável
-- [ ] Possui contexto técnico
-- [ ] Possui arquivo de referência
-- [ ] Possui critérios Gherkin
-- [ ] Possui teste planejado
+44 testes em `tests/test_prompt_compiler.py`:
+- EngineTypes (2), PromptFormat (2), CompiledPrompt schema (4)
+- Compilação WanGP (11): descrição, câmera, ingredientes, estilo, prompts, parâmetros, visual bible, compile_all
+- Compilação FFmpeg (9): descrição, text_overlay, duração, transições, estilo, negative vazio, truncamento
+- Compilação VACE (5): estrutura, câmera, ingredientes, duração
+- Multi-engine (2)
+- Registry (5)
+- EngineParameter (2)
+- Erro engine inválida (1)
 
 ### Definition of Done
-- [ ] Critérios atendidos
-- [ ] Testes criados/atualizados
-- [ ] Docs e backlog atualizados
-- [ ] Status executivo atualizado
-- [ ] Daily log atualizado
-- [ ] Commit criado
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [x] Commit criado
 
 ## RND-600 — Criar RenderPlan mínimo
 
