@@ -5,27 +5,27 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 23/48
+Histórias concluídas: 24/48
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 25 (48 - 23 concluídas - 0 em andamento)
-Percentual concluído: 47,9%
+Histórias pendentes: 24 (48 - 24 concluídas - 0 em andamento)
+Percentual concluído: 50,0%
 
-**Aritmética:** 48 histórias únicas no backlog. 23 Concluídas + 0 Em andamento + 25 Pendentes = 48.
+**Aritmética:** 48 histórias únicas no backlog. 24 Concluídas + 0 Em andamento + 24 Pendentes = 48.
 
 ## Estado atual
 
-- Branch atual: feature/VIS-503-prompt-compiler
-- Último commit analisado: c7c0842 — "Merge PR #9: feat(domain): implement SceneContract schema with camera directives, ingredient assignments, and versioning (VIS-502)"
-- Fase atual: Fase 5 — Pipeline e produto
-- História atual: VIS-503 — Criar Prompt Compiler por engine ✅
+- Branch atual: feature/PROV-302-fallback-tests
+- Último commit analisado: 0ed7bdf — "Merge PR #10: feat(domain): implement PromptCompiler with engine-specific prompts (VIS-503)"
+- Fase atual: Fase 4 — Refatoração segura / Fase 5 — Pipeline e produto
+- História atual: PROV-302 — Criar testes de provider fallback ✅
 - Próxima ação recomendada: RND-600 (Criar RenderPlan mínimo)
 
 ### Playbooks criados nesta sessão
 
 | Arquivo | Stories | Concluídas | Pendentes |
 |---------|---------|-----------|----------|
-| `LLM_PROVIDER_PLAYBOOK.md` | PROV-300, PROV-301, PROV-302 | 2 | 1 |
+| `LLM_PROVIDER_PLAYBOOK.md` | PROV-300, PROV-301, PROV-302 | 3 | 0 |
 | `VIDEO_RENDER_PROVIDER_PLAYBOOK.md` | VIS-502, VIS-503, RND-600..603, QA-1003 | 2 | 5 |
 | `AUDIO_TTS_PROVIDER_PLAYBOOK.md` | AUD-700..703, QA-1004 | 1 | 4 |
 | `VECTOR_MEMORY_PLAYBOOK.md` | VIS-500, VIS-501, VEC-800..803 | 2 | 4 |

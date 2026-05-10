@@ -24,7 +24,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 16 | ARCH-302 | Centralizar configuração e paths | Alta | 3 | Concluída | CORE-100..CORE-102 | para evitar hardcoded C: e ambiente quebrado |
 | 17 | PROV-300 | Preservar registry de providers LLM | Alta | 5 | Concluída | CORE-100..CORE-102 | ProviderRouter + TemplateProvider existentes (commit 2da23f1) |
 | 18 | PROV-301 | Garantir TemplateProvider como fallback | Alta | 3 | Concluída | CORE-100..CORE-102 | TemplateProvider em app/adapters/llm/template_provider.py (commit ac2c0ee) |
-| 19 | PROV-302 | Criar testes de provider fallback | Alta | 3 | Pendente | CORE-100..CORE-102 | para evitar regressão de fallback |
+| 19 | PROV-302 | Criar testes de provider fallback | Alta | 3 | Concluída | CORE-100..CORE-102 | para evitar regressão de fallback |
 | 20 | PIPE-400 | Criar JobState formal | Alta | 5 | Concluída | Arquitetura/base P0 validada | commit 60d09e5 — JobState com enum + transições guardadas |
 | 21 | PIPE-401 | Criar idempotency key por etapa | Alta | 5 | Concluída | Arquitetura/base P0 validada | commit 851aaa1 — IdempotencyKeyService |
 | 22 | PIPE-402 | Criar cache por hash de artefatos | Média | 5 | Concluída | Arquitetura/base P0 validada | commit [hash_do_commit] — cache de artefatos por hash SHA-256 integrado nas etapas do pipeline |
