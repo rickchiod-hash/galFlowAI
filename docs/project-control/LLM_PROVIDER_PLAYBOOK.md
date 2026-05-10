@@ -17,7 +17,7 @@ Providers atualmente registrados:
 |----------|--------|--------|----|-----------|-------------|
 | PROV-300 | Preservar registry de providers LLM | Concluída | 5 | Alta | Pendente playbook |
 | PROV-301 | Garantir TemplateProvider como fallback | Concluída | 3 | Alta | Pendente playbook |
-| PROV-302 | Criar testes de provider fallback | Pendente | 3 | Alta | Não |
+| PROV-302 | Criar testes de provider fallback | Concluída | 3 | Alta | Sim |
 
 ### PROV-300 — Preservar registry de providers LLM
 
@@ -41,13 +41,17 @@ Quando todos os providers LLM falham, o TemplateProvider deve gerar um roteiro m
 
 ### PROV-302 — Criar testes de provider fallback
 
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 3 SP  
 **Épico:** EPIC-400 Providers e fallbacks  
 **Gherkin:** `07_CRITERIOS_ACEITE_GHERKIN.md#prov-302`  
 **Testes:** `08_PLANO_DE_TESTES.md#prov-302`  
 
 Criar testes automatizados que validam: (1) falha de LLM → template funciona, (2) registry contém todos os providers, (3) fallback chain está correta.
+
+**Arquivos:**
+- `tests/test_provider_fallback.py` — 21 testes (TemplateProvider, config, fallback chain mockado)
+- `tests/test_template_fallback.py` — pré-existente (4 testes legados)
 
 ## Arquitetura / Decisões
 

@@ -808,6 +808,48 @@ Após merge do PIPE-403 (SQLite job ledger) para master, iniciei a próxima hist
 ### Commits pendentes
 - Implementação do Ingredient Registry com schema, CRUD versionado e 27 testes
 
+## 2026-05-09 — Sessão 11: PROV-302 — Criar testes de provider fallback ✅
+
+### Contexto
+Após merge do PR #10 (VIS-503) para master, implementei PROV-302 — testes automatizados que validam a cadeia de fallback de providers LLM. TemplateProvider deve ser sempre o fallback final quando todos os outros providers falham.
+
+### O que fiz
+
+**1. Merge do PR #10 (VIS-503) para master:**
+   - Merge via `gh pr merge 10 --merge`
+   - Master atualizado para `0ed7bdf`
+
+**2. Criação de `tests/test_provider_fallback.py` (21 testes pytest):**
+   - **TestTemplateProviderAvailability (2):** TemplateProvider.is_available() sempre True, nome correto
+   - **TestTemplateProviderGenerate (10):** Geração de roteiro para briefing básico, detecção de 7 estilos (viral, fantasia, futurista, geek, premium, 3d, serviço local), retorno como string, múltiplas cenas
+   - **TestConfigProviderFallback (3):** TemplateProvider existe no config, priority=999 (maior), todos os 5 providers presentes (template, lm_studio, koboldcpp, llamacpp, gpt4all)
+   - **TestProviderFallbackMocked (7):** ProviderRouter mockado com __new__ + strategies diretas sem init complexo — template como fallback quando estratégia falha, fallback quando unavailable, fallback quando retorna None, detect_available, estratégia sem atributo provider
+
+**3. Testes legados mantidos:** `tests/test_template_fallback.py` (4 testes, estilo return-bool)
+
+### Testes executados
+- Provider fallback: 21/21 passed
+- PromptCompiler (VIS-503): 44/44 passed
+- SceneContract (VIS-502): 42/42 passed
+- Visual Bible (VIS-501): 33/33 passed
+- Ingredient Registry (VIS-500): 27/27 passed
+- Governance: 10/10 passed
+- Total: 177/177 passed
+
+### Arquivos alterados
+- `tests/test_provider_fallback.py` — Novo: 21 testes de fallback chain
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — PROV-302 → Concluída
+- `docs/project-control/06_HISTORIAS_REFINADAS.md` — PROV-302 → Concluída
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — Atualizado (24/48, 50,0%)
+- `docs/project-control/LLM_PROVIDER_PLAYBOOK.md` — PROV-302 → Concluída
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- Fazer commit, criar PR, merge para master
+- Próxima história recomendada: RND-600 (Criar RenderPlan mínimo)
+
 ## 2026-05-09 — Sessão 10: VIS-503 — Criar Prompt Compiler por engine ✅
 
 ### Contexto
