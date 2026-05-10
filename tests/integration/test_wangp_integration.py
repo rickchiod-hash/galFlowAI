@@ -23,7 +23,11 @@ class TestWanGPAdapterAvailability:
     
     def test_disponivel_returns_true_when_installed(self):
         """Should return True when WanGP is properly installed."""
-        # Mock the existence of main files
+        # Mock torch import for environments without PyTorch
+        import sys
+        mock_torch = MagicMock()
+        mock_torch.__version__ = "2.0.0"
+        
         def mock_exists(path):
             # Simulate WanGP directory exists
             if "Wan2GP" in path:
@@ -33,11 +37,12 @@ class TestWanGPAdapterAvailability:
                 return True
             return False
         
-        with patch('app.adapters.wangp_adapter.os.path.exists', side_effect=mock_exists):
-            with patch('app.adapters.wangp_adapter.subprocess.run') as mock_run:
-                mock_run.return_value.returncode = 0
-                adapter = WanGPAdapter()
-                assert adapter.is_available() is True
+        with patch.dict('sys.modules', {'torch': mock_torch}):
+            with patch('app.adapters.wangp_adapter.os.path.exists', side_effect=mock_exists):
+                with patch('app.adapters.wangp_adapter.subprocess.run') as mock_run:
+                    mock_run.return_value.returncode = 0
+                    adapter = WanGPAdapter()
+                    assert adapter.is_available() is True
 
 
 class TestWanGPAdapterFallback:
