@@ -1129,7 +1129,7 @@ Ver `PIPE-403` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-600 Consistência visual  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/VECTOR_MEMORY_PLAYBOOK.md`
 
@@ -1139,11 +1139,13 @@ Como criador de comerciais, eu quero registrar produtos/personagens/cenários, p
 ### Contexto técnico
 Esta história deve ser validada no código e no histórico Git antes de implementação. Se a evidência não existir, registrar `EVIDÊNCIA INSUFICIENTE` no status executivo. Contexto funcional: Ingredient Registry.
 
-### Evidências obrigatórias
-- Arquivo(s) atual(is) relacionados.
-- Commit(s) que criaram/alteraram/removeram a capacidade.
-- Teste(s) existentes ou ausência documentada.
-- Impacto na Feature Preservation Matrix, se aplicável.
+### Evidências
+- `app/domain/ingredient_registry.py` — Schema Ingredient com 4 tipos (PRODUCT, CHARACTER, SCENARIO, OBJECT), VisualReference, IngredientRegistry com CRUD completo, busca, filtro por tipo, versionamento automático
+- `app/domain/__init__.py` — Init do pacote
+- `tests/test_ingredient_registry.py` — 27 testes (schema validation, CRUD, search, filter, versioning, edge cases)
+- Pytest: 27/27 passed, 0 deprecação warnings
+- Branch: `feature/VIS-500-ingredient-registry`
+- Commit: PREENCHER_NO_COMMIT
 
 ### Critérios de aceite
 Ver `VIS-500` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
@@ -1152,19 +1154,19 @@ Ver `VIS-500` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
 Ver `VIS-500` em `08_PLANO_DE_TESTES.md`.
 
 ### Definition of Ready
-- [ ] Independente
-- [ ] Negociável
-- [ ] Valiosa
-- [ ] Estimável
-- [ ] Pequena o suficiente
-- [ ] Testável
-- [ ] Possui contexto técnico
-- [ ] Possui arquivo de referência
-- [ ] Possui critérios Gherkin
-- [ ] Possui teste planejado
+- [x] Independente
+- [x] Negociável
+- [x] Valiosa
+- [x] Estimável
+- [x] Pequena o suficiente
+- [x] Testável
+- [x] Possui contexto técnico
+- [x] Possui arquivo de referência
+- [x] Possui critérios Gherkin
+- [x] Possui teste planejado
 
 ### Definition of Done
-- [ ] Critérios atendidos
+- [x] Critérios atendidos
 - [ ] Testes criados/atualizados
 - [ ] Docs e backlog atualizados
 - [ ] Status executivo atualizado

@@ -753,3 +753,57 @@ Os playbooks de provider (LLM, Video/Render, Audio/TTS, Vector/Memory, QA/Anti-H
 
 ### Próximo passo
 Implementar PIPE-402 (Criar cache por hash de artefatos) conforme planejado, ou corrigir status conflitantes entre backlog e git antes.
+
+## 2026-05-09 — Sessão 7: VIS-500 — Criar schema Ingredient Registry ✅
+
+### Contexto
+Após merge do PIPE-403 (SQLite job ledger) para master, iniciei a próxima história do backlog — VIS-500. A história já estava com código e testes iniciados em branch separada, mas sem commit e com violação de política (daily log truncado).
+
+### O que fiz
+
+**1. Correção de daily log truncado**: O arquivo `10_DAILY_LOG.md` estava com entradas históricas removidas (apenas Sessão 6 preservada). Restaurei o histórico completo do git e adicionei esta entrada no final.
+
+**2. Implementação do Ingredient Registry** (`app/domain/ingredient_registry.py`):
+   - `IngredientType` enum com 4 tipos: PRODUCT, CHARACTER, SCENARIO, OBJECT
+   - `VisualReference` schema com file_path, description, is_canonical
+   - `Ingredient` schema Pydantic com id (prefixo `ing_`), name, type, description, visual_references, metadata, version, created_at, updated_at
+   - `IngredientRegistry` service com: register, get, update, delete, list (com filtro por tipo), search (case-insensitive por nome/descrição), count, clear
+   - Versionamento automático: todo update incrementa version
+   - Proteção de campos imutáveis: id, created_at não podem ser alterados via update
+
+**3. Correção de depreciação**: Substituído `datetime.utcnow()` por `datetime.now(timezone.utc)` no schema (elimina 119 DeprecationWarnings do Python 3.12).
+
+**4. Testes abrangentes** (`tests/test_ingredient_registry.py`): 27 testes
+   - Schema: criação com campos mínimos, todos os tipos (product, character, scenario, object), visual references, metadata, unique IDs, default version
+   - Registry CRUD: register, get (existente/inexistente), update (name, description, preserves_id, nonexistent), delete (existente/inexistente)
+   - Search: por nome, descrição, sem resultados
+   - Filtro: list por tipo, list vazio por tipo
+   - Utilitários: count, clear, VisualReference defaults
+
+**5. Limpeza**: Removido `app/state/job_ledger.db` (leftover de sessão anterior), adicionado `*.db` ao `.gitignore`.
+
+### Testes executados
+- Testes do Ingredient Registry: 27/27 passed (0 warnings de depreciação)
+- Baseline de regressão pendente (full test suite)
+
+### Arquivos alterados
+- `app/domain/ingredient_registry.py` — Novo: schema Ingredient Registry com tipos, referências visuais, CRUD versionado
+- `app/domain/__init__.py` — Init do pacote domain
+- `tests/test_ingredient_registry.py` — Novo: 27 testes do schema e registry
+- `docs/project-control/10_DAILY_LOG.md` — Restaurado histórico completo + esta entrada
+- `docs/project-control/06_HISTORIAS_REFINADAS.md` — VIS-500 marcada como Concluída
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — PIPE-403 → Concluída, VIS-500 como próxima
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — Atualizado com estado atual
+- `.gitignore` — Adicionado `*.db` para ignorar SQLite databases
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- Rodar full test suite para verificar regressão
+- Fazer commit na branch `feature/VIS-500-ingredient-registry`
+- Criar PR e merge para master
+- Próxima história: VIS-501 (Criar schema Visual Bible) ou RND-600 (Criar RenderPlan mínimo)
+
+### Commits pendentes
+- Implementação do Ingredient Registry com schema, CRUD versionado e 27 testes

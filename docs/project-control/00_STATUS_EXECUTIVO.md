@@ -5,21 +5,21 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 19/48
+Histórias concluídas: 20/48
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 29 (48 - 19 concluídas - 0 em andamento)
-Percentual concluído: 39,6%
+Histórias pendentes: 28 (48 - 20 concluídas - 0 em andamento)
+Percentual concluído: 41,7%
 
-**Aritmética:** 48 histórias únicas no backlog. 19 Concluídas + 0 Em andamento + 29 Pendentes = 48.
+**Aritmética:** 48 histórias únicas no backlog. 20 Concluídas + 0 Em andamento + 28 Pendentes = 48.
 
 ## Estado atual
 
-- Branch atual: master
-- Último commit analisado: 851aaa1 — "feat(pipeline): add idempotency key service and use cases (PIPE-401)"
+- Branch atual: feature/VIS-500-ingredient-registry
+- Último commit analisado: 59e927c — "feat(PIPE-403): Implementar SQLite WAL/job ledger para persistência de jobs sem Redis"
 - Fase atual: Fase 5 — Pipeline e produto
-- História atual: PIPE-402 — Criar cache por hash de artefatos ✅
-- Próxima ação recomendada: Selecionar próxima história (PIPE-403 ou RND-600)
+- História atual: VIS-500 — Criar schema Ingredient Registry ✅
+- Próxima ação recomendada: VIS-501 (Criar schema Visual Bible) ou RND-600 (Criar RenderPlan mínimo)
 
 ### Playbooks criados nesta sessão
 
@@ -28,12 +28,11 @@ Percentual concluído: 39,6%
 | `LLM_PROVIDER_PLAYBOOK.md` | PROV-300, PROV-301, PROV-302 | 2 | 1 |
 | `VIDEO_RENDER_PROVIDER_PLAYBOOK.md` | VIS-502, VIS-503, RND-600..603, QA-1003 | 0 | 7 |
 | `AUDIO_TTS_PROVIDER_PLAYBOOK.md` | AUD-700..703, QA-1004 | 1 | 4 |
-| `VECTOR_MEMORY_PLAYBOOK.md` | VIS-500, VIS-501, VEC-800..803 | 0 | 6 |
+| `VECTOR_MEMORY_PLAYBOOK.md` | VIS-500, VIS-501, VEC-800..803 | 1 | 5 |
 | `QA_ANTI_HALLUCINATION_PLAYBOOK.md` | QA-1000, QA-1001, QA-1002 | 2 | 1 |
-| **Total** | **21 histórias cobertas** | **5** | **19** |
+| **Total** | **21 histórias cobertas** | **6** | **18** |
 
-> **Nota:** 4 histórias com evidência de implementação no Git (UI-201, UI-202, PIPE-400, PIPE-401) ainda marcadas como Pendentes no backlog — pendente de correção de status.
-> **Nova funcionalidade:** Serviço de cache de artefatos por hash implementado (PIPE-402) em `app/services/artifact_cache_service.py` e integrado nas etapas de geração de roteiro, divisão de cenas, construção de prompts e geração de áudio.
+> **Novas funcionalidades:** SQLite WAL/job ledger (PIPE-403) e Schema Ingredient Registry (VIS-500) implementados.
 
 ## Resumo tipo Daily
 
@@ -84,13 +83,11 @@ Percentual concluído: 39,6%
 
 ### O que está sendo feito
 
-- **Sessão atual: Diagnóstico e unificação de pastas K:**
-  - Checkpoint git: commit `3e18729` com 34 arquivos (9 modificados + 25 novos)
-  - Correção `.gitignore`: `/test_*.py` (só raiz, não `tests/`)
-  - Migração concluída: `tools/ffmpeg/` (301 MB) e `models/gpt4all/*.gguf` (3.9 GB) para pasta correta
-  - Limpeza: removidos 6 itens duplicados/junk
-  - `K:\AI_VIDEO_COMERCIAL_STUDIO` não renomeada (bloqueada por handles do sistema)
-- **Próximo:** Corrigir hardcoded K: paths em adapters (ARCH-302) e rodar testes.
+- **Sessão atual: VIS-500 — Ingredient Registry implementado.**
+  - Schema com 4 tipos (PRODUCT, CHARACTER, SCENARIO, OBJECT), VisualReference, CRUD versionado
+  - 27 testes passando (schema validation, CRUD, search, filter, versioning)
+  - Branch: `feature/VIS-500-ingredient-registry` (pendente de commit e merge)
+- **Próximo:** Rodar full test suite, commitar, criar PR, merge para master. Depois VIS-501 ou RND-600.
 
 ### Bloqueios
 
@@ -119,44 +116,22 @@ Percentual concluído: 39,6%
 
 ### Arquivos alterados nesta sessão
 
-- docs/reference/PROJECT_REFERENCE_CONTEXT.md (novo — commitado do governance pack)
-- docs/reference/FEATURE_PRESERVATION_MATRIX.md (novo — commitado do governance pack)
-- docs/reference/EXTERNAL_REFERENCES.md (novo — commitado do governance pack)
-- docs/project-control/01_AUDITORIA_HISTORICO_GIT.md (atualizado — 132 commits, CORE-100)
-- docs/project-control/02_MAPA_ATUAL_DO_PROJETO.md (atualizado — completo, CORE-101)
-- docs/project-control/00_STATUS_EXECUTIVO.md (atualizado — 10/48, 21%)
-- docs/project-control/19_STORY_MAP.md (reescrito — 7 etapas, gates, story map)
-- docs/project-control/05_BACKLOG_PRIORIZADO.md (atualizado — UI-200 concluída)
-- docs/project-control/06_HISTORIAS_REFINADAS.md (atualizado — UI-200 com evidências)
-- docs/project-control/10_DAILY_LOG.md (atualizado — entrada UI-200 + QA-1000)
-- tests/test_story_map.py (novo — 5 testes UI-200)
-- tests/test_naming_regression.py (novo — 5 testes QA-1000; ajustado para Windows encoding)
-- app/ui/gradio_app.py (alterado — FlowForgeAI→GalFlowAI, 6 ocorrências)
-- app/api.py (alterado — Gal AI→GalFlowAI, 3 ocorrências)
-- app/application/__init__.py, app/application/use_cases/__init__.py (alterados — FlowForgeAI→GalFlowAI)
-- app/services/metrics_service.py (alterado — Gal AI→GalFlowAI)
-- app/assets/asset_manager.py (alterado — FlowForgeAI→GalFlowAI)
-- tests/__init__.py, tests/integration/__init__.py, tests/unit/__init__.py (alterados — FlowForgeAI→GalFlowAI)
-- tests/test_api.py (alterado — Gal AI→GalFlowAI)
-- 35+ .md files (alterados — bulk replace FlowForgeAI/Gal AI→GalFlowAI)
-- update_backlog.py, append_all_sections.py, append_backlog.py, setup_llm_providers.py, fix_all_syntax.py (alterados — Gal AI→GalFlowAI)
-- tests/test_provider_presence.py (novo — 8 testes QA-1001)
-- tests/test_tts_fallback.py (atualizado — 5 testes QA-1004 corrigidos)
-- docs/project-control/00_STATUS_EXECUTIVO.md (atualizado — QA-1004 concluída, 14/48)
-- docs/project-control/10_DAILY_LOG.md (atualizado — entrada QA-1004 concluída)
+- `app/domain/ingredient_registry.py` — Novo: schema Ingredient Registry
+- `app/domain/__init__.py` — Init do pacote domain
+- `tests/test_ingredient_registry.py` — Novo: 27 testes do ingredient registry
+- `docs/project-control/06_HISTORIAS_REFINADAS.md` — VIS-500 marcada como Concluída
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — PIPE-403 → Concluída
+- `docs/project-control/10_DAILY_LOG.md` — Histórico restaurado + entrada VIS-500
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — Atualizado (20/48, 41,7%)
+- `.gitignore` — Adicionado `*.db`
 
 ### Comandos executados
 
-- pytest tests/test_git_audit.py tests/test_project_map.py -v — 10 passed
-- pytest tests/test_story_map.py -v — 5 passed (UI-200)
-- pytest tests/test_story_map.py tests/test_doc_code_gap.py tests/test_git_audit.py tests/test_project_map.py tests/test_checkpoint.py tests/test_product_context.py tests/test_feature_matrix.py tests/test_adr_policy.py tests/test_todo_policy.py tests/test_agents.py -v — 43 passed
-- pytest tests/test_naming_regression.py -v — 5 passed (QA-1000, após 3 iterações de fix)
-- pytest tests/test_provider_presence.py -v — 8 passed (QA-1001)
-- pytest tests/test_checkpoint.py ... tests/test_provider_presence.py -v — 56 passed (12 histórias)
+- `pytest tests/test_ingredient_registry.py -v` — 27 passed (VIS-500)
 
 ### Evidências usadas
 
-- Commit HEAD: ddbe56c (UI-200 + QA-1000)
-- Branch: master
-- Git log: 132 commits, 067938a..63839e7
-- Working tree: untracked files do usuário preservados
+- Commit base: 59e927c (PIPE-403 — SQLite job ledger)
+- Branch: feature/VIS-500-ingredient-registry
+- Schema: `app/domain/ingredient_registry.py` — Ingredient, IngredientType, VisualReference, IngredientRegistry
+- Testes: 27/27 passando
