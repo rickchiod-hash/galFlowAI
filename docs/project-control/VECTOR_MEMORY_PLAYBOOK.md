@@ -18,8 +18,8 @@ Componentes:
 |----------|--------|--------|----|-----------|-------------|
 | VIS-500 | Criar schema Ingredient Registry | Pendente | 5 | Alta | Não |
 | VIS-501 | Criar schema Visual Bible | Pendente | 5 | Alta | Não |
-| VEC-800 | Criar VectorStoreAdapter sem runtime obrigatório | Pendente | 3 | Média | Não |
-| VEC-801 | Criar MemoryQualityGate | Pendente | 5 | Média | Não |
+| VEC-800 | Criar VectorStoreAdapter sem runtime obrigatório | Concluída | 3 | Média | Sim |
+| VEC-801 | Criar MemoryQualityGate | Concluída | 5 | Média | Sim |
 | VEC-802 | Planejar Qdrant local opcional | Pendente | 3 | Baixa | Não |
 | VEC-803 | Planejar Chroma como protótipo opcional | Pendente | 2 | Baixa | Não |
 
@@ -45,7 +45,7 @@ Schema que fixa referências visuais aprovadas por ingrediente. Reduz drift visu
 
 ### VEC-800 — Criar VectorStoreAdapter sem runtime obrigatório
 
-**Status:** Pendente  
+**Status:** Concluída ✅  
 **Estimativa:** 3 SP  
 **Épico:** EPIC-900 IA vetorial futura  
 **Gherkin:** `07_CRITERIOS_ACEITE_GHERKIN.md#vec-800`  
@@ -53,15 +53,23 @@ Schema que fixa referências visuais aprovadas por ingrediente. Reduz drift visu
 
 Adapter que abstrai o backend vetorial. Interface comum para Chroma, Qdrant ou qualquer store futura. Não aciona runtime — apenas define o contrato. O pipeline funciona sem vector store.
 
+**Arquivos:**
+- `app/adapters/vector_store.py` — VectorStoreAdapter (ABC), InMemoryVectorStore, cosine_similarity
+- `tests/test_vector_store.py` — 25 testes (CRUD, search, similarity, edge cases)
+
 ### VEC-801 — Criar MemoryQualityGate
 
-**Status:** Pendente  
+**Status:** Concluída ✅  
 **Estimativa:** 5 SP  
 **Épico:** EPIC-900 IA vetorial futura  
 **Gherkin:** `07_CRITERIOS_ACEITE_GHERKIN.md#vec-801`  
 **Testes:** `08_PLANO_DE_TESTES.md#vec-801`  
 
 Barreira de qualidade que impede indexação de rascunhos ruins. Critérios: completude mínima do ingrediente, presença de referência visual, validação de schema.
+
+**Arquivos:**
+- `app/domain/memory_quality_gate.py` — MemoryQualityGate, QualityGateResult
+- `tests/test_memory_quality_gate.py` — 13 testes (ingredient/bible validation)
 
 ### VEC-802 — Planejar Qdrant local opcional
 

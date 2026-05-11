@@ -17,7 +17,7 @@ Componentes de áudio:
 | AUD-700 | Criar AudioPlan e narration_script.md | Concluída | 5 | Alta | Sim |
 | AUD-701 | Gerar áudio por cena com fallback | Concluída | 5 | Média | Sim |
 | AUD-702 | Gerar SRT por timing de cena | Concluída | 3 | Média | Sim |
-| AUD-703 | Criar SFX manifest | Pendente | 3 | Baixa | Não |
+| AUD-703 | Criar SFX manifest | Concluída | 3 | Baixa | Sim |
 | QA-1004 | Criar teste TTS falha → export sem áudio | Concluída | 3 | Média | Pendente playbook |
 
 ### AUD-700 — Criar AudioPlan e narration_script.md
@@ -52,13 +52,17 @@ SRTService implementado em `app/services/srt_service.py`. Gera legendas SRT a pa
 
 ### AUD-703 — Criar SFX manifest
 
-**Status:** Pendente  
+**Status:** Concluída ✅  
 **Estimativa:** 3 SP  
 **Épico:** EPIC-800 Audio  
 **Gherkin:** `07_CRITERIOS_ACEITE_GHERKIN.md#aud-703`  
 **Testes:** `08_PLANO_DE_TESTES.md#aud-703`  
 
 Registrar licença, origem e metadados de cada asset sonoro (SFX). Prevenir uso indevido de assets sem licença.
+
+**Arquivos:**
+- `app/domain/sfx_manifest.py` — SFXLicenseType, SFXAsset, SFXManifest (CRUD + search + filtro)
+- `tests/test_sfx_manifest.py` — 31 testes
 
 ### QA-1004 — Criar teste TTS falha → export sem áudio
 

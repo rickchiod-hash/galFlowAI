@@ -1366,3 +1366,63 @@ Total: 177/177 passed, 0 failed
 
 ### Próximo passo
 - Iniciar próxima história por ordem: RND-600 (ordem 28, Criar RenderPlan mínimo)
+
+---
+
+## 2026-05-11 — Sessão 11: VEC-801 (MemoryQualityGate) + docs catch-up
+
+### Contexto
+Sessão anterior concluiu VEC-800 com PR #17 mergeado. VEC-801 estava com código pronto mas não commitado.
+
+### O que fiz
+- **VEC-801 ✅:** Stage, commit, PR #18, merge para master (commit `f3a2dc9`):
+  - `app/domain/memory_quality_gate.py` — MemoryQualityGate com validate_ingredient() e validate_bible_entry()
+  - `tests/test_memory_quality_gate.py` — 13 testes (QualityGateResult, ingredient/bible validation)
+  - PR #18 merged via CLI
+  - Branch local `feature/VEC-801-memory-quality-gate` deletada
+- **Docs catch-up:** VEC-800 e VEC-801 marcados como Concluída em:
+  - `00_STATUS_EXECUTIVO.md` — 34/49 (69,4%)
+  - `05_BACKLOG_PRIORIZADO.md` — linhas 36-37 com commits
+  - `VECTOR_MEMORY_PLAYBOOK.md` — status + arquivos
+  - `AUDIO_TTS_PROVIDER_PLAYBOOK.md` — AUD-703 marcado Concluída + arquivos
+
+### Arquivos alterados
+- `app/domain/memory_quality_gate.py` — Novo (commitado VEC-801)
+- `tests/test_memory_quality_gate.py` — Novo (13 testes)
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — Atualizado
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — Atualizado
+- `docs/project-control/VECTOR_MEMORY_PLAYBOOK.md` — Atualizado
+- `docs/project-control/AUDIO_TTS_PROVIDER_PLAYBOOK.md` — AUD-703 ✅
+
+### Testes executados
+- `pytest tests/test_memory_quality_gate.py -v` — 13/13 passed
+- `pytest (core: 7 arquivos de domínio)` — 191/191 passed (0 falhas)
+
+### Histórias atualizadas
+- **VEC-800:** Pendente → Concluída (commit 9012c29, 25 testes)
+- **VEC-801:** Pendente → Concluída (commit f3a2dc9, 13 testes)
+
+### Próximo passo
+- RND-603 (ordem 31): Registrar Wan VACE 1.3B como futuro opcional
+
+---
+
+## 2026-05-11 — Sessão 11 (cont.): RND-603 concluida
+
+### RND-603 ✅ — Registrar Wan VACE 1.3B como futuro opcional
+
+**Status:** Concluida
+**Estimativa:** 2 SP
+**Evidencia:** VACE ja parcialmente implementado (EngineType, PromptCompiler, VRAM estimate) mas nunca selecionado automaticamente.
+
+**O que fiz:**
+- Documentei VACE em `VIDEO_RENDER_PROVIDER_PLAYBOOK.md`:
+  - Implementacao atual (EngineType, PromptCompiler._compile_for_vace, GpuProfile.vace_vram_per_scene_mb)
+  - Requisitos de GPU (1.3B params, 2048 MB VRAM/cena, GPU minima RTX 3060 12GB)
+  - Criterios para ativacao futura (VACEAdapter, EngineRouter, NUNCA remover FFmpeg)
+- Criei `tests/test_rnd_603_vace_doc.py` — 8 testes
+- Atualizei `05_BACKLOG_PRIORIZADO.md` (RND-603 Concluida)
+- Atualizei `00_STATUS_EXECUTIVO.md`
+
+### Proximo passo
+- VEC-802 (ordem 38): Planejar Qdrant local opcional

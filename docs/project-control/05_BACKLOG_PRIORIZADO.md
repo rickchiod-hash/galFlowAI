@@ -36,13 +36,13 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 28 | RND-600 | Criar RenderPlan mínimo | Alta | 5 | Concluída | Arquitetura/base P0 validada | para usar GPU e fallback com previsibilidade |
 | 29 | RND-601 | Manter FFmpeg como fallback universal | Alta | 3 | Concluída | Arquitetura/base P0 validada | para sempre obter um MP4 mínimo |
 | 30 | RND-602 | Adicionar perfil GTX 1660 Super | Alta | 3 | Concluída | Arquitetura/base P0 validada | para evitar OOM e travamentos |
-| 31 | RND-603 | Registrar Wan VACE 1.3B como futuro opcional | Baixa | 2 | Pendente | Arquitetura/base P0 validada | para não forçar engine pesada agora |
+| 31 | RND-603 | Registrar Wan VACE 1.3B como futuro opcional | Baixa | 2 | Concluída | Arquitetura/base P0 validada | VACE documentado no VIDEO_RENDER_PROVIDER_PLAYBOOK.md — EngineType definido, PromptCompiler suporta, VRAM 2048MB/cena estimada |
 | 32 | AUD-700 | Criar AudioPlan e narration_script.md | Alta | 5 | Concluída | Arquitetura/base P0 validada | commit a68ceeb — AudioPlan schema + AudioPlanService CRUD + generate_narration_script → narration_script.md. 41 testes. |
 | 33 | AUD-701 | Gerar áudio por cena com fallback | Média | 5 | Concluída | Arquitetura/base P0 validada | commit 140fb6e — TTSAudioService: gera WAV por cena a partir de AudioPlan com fallback silencioso. 19 testes. |
 | 34 | AUD-702 | Gerar SRT por timing de cena | Média | 3 | Concluída | Arquitetura/base P0 validada | commit 9c90700 — SRTService: gera legendas SRT a partir de AudioPlan com timing sequencial. 22 testes. |
 | 35 | AUD-703 | Criar SFX manifest | Baixa | 3 | Concluída | Arquitetura/base P0 validada | commit d3fbfe7 — SFXManifest: schema + CRUD + busca. 31 testes. |
-| 36 | VEC-800 | Criar VectorStoreAdapter sem runtime obrigatório | Média | 3 | Pendente | Arquitetura/base P0 validada | para preparar memória sem acoplar backend |
-| 37 | VEC-801 | Criar MemoryQualityGate | Média | 5 | Pendente | Arquitetura/base P0 validada | para evitar contaminação semântica |
+| 36 | VEC-800 | Criar VectorStoreAdapter sem runtime obrigatório | Média | 3 | Concluída | Arquitetura/base P0 validada | commit 9012c29 — VectorStoreAdapter (ABC) + InMemoryVectorStore + cosine_similarity. 25 testes. |
+| 37 | VEC-801 | Criar MemoryQualityGate | Média | 5 | Concluída | Arquitetura/base P0 validada | commit f3a2dc9 — MemoryQualityGate com validate_ingredient/validate_bible_entry. 13 testes. |
 | 38 | VEC-802 | Planejar Qdrant local opcional | Baixa | 3 | Pendente | Arquitetura/base P0 validada | para evoluir com payload e filtros |
 | 39 | VEC-803 | Planejar Chroma como protótipo opcional | Baixa | 2 | Pendente | Arquitetura/base P0 validada | para testar retrieval textual com baixo atrito |
 | 40 | OBS-900 | Criar logs estruturados por etapa | Alta | 5 | Pendente | Arquitetura/base P0 validada | para diagnosticar falhas sem olhar código |
@@ -58,7 +58,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 
 ## Próxima história recomendada
 
-**VEC-800 — Criar VectorStoreAdapter sem runtime obrigatorio (ordem 36).** Pendente. Preparar memoria sem acoplar backend.
+**VEC-802 — Planejar Qdrant local opcional (ordem 38).** Pendente. Planejar integração com Qdrant como backend alvo de produção.
 
 ## Regras de priorização
 
