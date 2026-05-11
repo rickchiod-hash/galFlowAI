@@ -1492,3 +1492,31 @@ Sessão anterior concluiu VEC-800 com PR #17 mergeado. VEC-801 estava com códig
 - **Total:** 38/49 (77,6%)
 - **PRs criados e mergeados:** #18 (VEC-801), #19 (RND-603), #20 (VEC-802), #21 (VEC-803)
 - **Proxima recomendada:** OBS-901 (ordem 41) — Criar metricas minimas por job
+
+---
+
+## 2026-05-11 — Sessao 11 (final): OBS-901 concluida
+
+### OBS-901 ✅ — Criar metricas minimas por job
+
+**Epico:** EPIC-1000 Observabilidade
+**Estimativa:** 5 SP
+**Prioridade:** Alta
+
+**O que fiz:**
+- Criei `app/domain/job_metrics.py` com:
+  - `JobStageMetric` dataclass: stage, duration_ms, success, fallback_count, error_count, warnings
+  - `JobMetrics` class: agrega eventos do StageLogger em metricas por job
+  - `add_stage_event(stage, event_type, duration_ms, cause, correction)`: alimenta metricas a partir de eventos de stage
+  - `get_stage_metrics()`: retorna lista de metricas por etapa
+  - `get_summary()`: total_stages, total_duration, failed_stages, success_rate, total_fallbacks, total_errors
+  - Mapeamento: warning -> fallback, failure -> error, success -> duration
+- Criei `tests/test_job_metrics.py` — 10 testes
+- 380/380 testes passando (0 falhas)
+
+### Status final da sessao
+
+- **Historias concluidas nesta sessao:** VEC-800, VEC-801, RND-603, VEC-802, VEC-803, OBS-900, OBS-901
+- **Total:** 39/49 (79,6%)
+- **PRs criados e mergeados:** #18 (VEC-801), #19 (RND-603), #20 (VEC-802), #21 (VEC-803), #22 (OBS-900)
+- **Proxima recomendada:** UI-204 (ordem 47) — Criar tela de Configuracoes na UI
