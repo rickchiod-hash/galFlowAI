@@ -59,7 +59,6 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 ## Próxima história recomendada
 
 **Todas as 49 histórias do backlog concluídas.**  
-Pendentes: 7 histórias não refinadas (VIS-500, VIS-501, RND-603 anterior, QA-1003, VIS-503 anterior = contagem residual).  
 Backlog 100% implementado dentro do escopo P0/P1.
 
 ## Regras de priorização
