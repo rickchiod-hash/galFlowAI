@@ -54,11 +54,13 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 46 | QA-1004 | Criar teste TTS falha → export sem áudio | Média | 3 | Concluída | Arquitetura/base P0 validada | para preservar entrega final |
 | 47 | UI-204 | Criar tela de Configurações na UI | Baixa | 3 | Concluída | UI-203 | ConfigService + aba Configuracoes na UI com provedor, qualidade, duracao, caminhos. 16 testes. |
 | 48 | SEC-1100 | Criar política MCP seguro | Média | 2 | Concluída | Arquitetura/base P0 validada | mcp/README_MCP_OPTIONAL.md criado — MCP desabilitado por padrao. 5 testes. |
-| 49 | SEC-1101 | Criar política de secrets e arquivos sensíveis | Média | 2 | Pendente | Arquitetura/base P0 validada | para proteger ambiente e clientes |
+| 49 | SEC-1101 | Criar política de secrets e arquivos sensíveis | Média | 2 | Concluída | Arquitetura/base P0 validada | SECRETS_POLICY.md criado + .gitignore atualizado (env/credentials). 6 testes. |
 
 ## Próxima história recomendada
 
-**SEC-1101 — Criar política de secrets e arquivos sensíveis (ordem 49).** Pendente. Criar politica para evitar commit de chaves e paths pessoais.
+**Todas as 49 histórias do backlog concluídas.**  
+Pendentes: 7 histórias não refinadas (VIS-500, VIS-501, RND-603 anterior, QA-1003, VIS-503 anterior = contagem residual).  
+Backlog 100% implementado dentro do escopo P0/P1.
 
 ## Regras de priorização
 

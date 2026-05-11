@@ -8,6 +8,14 @@ __pycache__/
 *.pyd
 .Python
 
+# Seguranca - nunca commitar secrets
+.env
+.env.*
+credentials.json
+credentials.*
+*.key
+*.pem
+
 # Cache e temporarios
 cache/
 temp/
