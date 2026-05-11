@@ -20,7 +20,7 @@ Componentes:
 | VIS-501 | Criar schema Visual Bible | Pendente | 5 | Alta | Não |
 | VEC-800 | Criar VectorStoreAdapter sem runtime obrigatório | Concluída | 3 | Média | Sim |
 | VEC-801 | Criar MemoryQualityGate | Concluída | 5 | Média | Sim |
-| VEC-802 | Planejar Qdrant local opcional | Pendente | 3 | Baixa | Não |
+| VEC-802 | Planejar Qdrant local opcional | Concluída | 3 | Baixa | Sim |
 | VEC-803 | Planejar Chroma como protótipo opcional | Pendente | 2 | Baixa | Não |
 
 ### VIS-500 — Criar schema Ingredient Registry
@@ -73,13 +73,50 @@ Barreira de qualidade que impede indexação de rascunhos ruins. Critérios: com
 
 ### VEC-802 — Planejar Qdrant local opcional
 
-**Status:** Pendente  
+**Status:** Concluída ✅  
 **Estimativa:** 3 SP  
 **Épico:** EPIC-900 IA vetorial futura  
 **Gherkin:** `07_CRITERIOS_ACEITE_GHERKIN.md#vec-802`  
 **Testes:** `08_PLANO_DE_TESTES.md#vec-802`  
 
 Planejar integração com Qdrant como backend alvo de produção. Qdrant suporta payload filtering, multi-tenancy e busca híbrida. Deve ser opcional e local-first.
+
+#### Plano de integração
+
+**Arquitetura:**
+```
+VectorStoreAdapter (ABC)
+  └── QdrantStore
+        ├── Client gRPC (qdrant-client Python)
+        ├── Collection por project_id (multi-tenancy)
+        └── Payload: {ingredient_id, ingredient_name, type, source}
+```
+
+**Pré-requisitos:**
+- Dependência Python: `qdrant-client` (opcional, importada apenas quando ativo)
+- Qdrant local via Docker: `docker run -p 6333:6333 qdrant/qdrant`
+- Modo embedded (sem Docker): `from qdrant_client import QdrantClient` com `:memory:` ou caminho local
+- Vector dimension: 384 (default para all-MiniLM-L6-v2) ou configurável
+
+**Recursos:**
+- RAM: ~2GB para Qdrant local (depende do volume de dados)
+- CPU: qualquer CPU moderna
+- GPU: não obrigatório (Qdrant é CPU-only)
+- Disco: persistência opcional em `local_data/qdrant/`
+
+**Critérios para ativação:**
+1. Implementar `QdrantStore(VectorStoreAdapter)` em `app/adapters/vector_store_qdrant.py`
+2. Registrar na configuração como store ativo: `vector_store.type = "qdrant"`
+3. MemoryQualityGate deve executar antes de upsert (regra #3)
+4. Pipeline funciona sem Qdrant — import falha silenciosa
+5. NUNCA remover InMemoryVectorStore (fallback para teste)
+
+**Plano de implementação (futuro):**
+1. Adicionar `qdrant-client` como dependência opcional em `pyproject.toml`
+2. Criar `QdrantStore` com métodos: search, upsert, delete, list_collections
+3. Config: host, port, collection_prefix, embedding_dim
+4. Testes com Qdrant `:memory:` mode (sem Docker necessário)
+5. Atualizar `MemoryQualityGate` para usar QdrantStore quando ativo
 
 ### VEC-803 — Planejar Chroma como protótipo opcional
 
