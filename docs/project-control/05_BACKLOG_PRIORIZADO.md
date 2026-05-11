@@ -43,7 +43,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 35 | AUD-703 | Criar SFX manifest | Baixa | 3 | Concluída | Arquitetura/base P0 validada | commit d3fbfe7 — SFXManifest: schema + CRUD + busca. 31 testes. |
 | 36 | VEC-800 | Criar VectorStoreAdapter sem runtime obrigatório | Média | 3 | Concluída | Arquitetura/base P0 validada | commit 9012c29 — VectorStoreAdapter (ABC) + InMemoryVectorStore + cosine_similarity. 25 testes. |
 | 37 | VEC-801 | Criar MemoryQualityGate | Média | 5 | Concluída | Arquitetura/base P0 validada | commit f3a2dc9 — MemoryQualityGate com validate_ingredient/validate_bible_entry. 13 testes. |
-| 38 | VEC-802 | Planejar Qdrant local opcional | Baixa | 3 | Pendente | Arquitetura/base P0 validada | para evoluir com payload e filtros |
+| 38 | VEC-802 | Planejar Qdrant local opcional | Baixa | 3 | Concluída | Arquitetura/base P0 validada | plano documentado no VECTOR_MEMORY_PLAYBOOK.md — QdrantStore, prereqs, criterios ativacao |
 | 39 | VEC-803 | Planejar Chroma como protótipo opcional | Baixa | 2 | Pendente | Arquitetura/base P0 validada | para testar retrieval textual com baixo atrito |
 | 40 | OBS-900 | Criar logs estruturados por etapa | Alta | 5 | Pendente | Arquitetura/base P0 validada | para diagnosticar falhas sem olhar código |
 | 41 | OBS-901 | Criar métricas mínimas por job | Alta | 5 | Pendente | Arquitetura/base P0 validada | para priorizar melhorias reais |
@@ -58,7 +58,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 
 ## Próxima história recomendada
 
-**VEC-802 — Planejar Qdrant local opcional (ordem 38).** Pendente. Planejar integração com Qdrant como backend alvo de produção.
+**VEC-803 — Planejar Chroma como protótipo opcional (ordem 39).** Pendente. Planejar integração Chroma como backend rápido para prototipagem.
 
 ## Regras de priorização
 
