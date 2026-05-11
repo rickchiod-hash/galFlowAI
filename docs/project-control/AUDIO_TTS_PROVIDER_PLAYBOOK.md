@@ -16,7 +16,7 @@ Componentes de áudio:
 |----------|--------|--------|----|-----------|-------------|
 | AUD-700 | Criar AudioPlan e narration_script.md | Concluída | 5 | Alta | Sim |
 | AUD-701 | Gerar áudio por cena com fallback | Concluída | 5 | Média | Sim |
-| AUD-702 | Gerar SRT por timing de cena | Pendente | 3 | Média | Não |
+| AUD-702 | Gerar SRT por timing de cena | Concluída | 3 | Média | Sim |
 | AUD-703 | Criar SFX manifest | Pendente | 3 | Baixa | Não |
 | QA-1004 | Criar teste TTS falha → export sem áudio | Concluída | 3 | Média | Pendente playbook |
 
@@ -42,13 +42,13 @@ TTSAudioService implementado em `app/services/tts_audio_service.py`. Gera `scene
 
 ### AUD-702 — Gerar SRT por timing de cena
 
-**Status:** Pendente  
+**Status:** Concluída ✅  
 **Estimativa:** 3 SP  
 **Épico:** EPIC-800 Audio  
 **Gherkin:** `07_CRITERIOS_ACEITE_GHERKIN.md#aud-702`  
 **Testes:** `08_PLANO_DE_TESTES.md#aud-702`  
 
-Gerar arquivo SRT com legendas baseadas no timing de cada cena. Permite que o vídeo seja usado em redes sociais sem áudio.
+SRTService implementado em `app/services/srt_service.py`. Gera legendas SRT a partir de AudioPlan com timing sequencial. 22 testes. Commit `9c90700`.
 
 ### AUD-703 — Criar SFX manifest
 

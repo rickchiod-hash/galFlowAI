@@ -2,6 +2,30 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-11 — Sessão 9: AUD-702 (SRTService subtitle generation)
+
+### Contexto
+AUD-701 concluida. Proximo: AUD-702 — gerar legendas SRT a partir do AudioPlan.
+
+### O que fiz
+- **AUD-702 ✅:** `app/services/srt_service.py` — SRTService:
+  - `generate_srt_content(plan)` — gera string SRT com timing sequencial
+  - `generate_srt_file(plan, output_path)` — salva arquivo .srt
+  - `estimate_duration(text)` — estima por chars/second (15 chars/s, minimo 2s)
+  - `_format_srt_timestamp()` — converte segundos para HH:MM:SS,mmm
+  - Usa NarrationEntry.duration_seconds se > 0, senao estima
+- **22 testes:** estimate_duration (4), format_timestamp (6), generate_srt_content (9), generate_srt_file (3)
+- **PR #15** criado e merged (commit 9c90700)
+- **Regressao:** 304/304 testes passando (0 falhas)
+
+### Arquivos alterados
+- `app/services/srt_service.py` — Novo
+- `tests/test_srt_service.py` — Novo (22 testes)
+- Docs de controle atualizados
+
+### Proximo passo
+- AUD-703: Criar SFX manifest
+
 ## 2026-05-11 — Sessão 8: AUD-701 (TTSAudioService per-scene audio)
 
 ### Contexto
