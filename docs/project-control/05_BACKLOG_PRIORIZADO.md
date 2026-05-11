@@ -52,13 +52,13 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 44 | QA-1002 | Criar teste UI não chama adapters | Média | 3 | Concluída | Arquitetura/base P0 validada | para proteger separação de responsabilidades |
 | 45 | QA-1003 | Criar teste E2E WanGP falha → FFmpeg | Média | 5 | Concluída | Arquitetura/base P0 validada | para garantir MP4 mesmo sem IA de vídeo |
 | 46 | QA-1004 | Criar teste TTS falha → export sem áudio | Média | 3 | Concluída | Arquitetura/base P0 validada | para preservar entrega final |
-| 47 | UI-204 | Criar tela de Configurações na UI | Baixa | 3 | Pendente | UI-203 | para gerenciar provedores, caminhos e preferências |
+| 47 | UI-204 | Criar tela de Configurações na UI | Baixa | 3 | Concluída | UI-203 | ConfigService + aba Configuracoes na UI com provedor, qualidade, duracao, caminhos. 16 testes. |
 | 48 | SEC-1100 | Criar política MCP seguro | Média | 2 | Pendente | Arquitetura/base P0 validada | para evitar ferramentas amplas sem revisão |
 | 49 | SEC-1101 | Criar política de secrets e arquivos sensíveis | Média | 2 | Pendente | Arquitetura/base P0 validada | para proteger ambiente e clientes |
 
 ## Próxima história recomendada
 
-**UI-204 — Criar tela de Configurações na UI (ordem 47).** Pendente. Criar tela para gerenciar provedores, caminhos e preferências.
+**SEC-1100 — Criar política MCP seguro (ordem 48).** Pendente. Criar politica para evitar ferramentas amplas sem revisao.
 
 ## Regras de priorização
 

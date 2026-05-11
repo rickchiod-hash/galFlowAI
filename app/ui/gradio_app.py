@@ -19,6 +19,7 @@ from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
 from app.services.log_service import get_recent_logs, get_log_summary, copy_diagnostic_bundle
 from app.services.metrics_service import get_metrics_service
 from app.services.script_service import generate_script_with_provider, get_provider_status, get_provider_diagnostics
+from app.services.config_service import get_config_service
 
 
 class WebInterface:
@@ -468,6 +469,75 @@ def create_gradio_app():
             refresh_providers_diag_btn.click(
                 refresh_providers_diag,
                 outputs=[providers_diagnostic_md]
+            )
+
+        # --- Aba 6: Configuracoes ---
+        with gr.Tab("Configuracoes"):
+            gr.Markdown("### Preferencias do Sistema")
+
+            config_svc = get_config_service()
+            current = config_svc.get_all()
+
+            cfg_provider = gr.Dropdown(
+                choices=["auto", "template", "lm_studio", "koboldcpp", "llamacpp", "gpt4all"],
+                value=current.get("default_llm_provider", "auto"),
+                label="Provedor LLM Padrao"
+            )
+            cfg_quality = gr.Dropdown(
+                choices=["DRAFT", "STANDARD", "HIGH"],
+                value=current.get("default_quality", "STANDARD"),
+                label="Qualidade Padrao"
+            )
+            cfg_duration = gr.Slider(
+                minimum=10, maximum=120, value=current.get("default_duration_sec", 30),
+                step=5, label="Duracao Padrao (segundos)"
+            )
+            cfg_logs_dir = gr.Textbox(
+                value=current.get("logs_dir", ""),
+                label="Diretorio de Logs"
+            )
+            cfg_projects_dir = gr.Textbox(
+                value=current.get("projects_dir", ""),
+                label="Diretorio de Projetos"
+            )
+
+            cfg_status = gr.Markdown()
+
+            def on_save_config(provider, quality, duration, logs_dir, projects_dir):
+                svc = get_config_service()
+                svc.set_multi({
+                    "default_llm_provider": provider,
+                    "default_quality": quality,
+                    "default_duration_sec": duration,
+                    "logs_dir": logs_dir,
+                    "projects_dir": projects_dir,
+                })
+                return "Configuracoes salvas com sucesso!"
+
+            cfg_save_btn = gr.Button("Salvar Configuracoes", variant="primary")
+            cfg_save_btn.click(
+                on_save_config,
+                inputs=[cfg_provider, cfg_quality, cfg_duration, cfg_logs_dir, cfg_projects_dir],
+                outputs=[cfg_status]
+            )
+
+            def on_reset_config():
+                svc = get_config_service()
+                svc.reset()
+                defaults = svc.get_all()
+                return (
+                    defaults["default_llm_provider"],
+                    defaults["default_quality"],
+                    defaults["default_duration_sec"],
+                    defaults["logs_dir"],
+                    defaults["projects_dir"],
+                    "Configuracoes restauradas para valores padrao.",
+                )
+
+            cfg_reset_btn = gr.Button("Restaurar Padroes")
+            cfg_reset_btn.click(
+                on_reset_config,
+                outputs=[cfg_provider, cfg_quality, cfg_duration, cfg_logs_dir, cfg_projects_dir, cfg_status]
             )
 
     return demo
