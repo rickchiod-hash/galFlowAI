@@ -887,6 +887,61 @@ Após merge do PR #10 (VIS-503) para master, implementei PROV-302 — testes aut
 - Fazer commit, criar PR, merge para master
 - Próxima história recomendada: RND-600 (Criar RenderPlan mínimo)
 
+## 2026-05-10 — Sessão 6: RND-602 — Adicionar perfil GTX 1660 Super ✅
+
+### Contexto
+Após RND-600 (RenderPlan mínimo) e RND-601 (FFmpeg fallback universal), implementei RND-602 — perfil de GPU GTX 1660 Super (6GB VRAM) para evitar OOM durante renderização. O RenderPlanService agora usa perfis de GPU que definem resoluções seguras e orçamento de VRAM por engine.
+
+### O que fiz
+
+**1. GpuProfile + GpuProfileCatalog em `app/domain/render_plan.py`:**
+- `GpuProfile` — dataclass com: name, vram_total_mb, max_resolution, recommended_resolution, wangp_vram_per_scene_mb, ffmpeg_vram_per_scene_mb, vace_vram_per_scene_mb
+- `GpuProfileCatalog` — catálogo estático com 3 perfis:
+  - **GTX 1660 Super (6GB)** — default: 6144MB VRAM, max 832x512, recommended 640x480, 3072MB WanGP VRAM
+  - **RTX 3060 (12GB)** — 12288MB VRAM, max 1024x576, recommended 832x512, 4096MB WanGP VRAM
+  - **Fallback (CPU/FFmpeg)** — 512MB VRAM, 480x360, WanGP não disponível (0MB)
+- `get_profile_for_vram()` — seleciona o melhor perfil baseado na VRAM disponível
+
+**2. RenderPlanService integrado com perfis:**
+- `generate_plan()` aceita `gpu_profile` opcional
+- `_select_engine()` usa `profile.wangp_vram_per_scene_mb` e `profile.vram_total_mb`
+- `_estimate_vram()` é profile-aware (retorna VRAM do perfil)
+- `_resolve_resolution()` — DRAFT=480x360, STANDARD=recommended, HIGH=max_resolution
+- `SceneRenderAssignment.resolution` — resolução por cena
+- `RenderPlan.max_resolution` — resolução máxima do plano
+
+**3. 22 novos testes (40 total em test_render_plan.py):**
+- TestGpuProfile (2): criação, defaults
+- TestGpuProfileCatalog (7): default, get by name, not found, list, get_profile_for_vram
+- TestRenderPlanResolution (5): standard/high/draft, GTX 1660 Super vs RTX 3060
+- TestRenderPlanGpuProfile (8): default profile, custom VRAM, RTX 3060, VRAM estimates, fallback profile, override, max_resolution
+
+**4. Regressão zero:**
+- 222/222 testes passando (render_plan 40 + ffmpeg_fallback 15 + scene_contract 42 + prompt_compiler 44 + visual_bible 33 + ingredient_registry 27 + provider_fallback 21)
+
+### Arquivos alterados
+- `app/domain/render_plan.py` — +GpuProfile, GpuProfileCatalog, profile-aware engine selection, resolution
+- `tests/test_render_plan.py` — +22 testes RND-602
+
+### Documentos atualizados
+- `00_STATUS_EXECUTIVO.md` — 28/49 (57.1%), RND-602 concluída, próxima RND-603
+- `05_BACKLOG_PRIORIZADO.md` — RND-602 → Concluída
+- `06_HISTORIAS_REFINADAS.md` — RND-602 → Concluída com evidências
+- `VIDEO_RENDER_PROVIDER_PLAYBOOK.md` — RND-602 → Concluída, DoR Sim
+- `10_DAILY_LOG.md` — esta entrada
+
+### Decisões
+- GpuProfileCatalog usa cache lazy (`_init()`) para inicialização sob demanda
+- Resolução DRAFT=480x360 fixa (independente do perfil), STANDARD=recommended, HIGH=max_resolution
+- `get_profile_for_vram()` retorna o perfil com maior VRAM que ainda é <= VRAM disponível
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- Fazer commit e criar PR
+- RND-603 (Registrar Wan VACE 1.3B como futuro opcional) — ordem 31
+
 ## 2026-05-09 — Sessão 10: VIS-503 — Criar Prompt Compiler por engine ✅
 
 ### Contexto

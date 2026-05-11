@@ -1393,25 +1393,23 @@ Ver `RND-601` em `08_PLANO_DE_TESTES.md`.
 - [ ] Daily log atualizado
 - [ ] Commit criado
 
-## RND-602 — Adicionar perfil GTX 1660 Super
+## RND-602 — Adicionar perfil GTX 1660 Super ✅
 
 **Épico:** EPIC-700 Render e performance  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 3 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
 
 ### História
 Como usuário com 6GB VRAM, eu quero perfil seguro 480p/512p, para evitar OOM e travamentos.
 
-### Contexto técnico
-Esta história deve ser validada no código e no histórico Git antes de implementação. Se a evidência não existir, registrar `EVIDÊNCIA INSUFICIENTE` no status executivo. Contexto funcional: GPU Budget.
-
-### Evidências obrigatórias
-- Arquivo(s) atual(is) relacionados.
-- Commit(s) que criaram/alteraram/removeram a capacidade.
-- Teste(s) existentes ou ausência documentada.
-- Impacto na Feature Preservation Matrix, se aplicável.
+### Evidências
+- `app/domain/render_plan.py` — GpuProfile (dataclass), GpuProfileCatalog (3 perfis: GTX 1660 Super, RTX 3060, Fallback CPU). RenderPlanService integrado: aceita gpu_profile opcional, usa VRAM do perfil para engine selection, resolução varia por qualidade.
+- `tests/test_render_plan.py` — 22 testes novos (40 total): GpuProfile, GpuProfileCatalog, resolução por perfil/qualidade, engine selection com perfis, VRAM estimates.
+- Perfil GTX 1660 Super (6GB): vram=6144MB, max_resolution=(832,512), recommended=(640,480), wangp_per_scene=3072MB.
+- Pytest: 40/40 passed (render_plan), 222/222 (todos os domínios core).
+- Branch: `feature/RND-602-perfil-gtx-1660-super`.
 
 ### Critérios de aceite
 Ver `RND-602` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
@@ -1420,24 +1418,24 @@ Ver `RND-602` em `07_CRITERIOS_ACEITE_GHERKIN.md`.
 Ver `RND-602` em `08_PLANO_DE_TESTES.md`.
 
 ### Definition of Ready
-- [ ] Independente
-- [ ] Negociável
-- [ ] Valiosa
-- [ ] Estimável
-- [ ] Pequena o suficiente
-- [ ] Testável
-- [ ] Possui contexto técnico
-- [ ] Possui arquivo de referência
-- [ ] Possui critérios Gherkin
-- [ ] Possui teste planejado
+- [x] Independente
+- [x] Negociável
+- [x] Valiosa
+- [x] Estimável
+- [x] Pequena o suficiente
+- [x] Testável
+- [x] Possui contexto técnico
+- [x] Possui arquivo de referência
+- [x] Possui critérios Gherkin
+- [x] Possui teste planejado
 
 ### Definition of Done
-- [ ] Critérios atendidos
-- [ ] Testes criados/atualizados
-- [ ] Docs e backlog atualizados
-- [ ] Status executivo atualizado
-- [ ] Daily log atualizado
-- [ ] Commit criado
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [x] Commit criado
 
 ## RND-603 — Registrar Wan VACE 1.3B como futuro opcional
 
