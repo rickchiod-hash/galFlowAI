@@ -122,156 +122,7 @@ def create_gradio_app():
         gr.Markdown("# GalFlowAI - Gerador de Comerciais em Video")
         gr.Markdown("Crie videos comerciais curtos para redes sociais com IA")
 
-        # --- Aba 1: Geracao de Video ---
-        with gr.Tab("Geracao"):
-            with gr.Row():
-                with gr.Column(scale=2):
-                    gr.Markdown("### Parametros de Entrada")
-
-                    product_input = gr.Textbox(
-                        label="Nome do Produto",
-                        placeholder="Digite o nome do produto...",
-                        value="Produto Incrivel"
-                    )
-
-                    audience_input = gr.Textbox(
-                        label="Publico-Alvo",
-                        placeholder="Descreva seu publico-alvo...",
-                        value="Jovens adultos de 18 a 35 anos"
-                    )
-
-                    with gr.Row():
-                        duration_input = gr.Slider(
-                            minimum=10,
-                            maximum=60,
-                            value=30,
-                            step=5,
-                            label="Duracao (segundos)"
-                        )
-
-                        style_input = gr.Dropdown(
-                            choices=["viral", "premium", "direct"],
-                            value="viral",
-                            label="Estilo"
-                        )
-
-                    generate_btn = gr.Button("Gerar Comercial", variant="primary")
-
-                with gr.Column(scale=1):
-                     gr.Markdown("### Status")
-
-                     status_output = gr.Markdown()
-                     refresh_btn = gr.Button("Atualizar Status")
-
-            gr.Markdown("### Video Gerado")
-
-            with gr.Row():
-                video_output = gr.Video(label="Seu Comercial")
-                error_output = gr.Markdown(visible=False)
-
-            gr.Markdown("### Instrucoes")
-            gr.Markdown("""
-1. Preencha o nome do produto e publico-alvo
-2. Ajuste a duracao e o estilo
-3. Clique em 'Gerar Comercial'
-4. Aguarde a geracao do video (pode levar alguns minutos)
-5. Visualize e baixe seu comercial
-
-**Nota:** A primeira geracao pode demorar mais enquanto os modelos sao carregados.
-""")
-
-            def on_generate(product, audience, duration, style, progress=gr.Progress()):
-                result = web_interface.generate_commercial_web(
-                    product=product,
-                    target_audience=audience,
-                    duration=duration,
-                    style=style,
-                    progress=progress
-                )
-
-                if result and result.startswith("ERRO"):
-                    return {
-                        video_output: None,
-                        error_output: result,
-                        error_output: gr.update(visible=True)
-                    }
-                else:
-                    return {
-                        video_output: result,
-                        error_output: gr.update(visible=False)
-                    }
-
-            generate_btn.click(
-                on_generate,
-                inputs=[product_input, audience_input, duration_input, style_input],
-                outputs=[video_output, error_output]
-            )
-
-            def on_refresh():
-                return web_interface.check_availability()
-
-            refresh_btn.click(
-                on_refresh,
-                outputs=[status_output]
-            )
-
-            demo.load(
-                lambda: web_interface.check_availability(),
-                outputs=[status_output]
-            )
-
-        # --- Aba 2: Logs ---
-        with gr.Tab("Logs"):
-            gr.Markdown("### Registro de Logs")
-            with gr.Row():
-                log_level_filter = gr.Dropdown(
-                    choices=["INFO", "WARN", "ERROR"],
-                    value="INFO",
-                    label="Nivel"
-                )
-                log_search = gr.Textbox(
-                    label="Buscar",
-                    placeholder="Filtrar por texto..."
-                )
-            log_limit = gr.Slider(
-                minimum=10,
-                maximum=100,
-                value=20,
-                step=5,
-                label="Limite de linhas"
-            )
-            logs_output = gr.Dataframe(
-                headers=["horario", "nivel", "modulo", "mensagem", "sugestao"],
-                label="Logs",
-                datatype=["str", "str", "str", "str", "str"],
-                col_count=(5, "fixed")
-            )
-
-            with gr.Row():
-                refresh_logs_btn = gr.Button("Atualizar Logs")
-                log_summary_output = gr.Markdown()
-
-            def refresh_logs(level, search, limit):
-                logs_data = get_recent_logs(
-                    level=level,
-                    search=search if search else None,
-                    limit=int(limit)
-                )
-                summary = get_log_summary()
-                summary_md = (
-                    f"**{summary.get('total_info', 0)}** INFO | "
-                    f"**{summary.get('total_warn', 0)}** WARN | "
-                    f"**{summary.get('total_error', 0)}** ERROR"
-                )
-                return logs_data.get("logs", []), summary_md
-
-            refresh_logs_btn.click(
-                refresh_logs,
-                inputs=[log_level_filter, log_search, log_limit],
-                outputs=[logs_output, log_summary_output]
-            )
-
-        # --- Aba 3: Roteiro ---
+        # --- Aba 1: Roteiro (primeiro passo do fluxo) ---
         with gr.Tab("Roteiro"):
             gr.Markdown("### Geracao e Edicao de Roteiro")
 
@@ -373,6 +224,155 @@ def create_gradio_app():
                 on_approve,
                 inputs=[script_output],
                 outputs=[script_status]
+            )
+
+        # --- Aba 2: Geracao de Video ---
+        with gr.Tab("Geracao"):
+            with gr.Row():
+                with gr.Column(scale=2):
+                    gr.Markdown("### Parametros de Entrada")
+
+                    product_input = gr.Textbox(
+                        label="Nome do Produto",
+                        placeholder="Digite o nome do produto...",
+                        value="Produto Incrivel"
+                    )
+
+                    audience_input = gr.Textbox(
+                        label="Publico-Alvo",
+                        placeholder="Descreva seu publico-alvo...",
+                        value="Jovens adultos de 18 a 35 anos"
+                    )
+
+                    with gr.Row():
+                        duration_input = gr.Slider(
+                            minimum=10,
+                            maximum=60,
+                            value=30,
+                            step=5,
+                            label="Duracao (segundos)"
+                        )
+
+                        style_input = gr.Dropdown(
+                            choices=["viral", "premium", "direct"],
+                            value="viral",
+                            label="Estilo"
+                        )
+
+                    generate_btn = gr.Button("Gerar Comercial", variant="primary")
+
+                with gr.Column(scale=1):
+                     gr.Markdown("### Status")
+
+                     status_output = gr.Markdown()
+                     refresh_btn = gr.Button("Atualizar Status")
+
+            gr.Markdown("### Video Gerado")
+
+            with gr.Row():
+                video_output = gr.Video(label="Seu Comercial")
+                error_output = gr.Markdown(visible=False)
+
+            gr.Markdown("### Instrucoes")
+            gr.Markdown("""
+1. Preencha o nome do produto e publico-alvo
+2. Ajuste a duracao e o estilo
+3. Clique em 'Gerar Comercial'
+4. Aguarde a geracao do video (pode levar alguns minutos)
+5. Visualize e baixe seu comercial
+
+**Nota:** A primeira geracao pode demorar mais enquanto os modelos sao carregados.
+""")
+
+            def on_generate(product, audience, duration, style, progress=gr.Progress()):
+                result = web_interface.generate_commercial_web(
+                    product=product,
+                    target_audience=audience,
+                    duration=duration,
+                    style=style,
+                    progress=progress
+                )
+
+                if result and result.startswith("ERRO"):
+                    return {
+                        video_output: None,
+                        error_output: result,
+                        error_output: gr.update(visible=True)
+                    }
+                else:
+                    return {
+                        video_output: result,
+                        error_output: gr.update(visible=False)
+                    }
+
+            generate_btn.click(
+                on_generate,
+                inputs=[product_input, audience_input, duration_input, style_input],
+                outputs=[video_output, error_output]
+            )
+
+            def on_refresh():
+                return web_interface.check_availability()
+
+            refresh_btn.click(
+                on_refresh,
+                outputs=[status_output]
+            )
+
+            demo.load(
+                lambda: web_interface.check_availability(),
+                outputs=[status_output]
+            )
+
+        # --- Aba 3: Logs ---
+        with gr.Tab("Logs"):
+            gr.Markdown("### Registro de Logs")
+            with gr.Row():
+                log_level_filter = gr.Dropdown(
+                    choices=["INFO", "WARN", "ERROR"],
+                    value="INFO",
+                    label="Nivel"
+                )
+                log_search = gr.Textbox(
+                    label="Buscar",
+                    placeholder="Filtrar por texto..."
+                )
+            log_limit = gr.Slider(
+                minimum=10,
+                maximum=100,
+                value=20,
+                step=5,
+                label="Limite de linhas"
+            )
+            logs_output = gr.Dataframe(
+                headers=["horario", "nivel", "modulo", "mensagem", "sugestao"],
+                label="Logs",
+                datatype=["str", "str", "str", "str", "str"],
+                col_count=(5, "fixed")
+            )
+
+            with gr.Row():
+                refresh_logs_btn = gr.Button("Atualizar Logs")
+                log_summary_output = gr.Markdown()
+
+            def refresh_logs(level, search, limit):
+                logs_data = get_recent_logs(
+                    level=level,
+                    search=search if search else None,
+                    limit=int(limit)
+                )
+                summary = get_log_summary()
+                summary_md = (
+                    f"**{summary.get('total_info', 0)}** INFO | "
+                    f"**{summary.get('total_warn', 0)}** WARN | "
+                    f"**{summary.get('total_error', 0)}** ERROR"
+                )
+                return logs_data.get("logs", []), summary_md
+
+            refresh_logs_btn.click(
+                refresh_logs,
+                inputs=[log_level_filter, log_search, log_limit],
+                outputs=[logs_output, log_summary_output]
             )
 
         # --- Aba 4: Metricas ---
