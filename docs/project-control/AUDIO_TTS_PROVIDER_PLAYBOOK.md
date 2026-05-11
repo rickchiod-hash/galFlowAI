@@ -15,7 +15,7 @@ Componentes de áudio:
 | Story ID | Título | Status | SP | Prioridade | DoR completo |
 |----------|--------|--------|----|-----------|-------------|
 | AUD-700 | Criar AudioPlan e narration_script.md | Concluída | 5 | Alta | Sim |
-| AUD-701 | Gerar áudio por cena com fallback | Pendente | 5 | Média | Não |
+| AUD-701 | Gerar áudio por cena com fallback | Concluída | 5 | Média | Sim |
 | AUD-702 | Gerar SRT por timing de cena | Pendente | 3 | Média | Não |
 | AUD-703 | Criar SFX manifest | Pendente | 3 | Baixa | Não |
 | QA-1004 | Criar teste TTS falha → export sem áudio | Concluída | 3 | Média | Pendente playbook |
@@ -32,13 +32,13 @@ AudioPlan schema + AudioPlanService implementados. 41 testes. Commit `a68ceeb`.
 
 ### AUD-701 — Gerar áudio por cena com fallback
 
-**Status:** Pendente  
+**Status:** Concluída ✅  
 **Estimativa:** 5 SP  
 **Épico:** EPIC-800 Audio  
 **Gherkin:** `07_CRITERIOS_ACEITE_GHERKIN.md#aud-701`  
 **Testes:** `08_PLANO_DE_TESTES.md#aud-701`  
 
-Para cada cena com narração, gerar `audio/scene_XXX.wav` via TTS. Se TTS falhar, a cena continua sem áudio (não bloqueia o pipeline).
+TTSAudioService implementado em `app/services/tts_audio_service.py`. Gera `scene_{n:03d}.wav` por cena a partir do AudioPlan. Fallback silencioso: falha TTS nao bloqueia. 19 testes. Commit `140fb6e`.
 
 ### AUD-702 — Gerar SRT por timing de cena
 

@@ -2,6 +2,45 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-11 — Sessão 8: AUD-701 (TTSAudioService per-scene audio)
+
+### Contexto
+AUD-700 concluída na sessão anterior. Proximo passo do playbook: AUD-701 — gerar audio por cena com fallback silencioso. TTSAdapter (kokoro/pyttsx3/system/silence) ja existia, mas so gerava audio unico para o roteiro inteiro. AUD-701 integra AudioPlan com geracao de WAV por cena.
+
+### O que fiz
+- **AUD-701 ✅:** `app/services/tts_audio_service.py` — TTSAudioService:
+  - `generate_scene_audio(plan, output_dir)` — itera sobre NarrationEntry do AudioPlan, gera `scene_{n:03d}.wav` via TTSAdapter
+  - Passa voice/language do NarrationEntry para o adapter (voice="default" vira None)
+  - Cria diretorio de saida se nao existir
+  - Fallback silencioso: se TTSAdapter falha ou lanca excecao, cena continua sem audio
+  - `get_audio_map(results)` — converte lista de resultados em dict `{scene_number: path or None}`
+- **19 testes** em `tests/test_tts_audio_service.py`:
+  - Init com adapter, generate_scene_audio (11): lista, chamadas por cena, scene numbers, path, passagem de text/voice/language, criacao de diretorio, plano vazio
+  - Fallback (4): adapter failure, excecao nao crasha, mixed success/failure, all failures
+  - GetAudioMap (3): dict mapping, None para falha, vazio
+- **PR #14** criado e merged (commit 140fb6e)
+- **Regressao:** 282/282 testes passando (0 falhas)
+
+### Arquivos alterados
+- `app/services/tts_audio_service.py` — Novo (111 linhas)
+- `tests/test_tts_audio_service.py` — Novo (19 testes)
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — 31/49 (63,3%)
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — AUD-701 → Concluída
+- `docs/project-control/10_DAILY_LOG.md` — Esta entrada
+- `docs/project-control/AUDIO_TTS_PROVIDER_PLAYBOOK.md` — AUD-701 → Concluída
+
+### Decisoes
+- Servico em `app/services/` (nao use case) porque e um utilitario de orquestracao que outros componentes chamam
+- Nao adiciona cache (PIPE-402 ja tem artifact cache no AudioGenerationStage)
+- Nome de arquivo `scene_{n:03d}.wav` consistente com AudioGenerationStage existente
+- Voice=None passado quando NarrationEntry.tts_voice == "default" (deixa TTSAdapter decidir)
+
+### Bloqueios
+- Nenhum.
+
+### Proximo passo
+- AUD-702: Gerar SRT por timing de cena
+
 ## 2026-05-11 — Sessão 7: AUD-700 + RND-601 + UI tab reorder
 
 ### Contexto

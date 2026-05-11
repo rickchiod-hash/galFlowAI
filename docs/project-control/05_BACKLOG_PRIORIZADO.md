@@ -38,7 +38,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 30 | RND-602 | Adicionar perfil GTX 1660 Super | Alta | 3 | Concluída | Arquitetura/base P0 validada | para evitar OOM e travamentos |
 | 31 | RND-603 | Registrar Wan VACE 1.3B como futuro opcional | Baixa | 2 | Pendente | Arquitetura/base P0 validada | para não forçar engine pesada agora |
 | 32 | AUD-700 | Criar AudioPlan e narration_script.md | Alta | 5 | Concluída | Arquitetura/base P0 validada | commit a68ceeb — AudioPlan schema + AudioPlanService CRUD + generate_narration_script → narration_script.md. 41 testes. |
-| 33 | AUD-701 | Gerar áudio por cena com fallback | Média | 5 | Pendente | Arquitetura/base P0 validada | para sincronizar narração com cenas |
+| 33 | AUD-701 | Gerar áudio por cena com fallback | Média | 5 | Concluída | Arquitetura/base P0 validada | commit 140fb6e — TTSAudioService: gera WAV por cena a partir de AudioPlan com fallback silencioso. 19 testes. |
 | 34 | AUD-702 | Gerar SRT por timing de cena | Média | 3 | Pendente | Arquitetura/base P0 validada | para usar vídeo em redes sociais sem áudio |
 | 35 | AUD-703 | Criar SFX manifest | Baixa | 3 | Pendente | Arquitetura/base P0 validada | para evitar uso indevido de assets |
 | 36 | VEC-800 | Criar VectorStoreAdapter sem runtime obrigatório | Média | 3 | Pendente | Arquitetura/base P0 validada | para preparar memória sem acoplar backend |
@@ -58,7 +58,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 
 ## Próxima história recomendada
 
-**AUD-701 — Gerar áudio por cena com fallback (ordem 33).** Pendente. TTSService que usa AudioPlan como entrada, gera WAV por cena com fallback silencioso. Ver playbook AUDIO_TTS_PROVIDER_PLAYBOOK.md.
+**AUD-702 — Gerar SRT por timing de cena (ordem 34).** Pendente. Gerar SRT com legendas derivadas dos timings das cenas no AudioPlan.
 
 ## Regras de priorização
 

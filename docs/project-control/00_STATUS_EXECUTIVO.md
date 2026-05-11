@@ -15,11 +15,11 @@ Percentual concluído: 61,2%
 
 ## Estado atual
 
-- Branch atual: master (a68ceeb)
-- Último commit analisado: a68ceeb — "feat(domain): implement AudioPlan and narration_script.md (AUD-700)"
+- Branch atual: master (140fb6e)
+- Último commit analisado: 140fb6e — "feat(services): implement TTSAudioService (AUD-701)"
 - Fase atual: Fase 5 — Pipeline e produto
-- História atual: AUD-700 — Criar AudioPlan e narration_script.md ✅
-- Próxima ação recomendada: AUD-701 — Gerar áudio por cena com fallback
+- História atual: AUD-701 — Gerar áudio por cena com fallback ✅
+- Próxima ação recomendada: AUD-702 — Gerar SRT por timing de cena
 
 ### Playbooks criados nesta sessão
 
@@ -27,7 +27,7 @@ Percentual concluído: 61,2%
 |---------|---------|-----------|----------|
 | `LLM_PROVIDER_PLAYBOOK.md` | PROV-300, PROV-301, PROV-302 | 3 | 0 |
 | `VIDEO_RENDER_PROVIDER_PLAYBOOK.md` | VIS-502, VIS-503, RND-600..603, QA-1003 | 4 | 3 |
-| `AUDIO_TTS_PROVIDER_PLAYBOOK.md` | AUD-700..703, QA-1004 | 2 | 3 |
+| `AUDIO_TTS_PROVIDER_PLAYBOOK.md` | AUD-700..703, QA-1004 | 3 | 2 |
 | `VECTOR_MEMORY_PLAYBOOK.md` | VIS-500, VIS-501, VEC-800..803 | 2 | 4 |
 | `QA_ANTI_HALLUCINATION_PLAYBOOK.md` | QA-1000, QA-1001, QA-1002 | 2 | 1 |
 | **Total** | **21 histórias cobertas** | **8** | **16** |
@@ -92,6 +92,16 @@ Percentual concluído: 61,2%
   - 263/263 testes passando (0 falhas)
 - **Próxima recomendada:** AUD-701 (Gerar áudio por cena com fallback)
 
+### O que foi feito nesta sessão (Sessão 8 — AUD-701)
+
+- **AUD-701 ✅:** TTSAudioService em `app/services/tts_audio_service.py`:
+  - `generate_scene_audio(plan, output_dir)` — gera WAV por cena a partir de AudioPlan
+  - `get_audio_map(results)` — dict {scene_number: path or None}
+  - Fallback silencioso: excecao/falha nao bloqueia
+  - 19 testes (success, failure, mixed, empty, get_audio_map)
+  - 282/282 testes passando (0 falhas)
+- **Próxima recomendada:** AUD-702 (Gerar SRT por timing de cena)
+
 ### Estado atual
 
 - **Branch atual:** master (a68ceeb)
@@ -122,18 +132,16 @@ Percentual concluído: 61,2%
 
 ### Arquivos alterados nesta sessão
 
-- `app/domain/audio_plan.py` — Novo: AudioPlan, NarrationEntry, AudioPlanService
-- `tests/test_audio_plan.py` — Novo: 41 testes (AUD-700)
-- `tests/test_ffmpeg_fallback.py` — Novo: 15 testes (RND-601)
-- `app/ui/gradio_app.py` — Tab reorder: Roteiro como primeira aba
+- `app/services/tts_audio_service.py` — Novo: TTSAudioService (AUD-701)
+- `tests/test_tts_audio_service.py` — Novo: 19 testes (AUD-701)
 
 ### Comandos executados
 
-- `pytest tests/test_audio_plan.py tests/test_ffmpeg_fallback.py -v` — 56/56 passed
-- `pytest (core domains: 8 arquivos)` — 263/263 passed
+- `pytest tests/test_tts_audio_service.py -v` — 19/19 passed
+- `pytest (core domains: 9 arquivos)` — 282/282 passed
 
 ### Evidências usadas
 
-- Commit base: f7288aa (início da sessão)
-- Branch: feature/AUD-700-audio-plan -> merged to master (a68ceeb)
-- Testes: 263/263 passando (0 falhas)
+- Commit base: 0b175c2 (início da sessão)
+- Branch: feature/AUD-701-tts-audio-service -> merged to master (140fb6e)
+- Testes: 282/282 passando (0 falhas)
