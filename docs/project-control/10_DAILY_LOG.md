@@ -2,6 +2,28 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-11 — Sessão 10: AUD-703 (SFX Manifest)
+
+### Contexto
+AUD-702 concluida. Proximo: AUD-703 — SFX manifest para registro de assets sonoros.
+
+### O que fiz
+- **AUD-703 ✅:** `app/domain/sfx_manifest.py` — SFXManifest schema + service:
+  - `SFXLicenseType` enum (7 tipos): free, royalty_free, licensed, cc0, cc_by, custom, unknown
+  - `SFXAsset` schema: name, file_path, license, origin, description, duration, metadata, versioning
+  - `SFXManifest` service: register, get, get_by_name, update (protege id/created_at/version), delete, list (filtro por license), search (nome/descricao), count, clear
+  - 31 testes: schema, CRUD, search, filtros, casos negativos
+- **PR #16** criado e merged (commit d3fbfe7)
+- **Regressao:** 335/335 testes passando (0 falhas)
+
+### Arquivos alterados
+- `app/domain/sfx_manifest.py` — Novo
+- `tests/test_sfx_manifest.py` — Novo (31 testes)
+- Docs de controle atualizados
+
+### Proximo passo
+- VEC-800: Criar VectorStoreAdapter sem runtime obrigatorio
+
 ## 2026-05-11 — Sessão 9: AUD-702 (SRTService subtitle generation)
 
 ### Contexto

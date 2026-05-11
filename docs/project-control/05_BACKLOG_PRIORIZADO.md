@@ -40,7 +40,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 32 | AUD-700 | Criar AudioPlan e narration_script.md | Alta | 5 | Concluída | Arquitetura/base P0 validada | commit a68ceeb — AudioPlan schema + AudioPlanService CRUD + generate_narration_script → narration_script.md. 41 testes. |
 | 33 | AUD-701 | Gerar áudio por cena com fallback | Média | 5 | Concluída | Arquitetura/base P0 validada | commit 140fb6e — TTSAudioService: gera WAV por cena a partir de AudioPlan com fallback silencioso. 19 testes. |
 | 34 | AUD-702 | Gerar SRT por timing de cena | Média | 3 | Concluída | Arquitetura/base P0 validada | commit 9c90700 — SRTService: gera legendas SRT a partir de AudioPlan com timing sequencial. 22 testes. |
-| 35 | AUD-703 | Criar SFX manifest | Baixa | 3 | Pendente | Arquitetura/base P0 validada | para evitar uso indevido de assets |
+| 35 | AUD-703 | Criar SFX manifest | Baixa | 3 | Concluída | Arquitetura/base P0 validada | commit d3fbfe7 — SFXManifest: schema + CRUD + busca. 31 testes. |
 | 36 | VEC-800 | Criar VectorStoreAdapter sem runtime obrigatório | Média | 3 | Pendente | Arquitetura/base P0 validada | para preparar memória sem acoplar backend |
 | 37 | VEC-801 | Criar MemoryQualityGate | Média | 5 | Pendente | Arquitetura/base P0 validada | para evitar contaminação semântica |
 | 38 | VEC-802 | Planejar Qdrant local opcional | Baixa | 3 | Pendente | Arquitetura/base P0 validada | para evoluir com payload e filtros |
@@ -58,7 +58,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 
 ## Próxima história recomendada
 
-**AUD-703 — Criar SFX manifest (ordem 35).** Pendente. Registrar licenca, origem e metadados de assets sonoros.
+**VEC-800 — Criar VectorStoreAdapter sem runtime obrigatorio (ordem 36).** Pendente. Preparar memoria sem acoplar backend.
 
 ## Regras de priorização
 
