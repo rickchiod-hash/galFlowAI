@@ -37,7 +37,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 29 | RND-601 | Manter FFmpeg como fallback universal | Alta | 3 | Concluída | Arquitetura/base P0 validada | para sempre obter um MP4 mínimo |
 | 30 | RND-602 | Adicionar perfil GTX 1660 Super | Alta | 3 | Concluída | Arquitetura/base P0 validada | para evitar OOM e travamentos |
 | 31 | RND-603 | Registrar Wan VACE 1.3B como futuro opcional | Baixa | 2 | Pendente | Arquitetura/base P0 validada | para não forçar engine pesada agora |
-| 32 | AUD-700 | Criar AudioPlan e narration_script.md | Alta | 5 | Pendente | Arquitetura/base P0 validada | para controlar TTS, SRT e revisão humana |
+| 32 | AUD-700 | Criar AudioPlan e narration_script.md | Alta | 5 | Concluída | Arquitetura/base P0 validada | commit a68ceeb — AudioPlan schema + AudioPlanService CRUD + generate_narration_script → narration_script.md. 41 testes. |
 | 33 | AUD-701 | Gerar áudio por cena com fallback | Média | 5 | Pendente | Arquitetura/base P0 validada | para sincronizar narração com cenas |
 | 34 | AUD-702 | Gerar SRT por timing de cena | Média | 3 | Pendente | Arquitetura/base P0 validada | para usar vídeo em redes sociais sem áudio |
 | 35 | AUD-703 | Criar SFX manifest | Baixa | 3 | Pendente | Arquitetura/base P0 validada | para evitar uso indevido de assets |
@@ -58,7 +58,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 
 ## Próxima história recomendada
 
-**RND-602 — Adicionar perfil GTX 1660 Super (ordem 30).** ✅ Concluída. GpuProfile + GpuProfileCatalog integrados ao RenderPlanService. Perfil 6GB com resoluções seguras (480p/512p).
+**AUD-701 — Gerar áudio por cena com fallback (ordem 33).** Pendente. TTSService que usa AudioPlan como entrada, gera WAV por cena com fallback silencioso. Ver playbook AUDIO_TTS_PROVIDER_PLAYBOOK.md.
 
 ## Regras de priorização
 

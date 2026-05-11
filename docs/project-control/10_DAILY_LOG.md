@@ -2,6 +2,41 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-11 — Sessão 7: AUD-700 + RND-601 + UI tab reorder
+
+### Contexto
+Sessão focada em: (1) merge do PR #12 (RND-602, já aprovado), (2) commit e merge do AUD-700 (AudioPlan), (3) commit RND-601 (FFmpeg fallback tests, pendente), (4) reordenar abas da UI (Roteiro como primeira aba), (5) atualizar documentação de status.
+
+### O que fiz
+- **PR #12 merge:** RND-602 (GTX 1660 Super profile) já estava merged no remote. Local master atualizado com `git pull`.
+- **Branch reorganizada:** Branch `feature/AUD-700-audio-plan` anterior estava baseada no commit RND-602 (2e8e12d), não em master. Recriada a partir de master (f7288aa) para evitar histórico duplicado.
+- **AUD-700 ✅:** `app/domain/audio_plan.py` — AudioPlan schema (NarrationEntry, AudioPlanStatus, versioning, UUID), AudioPlanService (CRUD dict-backed, add/remove/update narration, generate_narration_script() → Markdown). 41 testes.
+- **RND-601 ✅:** `tests/test_ffmpeg_fallback.py` — 15 testes (adapter exists, find_ffmpeg, pipeline fallback, render plan selection, mandatory checks). Arquivo estava untracked há 2 sessões.
+- **UI tab reorder:** Gradio agora tem "Roteiro" como primeira aba (início do fluxo), "Geração" como segunda.
+- **PR #13:** Criado e merged para master (commit a68ceeb).
+- **Regressão:** 263/263 testes passando (0 falhas).
+
+### Arquivos alterados
+- `app/domain/audio_plan.py` — Novo (AUD-700)
+- `tests/test_audio_plan.py` — Novo (41 testes)
+- `tests/test_ffmpeg_fallback.py` — Novo (15 testes, RND-601)
+- `app/ui/gradio_app.py` — Tab reorder (Roteiro → Geração → Logs → Métricas → Diagnóstico)
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — Atualizado (30/49, 61,2%)
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — AUD-700 → Concluída
+- `docs/project-control/10_DAILY_LOG.md` — Esta entrada
+- `docs/project-control/AUDIO_TTS_PROVIDER_PLAYBOOK.md` — AUD-700 → Concluída
+
+### Decisões
+- Branch recriada de master em vez de rebase para garantir histórico linear limpo.
+- RND-601 comitado junto com AUD-700 (eram do mesmo pacote de trabalho não commitado).
+- Próxima ação: AUD-701 (TTS provider integration) conforme playbook.
+
+### Bloqueios
+- Nenhum.
+
+### Próximo passo
+- AUD-701: Gerar áudio por cena com fallback (TTSService)
+
 ## 2026-05-10 — Sessão 5: RND-600 + GPT4All fix + API/provider bugfixes
 
 ### Contexto

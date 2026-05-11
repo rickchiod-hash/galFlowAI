@@ -14,7 +14,7 @@ Componentes de áudio:
 
 | Story ID | Título | Status | SP | Prioridade | DoR completo |
 |----------|--------|--------|----|-----------|-------------|
-| AUD-700 | Criar AudioPlan e narration_script.md | Pendente | 5 | Alta | Não |
+| AUD-700 | Criar AudioPlan e narration_script.md | Concluída | 5 | Alta | Sim |
 | AUD-701 | Gerar áudio por cena com fallback | Pendente | 5 | Média | Não |
 | AUD-702 | Gerar SRT por timing de cena | Pendente | 3 | Média | Não |
 | AUD-703 | Criar SFX manifest | Pendente | 3 | Baixa | Não |
@@ -22,13 +22,13 @@ Componentes de áudio:
 
 ### AUD-700 — Criar AudioPlan e narration_script.md
 
-**Status:** Pendente  
+**Status:** Concluída ✅  
 **Estimativa:** 5 SP  
 **Épico:** EPIC-800 Audio  
 **Gherkin:** `07_CRITERIOS_ACEITE_GHERKIN.md#aud-700`  
 **Testes:** `08_PLANO_DE_TESTES.md#aud-700`  
 
-Criar o AudioPlan: schema que mapeia cada cena a seu texto de narração. Gerar `narration_script.md` como artefato legível para revisão humana e entrada do TTS.
+AudioPlan schema + AudioPlanService implementados. 41 testes. Commit `a68ceeb`.
 
 ### AUD-701 — Gerar áudio por cena com fallback
 

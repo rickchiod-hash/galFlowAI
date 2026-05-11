@@ -1,25 +1,25 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-10 (tarde)
+Atualizado em: 2026-05-11 (madrugada)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 28/49
+Histórias concluídas: 30/49
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 21 (49 - 28 concluídas - 0 em andamento)
-Percentual concluído: 57,1%
+Histórias pendentes: 19 (49 - 30 concluídas - 0 em andamento)
+Percentual concluído: 61,2%
 
-**Aritmética:** 49 histórias únicas no backlog (UI-204 adicionada). 28 Concluídas + 0 Em andamento + 21 Pendentes = 49.
+**Aritmética:** 49 histórias únicas no backlog (UI-204 adicionada). 30 Concluídas + 0 Em andamento + 19 Pendentes = 49.
 
 ## Estado atual
 
-- Branch atual: feature/RND-602-perfil-gtx-1660-super
-- Último commit analisado: b5c4d1d — "feat(domain): implement RenderPlan (RND-600)"
+- Branch atual: master (a68ceeb)
+- Último commit analisado: a68ceeb — "feat(domain): implement AudioPlan and narration_script.md (AUD-700)"
 - Fase atual: Fase 5 — Pipeline e produto
-- História atual: RND-602 — Adicionar perfil GTX 1660 Super ✅
-- Próxima ação recomendada: RND-603 (Registrar Wan VACE 1.3B como futuro opcional)
+- História atual: AUD-700 — Criar AudioPlan e narration_script.md ✅
+- Próxima ação recomendada: AUD-701 — Gerar áudio por cena com fallback
 
 ### Playbooks criados nesta sessão
 
@@ -27,12 +27,12 @@ Percentual concluído: 57,1%
 |---------|---------|-----------|----------|
 | `LLM_PROVIDER_PLAYBOOK.md` | PROV-300, PROV-301, PROV-302 | 3 | 0 |
 | `VIDEO_RENDER_PROVIDER_PLAYBOOK.md` | VIS-502, VIS-503, RND-600..603, QA-1003 | 4 | 3 |
-| `AUDIO_TTS_PROVIDER_PLAYBOOK.md` | AUD-700..703, QA-1004 | 1 | 4 |
+| `AUDIO_TTS_PROVIDER_PLAYBOOK.md` | AUD-700..703, QA-1004 | 2 | 3 |
 | `VECTOR_MEMORY_PLAYBOOK.md` | VIS-500, VIS-501, VEC-800..803 | 2 | 4 |
 | `QA_ANTI_HALLUCINATION_PLAYBOOK.md` | QA-1000, QA-1001, QA-1002 | 2 | 1 |
 | **Total** | **21 histórias cobertas** | **8** | **16** |
 
-> **Novas funcionalidades:** RND-602 — GpuProfile + GpuProfileCatalog integrados ao RenderPlanService. Perfil GTX 1660 Super (6GB) com resoluções seguras (480p/512p). Catálogo com 3 perfis (GTX 1660 Super, RTX 3060, Fallback CPU). 22 novos testes (40 total em test_render_plan.py).
+> **Novas funcionalidades:** AUD-700 — AudioPlan schema + AudioPlanService (CRUD, narrations, generate_narration_script). RND-601 — FFmpeg fallback universal tests (15). UI — Gradio tab reorder (Roteiro como primeira aba).
 
 ## Resumo tipo Daily
 
@@ -81,23 +81,23 @@ Percentual concluído: 57,1%
    - Mocks para adapters e serviços (TTSAdapter, WanGPAdapter, FFmpegAdapter, script_service)
    - **5/5 testes passando**
 
-### O que foi feito nesta sessão (Sessão 6 — RND-602)
+### O que foi feito nesta sessão (Sessão 7 — AUD-700 + RND-601)
 
-- **RND-602 ✅:** Adicionado perfil GTX 1660 Super para evitar OOM em 6GB VRAM.
-  - `GpuProfile` dataclass em `app/domain/render_plan.py` — define nome, VRAM, resoluções máximas/recomendadas, VRAM estimada por engine
-  - `GpuProfileCatalog` — catálogo estático com 3 perfis: GTX 1660 Super (6GB), RTX 3060 (12GB), Fallback CPU/FFmpeg
-  - `RenderPlanService` integrado com perfil: `generate_plan()` aceita `gpu_profile` opcional, `_select_engine()` usa VRAM do perfil, resolução varia por qualidade (DRAFT=480x360, STANDARD=recomendada, HIGH=máxima)
-  - `SceneRenderAssignment.resolution` e `RenderPlan.max_resolution` adicionados
-  - 22 novos testes (40 total): GpuProfile, GpuProfileCatalog, resolução por perfil/qualidade, engine selection com perfis, VRAM estimates por perfil
-  - 222/222 testes passando (0 falhas)
-- **Próxima recomendada:** RND-603 (Registrar Wan VACE 1.3B como futuro opcional)
+- **AUD-700 ✅ + RND-601 ✅ + UI tab reorder ✅:**
+  - `AudioPlan` schema em `app/domain/audio_plan.py` — NarrationEntry, AudioPlanStatus, versioning, UUID
+  - `AudioPlanService` — CRUD dict-backed, add/remove/update narration, generate_narration_script() -> Markdown
+  - 41 novos testes em `tests/test_audio_plan.py` (NarrationEntry, AudioPlan, Service, Narrations, Script generation)
+  - RND-601: 15 testes FFmpeg fallback universal em `tests/test_ffmpeg_fallback.py`
+  - UI: Gradio tab reorder — "Roteiro" como primeira aba
+  - 263/263 testes passando (0 falhas)
+- **Próxima recomendada:** AUD-701 (Gerar áudio por cena com fallback)
 
 ### Estado atual
 
-- **Branch atual:** feature/RND-600-renderplan-minimo
+- **Branch atual:** master (a68ceeb)
 - **Fase:** Fase 5 (Pipeline e produto)
-- **Histórias concluídas:** 26/48 (54,2%)
-- **Próxima recomendada:** RND-601 (ordem 29) — Manter FFmpeg como fallback universal
+- **Histórias concluídas:** 30/49 (61,2%)
+- **Próxima recomendada:** AUD-701 (ordem 33) — Gerar áudio por cena com fallback
 
 ### Bloqueios
 
@@ -122,17 +122,18 @@ Percentual concluído: 57,1%
 
 ### Arquivos alterados nesta sessão
 
-- `app/domain/render_plan.py` — +GpuProfile, GpuProfileCatalog, resolução por perfil, integração com RenderPlanService
-- `tests/test_render_plan.py` — +22 testes (GpuProfile, catalog, resolução, engine selection por perfil)
+- `app/domain/audio_plan.py` — Novo: AudioPlan, NarrationEntry, AudioPlanService
+- `tests/test_audio_plan.py` — Novo: 41 testes (AUD-700)
+- `tests/test_ffmpeg_fallback.py` — Novo: 15 testes (RND-601)
+- `app/ui/gradio_app.py` — Tab reorder: Roteiro como primeira aba
 
 ### Comandos executados
 
-- `pytest tests/test_render_plan.py -v` — 40/40 passed (18 RND-600 + 22 RND-602)
-- `pytest tests/test_ffmpeg_fallback.py -v` — 15/15 passed
-- `pytest (domínios core: scene_contract + prompt_compiler + visual_bible + ingredient_registry + provider_fallback)` — 222/222 passed
+- `pytest tests/test_audio_plan.py tests/test_ffmpeg_fallback.py -v` — 56/56 passed
+- `pytest (core domains: 8 arquivos)` — 263/263 passed
 
 ### Evidências usadas
 
-- Commit base: b5c4d1d (início da sessão)
-- Branch: feature/RND-602-perfil-gtx-1660-super
-- Testes: 222/222 passando (0 falhas)
+- Commit base: f7288aa (início da sessão)
+- Branch: feature/AUD-700-audio-plan -> merged to master (a68ceeb)
+- Testes: 263/263 passando (0 falhas)
