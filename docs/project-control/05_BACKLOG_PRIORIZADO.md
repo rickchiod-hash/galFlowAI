@@ -34,8 +34,8 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 26 | VIS-502 | Criar schema SceneContract | Alta | 5 | Concluída | Arquitetura/base P0 validada | para transformar roteiro em instruções testáveis |
 | 27 | VIS-503 | Criar Prompt Compiler por engine | Média | 8 | Concluída | Arquitetura/base P0 validada | para usar FFmpeg/WanGP/VACE sem gambiarra |
 | 28 | RND-600 | Criar RenderPlan mínimo | Alta | 5 | Concluída | Arquitetura/base P0 validada | para usar GPU e fallback com previsibilidade |
-| 29 | RND-601 | Manter FFmpeg como fallback universal | Alta | 3 | Pendente | Arquitetura/base P0 validada | para sempre obter um MP4 mínimo |
-| 30 | RND-602 | Adicionar perfil GTX 1660 Super | Alta | 3 | Pendente | Arquitetura/base P0 validada | para evitar OOM e travamentos |
+| 29 | RND-601 | Manter FFmpeg como fallback universal | Alta | 3 | Concluída | Arquitetura/base P0 validada | para sempre obter um MP4 mínimo |
+| 30 | RND-602 | Adicionar perfil GTX 1660 Super | Alta | 3 | Concluída | Arquitetura/base P0 validada | para evitar OOM e travamentos |
 | 31 | RND-603 | Registrar Wan VACE 1.3B como futuro opcional | Baixa | 2 | Pendente | Arquitetura/base P0 validada | para não forçar engine pesada agora |
 | 32 | AUD-700 | Criar AudioPlan e narration_script.md | Alta | 5 | Pendente | Arquitetura/base P0 validada | para controlar TTS, SRT e revisão humana |
 | 33 | AUD-701 | Gerar áudio por cena com fallback | Média | 5 | Pendente | Arquitetura/base P0 validada | para sincronizar narração com cenas |
@@ -52,12 +52,13 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 44 | QA-1002 | Criar teste UI não chama adapters | Média | 3 | Concluída | Arquitetura/base P0 validada | para proteger separação de responsabilidades |
 | 45 | QA-1003 | Criar teste E2E WanGP falha → FFmpeg | Média | 5 | Concluída | Arquitetura/base P0 validada | para garantir MP4 mesmo sem IA de vídeo |
 | 46 | QA-1004 | Criar teste TTS falha → export sem áudio | Média | 3 | Concluída | Arquitetura/base P0 validada | para preservar entrega final |
-| 47 | SEC-1100 | Criar política MCP seguro | Média | 2 | Pendente | Arquitetura/base P0 validada | para evitar ferramentas amplas sem revisão |
-| 48 | SEC-1101 | Criar política de secrets e arquivos sensíveis | Média | 2 | Pendente | Arquitetura/base P0 validada | para proteger ambiente e clientes |
+| 47 | UI-204 | Criar tela de Configurações na UI | Baixa | 3 | Pendente | UI-203 | para gerenciar provedores, caminhos e preferências |
+| 48 | SEC-1100 | Criar política MCP seguro | Média | 2 | Pendente | Arquitetura/base P0 validada | para evitar ferramentas amplas sem revisão |
+| 49 | SEC-1101 | Criar política de secrets e arquivos sensíveis | Média | 2 | Pendente | Arquitetura/base P0 validada | para proteger ambiente e clientes |
 
 ## Próxima história recomendada
 
-**RND-601 — Manter FFmpeg como fallback universal (ordem 29).** Para testar fallback WanGP → FFmpeg.
+**RND-602 — Adicionar perfil GTX 1660 Super (ordem 30).** ✅ Concluída. GpuProfile + GpuProfileCatalog integrados ao RenderPlanService. Perfil 6GB com resoluções seguras (480p/512p).
 
 ## Regras de priorização
 

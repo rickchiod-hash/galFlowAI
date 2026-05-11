@@ -1,38 +1,38 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-10
+Atualizado em: 2026-05-10 (tarde)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 26/48
+Histórias concluídas: 28/49
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 22 (48 - 26 concluídas - 0 em andamento)
-Percentual concluído: 54,2%
+Histórias pendentes: 21 (49 - 28 concluídas - 0 em andamento)
+Percentual concluído: 57,1%
 
-**Aritmética:** 48 histórias únicas no backlog. 26 Concluídas + 0 Em andamento + 22 Pendentes = 48.
+**Aritmética:** 49 histórias únicas no backlog (UI-204 adicionada). 28 Concluídas + 0 Em andamento + 21 Pendentes = 49.
 
 ## Estado atual
 
-- Branch atual: feature/RND-600-renderplan-minimo
-- Último commit analisado: adf078b — "chore: add state/*.json to gitignore"
+- Branch atual: feature/RND-602-perfil-gtx-1660-super
+- Último commit analisado: b5c4d1d — "feat(domain): implement RenderPlan (RND-600)"
 - Fase atual: Fase 5 — Pipeline e produto
-- História atual: RND-600 — Criar RenderPlan mínimo ✅
-- Próxima ação recomendada: RND-601 (Manter FFmpeg como fallback universal)
+- História atual: RND-602 — Adicionar perfil GTX 1660 Super ✅
+- Próxima ação recomendada: RND-603 (Registrar Wan VACE 1.3B como futuro opcional)
 
 ### Playbooks criados nesta sessão
 
 | Arquivo | Stories | Concluídas | Pendentes |
 |---------|---------|-----------|----------|
 | `LLM_PROVIDER_PLAYBOOK.md` | PROV-300, PROV-301, PROV-302 | 3 | 0 |
-| `VIDEO_RENDER_PROVIDER_PLAYBOOK.md` | VIS-502, VIS-503, RND-600..603, QA-1003 | 3 | 4 |
+| `VIDEO_RENDER_PROVIDER_PLAYBOOK.md` | VIS-502, VIS-503, RND-600..603, QA-1003 | 4 | 3 |
 | `AUDIO_TTS_PROVIDER_PLAYBOOK.md` | AUD-700..703, QA-1004 | 1 | 4 |
 | `VECTOR_MEMORY_PLAYBOOK.md` | VIS-500, VIS-501, VEC-800..803 | 2 | 4 |
 | `QA_ANTI_HALLUCINATION_PLAYBOOK.md` | QA-1000, QA-1001, QA-1002 | 2 | 1 |
 | **Total** | **21 histórias cobertas** | **8** | **16** |
 
-> **Novas funcionalidades:** RenderPlan mínimo (RND-600) implementado. GPT4All provider corrigido (path hardcoded com typo). ProviderRouter removido do import direto no Gradio.
+> **Novas funcionalidades:** RND-602 — GpuProfile + GpuProfileCatalog integrados ao RenderPlanService. Perfil GTX 1660 Super (6GB) com resoluções seguras (480p/512p). Catálogo com 3 perfis (GTX 1660 Super, RTX 3060, Fallback CPU). 22 novos testes (40 total em test_render_plan.py).
 
 ## Resumo tipo Daily
 
@@ -81,14 +81,16 @@ Percentual concluído: 54,2%
    - Mocks para adapters e serviços (TTSAdapter, WanGPAdapter, FFmpegAdapter, script_service)
    - **5/5 testes passando**
 
-### O que foi feito nesta sessão
+### O que foi feito nesta sessão (Sessão 6 — RND-602)
 
-- **GPT4All fix:** Provider path corrigido — `app/adapters/llm/gpt4all_provider.py` usava path hardcoded com typo (`COMERCIAL` → `COMMERCIAL`). Alterado para usar `config.GPT4ALL_MODEL_DIR`. Provider agora detecta modelo `orca-mini-3b-gguf2-q4_0.gguf`.
-- **API bug fix:** `app/application/use_cases/script_generation.py` passava `provider` como `mode` para `generate_script_with_llm`, causando fallthrough para auto-detection. Corrigido para usar `generate_script_with_provider()` quando provider explícito.
-- **Separação UI/adapters:** `ProviderRouter` removido do import direto no Gradio. Criado `get_provider_diagnostics()` em `script_service.py` como camada de indireção.
-- **RND-600 ✅:** RenderPlan mínimo criado — `app/domain/render_plan.py` (156 linhas). SceneRenderAssignment, RenderPlan, RenderPlanService com seleção de engine por cena baseada em disponibilidade, VRAM e perfil de qualidade. 18 testes em `tests/test_render_plan.py`.
-- **Testes:** 219 testes passando (0 falhas) — core domains + API + UI + governança.
-- **Histórias concluídas:** RND-600 (ordem 28). Total: 26/48 (54,2%).
+- **RND-602 ✅:** Adicionado perfil GTX 1660 Super para evitar OOM em 6GB VRAM.
+  - `GpuProfile` dataclass em `app/domain/render_plan.py` — define nome, VRAM, resoluções máximas/recomendadas, VRAM estimada por engine
+  - `GpuProfileCatalog` — catálogo estático com 3 perfis: GTX 1660 Super (6GB), RTX 3060 (12GB), Fallback CPU/FFmpeg
+  - `RenderPlanService` integrado com perfil: `generate_plan()` aceita `gpu_profile` opcional, `_select_engine()` usa VRAM do perfil, resolução varia por qualidade (DRAFT=480x360, STANDARD=recomendada, HIGH=máxima)
+  - `SceneRenderAssignment.resolution` e `RenderPlan.max_resolution` adicionados
+  - 22 novos testes (40 total): GpuProfile, GpuProfileCatalog, resolução por perfil/qualidade, engine selection com perfis, VRAM estimates por perfil
+  - 222/222 testes passando (0 falhas)
+- **Próxima recomendada:** RND-603 (Registrar Wan VACE 1.3B como futuro opcional)
 
 ### Estado atual
 
@@ -118,29 +120,19 @@ Percentual concluído: 54,2%
 
 - Nenhum TODO/FIXME/HACK/XXX encontrado em app/ ou tests/.
 
-### Arquivos criados nesta sessão
-
-- `app/domain/render_plan.py` — Novo: 156 linhas (RND-600)
-- `tests/test_render_plan.py` — Novo: 18 testes (RND-600)
-
 ### Arquivos alterados nesta sessão
 
-- `app/adapters/llm/gpt4all_provider.py` — Path hardcoded corrigido para usar config
-- `app/application/use_cases/script_generation.py` — Provider explícito respeitado
-- `app/application/use_cases/generate_script_use_case.py` — Provider explícito respeitado
-- `app/services/script_service.py` — `get_provider_diagnostics()` adicionado
-- `app/ui/gradio_app.py` — ProviderRouter removido do import direto
-- `tests/test_ui_metrics.py` — Título do app atualizado para pt-br
+- `app/domain/render_plan.py` — +GpuProfile, GpuProfileCatalog, resolução por perfil, integração com RenderPlanService
+- `tests/test_render_plan.py` — +22 testes (GpuProfile, catalog, resolução, engine selection por perfil)
 
 ### Comandos executados
 
-- `pytest tests/test_render_plan.py -v` — 18/18 passed
-- `pytest tests/test_api.py -v -k "not generate_script_for_project"` — 11/11 passed
-- `pytest tests/test_ui_metrics.py -v` — 16/16 passed
-- `pytest (domínios + governança)` — 219/219 passed
+- `pytest tests/test_render_plan.py -v` — 40/40 passed (18 RND-600 + 22 RND-602)
+- `pytest tests/test_ffmpeg_fallback.py -v` — 15/15 passed
+- `pytest (domínios core: scene_contract + prompt_compiler + visual_bible + ingredient_registry + provider_fallback)` — 222/222 passed
 
 ### Evidências usadas
 
-- Commit base: adf078b (início da sessão)
-- Branch: feature/RND-600-renderplan-minimo
-- Testes: 219/219 passando (0 falhas)
+- Commit base: b5c4d1d (início da sessão)
+- Branch: feature/RND-602-perfil-gtx-1660-super
+- Testes: 222/222 passando (0 falhas)

@@ -16,8 +16,8 @@ Engines de renderização:
 | VIS-502 | Criar schema SceneContract | Concluída | 5 | Alta | Sim |
 | VIS-503 | Criar Prompt Compiler por engine | Concluída | 8 | Média | Sim |
 | RND-600 | Criar RenderPlan mínimo | Concluída | 5 | Alta | Sim |
-| RND-601 | Manter FFmpeg como fallback universal | Pendente | 3 | Alta | Não |
-| RND-602 | Adicionar perfil GTX 1660 Super | Pendente | 3 | Alta | Não |
+| RND-601 | Manter FFmpeg como fallback universal | Concluída | 3 | Alta | Sim |
+| RND-602 | Adicionar perfil GTX 1660 Super | Concluída | 3 | Alta | Sim |
 | RND-603 | Registrar Wan VACE 1.3B como futuro opcional | Pendente | 2 | Baixa | Não |
 | QA-1003 | Criar teste E2E WanGP falha → FFmpeg | Pendente | 5 | Média | Não |
 
@@ -65,7 +65,7 @@ Plano que escolhe engine por cena com base em: (1) disponibilidade da engine, (2
 
 ### RND-601 — Manter FFmpeg como fallback universal
 
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 3 SP  
 **Épico:** EPIC-700 Render e performance  
 **Gherkin:** `07_CRITERIOS_ACEITE_GHERKIN.md#rnd-601`  
@@ -73,15 +73,22 @@ Plano que escolhe engine por cena com base em: (1) disponibilidade da engine, (2
 
 FFmpeg é o fallback universal de renderização. Mesmo sem GPU/engine IA, o sistema deve gerar um MP4 mínimo (imagem estática + transições básicas).
 
+**Arquivos:**
+- `tests/test_ffmpeg_fallback.py` — 15 testes (adapter existência, pipeline fallback, RenderPlan, mandatory matrix)
+
 ### RND-602 — Adicionar perfil GTX 1660 Super
 
-**Status:** Pendente  
+**Status:** Concluída ✅  
 **Estimativa:** 3 SP  
 **Épico:** EPIC-700 Render e performance  
 **Gherkin:** `07_CRITERIOS_ACEITE_GHERKIN.md#rnd-602`  
 **Testes:** `08_PLANO_DE_TESTES.md#rnd-602`  
 
-Perfil de GPU para GTX 1660 Super (6GB VRAM): resolução segura 480p/512p,预算 de VRAM controlado para evitar OOM.
+Perfil de GPU para GTX 1660 Super (6GB VRAM): resolução segura 480p/512p (standard/recommended), 832x512 (max), orçamento de VRAM = 3072 MB por cena WanGP. Perfil integrado ao `GpuProfileCatalog` com 2 perfis adicionais (RTX 3060 12GB, Fallback CPU/FFmpeg).
+
+**Arquivos:**
+- `app/domain/render_plan.py` — GpuProfile, GpuProfileCatalog, resolution per quality/profile
+- `tests/test_render_plan.py` — 22 testes novos (40 total)
 
 ### RND-603 — Registrar Wan VACE 1.3B como futuro opcional
 
