@@ -1520,3 +1520,35 @@ Sessão anterior concluiu VEC-800 com PR #17 mergeado. VEC-801 estava com códig
 - **Total:** 39/49 (79,6%)
 - **PRs criados e mergeados:** #18 (VEC-801), #19 (RND-603), #20 (VEC-802), #21 (VEC-803), #22 (OBS-900)
 - **Proxima recomendada:** UI-204 (ordem 47) — Criar tela de Configuracoes na UI
+
+---
+
+## 2026-05-11 — Sessao 11 (final): UI-204 concluida
+
+### UI-204 ✅ — Criar tela de Configuracoes na UI
+
+**Estimativa:** 3 SP
+**Prioridade:** Baixa
+
+**O que fiz:**
+- Criei `app/services/config_service.py`:
+  - ConfigService com get/set/set_multi/reset
+  - Persistencia em JSON (`logs/settings.json`)
+  - Configuracoes: default_llm_provider, default_quality, default_duration_sec, logs_dir, projects_dir
+  - Singleton via get_config_service()
+- Adicionei aba "Configuracoes" (6a aba) em `gradio_app.py`:
+  - Dropdown provedor LLM padrao
+  - Dropdown qualidade padrao (DRAFT/STANDARD/HIGH)
+  - Slider duracao padrao
+  - Textbox diretorio de logs e projetos
+  - Botao Salvar e Restaurar Padroes
+- Criei `tests/test_config_service.py` — 7 testes
+- Criei `tests/test_ui_config.py` — 9 testes (estrutura + integracao)
+- 396/396 testes passando (0 falhas)
+
+### Status final da sessao
+
+- **Historias concluidas nesta sessao:** VEC-800, VEC-801, RND-603, VEC-802, VEC-803, OBS-900, OBS-901, UI-204
+- **Total:** 40/49 (81,6%)
+- **PRs criados e mergeados:** #18, #19, #20, #21, #22, #23
+- **Proxima recomendada:** SEC-1100 (ordem 48) — Criar politica MCP seguro
