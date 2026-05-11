@@ -18,7 +18,7 @@ Engines de renderização:
 | RND-600 | Criar RenderPlan mínimo | Concluída | 5 | Alta | Sim |
 | RND-601 | Manter FFmpeg como fallback universal | Concluída | 3 | Alta | Sim |
 | RND-602 | Adicionar perfil GTX 1660 Super | Concluída | 3 | Alta | Sim |
-| RND-603 | Registrar Wan VACE 1.3B como futuro opcional | Pendente | 2 | Baixa | Não |
+| RND-603 | Registrar Wan VACE 1.3B como futuro opcional | Concluída | 2 | Baixa | Sim |
 | QA-1003 | Criar teste E2E WanGP falha → FFmpeg | Pendente | 5 | Média | Não |
 
 ### VIS-502 — Criar schema SceneContract
@@ -92,13 +92,45 @@ Perfil de GPU para GTX 1660 Super (6GB VRAM): resolução segura 480p/512p (stan
 
 ### RND-603 — Registrar Wan VACE 1.3B como futuro opcional
 
-**Status:** Pendente  
+**Status:** Concluída ✅  
 **Estimativa:** 2 SP  
 **Épico:** EPIC-700 Render e performance  
 **Gherkin:** `07_CRITERIOS_ACEITE_GHERKIN.md#rnd-603`  
 **Testes:** `08_PLANO_DE_TESTES.md#rnd-603`  
 
-Documentar Wan VACE 1.3B como futuro adapter opcional. Não implementar agora — apenas registrar arquitetura, requisitos de GPU e critérios para ativação futura.
+Wan VACE 1.3B é um modelo de edição de vídeo (ref: máscara, keyframe, composição). Não implementado como adapter completo — apenas registrado como futuro opcional. A engine NÃO é selecionada automaticamente pelo EngineRouter.
+
+#### Implementação atual (parcial)
+
+- `EngineType.VACE` definido em `app/domain/prompt_compiler.py:27`
+- `PromptCompilerService._compile_for_vace()` em `app/domain/prompt_compiler.py:200` — gera prompt estruturado com metadados de cena, câmera, ingredientes, transições
+- `GpuProfile.vace_vram_per_scene_mb: int = 2048` em `app/domain/render_plan.py:52`
+- Engine availability default: `{"wangp": False, "ffmpeg": True, "vace": False}` em `app/domain/render_plan.py:189`
+- Regra no RenderPlanService: "VACE é futuro, não selecionado automaticamente" (`render_plan.py:158`)
+- 5 testes VACE no `test_prompt_compiler.py` (compilação, parâmetros, câmera, ingredientes)
+
+#### Requisitos de GPU (documentados)
+
+| Requisito | Valor |
+|-----------|-------|
+| Parâmetros | 1.3B |
+| VRAM estimada por cena | 2048 MB |
+| GPU mínima sugerida | RTX 3060 12GB (ou superior) |
+| Resolução sugerida | 480p-720p (depende do perfil) |
+
+#### Critérios para ativação futura
+
+1. Implementar `VACEAdapter` em `app/adapters/video/vace_adapter.py` seguindo o padrão `VideoAdapter` (ABC)
+2. Registrar no `EngineRouter` com prioridade após WanGP
+3. Adicionar perfil de GPU específico para VACE no `GpuProfileCatalog`
+4. NUNCA remover FFmpeg como fallback
+5. NUNCA tornar VACE obrigatório
+
+**Arquivos:**
+- `app/domain/prompt_compiler.py` — EngineType.VACE, _compile_for_vace()
+- `app/domain/render_plan.py` — GpuProfile.vace_vram_per_scene_mb, engine_availability
+- `tests/test_prompt_compiler.py` — 5 testes VACE
+- `tests/test_render_plan.py` — 5 testes VRAM VACE
 
 ### QA-1003 — Criar teste E2E WanGP falha → FFmpeg
 
