@@ -21,7 +21,7 @@ Componentes:
 | VEC-800 | Criar VectorStoreAdapter sem runtime obrigatório | Concluída | 3 | Média | Sim |
 | VEC-801 | Criar MemoryQualityGate | Concluída | 5 | Média | Sim |
 | VEC-802 | Planejar Qdrant local opcional | Concluída | 3 | Baixa | Sim |
-| VEC-803 | Planejar Chroma como protótipo opcional | Pendente | 2 | Baixa | Não |
+| VEC-803 | Planejar Chroma como protótipo opcional | Concluída | 2 | Baixa | Sim |
 
 ### VIS-500 — Criar schema Ingredient Registry
 
@@ -120,13 +120,56 @@ VectorStoreAdapter (ABC)
 
 ### VEC-803 — Planejar Chroma como protótipo opcional
 
-**Status:** Pendente  
+**Status:** Concluída ✅  
 **Estimativa:** 2 SP  
 **Épico:** EPIC-900 IA vetorial futura  
 **Gherkin:** `07_CRITERIOS_ACEITE_GHERKIN.md#vec-803`  
 **Testes:** `08_PLANO_DE_TESTES.md#vec-803`  
 
 Planejar integração com Chroma como backend rápido para prototipagem. Ideal para testes de retrieval textual com baixo atrito. Opcional e local-first.
+
+#### Plano de integração
+
+**Arquitetura:**
+```
+VectorStoreAdapter (ABC)
+  └── ChromaStore
+        ├── Client HTTP (chromadb Python)
+        ├── Collection por projeto (tenant/namespace)
+        └── Metadata: {ingredient_id, ingredient_name, source}
+```
+
+**Pré-requisitos:**
+- Dependência Python: `chromadb` (opcional, import lazy)
+- Chroma embedded (in-process, sem servidor externo): `chromadb.Client()` com `PersistentClient` ou `EphemeralClient`
+- Modo servidor opcional: `chromadb run --path ./chroma_data`
+- Vector dimension: 384 (default) ou configurável via embedding function
+
+**Recursos:**
+- RAM: ~500MB-1GB (depende do volume)
+- CPU: qualquer CPU moderna
+- GPU: não obrigatório
+- Disco: persistência opcional em `local_data/chroma/`
+
+**Critérios para ativação:**
+1. Implementar `ChromaStore(VectorStoreAdapter)` em `app/adapters/vector_store_chroma.py`
+2. Registrar na configuração: `vector_store.type = "chroma"`
+3. MemoryQualityGate executa antes de upsert (regra #3 compartilhada)
+4. Pipeline funciona sem Chroma — import falha silenciosa
+5. InMemoryVectorStore mantido como fallback para teste
+
+**Comparação Qdrant vs Chroma:**
+
+| Aspecto | Qdrant | Chroma |
+|---------|--------|--------|
+| Uso | Produção | Protótipo |
+| API | gRPC | HTTP/Embedded |
+| Payload filtering | Sim (nativo) | Limitado |
+| Multi-tenancy | Sim (coleções) | Sim (tenant/namespace) |
+| Busca híbrida | Sim | Limitado |
+| Setup | Docker ou embedded | Embedded direto |
+| RAM estimada | ~2GB | ~500MB-1GB |
+| Maturidade | Alta | Média |
 
 ## Arquitetura / Decisões
 
