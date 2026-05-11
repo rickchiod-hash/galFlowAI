@@ -1426,3 +1426,69 @@ Sessão anterior concluiu VEC-800 com PR #17 mergeado. VEC-801 estava com códig
 
 ### Proximo passo
 - VEC-802 (ordem 38): Planejar Qdrant local opcional
+
+---
+
+## 2026-05-11 — Sessão 11 (final): VEC-802/803 concluidas
+
+### VEC-802 ✅ — Planejar Qdrant local opcional
+
+**Status:** Concluida
+**Estimativa:** 3 SP
+
+**O que fiz:**
+- Documentei plano de integracao Qdrant em `VECTOR_MEMORY_PLAYBOOK.md`:
+  - Arquitetura: VectorStoreAdapter -> QdrantStore (gRPC, collection por projeto)
+  - Pre-requisitos: qdrant-client (opcional), Docker ou embedded
+  - Recursos: ~2GB RAM, CPU-only
+  - Criterios de ativacao e plano de implementacao
+- Criei `tests/test_vec_802_qdrant_plan.py` — 8 testes
+- PR #20 merged
+
+### VEC-803 ✅ — Planejar Chroma como prototipo opcional
+
+**Status:** Concluida
+**Estimativa:** 2 SP
+
+**O que fiz:**
+- Documentei plano de integracao Chroma em `VECTOR_MEMORY_PLAYBOOK.md`:
+  - Arquitetura: VectorStoreAdapter -> ChromaStore (embedded/HTTP)
+  - Pre-requisitos: chromadb (opcional)
+  - Recursos: ~500MB-1GB RAM, CPU-only
+  - Tabela comparativa: Qdrant vs Chroma
+- Criei `tests/test_vec_803_chroma_plan.py` — 5 testes
+- PR #21 merged
+
+### Status final da sessao
+
+- **Historias concluidas nesta sessao:** VEC-800, VEC-801, RND-603, VEC-802, VEC-803
+- **Total:** 37/49 (75,5%)
+- **PRs criados e mergeados:** #18 (VEC-801), #19 (RND-603), #20 (VEC-802), #21 (VEC-803)
+- **Proxima recomendada:** OBS-900 (ordem 40) — Criar logs estruturados por etapa
+
+---
+
+## 2026-05-11 — Sessão 11 (final): OBS-900 concluida
+
+### OBS-900 ✅ — Criar logs estruturados por etapa
+
+**Epico:** EPIC-1000 Observabilidade
+**Estimativa:** 5 SP
+**Prioridade:** Alta
+
+**O que fiz:**
+- Criei `app/domain/stage_logger.py` com:
+  - `StageEvent` dataclass: stage, event_type, message, cause, correction, project_id, duration_ms
+  - `StageLogger` class: start(), success(), failure(cause, correction), warning(cause, correction)
+  - `get_summary()`: agrega eventos por tipo, conta falhas
+  - Integracao com logging padrao Python (events sao logados como info/warning/error)
+  - Formato de log: `[stage] event_type: message | CAUSA: x | CORRECAO: y`
+- Criei `tests/test_stage_logger.py` — 12 testes
+- 370/370 testes passando (0 falhas)
+
+### Status final da sessao
+
+- **Historias concluidas nesta sessao:** VEC-800, VEC-801, RND-603, VEC-802, VEC-803, OBS-900
+- **Total:** 38/49 (77,6%)
+- **PRs criados e mergeados:** #18 (VEC-801), #19 (RND-603), #20 (VEC-802), #21 (VEC-803)
+- **Proxima recomendada:** OBS-901 (ordem 41) — Criar metricas minimas por job

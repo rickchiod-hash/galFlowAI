@@ -5,21 +5,21 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 35/49
+Histórias concluídas: 38/49
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 14 (49 - 35 concluídas - 0 em andamento)
-Percentual concluído: 71,4%
+Histórias pendentes: 11 (49 - 38 concluídas - 0 em andamento)
+Percentual concluído: 77,6%
 
-**Aritmética:** 49 histórias únicas no backlog (UI-204 adicionada). 35 Concluídas + 0 Em andamento + 14 Pendentes = 49.
+**Aritmética:** 49 histórias únicas no backlog (UI-204 adicionada). 38 Concluídas + 0 Em andamento + 11 Pendentes = 49.
 
 ## Estado atual
 
 - Branch atual: master (f3a2dc9)
 - Último commit analisado: f3a2dc9 — "feat(domain): implement MemoryQualityGate (VEC-801)"
 - Fase atual: Fase 5 — Pipeline e produto
-- Story stream atual: VEC-800/VEC-801 (Vector Memory) ✅, RND-603 (VACE doc) ✅
-- Próxima ação recomendada: VEC-802 — Planejar Qdrant local opcional
+- Story stream atual: VEC-800/VEC-801 (Vector Memory) ✅, RND-603 (VACE doc) ✅, VEC-802/803 (Vector planning) ✅, OBS-900 (StageLogger) ✅
+- Próxima ação recomendada: OBS-901 — Criar métricas mínimas por job
 
 ### Playbooks criados nesta sessão
 
@@ -28,9 +28,9 @@ Percentual concluído: 71,4%
 | `LLM_PROVIDER_PLAYBOOK.md` | PROV-300, PROV-301, PROV-302 | 3 | 0 |
 | `VIDEO_RENDER_PROVIDER_PLAYBOOK.md` | VIS-502, VIS-503, RND-600..603, QA-1003 | 6 | 1 |
 | `AUDIO_TTS_PROVIDER_PLAYBOOK.md` | AUD-700..703, QA-1004 | 5 | 0 |
-| `VECTOR_MEMORY_PLAYBOOK.md` | VIS-500, VIS-501, VEC-800..803 | 2 | 4 |
+| `VECTOR_MEMORY_PLAYBOOK.md` | VIS-500, VIS-501, VEC-800..803 | 4 | 2 |
 | `QA_ANTI_HALLUCINATION_PLAYBOOK.md` | QA-1000, QA-1001, QA-1002 | 3 | 0 |
-| **Total** | **21 histórias cobertas** | **18** | **6** |
+| **Total** | **24 histórias cobertas** | **21** | **3** |
 
 > **Novas funcionalidades:** AUD-700 — AudioPlan schema + AudioPlanService (CRUD, narrations, generate_narration_script). RND-601 — FFmpeg fallback universal tests (15). UI — Gradio tab reorder (Roteiro como primeira aba).
 
