@@ -46,7 +46,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 38 | VEC-802 | Planejar Qdrant local opcional | Baixa | 3 | Concluída | Arquitetura/base P0 validada | plano documentado no VECTOR_MEMORY_PLAYBOOK.md — QdrantStore, prereqs, criterios ativacao |
 | 39 | VEC-803 | Planejar Chroma como protótipo opcional | Baixa | 2 | Concluída | Arquitetura/base P0 validada | plano documentado no VECTOR_MEMORY_PLAYBOOK.md — ChromaStore, comparacao Qdrant vs Chroma |
 | 40 | OBS-900 | Criar logs estruturados por etapa | Alta | 5 | Concluída | Arquitetura/base P0 validada | StageLogger em app/domain/stage_logger.py — eventos por etapa com causa+correcao. 12 testes. |
-| 41 | OBS-901 | Criar métricas mínimas por job | Alta | 5 | Pendente | Arquitetura/base P0 validada | para priorizar melhorias reais |
+| 41 | OBS-901 | Criar métricas mínimas por job | Alta | 5 | Concluída | Arquitetura/base P0 validada | JobMetrics em app/domain/job_metrics.py — metricas por etapa: tempo, fallback, erro. 10 testes. |
 | 42 | QA-1000 | Criar teste antirregressão de naming | Alta | 2 | Concluída | Arquitetura/base P0 validada | para preservar identidade GalFlowAI |
 | 43 | QA-1001 | Criar teste de presença de providers/fallbacks | Alta | 3 | Concluída | Arquitetura/base P0 validada | para preservar operação local-first |
 | 44 | QA-1002 | Criar teste UI não chama adapters | Média | 3 | Concluída | Arquitetura/base P0 validada | para proteger separação de responsabilidades |
@@ -58,7 +58,7 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 
 ## Próxima história recomendada
 
-**OBS-901 — Criar métricas mínimas por job (ordem 41).** Pendente. Criar metricas minimas para priorizar melhorias reais.
+**UI-204 — Criar tela de Configurações na UI (ordem 47).** Pendente. Criar tela para gerenciar provedores, caminhos e preferências.
 
 ## Regras de priorização
 
