@@ -1739,3 +1739,40 @@ Sessão 15 (VRAM detection) concluída. Verificação de histórias não desenvo
 
 ### Próximo passo
 - Documentação sincronizada. Aguardando definição de próximas atividades de manutenção.
+## 2026-05-10 — Sessão 17: Full Review + Bare Except Fix + Validação de Aplicação
+
+### Contexto
+Sessão 16 (doc sync) concluída. Solicitação: revisão completa (backlog, roadmap, QA, fluxo, configuração) + fix bare except + validação da aplicação.
+
+### O que fiz
+- **Bare except corrigidos:** 13 ocorrências em 8 arquivos (main.py, ffmpeg_adapter, piper_adapter, translator_adapter, tts_adapter, script_improvement_use_cases, visual_consistency_use_cases, log_service, metrics_service)
+- **Validação de importações:** 20/20 módulos críticos importam sem erro (config, pipeline, use cases, adapters, services, hardware, gradio)
+- **JobState encontrado em** app.pipeline.job_state (não app.domain — drift documentado)
+- **Result encontrado em** app.application.result (não app.domain — drift documentado)
+- **LogService** é módulo de funções, não classe
+- **Fluxo validado:** pipeline 7 etapas com gates — Briefing → Roteiro → Cenas → Prompts → Áudio → Vídeo → Montagem Final
+- **Config verificada:** paths (BASE_DIR, PROJECTS_DIR, LOGS_DIR), env vars, LLM provider URLs, Gradio host/port
+- **VRAM detectada:** 6GB via hardware.py (GTX 1660 Super)
+- **Gradio v6.14.0** disponível
+- **Hardware detectado:** NVIDIA GeForce GTX 1660 SUPER, 6.44GB VRAM
+
+### Arquivos alterados
+- pp/main.py — 4 bare except corrigidos
+- pp/adapters/ffmpeg_adapter.py — 1 bare except corrigido
+- pp/adapters/piper_adapter.py — 2 bare except corrigidos
+- pp/adapters/translator_adapter.py — 1 bare except corrigido
+- pp/adapters/tts_adapter.py — 1 bare except corrigido
+- pp/application/use_cases/script_improvement_use_cases.py — 1 bare except corrigido
+- pp/application/use_cases/visual_consistency_use_cases.py — 1 bare except corrigido
+- pp/services/log_service.py — 1 bare except corrigido
+- pp/services/metrics_service.py — 1 bare except corrigido
+
+### Testes executados e resultado
+- 44/44 testes críticos passando (wangp vram, fallbacks, checkpoint, providers, naming, todo)
+- 20/20 importações validadas sem erro (config → hardware → gradio)
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- Decisão necessária: CI/CD, cobertura de testes, ou arquivamento.
