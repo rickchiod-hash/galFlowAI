@@ -15,8 +15,8 @@ Providers atualmente registrados:
 
 | Story ID | Título | Status | SP | Prioridade | DoR completo |
 |----------|--------|--------|----|-----------|-------------|
-| PROV-300 | Preservar registry de providers LLM | Concluída | 5 | Alta | Pendente playbook |
-| PROV-301 | Garantir TemplateProvider como fallback | Concluída | 3 | Alta | Pendente playbook |
+| PROV-300 | Preservar registry de providers LLM | Concluída | 5 | Alta | Sim |
+| PROV-301 | Garantir TemplateProvider como fallback | Concluída | 3 | Alta | Sim |
 | PROV-302 | Criar testes de provider fallback | Concluída | 3 | Alta | Sim |
 
 ### PROV-300 — Preservar registry de providers LLM

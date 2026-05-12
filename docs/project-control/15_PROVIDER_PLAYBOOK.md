@@ -6,13 +6,13 @@ Este arquivo é o roteador central para todos os playbooks específicos de provi
 
 | Playbook | Stories vinculadas | Status |
 |----------|-------------------|--------|
-| `LLM_PROVIDER_PLAYBOOK.md` | PROV-300, PROV-301, PROV-302 | 2 Concluídas, 1 Pendente |
-| `VIDEO_RENDER_PROVIDER_PLAYBOOK.md` | VIS-502, VIS-503, RND-600, RND-601, RND-602, RND-603, QA-1003 | Todas Pendentes |
-| `AUDIO_TTS_PROVIDER_PLAYBOOK.md` | AUD-700, AUD-701, AUD-702, AUD-703, QA-1004 | 1 Concluída, 4 Pendentes |
-| `VECTOR_MEMORY_PLAYBOOK.md` | VIS-500, VIS-501, VEC-800, VEC-801, VEC-802, VEC-803 | Todas Pendentes |
-| `QA_ANTI_HALLUCINATION_PLAYBOOK.md` | QA-1000, QA-1001, QA-1002 | 2 Concluídas, 1 Pendente |
+| `LLM_PROVIDER_PLAYBOOK.md` | PROV-300, PROV-301, PROV-302 | 3 Concluídas |
+| `VIDEO_RENDER_PROVIDER_PLAYBOOK.md` | VIS-502, VIS-503, RND-600, RND-601, RND-602, RND-603, QA-1003 | 7 Concluídas |
+| `AUDIO_TTS_PROVIDER_PLAYBOOK.md` | AUD-700, AUD-701, AUD-702, AUD-703, QA-1004 | 5 Concluídas |
+| `VECTOR_MEMORY_PLAYBOOK.md` | VIS-500, VIS-501, VEC-800, VEC-801, VEC-802, VEC-803 | 6 Concluídas |
+| `QA_ANTI_HALLUCINATION_PLAYBOOK.md` | QA-1000, QA-1001, QA-1002 | 3 Concluídas |
 
-**Total de histórias cobertas: 21** (das 48 do backlog)
+**Total de histórias cobertas: 24** (das 49 do backlog)
 
 ## Providers LLM
 

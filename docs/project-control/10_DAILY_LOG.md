@@ -1704,3 +1704,38 @@ Sessão 14 (QA Review) concluída. Iniciada manutenção contínua: resolver dí
 
 ### Próximo passo
 - Aguardando definição: continuar manutenção (ex: cobertura de testes, refinar UI) ou arquivar.
+## 2026-05-10 — Sessão 16: Sincronização de Documentação (Playbooks + Story Map + Gaps)
+
+### Contexto
+Sessão 15 (VRAM detection) concluída. Verificação de histórias não desenvolvidas revelou documentação desatualizada em múltiplos playbooks.
+
+### O que fiz
+- **VECTOR_MEMORY_PLAYBOOK.md:** VIS-500 e VIS-501 atualizados de Pendente → Concluída
+- **VIDEO_RENDER_PROVIDER_PLAYBOOK.md:** QA-1003 atualizado de Pendente → Concluída
+- **LLM_PROVIDER_PLAYBOOK.md:** PROV-300/301 DoR completo corrigido
+- **AUDIO_TTS_PROVIDER_PLAYBOOK.md:** QA-1004 DoR completo corrigido
+- **15_PROVIDER_PLAYBOOK.md:** Tabela geral atualizada (24/24 Concluídas)
+- **19_STORY_MAP.md:** 8 etapas atualizadas de Pendente → Concluída
+- **09_GAPS_TODOS_E_DIVIDAS.md:** GAP-002, GAP-003, GAP-004 atualizados para Concluído
+- **06_HISTORIAS_REFINADAS.md:** 6 histórias atualizadas de Pendente → Concluída
+- **00_STATUS_EXECUTIVO.md:** Próxima ação atualizada
+
+### Arquivos alterados
+- docs/project-control/VECTOR_MEMORY_PLAYBOOK.md — 3 seções atualizadas
+- docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md — 2 seções atualizadas
+- docs/project-control/LLM_PROVIDER_PLAYBOOK.md — 2 linhas corrigidas
+- docs/project-control/AUDIO_TTS_PROVIDER_PLAYBOOK.md — 1 linha corrigida
+- docs/project-control/15_PROVIDER_PLAYBOOK.md — Tabela completa reescrita
+- docs/project-control/19_STORY_MAP.md — 8 linhas atualizadas
+- docs/project-control/09_GAPS_TODOS_E_DIVIDAS.md — 3 gaps fechados
+- docs/project-control/06_HISTORIAS_REFINADAS.md — 6 status atualizados
+- docs/project-control/00_STATUS_EXECUTIVO.md — Próxima ação
+
+### Testes executados e resultado
+- 21/21 testes críticos passando (checkpoint, wangp vram, feature matrix, provider presence)
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- Documentação sincronizada. Aguardando definição de próximas atividades de manutenção.

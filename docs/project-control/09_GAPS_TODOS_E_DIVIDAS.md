@@ -46,8 +46,8 @@ TODO genérico é proibido.
 | ID | Gap | História | Evidência necessária | Status |
 |---|---|---|---|---|
 | GAP-001 | Estado real do último commit não auditado | CORE-100 | `git log -1 --oneline` — feito: 7017ea8 | Concluído |
-| GAP-002 | Diferença docs/código não mapeada | CORE-102 | auditoria docs/code | Pendente |
-| GAP-003 | UI atual precisa ser comparada ao fluxo por etapas | UI-200 | app/main.py + screenshot | Pendente |
-| GAP-004 | Providers precisam ser listados por código real | PROV-300 | provider registry/adapters | Pendente |
+| GAP-002 | Diferença docs/código não mapeada | CORE-102 | auditoria docs/code — feita em 03_ARQUITETURA_ATUAL.md | Concluído |
+| GAP-003 | UI atual precisa ser comparada ao fluxo por etapas | UI-200 | app/main.py + screenshot — story map reescrito em 19_STORY_MAP.md | Concluído |
+| GAP-004 | Providers precisam ser listados por código real | PROV-300 | provider registry/adapters — mapeado em LLM_PROVIDER_PLAYBOOK.md | Concluído |
 | GAP-005 | bare except: em arquivos fonte | CORE-101 | varredura grep — corrigido para `except Exception:` em 12 locais | Concluído |
 | GAP-006 | C: paths em documentação | DOC-103 | varredura grep — referências informativas em docs de instalação, não são hardcoded paths de código | Mantido como documentação |

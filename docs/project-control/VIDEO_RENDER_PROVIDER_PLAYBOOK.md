@@ -19,7 +19,7 @@ Engines de renderização:
 | RND-601 | Manter FFmpeg como fallback universal | Concluída | 3 | Alta | Sim |
 | RND-602 | Adicionar perfil GTX 1660 Super | Concluída | 3 | Alta | Sim |
 | RND-603 | Registrar Wan VACE 1.3B como futuro opcional | Concluída | 2 | Baixa | Sim |
-| QA-1003 | Criar teste E2E WanGP falha → FFmpeg | Pendente | 5 | Média | Não |
+| QA-1003 | Criar teste E2E WanGP falha → FFmpeg | Concluída | 5 | Média | Sim |
 
 ### VIS-502 — Criar schema SceneContract
 
@@ -134,7 +134,7 @@ Wan VACE 1.3B é um modelo de edição de vídeo (ref: máscara, keyframe, compo
 
 ### QA-1003 — Criar teste E2E WanGP falha → FFmpeg
 
-**Status:** Pendente  
+**Status:** Concluída ✅  
 **Estimativa:** 5 SP  
 **Épico:** EPIC-1100 QA contínuo  
 **Gherkin:** `07_CRITERIOS_ACEITE_GHERKIN.md#qa-1003`  

@@ -18,7 +18,7 @@ Componentes de áudio:
 | AUD-701 | Gerar áudio por cena com fallback | Concluída | 5 | Média | Sim |
 | AUD-702 | Gerar SRT por timing de cena | Concluída | 3 | Média | Sim |
 | AUD-703 | Criar SFX manifest | Concluída | 3 | Baixa | Sim |
-| QA-1004 | Criar teste TTS falha → export sem áudio | Concluída | 3 | Média | Pendente playbook |
+| QA-1004 | Criar teste TTS falha → export sem áudio | Concluída | 3 | Média | Sim |
 
 ### AUD-700 — Criar AudioPlan e narration_script.md
 

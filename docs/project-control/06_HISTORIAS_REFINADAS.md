@@ -531,7 +531,7 @@ Ver `UI-200` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-200 UX e fluxo de produto  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/19_STORY_MAP.md`
 
@@ -577,7 +577,7 @@ Ver `UI-201` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-200 UX e fluxo de produto  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/19_STORY_MAP.md`
 
@@ -715,7 +715,7 @@ Ver `ARCH-300` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-300 Arquitetura limpa  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/04_ARQUITETURA_ALVO.md`
 
@@ -761,7 +761,7 @@ Ver `ARCH-301` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-300 Arquitetura limpa  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 3 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/12_DEPENDENCIAS_E_BLOQUEIOS.md`
 
@@ -940,7 +940,7 @@ Como QA, eu quero teste de falha de LLM → template, para evitar regressão de 
 
 **Épico:** EPIC-500 Pipeline confiável  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/17_REFACTORING_PLAN.md`
 
@@ -986,7 +986,7 @@ Ver `PIPE-400` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-500 Pipeline confiável  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/17_REFACTORING_PLAN.md`
 
@@ -1078,7 +1078,7 @@ Ver `PIPE-402` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-500 Pipeline confiável  
 **Prioridade:** Média  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/17_REFACTORING_PLAN.md`
 
@@ -1305,7 +1305,7 @@ Como engine router, eu quero prompts específicos por provider, para usar FFmpeg
 
 **Épico:** EPIC-700 Render e performance  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
 
@@ -1351,7 +1351,7 @@ Ver `RND-600` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-700 Render e performance  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 3 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
 
@@ -1441,7 +1441,7 @@ Ver `RND-602` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-700 Render e performance  
 **Prioridade:** Baixa  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 2 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
 
@@ -1487,7 +1487,7 @@ Ver `RND-603` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-800 Audio  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/AUDIO_TTS_PROVIDER_PLAYBOOK.md`
 
@@ -1533,7 +1533,7 @@ Ver `AUD-700` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-800 Audio  
 **Prioridade:** Média  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/AUDIO_TTS_PROVIDER_PLAYBOOK.md`
 
@@ -1579,7 +1579,7 @@ Ver `AUD-701` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-800 Audio  
 **Prioridade:** Média  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 3 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/AUDIO_TTS_PROVIDER_PLAYBOOK.md`
 
@@ -1625,7 +1625,7 @@ Ver `AUD-702` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-800 Audio  
 **Prioridade:** Baixa  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 3 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/AUDIO_TTS_PROVIDER_PLAYBOOK.md`
 
@@ -1671,7 +1671,7 @@ Ver `AUD-703` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-900 IA vetorial futura  
 **Prioridade:** Média  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 3 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/VECTOR_MEMORY_PLAYBOOK.md`
 
@@ -1717,7 +1717,7 @@ Ver `VEC-800` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-900 IA vetorial futura  
 **Prioridade:** Média  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/VECTOR_MEMORY_PLAYBOOK.md`
 
@@ -1763,7 +1763,7 @@ Ver `VEC-801` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-900 IA vetorial futura  
 **Prioridade:** Baixa  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 3 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/VECTOR_MEMORY_PLAYBOOK.md`
 
@@ -1809,7 +1809,7 @@ Ver `VEC-802` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-900 IA vetorial futura  
 **Prioridade:** Baixa  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 2 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/VECTOR_MEMORY_PLAYBOOK.md`
 
@@ -1855,7 +1855,7 @@ Ver `VEC-803` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-1000 Observabilidade  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/04_ARQUITETURA_ALVO.md`
 
@@ -1901,7 +1901,7 @@ Ver `OBS-900` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-1000 Observabilidade  
 **Prioridade:** Alta  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/04_ARQUITETURA_ALVO.md`
 
@@ -1993,7 +1993,7 @@ Ver `QA-1002` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-1100 QA contínuo  
 **Prioridade:** Média  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 5 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md`
 
@@ -2085,7 +2085,7 @@ Ver `QA-1004` em `08_PLANO_DE_TESTES.md`.
 
 **Épico:** EPIC-1200 Segurança e ferramentas  
 **Prioridade:** Média  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 2 SP  
 **Arquivo de contexto obrigatório:** `mcp/README_MCP_OPTIONAL.md`
 
@@ -2234,7 +2234,7 @@ Como mantenedor, eu quero um teste que verifique a presença de todos os provide
 ## SEC-1101 — Criar política de secrets e arquivos sensíveis
 
 **Prioridade:** Média  
-**Status:** Pendente  
+**Status:** Concluída  
 **Estimativa:** 2 SP  
 **Arquivo de contexto obrigatório:** `docs/project-control/12_DEPENDENCIAS_E_BLOQUEIOS.md`
 

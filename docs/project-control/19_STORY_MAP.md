@@ -55,15 +55,15 @@ ETAPA 7: MONTAGEM FINAL (implementado)
 ### Etapas planejadas (futuras)
 
 | Etapa | História | Status |
-|---|---|---|
-| SceneContracts | VIS-502 | Pendente |
-| Visual Bible | VIS-501 | Pendente |
-| Ingredient Registry | VIS-500 | Pendente |
-| Prompt Context Pack | VIS-503 | Pendente |
-| RenderPlan | RND-600 | Pendente |
-| AudioPlan por cena | AUD-700, AUD-701 | Pendente |
-| SRT/Legendas | AUD-702 | Pendente |
-| Vector memory | VEC-800..803 | Pendente |
+|---|---|---|---|
+| SceneContracts | VIS-502 | Concluída |
+| Visual Bible | VIS-501 | Concluída |
+| Ingredient Registry | VIS-500 | Concluída |
+| Prompt Context Pack | VIS-503 | Concluída |
+| RenderPlan | RND-600 | Concluída |
+| AudioPlan por cena | AUD-700, AUD-701 | Concluída |
+| SRT/Legendas | AUD-702 | Concluída |
+| Vector memory | VEC-800..803 | Concluída |
 
 ## Story map por atividade
 

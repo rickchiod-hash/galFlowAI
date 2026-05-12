@@ -16,8 +16,8 @@ Componentes:
 
 | Story ID | Título | Status | SP | Prioridade | DoR completo |
 |----------|--------|--------|----|-----------|-------------|
-| VIS-500 | Criar schema Ingredient Registry | Pendente | 5 | Alta | Não |
-| VIS-501 | Criar schema Visual Bible | Pendente | 5 | Alta | Não |
+| VIS-500 | Criar schema Ingredient Registry | Concluída | 5 | Alta | Sim |
+| VIS-501 | Criar schema Visual Bible | Concluída | 5 | Alta | Sim |
 | VEC-800 | Criar VectorStoreAdapter sem runtime obrigatório | Concluída | 3 | Média | Sim |
 | VEC-801 | Criar MemoryQualityGate | Concluída | 5 | Média | Sim |
 | VEC-802 | Planejar Qdrant local opcional | Concluída | 3 | Baixa | Sim |
@@ -25,23 +25,31 @@ Componentes:
 
 ### VIS-500 — Criar schema Ingredient Registry
 
-**Status:** Pendente  
+**Status:** Concluída ✅  
 **Estimativa:** 5 SP  
 **Épico:** EPIC-600 Consistência visual  
 **Gherkin:** `07_CRITERIOS_ACEITE_GHERKIN.md#vis-500`  
-**Testes:** `08_PLANO_DE_TESTES.md#vis-500`  
+**Testes:** `tests/test_ingredient_registry.py` — 27 testes
 
 Schema que define o registro de ingredientes: produtos, personagens, cenários, objetos de cena. Cada ingrediente tem nome, descrição, referências visuais e metadados. Garante consistência entre cenas e sessões.
 
+**Arquivos:**
+- `app/domain/ingredient_registry.py` — IngredientRegistry com CRUD versionado
+- `tests/test_ingredient_registry.py` — 27 testes (schemas, CRUD, search, versioning, negative)
+
 ### VIS-501 — Criar schema Visual Bible
 
-**Status:** Pendente  
+**Status:** Concluída ✅  
 **Estimativa:** 5 SP  
 **Épico:** EPIC-600 Consistência visual  
 **Gherkin:** `07_CRITERIOS_ACEITE_GHERKIN.md#vis-501`  
-**Testes:** `08_PLANO_DE_TESTES.md#vis-501`  
+**Testes:** `tests/test_visual_bible.py`
 
 Schema que fixa referências visuais aprovadas por ingrediente. Reduz drift visual entre gerações. A Visual Bible é consultada pelo Prompt Compiler para incluir referências nos prompts.
+
+**Arquivos:**
+- `app/domain/visual_bible.py` — VisualBible schema
+- `tests/test_visual_bible.py`
 
 ### VEC-800 — Criar VectorStoreAdapter sem runtime obrigatório
 
