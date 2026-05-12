@@ -208,7 +208,11 @@ class WanGPAdapter:
     
     def _get_vram_gb(self) -> int:
         """Retorna VRAM em GB (placeholder - integrar com hardware.py)"""
-        # TODO: Integrar com hardware.py para detecção real
+        # TODO(RND-602, type=debt): Integrar com hardware.py para detecção real
+# Contexto: VRAM detection currently hardcoded to 6GB (GTX 1660 Super)
+# Dependência: hardware.py com detecção real de VRAM
+# Critério de aceite: _get_vram_gb() retorna VRAM real detectada em GB
+# Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md
         return 6  # GTX 1660 Super padrão
     
     def get_status(self) -> Dict[str, Any]:
