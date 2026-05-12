@@ -2,6 +2,43 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-12 — Sessão 19: Test stabilization (provider timeout + script approval gate)
+
+### Contexto
+Após o merge do UI rework (sessão 18), 4 testes estavam falhando: 3 E2E (test_e2e_wangp_fallback.py) e 1 integração (test_pipeline_completa.py). As 6 correções de velocidade de teste também não tinham sido commitadas.
+
+### O que fiz
+- **Test speed fixes (committed):** 6 arquivos com patches de provider `is_available` para evitar timeouts reais de LMStudio/KoboldCpp/LlamaCpp/GPT4All em modo teste:
+  - `test_api.py` (+12 linhas, patches no módulo)
+  - `test_h10_contract.py` (+13 linhas, patches no módulo)
+  - `test_h11_mutex.py` (+27 linhas, temp-file SQLite ledger em vez de default DB)
+  - `test_llm_provider_router.py` (+69 linhas, context manager com patches de 4 providers)
+  - `test_script_service.py` (+7 linhas, context manager patch ao redor de `generate_script_with_llm`)
+  - `test_artifact_cache_integration.py` (+13 linhas, corrigidos patch paths + asserts)
+- **Audit doc update:** `01_AUDITORIA_HISTORICO_GIT.md` commit count 229→231, HEAD `48f0f55`
+- **E2E test fixes:** `test_e2e_wangp_fallback.py` — added `_ensure_approved_script()` helper + cleanup. 3 tests pass again
+- **Integration test fix:** `test_pipeline_completa.py` — added `"ok": True` to mock return (missing key caused fallback to TemplateProvider)
+- **Full regression:** 813 passed, 0 failed, 87 warnings in 43.39s
+
+### Arquivos alterados
+- `tests/test_api.py` — provider is_available patches
+- `tests/test_h10_contract.py` — provider is_available patches
+- `tests/test_h11_mutex.py` — temp-file SQLite ledger
+- `tests/test_llm_provider_router.py` — context manager for provider patches
+- `tests/test_script_service.py` — context manager patch for generate_script_with_llm
+- `tests/test_artifact_cache_integration.py` — fixed mock paths + asserts
+- `tests/test_e2e_wangp_fallback.py` — added _ensure_approved_script + cleanup
+- `tests/integration/test_pipeline_completa.py` — added "ok": True to mock
+- `docs/project-control/01_AUDITORIA_HISTORICO_GIT.md` — commit count 231, HEAD 48f0f55
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — updated session 19
+- `docs/project-control/10_DAILY_LOG.md` — this entry
+
+### Commit
+- `a34a16a` — "fix(test): mock provider is_available to avoid timeouts, add script approval gate to E2E tests"
+
+### Próximo passo
+- Projeto 100% estável (813/813 testes). Aguardar definição de próxima história ou encerramento.
+
 ## 2026-05-11 — Sessão 10: AUD-703 (SFX Manifest)
 
 ### Contexto
