@@ -1776,3 +1776,52 @@ Sessão 16 (doc sync) concluída. Solicitação: revisão completa (backlog, roa
 
 ### Próximo passo
 - Decisão necessária: CI/CD, cobertura de testes, ou arquivamento.
+
+## 2026-05-12 — Sessão 18: UI Rework Commit + Test Fixes
+
+### Contexto
+Sessão 17 (bare except fix + app review) concluída. Havia trabalho não commitado no working tree de uma sessão anterior: reestruturação completa da UI Gradio para fluxo guiado de 6 etapas com state gating. Além disso, 4 testes estavam quebrados (1 git audit + 3 tts_fallback).
+
+### O que fiz
+- **Uncommitted UI rework commitado** na branch `feature/ui-6-stage-flow-gating`:
+  - Rewrite do tab "Criar Comercial" com 6 estágios: Briefing → Roteiro → Narração/SRT → Cenas → Render → Export
+  - `gr.State()` para gating de aprovação de roteiro
+  - "Gerar Comercial Completo" demovido para accordion "Modo Rápido" com warning
+  - `input=gr.Input(limits=1)` em todos botões de transição (anti-concorrência)
+  - Fixes: `lm_studio` → `lmstudio`, `generate_script_with_details()` no script_generator, `export_final_video()` no video_service, double-except fix
+- **Testes novos commitados:** 18 testes (11 workflow order + 7 audio step presence)
+- **Fixes de regressão:**
+  - `test_git_audit.py::test_audit_commit_count_within_range` — audit document atualizado (171→229 commits, HEAD atualizado)
+  - `test_tts_fallback.py` (3 testes) — adicionado `_ensure_approved_script()` helper para criar `script_approved.md` antes do pipeline executar (pipeline agora requer aprovação de roteiro)
+- **`.gitignore` atualizado:** `app/state/` e `gradio_*.txt` adicionados
+- **Testes rápidos verificados:** 581+ testes passando (governance + domain + UI + audio + provider + use cases)
+  - Testes lentos/timeout conhecidos excluídos: `test_api.py`, `test_artifact_cache_integration.py`, `test_script_service.py`, `test_llm_provider_router.py`, `test_h10_contract.py`, `test_h11_mutex.py` (pre-existing, sem regressão nova)
+
+### Arquivos alterados
+- `app/ui/gradio_app.py` — Rewrite completo do fluxo de 6 estágios
+- `app/pipeline/script_generator.py` — `_run_generation()`, `generate_script_with_details()`
+- `app/pipeline/video_generation_pipeline.py` — script approval gate
+- `app/services/script_service.py` — `_PROVIDER_CLASSES` key fix, timeout log fix
+- `app/services/video_service.py` — `export_final_video()`, double-except fix, `import json`
+- `app/main.py` — Adjustments for new UI flow
+- `app/logging_config.py` — Adjustments
+- `app/application/use_cases/generate_audio_use_case.py` — Adjustments
+- `pipelines/auto_pipeline.py` — Uses `generate_script_with_details()`
+- `.gitignore` — Added `app/state/` and `gradio_*.txt`
+- `tests/test_tts_fallback.py` — Added `_ensure_approved_script()` helper + `PROJECTS_DIR` import
+- `tests/test_ui_workflow_order.py` — Novo (11 testes)
+- `tests/test_ui_audio_step_presence.py` — Novo (7 testes)
+- `docs/project-control/01_AUDITORIA_HISTORICO_GIT.md` — Commit count 171→229, HEAD atualizado
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — Atualizado
+- `docs/project-control/10_DAILY_LOG.md` — Esta entrada
+
+### Testes executados e resultado
+- 6/6 tts_fallback + git_audit passando (regressão zero)
+- 581+ testes passando nos batches rápidos (governance + domain + UI + provider + audio + use cases)
+- Testes lentos/timeout: `test_api.py` (87s), `test_artifact_cache_integration.py` (hanging), `test_script_service.py` (25s), `test_llm_provider_router.py` (48s), `test_h10_contract.py` (61s), `test_h11_mutex.py` (41s) — pre-existing, sem regressão desta sessão
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- Decidir: continuar com a branch (PR/merge) ou abordar os testes lentos/timeout

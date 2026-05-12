@@ -1,6 +1,6 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-10 (sessão 13 - QA Review)
+Atualizado em: 2026-05-12 (sessão 18 - UI Rework Commit)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
@@ -15,11 +15,11 @@ Percentual concluído: 100%
 
 ## Estado atual
 
-- Branch atual: master (80b18d8)
-- Último commit analisado: 80b18d8 — "Add checkpoint for deep QA review and revision (session 12)"
+- Branch atual: feature/ui-6-stage-flow-gating (850e2d9)
+- Último commit analisado: 850e2d9 — "feat(ui): restructure Gradio into 6-stage guided flow with state gating"
 - Fase atual: Fase 5 — Pipeline e produto (COMPLETA)
 - Story stream atual: Todas as 49 histórias concluídas ✅
-- Próxima ação recomendada: Manutenção contínua — documentação sincronizada (14/14 arquivos atualizados)
+- Próxima ação recomendada: PR/merge da branch feature/ui-6-stage-flow-gating, ou abordar testes lentos/timeout
 
 ### Playbooks criados nesta sessão
 
