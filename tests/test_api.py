@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 import os
 import json
+from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from fastapi.testclient import TestClient
@@ -15,6 +16,17 @@ from pathlib import Path
 import shutil
 
 logger = setup_logger()
+
+
+# Patch LLM providers to avoid timeouts during tests
+_PROVIDER_PATCHES = [
+    patch('app.adapters.llm.lmstudio_provider.LMStudioProvider.is_available', return_value=False),
+    patch('app.adapters.llm.koboldcpp_provider.KoboldCppProvider.is_available', return_value=False),
+    patch('app.adapters.llm.llamacpp_provider.LlamaCppProvider.is_available', return_value=False),
+    patch('app.adapters.llm.gpt4all_provider.GPT4AllProvider.is_available', return_value=False),
+]
+for _p in _PROVIDER_PATCHES:
+    _p.start()
 
 # Create test client
 client = TestClient(app)

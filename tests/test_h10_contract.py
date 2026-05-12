@@ -1,9 +1,22 @@
 """Contract tests for H10 - FastAPI critical endpoints."""
 import pytest
+from unittest.mock import patch
 from fastapi.testclient import TestClient
 from app.api import app
 
+
+_PROVIDER_PATCHES = [
+    patch('app.adapters.llm.lmstudio_provider.LMStudioProvider.is_available', return_value=False),
+    patch('app.adapters.llm.koboldcpp_provider.KoboldCppProvider.is_available', return_value=False),
+    patch('app.adapters.llm.llamacpp_provider.LlamaCppProvider.is_available', return_value=False),
+    patch('app.adapters.llm.gpt4all_provider.GPT4AllProvider.is_available', return_value=False),
+]
+
+for _p in _PROVIDER_PATCHES:
+    _p.start()
+
 client = TestClient(app)
+
 
 class TestHealthContract:
     def test_health_returns_200(self):
