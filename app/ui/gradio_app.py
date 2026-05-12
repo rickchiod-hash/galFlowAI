@@ -140,7 +140,7 @@ def on_generate_tts(narration_script, engine, voice, allow_no_audio, app_state_v
     os.makedirs(str(Path(output_path).parent), exist_ok=True)
     try:
         audio_result = tts.generate_audio(
-            text=narration_script[:500], output_path=output_path, voice=voice if voice != "default" else None
+            text=narration_script, output_path=output_path, voice=voice if voice != "default" else None
         )
         if audio_result.get("success"):
             app_state_val["audio_path"] = audio_result.get("audio_path", output_path)
@@ -184,11 +184,12 @@ def on_generate_srt(app_state_val):
     return app_state_val, srt_content, "SRT gerado: %s" % output_path
 
 
-def on_export_final(video_path, audio_path, srt_path, allow_no_audio, app_state_val):
+def on_export_final(app_state_val, audio_path, srt_path, allow_no_audio):
     from app.services.video_service import VideoService
     vs = VideoService()
     if not vs.ffmpeg_available:
         return app_state_val, None, "FFmpeg nao disponivel para export."
+    video_path = app_state_val.get("video_path", "")
     final_dir = Path(PROJECT_ROOT) / ".." / "output" / "final"
     final_dir.mkdir(parents=True, exist_ok=True)
     export_path = str(final_dir / "commercial.mp4")
@@ -259,6 +260,85 @@ def on_refresh_metrics():
     if not ops_rows:
         ops_rows.append(["-", "-", "-", "-", "-", "-"])
     return summary_md, ops_rows
+
+
+def on_generate_scenes(app_state_val):
+    """Generate scenes from approved script text."""
+    script = app_state_val.get("script", "")
+    if not script or not app_state_val.get("script_approved"):
+        return app_state_val, [], "Aprove o roteiro antes de gerar cenas."
+    from app.pipeline.scene_splitter import split_script_into_scenes
+    project_id = app_state_val.get("project_id", "web_ui")
+    scenes = split_script_into_scenes(script, project_id)
+    app_state_val["scenes"] = scenes
+    app_state_val["current_step"] = 5
+    rows = []
+    for sc in scenes:
+        sc_id = sc.get("scene_number", sc.get("id", ""))
+        desc = sc.get("description", sc.get("prompt", ""))[:60]
+        prompt = sc.get("prompt_positive", "")
+        dur = str(sc.get("duration_estimate", 5)) + "s"
+        rows.append([str(sc_id), desc, prompt, dur])
+    return app_state_val, rows, "Cenas geradas: %d" % len(scenes)
+
+
+def on_render_scenes(app_state_val):
+    """Attempt real render via pipeline, fallback to FFmpeg placeholder."""
+    scenes = app_state_val.get("scenes", [])
+    if not scenes:
+        return app_state_val, 0, "Nenhuma cena para renderizar.", ""
+    project_id = app_state_val.get("project_id", "web_ui")
+    from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
+    pipeline = VideoGenerationPipeline()
+    from app.pipeline.scene_splitter import save_scenes
+    save_scenes(project_id, scenes)
+    from app.config import PROJECTS_DIR
+    script_path = PROJECTS_DIR / project_id / "script"
+    script_path.mkdir(parents=True, exist_ok=True)
+    (script_path / "script_approved.md").write_text(
+        app_state_val.get("script", ""), encoding="utf-8"
+    )
+    try:
+        result = pipeline.generate_commercial(
+            project_id=project_id,
+            product=app_state_val.get("script", "")[:50],
+            target_audience="",
+            progress_callback=None,
+        )
+        if result.get("success"):
+            final_video = result.get("final_video", result.get("video_path", ""))
+            app_state_val["video_path"] = final_video
+            return app_state_val, 100, "Render concluido via pipeline.", final_video
+        app_state_val["video_path"] = ""
+        return app_state_val, 0, "Pipeline retornou erro: %s" % result.get("error", "desconhecido"), ""
+    except Exception as e:
+        app_state_val["video_path"] = ""
+        return app_state_val, 0, "Render falhou: %s" % e, ""
+
+
+def on_generate_scene_prompts(app_state_val):
+    """Generate prompts for each scene."""
+    scenes = app_state_val.get("scenes", [])
+    if not scenes:
+        return "Nenhuma cena disponivel."
+    from app.pipeline.prompt_builder import build_prompts_for_scenes
+    try:
+        scenes = build_prompts_for_scenes(scenes)
+        app_state_val["scenes"] = scenes
+        return "Prompts gerados para %d cenas." % len(scenes)
+    except Exception as e:
+        return "Falha ao gerar prompts: %s" % e
+
+
+def on_validate_scenes(app_state_val):
+    scenes = app_state_val.get("scenes", [])
+    if not scenes:
+        return "Nenhuma cena para validar."
+    missing = [s.get("id") for s in scenes if not s.get("prompt_positive") and not s.get("prompt")]
+    if missing:
+        return "Cenas sem prompt: %s. Use 'Gerar Prompts' primeiro." % missing
+    app_state_val["current_step"] = max(app_state_val.get("current_step", 1), 5)
+    return "Cenas validadas: %d cenas, todas com prompt." % len(scenes)
 
 
 def on_quick_generate(product, audience, duration, style):
@@ -530,57 +610,54 @@ def create_gradio_app():
                 outputs=[app_state, srt_output, stage3_status],
             )
 
-            # Stage 4: Scenes (simulated)
+            # Stage 4: Scenes (real)
             gen_scenes_btn.click(
-                fn=lambda s: (
-                    [[str(i+1), "Cena %d" % (i+1), "Prompt visual da cena %d" % (i+1), "5s"] for i in range(3)],
-                    "",
-                ),
+                fn=on_generate_scenes,
                 inputs=[app_state],
-                outputs=[scenes_output, stage4_status],
+                outputs=[app_state, scenes_output, stage4_status],
             ).then(
-                fn=lambda: gr.update(visible=True),
+                fn=lambda s: (gr.update(visible=bool(s.get("scenes"))),),
+                inputs=[app_state],
                 outputs=[stage5_group],
             )
             gen_prompts_btn.click(
-                fn=lambda: "Prompts gerados para todas as cenas.",
+                fn=on_generate_scene_prompts,
+                inputs=[app_state],
                 outputs=[stage4_status],
             )
             validate_scenes_btn.click(
-                fn=lambda: "Cenas validadas: OK (3 cenas, todas com prompt minimo).",
+                fn=on_validate_scenes,
+                inputs=[app_state],
                 outputs=[stage4_status],
             )
 
-            # Stage 5: Render (simulated)
+            # Stage 5: Render (real)
             render_btn.click(
-                fn=lambda p=gr.Progress(): (
-                    setattr(p, "value", 50) or "Renderizando... (simulado)",
-                ) or 50,
-                outputs=[render_progress],
+                fn=on_render_scenes,
+                inputs=[app_state],
+                outputs=[app_state, render_progress, render_logs, preview_video],
             ).then(
-                fn=lambda: (
-                    "Render concluido (simulado). Engine: WanGP (fallback FFmpeg nao necessario).",
-                    gr.update(visible=True),
-                ),
-                outputs=[stage5_status, stage6_group],
-            )
-            ffmpeg_fallback_btn.click(
-                fn=lambda: (
-                    gr.update(value=100),
-                    "Fallback FFmpeg usado. Video placeholder gerado.",
-                    gr.update(visible=True),
-                ),
-                outputs=[render_progress, render_logs, stage6_group],
+                fn=lambda s: (gr.update(visible=bool(s.get("video_path"))),),
+                inputs=[app_state],
+                outputs=[stage6_group],
             )
 
             # Stage 6: Export
             sync_btn.click(
-                fn=lambda: "Sincronizacao concluida.\n- Video: OK\n- Audio: OK\n- SRT: OK\n- Sincronizacao: OK",
+                fn=lambda s: (
+                    "- **Video:** %s\n- **Audio:** %s\n- **SRT:** %s\n- **Sincronizacao:** Pendente"
+                    % (
+                        "OK (%s)" % s.get("video_path", "?") if s.get("video_path") else "Pendente",
+                        "OK" if s.get("audio_path") else "Pendente",
+                        "OK" if s.get("srt_path") else "Pendente",
+                    )
+                ),
+                inputs=[app_state],
                 outputs=[sync_status_md],
             )
             export_btn.click(
                 fn=on_export_final,
-                inputs=[gr.State(value=""), audio_player, srt_output, allow_no_audio, app_state],
+                inputs=[app_state, audio_player, srt_output, allow_no_audio],
                 outputs=[app_state, preview_video, stage6_status],
             )
 

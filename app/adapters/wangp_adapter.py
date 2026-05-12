@@ -76,7 +76,34 @@ class WanGPAdapter:
     def is_available(self) -> bool:
         """Retorna se WanGP está disponível"""
         return self.available
-    
+
+    def render_scene(self, project_id: str, scene: dict, preset: dict = None) -> dict:
+        """Render a single scene using generate_video().
+        
+        Called by RenderVideoUseCase with the scene dict format.
+        Maps scene fields to generate_video parameters.
+        """
+        prompt = scene.get("prompt", scene.get("description", "Cena sem descricao"))
+        scene_id = scene.get("id", scene.get("scene_number", "000"))
+        output_path = scene.get("output_path", "")
+        if not output_path:
+            from app.config import PROJECTS_DIR
+            output_dir = Path(PROJECTS_DIR) / project_id / "renders"
+            output_dir.mkdir(parents=True, exist_ok=True)
+            output_path = str(output_dir / "scene_%s.mp4" % str(scene_id).zfill(3))
+        duration = scene.get("duration", scene.get("duration_estimate", 5))
+        neg_prompt = scene.get("prompt_negative", scene.get("negative_prompt", ""))
+        res = None
+        if preset:
+            res = preset.get("resolution")
+        return self.generate_video(
+            prompt=prompt,
+            output_path=output_path,
+            negative_prompt=neg_prompt,
+            duration_seconds=int(duration),
+            resolution=res,
+        )
+
     def generate_video(
         self,
         prompt: str,
