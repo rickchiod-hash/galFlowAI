@@ -39,6 +39,28 @@ Após o merge do UI rework (sessão 18), 4 testes estavam falhando: 3 E2E (test_
 ### Próximo passo
 - Projeto 100% estável (813/813 testes). Aguardar definição de próxima história ou encerramento.
 
+### Continuação — Pipeline stabilization (mesma sessão)
+Após diagnóstico real do projeto, 3 problemas críticos foram corrigidos:
+
+**1. `render_video_use_case.py` crash fix:** Use case chamava `adapter.render_scene()` que não existia no `WanGPAdapter` — crash garantido em runtime. Adicionado `render_scene()` ao `WanGPAdapter` que mapeia scene dict → `generate_video()`.
+
+**2. UI stages 4-6 conectadas ao pipeline real:** Antes eram simulações (dados fake, progresso falso). Agora:
+- Stage 4 (Cenas): chama `scene_splitter.split_script_into_scenes()` com o roteiro real aprovado
+- Stage 5 (Render): chama `VideoGenerationPipeline.generate_commercial()` de verdade, armazena `video_path` no estado
+- Stage 6 (Export): lê `video_path` do app_state em vez de `gr.State(value="")` (que sempre causava "Video de origem nao encontrado")
+
+**3. TTS truncation removido:** `narration_script[:500]` removido — TTS agora recebe o texto completo.
+
+**Commits:**
+- `a87392e` — "fix(ui): connect stages 4-6 to real pipeline, fix export and render_scene crash, remove TTS truncation"
+
+**Full regression:** 813 passed, 0 failed, commit count 233, HEAD `a87392e`
+
+### Arquivos alterados (continuação)
+- `app/adapters/wangp_adapter.py` — added `render_scene()` method
+- `app/ui/gradio_app.py` — stages 4-6 real callbacks, export fix, TTS truncation removed
+- `docs/project-control/01_AUDITORIA_HISTORICO_GIT.md` — commit count 231→233, HEAD `35e8c9c`→`a87392e`
+
 ## 2026-05-11 — Sessão 10: AUD-703 (SFX Manifest)
 
 ### Contexto

@@ -15,8 +15,8 @@ Percentual concluído: 100%
 
 ## Estado atual
 
-- Branch atual: master (a34a16a)
-- Último commit analisado: a34a16a — "fix(test): mock provider is_available to avoid timeouts, add script approval gate to E2E tests"
+- Branch atual: master (a87392e)
+- Último commit analisado: a87392e — "fix(ui): connect stages 4-6 to real pipeline, fix export and render_scene crash, remove TTS truncation"
 - Fase atual: Fase 5 — Pipeline e produto (COMPLETA)
 - Story stream atual: Todas as 49 histórias concluídas ✅
 - Próxima ação recomendada: Iniciar nova história ou encerrar projeto
