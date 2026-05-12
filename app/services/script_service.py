@@ -24,7 +24,7 @@ logger = setup_logger()
 
 _PROVIDER_CLASSES = {
     "template": ("app.adapters.llm.base_provider", "TemplateProvider"),
-    "lm_studio": ("app.adapters.llm.lmstudio_provider", "LMStudioProvider"),
+    "lmstudio": ("app.adapters.llm.lmstudio_provider", "LMStudioProvider"),
     "koboldcpp": ("app.adapters.llm.koboldcpp_provider", "KoboldCppProvider"),
     "llamacpp": ("app.adapters.llm.llamacpp_provider", "LlamaCppProvider"),
     "gpt4all": ("app.adapters.llm.gpt4all_provider", "GPT4AllProvider"),
@@ -34,6 +34,8 @@ _PROVIDER_CLASSES = {
 def generate_script_with_provider(briefing: str, provider_name: str = "auto") -> Dict:
     """Generate script using a specific named provider.
 
+    Tenta o provider selecionado por até 120s antes de fallback para Template.
+
     Args:
         briefing: The product briefing text (min 10 chars)
         provider_name: One of "auto", "template", "lm_studio",
@@ -42,6 +44,8 @@ def generate_script_with_provider(briefing: str, provider_name: str = "auto") ->
     Returns:
         Dict with keys: ok, script, provider, time, quality, error
     """
+    FALLBACK_TIMEOUT = 120  # segundos antes de cair no template
+
     if provider_name == "auto":
         return generate_script_with_llm(briefing, mode="auto")
 
@@ -55,33 +59,66 @@ def generate_script_with_provider(briefing: str, provider_name: str = "auto") ->
         provider = cls()
         actual_cls_name = cls_name
 
-        if not provider.is_available() and provider_name != "template":
-            logger.warning(
-                "Provider %s nao disponivel, usando TemplateProvider como fallback",
-                provider_name
-            )
-            fallback_mod = __import__("app.adapters.llm.base_provider", fromlist=["TemplateProvider"])
-            fallback_cls = getattr(fallback_mod, "TemplateProvider")
-            provider = fallback_cls()
-            actual_cls_name = "TemplateProvider"
-
+        # Tenta gerar com o provider selecionado (timeout 120s)
         start = time.time()
-        result = provider.generate(briefing)
-        elapsed = time.time() - start
+        try:
+            result = provider.generate(briefing, timeout=FALLBACK_TIMEOUT)
+            elapsed = time.time() - start
+        except Exception as e:
+            elapsed = time.time() - start
+            result = None
+            logger.warning(
+                "Provider %s falhou em %.1fs: %s. Usando TemplateProvider como fallback.",
+                provider_name, elapsed, e
+            )
 
-        script_text = result if isinstance(result, str) else result.get("script", "")
+        if result and isinstance(result, str) and len(result.strip()) > 50:
+            script_text = result
+            logger.info(
+                "Script generated via %s (time: %.2fs)",
+                actual_cls_name, elapsed
+            )
+            return {
+                "ok": True,
+                "script": script_text,
+                "provider": actual_cls_name,
+                "time": elapsed,
+                "quality": "template",
+            }
+
+        # Fallback para TemplateProvider após timeout/falha
+        if result is None:
+            logger.warning(
+                "Provider %s falhou em %.1fs (timeout=%ds), usando TemplateProvider como fallback.",
+                provider_name, elapsed, FALLBACK_TIMEOUT
+            )
+        else:
+            logger.warning(
+                "Provider %s retornou resultado invalido em %.1fs, usando TemplateProvider como fallback.",
+                provider_name, elapsed
+            )
+        fallback_mod = __import__("app.adapters.llm.base_provider", fromlist=["TemplateProvider"])
+        fallback_cls = getattr(fallback_mod, "TemplateProvider")
+        fallback_provider = fallback_cls()
+
+        fallback_start = time.time()
+        fallback_result = fallback_provider.generate(briefing)
+        fallback_elapsed = time.time() - fallback_start
+
+        script_text = fallback_result if isinstance(fallback_result, str) else ""
 
         logger.info(
-            "Script generated via %s (time: %.2fs)",
-            actual_cls_name, elapsed
+            "Fallback: Script generated via TemplateProvider (time: %.2fs)",
+            fallback_elapsed
         )
         return {
             "ok": True,
             "script": script_text,
-            "provider": actual_cls_name,
-            "time": elapsed,
-            "quality": "template",
+            "provider": "TemplateProvider",
+            "time": elapsed + fallback_elapsed,
+            "quality": "fallback",
         }
+
     except Exception as e:
         logger.error("Falha ao gerar roteiro com %s: %s", provider_name, e)
         return {"ok": False, "error": str(e)}

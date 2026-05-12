@@ -1,13 +1,22 @@
+import shutil
 import sys
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from app.config import PROJECTS_DIR
 from app.logging_config import setup_logger
 
 logger = setup_logger()
 REPO_ROOT = Path(__file__).parent.parent
+
+
+def _ensure_approved_script(project_id: str, script_text: str) -> None:
+    """Create script_approved.md so pipeline passes the approval gate."""
+    approved_dir = PROJECTS_DIR / project_id / "script"
+    approved_dir.mkdir(parents=True, exist_ok=True)
+    (approved_dir / "script_approved.md").write_text(script_text, encoding="utf-8")
 
 
 def test_tts_adapter_files_exist():
@@ -134,12 +143,17 @@ def test_tts_unavailable_graceful_audio_fallback():
 
         pipeline = VideoGenerationPipeline()
 
+        script_text = 'Cena 1: Teste de TTS\nCena 2: Segunda cena'
+        _ensure_approved_script('test_e2e_tts_fail', script_text)
+
         result = pipeline.generate_commercial(
             project_id='test_e2e_tts_fail',
             product='Teste Produto',
             target_audience='Teste Audiência',
             progress_callback=None
         )
+
+        shutil.rmtree(PROJECTS_DIR / 'test_e2e_tts_fail', ignore_errors=True)
 
         assert result.get('success') is True, f"Pipeline falhou: {result.get('error')}"
         logger.info("  SUCESSO! Pipeline executado mesmo com TTS indisponível")
@@ -268,12 +282,17 @@ def test_tts_available_normal_operation():
 
         pipeline = VideoGenerationPipeline()
 
+        script_text = 'Cena 1: Teste normal\nCena 2: Segunda cena'
+        _ensure_approved_script('test_e2e_tts_normal', script_text)
+
         result = pipeline.generate_commercial(
             project_id='test_e2e_tts_normal',
             product='Teste Produto',
             target_audience='Teste Audiência',
             progress_callback=None
         )
+
+        shutil.rmtree(PROJECTS_DIR / 'test_e2e_tts_normal', ignore_errors=True)
 
         assert result.get('success') is True, f"Pipeline falhou: {result.get('error')}"
         logger.info("  SUCESSO! Pipeline executado normalmente com TTS disponível")
@@ -393,12 +412,17 @@ def test_both_wangp_and_tts_unavailable():
 
         pipeline = VideoGenerationPipeline()
 
+        script_text = 'Cena 1: Teste extremo\nCena 2: Segunda cena'
+        _ensure_approved_script('test_e2e_both_fail', script_text)
+
         result = pipeline.generate_commercial(
             project_id='test_e2e_both_fail',
             product='Teste Produto',
             target_audience='Teste Audiência',
             progress_callback=None
         )
+
+        shutil.rmtree(PROJECTS_DIR / 'test_e2e_both_fail', ignore_errors=True)
 
         assert result.get('success') is True, f"Pipeline falhou: {result.get('error')}"
         logger.info("  SUCESSO! Pipeline executado com FFmpeg fallback e silêncio")

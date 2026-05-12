@@ -11,7 +11,9 @@ NIVEIS = {
 }
 
 class ColorConsoleHandler(logging.StreamHandler):
-    """Handler com cores ANSI para o console Windows"""
+    """Handler com cores ANSI para o console Windows.
+    Usa cópia do record para não corromper a mensagem original para outros handlers.
+    """
     CORES = {
         logging.DEBUG:   "\033[36m",   # Ciano
         logging.INFO:    "\033[32m",   # Verde
@@ -21,10 +23,12 @@ class ColorConsoleHandler(logging.StreamHandler):
     RESET = "\033[0m"
     
     def emit(self, record):
-        cor = self.CORES.get(record.levelno, "")
-        record.levelname = self._traduzir_nivel(record.levelname)
-        record.msg = f"{cor}{record.msg}{self.RESET}"
-        super().emit(record)
+        import copy
+        colored = copy.copy(record)
+        cor = self.CORES.get(colored.levelno, "")
+        colored.levelname = self._traduzir_nivel(colored.levelname)
+        colored.msg = f"{cor}{colored.msg}{self.RESET}"
+        super().emit(colored)
     
     def _traduzir_nivel(self, nivel):
         return {"DEBUG": "DEBUG", "INFO": "INFO", 
@@ -36,23 +40,18 @@ def setup_logger(name="galflowai", nivel="info", projeto_id=None):
     1. Console: colorido, humano legível, em PT-BR
     2. Arquivo geral: <BASE_DIR>/logs/galflowai.log
     3. Arquivo do projeto: <BASE_DIR>/projects/<id>/logs/pipeline.log
+    Também configura o root logger para capturar logs de módulos que usam
+    logging.getLogger(__name__).
     """
     from app.config import BASE_DIR
     
     formato_console = "%(asctime)s [%(levelname)s] %(message)s"
     formato_arquivo = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
     
-    logger = logging.getLogger(name)
-    logger.setLevel(NIVEIS.get(nivel, logging.INFO))
-    
-    # Handler console com cores
-    if not any(isinstance(h, ColorConsoleHandler) for h in logger.handlers):
-        console = ColorConsoleHandler()
-        console.setFormatter(logging.Formatter(formato_console, datefmt="%H:%M:%S"))
-        logger.addHandler(console)
-    
-    # Handler arquivo geral (rotação por tamanho)
-    if not any(isinstance(h, logging.handlers.RotatingFileHandler) for h in logger.handlers):
+    # Configura root logger para capturar logs de módulos filhos
+    root = logging.getLogger()
+    if not any(isinstance(h, logging.handlers.RotatingFileHandler) for h in root.handlers):
+        root.setLevel(NIVEIS.get(nivel, logging.INFO))
         log_dir = BASE_DIR / "logs"
         log_dir.mkdir(parents=True, exist_ok=True)
         arquivo_geral = logging.handlers.RotatingFileHandler(
@@ -62,7 +61,20 @@ def setup_logger(name="galflowai", nivel="info", projeto_id=None):
             encoding="utf-8"
         )
         arquivo_geral.setFormatter(logging.Formatter(formato_arquivo))
-        logger.addHandler(arquivo_geral)
+        root.addHandler(arquivo_geral)
+        # Adiciona console handler básico ao root para logs de módulos filhos
+        console_simples = logging.StreamHandler()
+        console_simples.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s", datefmt="%H:%M:%S"))
+        root.addHandler(console_simples)
+    
+    logger = logging.getLogger(name)
+    logger.setLevel(NIVEIS.get(nivel, logging.INFO))
+    
+    # Handler console com cores (apenas no logger nomeado, não no root)
+    if not any(isinstance(h, ColorConsoleHandler) for h in logger.handlers):
+        console = ColorConsoleHandler()
+        console.setFormatter(logging.Formatter(formato_console, datefmt="%H:%M:%S"))
+        logger.addHandler(console)
     
     # Handler arquivo do projeto (se fornecido)
     if projeto_id:

@@ -317,10 +317,10 @@ with gr.Blocks(title="GalFlowAI") as demo:
                     value=""
                 )
                 vid_duration = gr.Slider(
-                    minimum=15,
+                    minimum=10,
                     maximum=60,
-                    value=30,
-                    step=15,
+                    value=15,
+                    step=5,
                     label="Duração (segundos)"
                 )
                 vid_style = gr.Dropdown(
@@ -357,11 +357,13 @@ with gr.Blocks(title="GalFlowAI") as demo:
                     visible=False
                 )
         
-        def generate_video_wrapper(product, audience, duration, style, keywords_text, progress=gr.Progress()):
+        def generate_video_wrapper(product, audience, duration, style, keywords_text, project_id_from_main="", progress=gr.Progress()):
             """Wrapper para gerar vídeo com indicador de progresso"""
             try:
                 import httpx
+                from pathlib import Path
                 from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
+                from app.config import PROJECTS_DIR
                 
                 progress(0.1, desc="Iniciando geração de vídeo...")
                 
@@ -370,38 +372,26 @@ with gr.Blocks(title="GalFlowAI") as demo:
                 if keywords_text:
                     keywords = [k.strip() for k in keywords_text.split(",") if k.strip()]
                 
-                progress(0.3, desc="Conectando aos serviços...")
+                progress(0.3, desc="Preparando projeto...")
                 
-                # Usa API se disponível, senão executa direto
-                try:
-                    response = httpx.post(
-                        "http://127.0.0.1:8000/api/generate-video",
-                        json={
-                            "product": product,
-                            "target_audience": audience,
-                            "duration_seconds": duration,
-                            "style": style,
-                            "keywords": keywords
-                        },
-                        timeout=10
-                    )
-                    if response.status_code == 200:
-                        progress(0.8, desc="Vídeo gerado com sucesso!")
-                        result = response.json()
+                # Usa project_id do projeto atual (se houver e tiver roteiro aprovado)
+                project_id = project_id_from_main if project_id_from_main else "manual_" + product.replace(" ", "_")
+                
+                # Se veio do projeto atual, verifica se roteiro está aprovado
+                if project_id_from_main:
+                    approved_path = Path(PROJECTS_DIR) / project_id_from_main / "script" / "script_approved.md"
+                    if not approved_path.exists():
                         return (
-                            "Vídeo gerado com sucesso via API!",
-                            100,
-                            result.get("final_video", ""),
-                            result
+                            "Aprovação necessária: revise e aprove o roteiro na aba principal antes de gerar vídeo.",
+                            0,
+                            gr.update(visible=False),
+                            {"error": "roteiro_nao_aprovado"}
                         )
-                except Exception:
-                    pass
                 
-                # Fallback: executa direto
                 progress(0.5, desc="Executando pipeline local...")
                 pipeline = VideoGenerationPipeline()
                 result = pipeline.generate_commercial(
-                    project_id="manual_" + product.replace(" ", "_"),
+                    project_id=project_id,
                     product=product,
                     target_audience=audience,
                     duration_seconds=duration,
@@ -412,64 +402,31 @@ with gr.Blocks(title="GalFlowAI") as demo:
                 progress(0.9, desc="Finalizando...")
                 
                 if result.get("success"):
+                    video_path = result.get("final_video", "")
                     return (
                         f"Comercial gerado! Cenas: {result.get('scenes_succeeded')}/{result.get('scenes_count')}",
                         100,
-                        result.get("final_video", ""),
+                        gr.update(value=video_path, visible=True) if video_path else gr.update(visible=False),
                         result
                     )
                 else:
                     return (
                         f"Erro: {result.get('error')}",
                         0,
-                        None,
+                        gr.update(visible=False),
                         result
                     )
             except Exception as e:
                 return (
                     f"Erro: {str(e)}",
                     0,
-                    None,
-                    None
-                )
-                
-                # Fallback: executa direto
-                pipeline = VideoGenerationPipeline()
-                result = pipeline.generate_commercial(
-                    project_id="manual_" + product.replace(" ", "_"),
-                    product=product,
-                    target_audience=audience,
-                    duration_seconds=duration,
-                    style=style,
-                    keywords=keywords
-                )
-                
-                if result.get("success"):
-                    return (
-                        f"Comercial gerado! Cenas: {result.get('scenes_succeeded')}/{result.get('scenes_count')}",
-                        100,
-                        result.get("final_video", ""),
-                        result
-                    )
-                else:
-                    return (
-                        f"Erro: {result.get('error')}",
-                        0,
-                        None,
-                        result
-                    )
-                    
-            except Exception as e:
-                return (
-                    f"Erro: {str(e)}",
-                    0,
-                    None,
+                    gr.update(visible=False),
                     {"error": str(e)}
                 )
         
         vid_generate_btn.click(
             generate_video_wrapper,
-            inputs=[vid_product, vid_audience, vid_duration, vid_style, vid_keywords],
+            inputs=[vid_product, vid_audience, vid_duration, vid_style, vid_keywords, current_project_id],
             outputs=[vid_status, vid_progress, vid_output, vid_info]
         )
     
@@ -653,7 +610,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
         
         def timer_callback(level_filter, search_text, is_paused):
             if is_paused:
-                return gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), "Atualização automática pausada."
+                return gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), gr.update(), "Atualização automática pausada."
             return update_logs(level_filter, search_text)
         
         timer.tick(

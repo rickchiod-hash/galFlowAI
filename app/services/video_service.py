@@ -1,5 +1,6 @@
 """Video Service - Geração de vídeos usando WanGP ou FFmpeg fallback"""
 
+import json
 import logging
 from pathlib import Path
 from typing import Optional, Dict, Any, List, Callable
@@ -284,7 +285,52 @@ class VideoService:
                 "scenes_succeeded": len([s for s in rendered_scenes if s.get("status") == "completed"]),
                 "provider_used": "WanGP" if self.wangp_available else "FFmpeg Fallback"
             }
-            
         except Exception as e:
             logger.error(f"Erro no serviço de vídeo: {e}", exc_info=True)
+            return {"success": False, "error": str(e)}
+    
+    def export_final_video(
+        self,
+        video_path: str,
+        audio_path: Optional[str] = None,
+        srt_path: Optional[str] = None,
+        output_path: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """
+        Exporta video final com audio e legenda opcionais.
+
+        Args:
+            video_path: Caminho do video de entrada
+            audio_path: Caminho do audio (opcional)
+            srt_path: Caminho do SRT (opcional)
+            output_path: Caminho de saida (auto se None)
+
+        Returns:
+            Dict com success, video_path, manifest
+        """
+        try:
+            if not Path(video_path).exists():
+                return {"success": False, "error": "Video de origem nao encontrado"}
+
+            out = Path(output_path) if output_path else Path(video_path).parent / "final" / "commercial.mp4"
+            out.parent.mkdir(parents=True, exist_ok=True)
+
+            manifest = {"audio": bool(audio_path), "srt": bool(srt_path)}
+
+            if audio_path and Path(audio_path).exists():
+                result = self.ffmpeg_adapter.add_audio_to_video(video_path, audio_path, str(out))
+                if not result.get("success"):
+                    result = self.ffmpeg_adapter.concat_videos([video_path], str(out), audio_path=audio_path)
+            else:
+                result = self.ffmpeg_adapter.concat_videos([video_path], str(out))
+
+            if result.get("success"):
+                manifest_path = out.parent / "export_manifest.json"
+                manifest_path.write_text(
+                    json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8"
+                )
+                return {"success": True, "video_path": str(out), "manifest": manifest}
+            return {"success": False, "error": result.get("error", "Falha no FFmpeg")}
+        except Exception as e:
+            logger.error("Export falhou: %s", e, exc_info=True)
             return {"success": False, "error": str(e)}

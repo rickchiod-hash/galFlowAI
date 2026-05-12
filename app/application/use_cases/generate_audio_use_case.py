@@ -1,7 +1,9 @@
 """Use case for generating audio narration."""
 from typing import Dict, Any
+from pathlib import Path
 from app.application.use_cases.base_use_case import BaseUseCase
 from app.adapters.tts_adapter import TTSAdapter
+from app.config import PROJECTS_DIR
 
 class GenerateAudioUseCase(BaseUseCase):
     """Generate audio narration for scenes.
@@ -12,7 +14,7 @@ class GenerateAudioUseCase(BaseUseCase):
     3. Save audio file and return path
     """
     
-    def execute(self, project_id: str, text: str, output_name: str = "narration.mp3") -> Dict[str, Any]:
+    def execute(self, project_id: str, text: str, output_name: str = "narration.wav") -> Dict[str, Any]:
         """Execute audio generation use case."""
         try:
             # 1. Validate input
@@ -21,12 +23,18 @@ class GenerateAudioUseCase(BaseUseCase):
             
             # 2. Execute business logic
             adapter = TTSAdapter()
-            audio_path = adapter.generate_audio(text, project_id, output_name)
+            output_path = str(Path(PROJECTS_DIR) / project_id / "audio" / output_name)
+            Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+            result = adapter.generate_audio(text=text, output_path=output_path)
+            
+            audio_path = None
+            if result.get("success"):
+                audio_path = result.get("audio_path", output_path)
             
             # 3. Return result with status
             return self._build_success(
                 data={
-                    "audio_path": str(audio_path) if audio_path else None,
+                    "audio_path": audio_path,
                     "text_length": len(text)
                 },
                 project_id=project_id

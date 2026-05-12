@@ -4,11 +4,7 @@ from pathlib import Path
 from app.logging_config import setup_logger
 from app.config import PROJECTS_DIR
 from app.project_manager import create_project
-from app.pipeline.script_generator import generate_script, save_script
-from app.pipeline.scene_splitter import split_script_into_scenes, save_scenes
-from app.pipeline.prompt_builder import build_prompts_for_scenes, save_prompts
-from app.adapters.ffmpeg_adapter import create_storyboard_video
-from app.hardware import get_gpu_info, get_recommended_preset
+from app.pipeline.script_generator import generate_script_with_details, save_script
 
 logger = setup_logger()
 
@@ -17,8 +13,7 @@ def run_auto_pipeline(project_name, briefing, commercial_type="produto", duratio
         "status": "started",
         "project_id": "",
         "script": "",
-        "scenes": [],
-        "video_preview": "",
+        "video_preview": None,
         "project_path": "",
         "logs": []
     }
@@ -50,51 +45,22 @@ def run_auto_pipeline(project_name, briefing, commercial_type="produto", duratio
         brief_file.write_text(briefing, encoding="utf-8")
         result["logs"].append("Briefing salvo.")
         
-        # 5. Gerar roteiro using LLM providers
-        from app.pipeline.script_generator import generate_script
-        script = generate_script(briefing, project_id, mode=mode)
+        # 5. Gerar roteiro usando LLM providers (com timeout 120s)
+        gen_result = generate_script_with_details(briefing, project_id, mode=mode)
+        script = gen_result["script"]
         save_script(project_id, script)
         result["script"] = script
         result["logs"].append("Roteiro gerado.")
         
-        # Capture provider info
-        from app.services.script_service import generate_script_with_llm
-        try:
-            router_result = generate_script_with_llm(briefing, mode)
-            result["provider_info"] = {
-                "provider": router_result.get("provider", "TemplateProvider"),
-                "time": router_result.get("time", 0),
-                "quality": router_result.get("quality", "fallback")
-            }
-        except:
-            result["provider_info"] = {"provider": "TemplateProvider", "time": 0, "quality": "fallback"}
-        
-        # 6. Dividir em cenas
-        scenes = split_script_into_scenes(script, project_id)
-        save_scenes(project_id, scenes)
-        result["scenes"] = scenes
-        result["logs"].append("{} cenas criadas.".format(len(scenes)))
-        
-        # 7. Gerar prompts
-        scenes = build_prompts_for_scenes(scenes, style)
-        save_prompts(project_id, scenes)
-        result["logs"].append("Prompts gerados.")
-        
-        # 8. Gerar storyboard via FFmpeg
-        gpu = get_gpu_info()
-        preset = get_recommended_preset(gpu["vram_gb"], gpu["name"])
-        result["logs"].append("Preset: {}".format(preset["model"]))
-        
-        try:
-            video_path = create_storyboard_video(project_id, scenes)
-            if video_path:
-                result["video_preview"] = str(video_path)
-                result["logs"].append("Storyboard criado: {}".format(video_path.name))
-        except Exception as e:
-            result["logs"].append("Erro no storyboard: {}".format(str(e)))
+        # Provider info a partir do resultado real
+        result["provider_info"] = {
+            "provider": gen_result.get("provider", "TemplateProvider"),
+            "time": gen_result.get("time", 0),
+            "quality": gen_result.get("quality", "fallback")
+        }
         
         result["status"] = "completed"
-        result["logs"].append("Pipeline concluido.")
+        result["logs"].append("Roteiro gerado com sucesso. Use 'Aprovar Roteiro' para liberar cenas e vídeo.")
         
     except Exception as e:
         result["status"] = "error"

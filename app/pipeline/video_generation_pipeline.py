@@ -82,7 +82,7 @@ class VideoGenerationPipeline:
             project_dir = Path(PROJECTS_DIR) / project_id
             project_dir.mkdir(parents=True, exist_ok=True)
             
-            # 1. Gerar roteiro
+            # 1. Gerar roteiro (draft)
             self._report_progress(progress_callback, 10, "Gerando roteiro...")
             script_result = self.generate_script_use_case.execute(
                 briefing=f"{product}. {target_audience}",
@@ -94,12 +94,26 @@ class VideoGenerationPipeline:
             
             script_text = script_result.get("data", {}).get("script", "")
             
-            # Salva roteiro
-            script_path = project_dir / "script" / "script_approved.md"
+            # Salva como draft (não approved — aprovação é manual)
+            script_path = project_dir / "script" / "script_draft.md"
             script_path.parent.mkdir(exist_ok=True)
             script_path.write_text(script_text, encoding="utf-8")
             
-            # 2. Dividir em cenas
+            # Verifica se o roteiro foi aprovado antes de prosseguir
+            approved_path = project_dir / "script" / "script_approved.md"
+            if not approved_path.exists():
+                script_draft_path = project_dir / "script" / "script_draft.md"
+                return {
+                    "success": False,
+                    "error": "Roteiro não aprovado. Revise e aprove o roteiro em script_draft.md antes de gerar cenas.",
+                    "script_draft": str(script_draft_path),
+                    "script_preview": script_text[:500]
+                }
+            
+            # Usa o texto aprovado (pode ter sido editado)
+            script_text = approved_path.read_text(encoding="utf-8")
+            
+            # 2. Dividir em cenas (somente com roteiro aprovado)
             self._report_progress(progress_callback, 20, "Dividindo em cenas...")
             scenes_result = self.split_scenes_use_case.execute(
                 script=script_text,

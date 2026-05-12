@@ -54,6 +54,10 @@ $DN_
 
 # Runtime state (regenerado a cada execucao)
 state/*.json
+app/state/
+
+# Gradio runtime logs
+gradio_*.txt
 
 # Bancos de dados SQLite
 *.db
