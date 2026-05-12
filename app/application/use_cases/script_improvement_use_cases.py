@@ -209,7 +209,7 @@ class GetScriptVersionsUseCase(UseCase):
             try:
                 data = json.loads(version_file.read_text(encoding="utf-8"))
                 versions.append(data)
-            except:
+            except Exception:
                 continue
         
         return sorted(versions, key=lambda x: x.get("timestamp", ""), reverse=True)

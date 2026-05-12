@@ -226,7 +226,7 @@ def copy_diagnostic_bundle() -> str:
                 cwd="K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta"
             )
             bundle.append(f"Commit atual: {result.stdout.strip()}")
-        except:
+        except Exception:
             bundle.append("Commit atual: não disponível")
 
         bundle.append(f"Python: {sys.version.split()[0]}")

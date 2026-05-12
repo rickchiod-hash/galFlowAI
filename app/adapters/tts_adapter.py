@@ -296,7 +296,7 @@ class TTSAdapter:
                         "name": v.name,
                         "id": v.id
                     })
-            except:
+            except Exception:
                 pass
         
         return voices

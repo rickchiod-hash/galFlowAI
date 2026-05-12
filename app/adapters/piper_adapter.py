@@ -59,7 +59,7 @@ class PiperAdapter:
                                   capture_output=True, text=True, shell=True)
             if result.returncode == 0:
                 return result.stdout.strip().split('\n')[0]
-        except:
+        except Exception:
             pass
             
         return None
@@ -329,7 +329,7 @@ class PiperAdapter:
                 rate = wav_file.getframerate()
                 duration = frames / float(rate)
                 return duration
-        except:
+        except Exception:
             # Fallback: estimativa baseada no texto
             # Taxa média de fala: ~150 palavras por minuto em português
             words = len(text.split())

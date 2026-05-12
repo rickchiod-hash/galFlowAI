@@ -31,7 +31,7 @@ class TranslatorAdapter:
                 capture_output=True, text=True, timeout=5
             )
             return result.returncode == 0
-        except:
+        except Exception:
             return False
     
     def traduzir(self, texto_ptbr: str) -> str:

@@ -152,7 +152,7 @@ def load_versions(project_id):
     try:
         versions = load_script_versions(project_id)
         return versions
-    except:
+    except Exception:
         return []
 
 with gr.Blocks(title="GalFlowAI") as demo:
@@ -394,7 +394,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
                             result.get("final_video", ""),
                             result
                         )
-                except:
+                except Exception:
                     pass
                 
                 # Fallback: executa direto
@@ -735,7 +735,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
                                 status = data.get("status", status)
                                 if (proj_dir / "final" / "commercial.mp4").exists():
                                     has_video = "✅"
-                            except:
+                            except Exception:
                                 pass
                         else:
                             # Tenta detectar status pelos arquivos
@@ -810,7 +810,7 @@ with gr.Blocks(title="GalFlowAI") as demo:
                     try:
                         data = json.loads(proj_file.read_text(encoding="utf-8"))
                         details["data"] = data
-                    except:
+                    except Exception:
                         pass
                 
                 return details, "Detalhes carregados."

@@ -160,7 +160,7 @@ class GenerateScenePromptsUseCase(UseCase):
             return None
         try:
             return json.loads(bible_path.read_text(encoding="utf-8"))
-        except:
+        except Exception:
             return None
     
     def _build_scene_contract(
