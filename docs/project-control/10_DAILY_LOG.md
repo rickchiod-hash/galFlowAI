@@ -1679,3 +1679,28 @@ Checkpoint 13 solicitava revisão profunda e QA. Retomada da sessão para realiz
 
 ### Próximo passo
 - Projeto 100% implementado e verificado. Próxima ação: decisão sobre manutenção contínua ou arquivamento.
+## 2026-05-10 — Sessão 15: Manutenção Contínua — VRAM Detection + WanGP
+
+### Contexto
+Sessão 14 (QA Review) concluída. Iniciada manutenção contínua: resolver dívida técnica do TODO(RND-602) em wangp_adapter.py.
+
+### O que fiz
+- **VRAM detection implementada:** _get_vram_gb() agora integra com pp.hardware.get_gpu_info() em vez de hardcoded 6GB
+- **Fallback preservado:** se hardware.py falhar, retorna 6GB (compatível com GTX 1660 Super)
+- **Validação mínima:** VRAM mínima é 1GB (evita divisão por zero/setup inválido)
+- **5 novos testes:** hardware integration, rounding, fallback on error, minimum, missing key
+- **TODO genérico removido:** substituído por implementação real
+
+### Arquivos alterados
+- pp/adapters/wangp_adapter.py — _get_vram_gb() agora usa hardware.py
+- 	ests/test_wangp_vram.py — Novo: 5 testes de VRAM detection
+
+### Testes executados e resultado
+- 13/13 wangp tests passando (5 VRAM + 4 E2E + 4 integration)
+- Governance: 36/36 ✅ | Providers: 8/8 ✅ | Naming: 5/5 ✅
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- Aguardando definição: continuar manutenção (ex: cobertura de testes, refinar UI) ou arquivar.
