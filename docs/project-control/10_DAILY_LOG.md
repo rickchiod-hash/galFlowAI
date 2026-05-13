@@ -2064,3 +2064,40 @@ Os 5 botões de transformação de roteiro na Etapa 2 ("Melhorar", "Complementar
 ### Próximo passo
 - **RND-610**: Hardening do WanGP adapter (telemetria, erros estruturados)
 - Abrir PR da branch `feature/UI-205-real-use-case-buttons` e merge para master
+
+
+## 2026-05-12 — Sessão 24: RND-610 — Hardening do WanGP adapter
+
+### Contexto
+O WanGP adapter (`app/adapters/wangp_adapter.py`) usava logging plano com strings "CAUSA: ... | CORREÇÃO: ..." sem estrutura. Faltava telemetria (timing, contadores) e erros estruturados integrados ao ecossistema `AppError`/`StageLogger`/`ErrorJsonlWriter`.
+
+### O que fiz
+- **Adicionado `StageLogger` "WanGPAdapter"** em `__init__()` para logging estruturado
+  - `render_scene()`: loga evento `start` no início
+  - `generate_video()`: loga `success` com `duration_ms` em sucesso, `failure` com `cause`+`correction` em erro, `warning` quando indisponível
+- **Adicionado `AppError` recording** via `ErrorJsonlWriter` (lazy import para evitar circular):
+  - WanGP não disponível → `ErrorCode.WANGP_UNAVAILABLE` (severity WARN, retryable)
+  - WanGP falha → `ErrorCode.WANGP_UNAVAILABLE` (severity ERROR, com stderr truncado em details)
+  - Exceção não tratada → `ErrorCode.UNKNOWN_ERROR` (severity ERROR)
+- **Adicionado `get_metrics()`**: expõe `render_count`, `render_success_count`, `render_fail_count`, `total_duration_ms`, `avg_duration_ms`
+- **Adicionado `get_stage_events()`**: lista de eventos estruturados do StageLogger
+- **Adicionado parâmetro `project_id`** no construtor para rastreabilidade
+- **Fix**: bug de precedência de operadores em `render_scene()` (`Path / str % str` → `Path / (str % str)`)
+- **Evitada importação circular**: `ErrorJsonlWriter` importado via lazy init
+
+### Arquivos alterados
+- `app/adapters/wangp_adapter.py` — hardening (StageLogger, AppError, telemetria, metrics)
+- `tests/test_wangp_hardening.py` — novo (10 testes)
+
+### Testes executados e resultado
+- 10 novos testes em `test_wangp_hardening.py`: métricas inicial, após unavailable, após sucesso, erros estruturados, stage events, acúmulo, project_id
+- `test_wangp_vram.py` + `test_e2e_wangp_fallback.py`: 9/9 passed (sem regressão)
+- Full suite: **789 passed, 1 failed** (pre-existing: `test_audit_commit_count_within_range`)
+- Zero regressão causada pela mudança
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- **RND-611**: Pipeline fallback chama `log_structured_error`
+- Abrir PR da branch `feature/RND-610-wangp-hardening` e merge para master

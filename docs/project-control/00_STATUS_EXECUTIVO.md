@@ -5,21 +5,21 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 59/65
+Histórias concluídas: 60/65
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 6
-Percentual concluído: 91%
+Histórias pendentes: 5
+Percentual concluído: 92%
 
-**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 59 Concluídas + 0 Em andamento + 6 Pendentes = 65.
+**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 60 Concluídas + 0 Em andamento + 5 Pendentes = 65.
 
 ## Estado atual
 
-- Branch atual: feature/UI-205-real-use-case-buttons
-- Último commit analisado: d333330 — base (LOG-100)
+- Branch atual: feature/RND-610-wangp-hardening
+- Último commit analisado: cfadb37 — base (UI-205)
 - Fase atual: Fase 6B — Mandatory Functional Integration 🔄
-- Story stream atual: 59/65 histórias concluídas ✅
-- Próxima ação recomendada: RND-610 — Hardening do WanGP adapter
+- Story stream atual: 60/65 histórias concluídas ✅
+- Próxima ação recomendada: RND-611 — Pipeline fallback chama `log_structured_error`
 
 ### Sessão 23 — Phase 6B: UI-205 (2026-05-12)
 
@@ -39,7 +39,32 @@ Percentual concluído: 91%
 - `app/ui/gradio_app.py` — imports, callbacks, wiring
 - `docs/project-control/00_STATUS_EXECUTIVO.md` — esta sessão
 - `docs/project-control/05_BACKLOG_PRIORIZADO.md` — UI-205 marcado concluído
-- `docs/project-control/10_DAILY_LOG.md` — nova entrada`
+- `docs/project-control/10_DAILY_LOG.md` — nova entrada
+
+### Sessão 24 — Phase 6B: RND-610 (2026-05-12)
+
+#### O que foi feito
+1. **RND-610 ✅** — Hardening do WanGP adapter com telemetria e erros estruturados:
+   - Adicionado `StageLogger` para logging estruturado com causa+correção em `generate_video()` e `render_scene()`
+   - Adicionado `AppError` recording via `ErrorJsonlWriter` em falhas (código `WANGP_UNAVAILABLE` e `UNKNOWN_ERROR`)
+   - Adicionado `get_metrics()` com contadores de render (total, sucesso, falha, duração total/média)
+   - Adicionado `get_stage_events()` para expor eventos estruturados do StageLogger
+   - Suporte a `project_id` no construtor para rastreabilidade
+   - Fix: parênteses ausentes em `render_scene()` (bug de precedência de operadores)
+   - Evitada importação circular: `ErrorJsonlWriter` importado via lazy init
+
+#### Testes executados
+- 10 novos testes em `test_wangp_hardening.py`: métricas, erros estruturados, stage events, acúmulo
+- 19/19 WanGP tests passed (9 pre-existing + 10 new)
+- Full suite: 789/790 passed (1 pre-existing: `test_audit_commit_count_within_range`)
+- Zero regressão
+
+#### Arquivos alterados
+- `app/adapters/wangp_adapter.py` — hardening (StageLogger, AppError, telemetria, metrics)
+- `tests/test_wangp_hardening.py` — novo (10 testes)
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — esta sessão
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — RND-610 marcado concluído
+- `docs/project-control/10_DAILY_LOG.md` — nova entrada
 
 ## Resumo tipo Daily
 

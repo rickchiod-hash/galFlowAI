@@ -3,6 +3,7 @@
 import os
 import sys
 import json
+import time
 import subprocess
 from pathlib import Path
 from typing import Optional, Dict, Any, List
@@ -10,6 +11,9 @@ import logging
 import shutil
 
 import app.config as config
+from app.core.app_error import AppError, Severity
+from app.core.error_codes import ErrorCode
+from app.domain.stage_logger import StageLogger
 
 logger = logging.getLogger(__name__)
 
@@ -32,17 +36,31 @@ class WanGPAdapter:
                 return True
         return False
     
-    def __init__(self, wangp_path: Optional[str] = None):
+    def __init__(self, wangp_path: Optional[str] = None, project_id: str = ""):
         """
         Inicializa o adapter WanGP.
         
         Args:
             wangp_path: Caminho para a instalação do WanGP. Se None, usa padrão.
+            project_id: ID do projeto para logging estruturado.
         """
         self.wangp_path = wangp_path or _WANGP_DEFAULT
         self.available = self._check_availability()
         self.model_preset = "1.3B"  # Padrão para GTX 1660 Super (6GB VRAM)
         self.resolution = "480p"     # Seguro para 6GB VRAM
+        self.project_id = project_id
+        self._stage_logger = StageLogger("WanGPAdapter", project_id=project_id)
+        self._error_writer = None
+        self._render_count = 0
+        self._render_success_count = 0
+        self._render_fail_count = 0
+        self._total_duration_ms = 0.0
+
+    def _get_error_writer(self):
+        if self._error_writer is None:
+            from app.services.error_jsonl_writer import ErrorJsonlWriter
+            self._error_writer = ErrorJsonlWriter()
+        return self._error_writer
         
     def _check_availability(self) -> bool:
         """Verifica se WanGP está disponível"""
@@ -83,6 +101,9 @@ class WanGPAdapter:
         Called by RenderVideoUseCase with the scene dict format.
         Maps scene fields to generate_video parameters.
         """
+        self._stage_logger.start(
+            message="Renderizando cena %s" % scene.get("id", scene.get("scene_number", "?"))
+        )
         prompt = scene.get("prompt", scene.get("description", "Cena sem descricao"))
         scene_id = scene.get("id", scene.get("scene_number", "000"))
         output_path = scene.get("output_path", "")
@@ -90,7 +111,7 @@ class WanGPAdapter:
             from app.config import PROJECTS_DIR
             output_dir = Path(PROJECTS_DIR) / project_id / "renders"
             output_dir.mkdir(parents=True, exist_ok=True)
-            output_path = str(output_dir / "scene_%s.mp4" % str(scene_id).zfill(3))
+            output_path = str(output_dir / ("scene_%s.mp4" % str(scene_id).zfill(3)))
         duration = scene.get("duration", scene.get("duration_estimate", 5))
         neg_prompt = scene.get("prompt_negative", scene.get("negative_prompt", ""))
         res = None
@@ -131,7 +152,26 @@ class WanGPAdapter:
         Returns:
             Dict com status, caminho do vídeo, e metadados
         """
+        start_time = time.time()
+        self._render_count += 1
+
         if not self.available:
+            err = AppError(
+                code=ErrorCode.WANGP_UNAVAILABLE,
+                severity=Severity.WARN,
+                message="WanGP não está disponível",
+                suggestion="O FFmpeg será usado como fallback.",
+                stage="render",
+                retryable=True,
+                project_id=self.project_id,
+            )
+            self._get_error_writer().write(err)
+            self._stage_logger.warning(
+                message="WanGP não disponível para render",
+                cause="WanGP não encontrado ou PyTorch ausente",
+                correction="O FFmpeg fallback será usado automaticamente",
+            )
+            self._render_fail_count += 1
             return {
                 "success": False,
                 "error": "WanGP não está disponível",
@@ -177,7 +217,15 @@ class WanGPAdapter:
             # Monitora progresso
             stdout, stderr = process.communicate()
             
+            elapsed_ms = (time.time() - start_time) * 1000
+            self._total_duration_ms += elapsed_ms
+
             if process.returncode == 0:
+                self._render_success_count += 1
+                self._stage_logger.success(
+                    message="Render WanGP concluído",
+                    duration_ms=elapsed_ms,
+                )
                 return {
                     "success": True,
                     "video_path": output_path,
@@ -185,22 +233,58 @@ class WanGPAdapter:
                     "model": model_preset,
                     "resolution": resolution,
                     "duration": duration_seconds,
-                    "provider": "WanGP"
+                    "provider": "WanGP",
+                    "duration_ms": elapsed_ms,
                 }
             else:
-                logger.error("CAUSA: Erro WanGP: %s | CORREÇÃO: Verifique se WanGP está instalado e configurado", stderr)
+                self._render_fail_count += 1
+                err = AppError(
+                    code=ErrorCode.WANGP_UNAVAILABLE,
+                    severity=Severity.ERROR,
+                    message="WanGP falhou ao gerar vídeo",
+                    suggestion="Verifique se WanGP está instalado e configurado.",
+                    stage="render",
+                    retryable=True,
+                    project_id=self.project_id,
+                    details={"stderr": stderr[:500]},
+                )
+                self._get_error_writer().write(err)
+                self._stage_logger.failure(
+                    message="Erro WanGP: %s" % stderr[:200],
+                    cause="Processo WanGP retornou código %d" % process.returncode,
+                    correction="Verifique se WanGP está instalado e configurado",
+                )
                 return {
                     "success": False,
                     "error": stderr,
-                    "fallback_suggested": True
+                    "fallback_suggested": True,
+                    "duration_ms": elapsed_ms,
                 }
                 
         except Exception as e:
-            logger.error("CAUSA: Exceção ao executar WanGP: %s | CORREÇÃO: Verifique ambiente e dependências", e)
+            elapsed_ms = (time.time() - start_time) * 1000
+            self._total_duration_ms += elapsed_ms
+            self._render_fail_count += 1
+            err = AppError(
+                code=ErrorCode.UNKNOWN_ERROR,
+                severity=Severity.ERROR,
+                message="Exceção ao executar WanGP: %s" % e,
+                suggestion="Verifique ambiente e dependências.",
+                stage="render",
+                retryable=True,
+                project_id=self.project_id,
+            )
+            self._get_error_writer().write(err)
+            self._stage_logger.failure(
+                message="Exceção WanGP: %s" % e,
+                cause="Exceção não tratada no adapter WanGP",
+                correction="Verifique ambiente e dependências",
+            )
             return {
                 "success": False,
                 "error": str(e),
-                "fallback_suggested": True
+                "fallback_suggested": True,
+                "duration_ms": elapsed_ms,
             }
     
     def _build_command(self, **kwargs) -> List[str]:
@@ -254,3 +338,31 @@ class WanGPAdapter:
             "resolution": self.resolution,
             "vram_gb": self._get_vram_gb()
         }
+
+    def get_metrics(self) -> Dict[str, Any]:
+        """Retorna métricas de telemetria do adapter."""
+        return {
+            "render_count": self._render_count,
+            "render_success_count": self._render_success_count,
+            "render_fail_count": self._render_fail_count,
+            "total_duration_ms": self._total_duration_ms,
+            "avg_duration_ms": (
+                self._total_duration_ms / self._render_count
+                if self._render_count > 0 else 0.0
+            ),
+        }
+
+    def get_stage_events(self) -> List[Dict[str, Any]]:
+        """Retorna eventos estruturados do StageLogger."""
+        return [
+            {
+                "stage": e.stage,
+                "event_type": e.event_type,
+                "message": e.message,
+                "cause": e.cause,
+                "correction": e.correction,
+                "duration_ms": e.duration_ms,
+                "timestamp": e.timestamp,
+            }
+            for e in self._stage_logger.events
+        ]
