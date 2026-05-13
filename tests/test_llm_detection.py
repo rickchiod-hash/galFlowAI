@@ -8,7 +8,7 @@ def test_detect_lm_studio():
     """Test LM Studio detection."""
     import requests
     try:
-        r = requests.get("http://localhost:1234/v1/models", timeout=2)
+        r = requests.get("http://localhost:1234/v1/models", timeout=(1, 1))
         available = r.status_code == 200
     except:
         available = False
@@ -19,7 +19,7 @@ def test_detect_koboldcpp():
     """Test KoboldCpp detection."""
     import requests
     try:
-        r = requests.get("http://localhost:5001/api/v1/models", timeout=2)
+        r = requests.get("http://localhost:5001/api/v1/models", timeout=(1, 1))
         available = r.status_code == 200
     except:
         available = False

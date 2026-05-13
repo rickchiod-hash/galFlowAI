@@ -67,7 +67,7 @@ def test_no_legacy_names_in_python_files():
             continue
     assert not found, f"Nomes legados encontrados: {found}"
     logger.info("NENHUM NOME LEGADO EM .py: OK")
-    return True
+
 
 
 def test_no_legacy_names_in_doc_files():
@@ -84,7 +84,7 @@ def test_no_legacy_names_in_doc_files():
             continue
     assert not found, f"Nomes legados em docs: {found}"
     logger.info("NENHUM NOME LEGADO EM .md: OK")
-    return True
+
 
 
 def test_project_uses_correct_name():
@@ -101,7 +101,7 @@ def test_project_uses_correct_name():
         has_correct = any(name in content for name in EXPECTED_CONSISTENT_NAMES)
         assert has_correct, f"{f.name} não contém nome correto (GalFlowAI)"
         logger.info(f"{f.name}: NOME CORRETO OK")
-    return True
+
 
 
 def test_git_log_shows_rename_commit():
@@ -114,7 +114,7 @@ def test_git_log_shows_rename_commit():
         "Commit de rename REF-01 não encontrado no git log"
     )
     logger.info("COMMIT RENAME REF-01: OK")
-    return True
+
 
 
 def test_no_flowforgeai_in_git_tracked_files():
@@ -131,7 +131,7 @@ def test_no_flowforgeai_in_git_tracked_files():
     ]
     assert len(non_history) == 0, f"FlowForgeAI encontrado em arquivos: {non_history}"
     logger.info("GIT GREP FLOWFORGEAI: OK (apenas em contexto histórico)")
-    return True
+
 
 
 if __name__ == "__main__":

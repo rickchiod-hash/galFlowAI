@@ -1,3 +1,4 @@
+import shutil
 import sys
 from pathlib import Path
 from unittest.mock import patch, MagicMock
@@ -5,10 +6,18 @@ from contextlib import ExitStack
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from app.config import PROJECTS_DIR
 from app.logging_config import setup_logger
 
 logger = setup_logger()
 REPO_ROOT = Path(__file__).parent.parent
+
+
+def _ensure_approved_script(project_id: str, script_text: str) -> None:
+    """Create script_approved.md so pipeline passes the approval gate."""
+    approved_dir = PROJECTS_DIR / project_id / "script"
+    approved_dir.mkdir(parents=True, exist_ok=True)
+    (approved_dir / "script_approved.md").write_text(script_text, encoding="utf-8")
 
 
 def _setup_use_case_adapter_patches(mock_wangp, mock_tts, mock_ffmpeg, mock_script):
@@ -84,6 +93,9 @@ def test_wangp_unavailable_ffmpeg_fallback():
         pipeline = VideoGenerationPipeline()
         logger.info("  OK: Pipeline instanciado")
         
+        script_text = mock_script.return_value['script']
+        _ensure_approved_script('test_e2e_wangp_fallback', script_text)
+
         # Execute pipeline
         result = pipeline.generate_commercial(
             project_id='test_e2e_wangp_fallback',
@@ -92,6 +104,8 @@ def test_wangp_unavailable_ffmpeg_fallback():
             progress_callback=None
         )
         
+        shutil.rmtree(PROJECTS_DIR / 'test_e2e_wangp_fallback', ignore_errors=True)
+
         # Verify success
         assert result.get('success') is True, f"Pipeline falhou: {result.get('error')}"
         logger.info("  SUCESSO! Pipeline executado com fallback para FFmpeg")
@@ -110,7 +124,7 @@ def test_wangp_unavailable_ffmpeg_fallback():
         assert 'FFmpeg' in provider_used or 'Fallback' in provider_used, f"Provider usado incorreto: {provider_used}"
         logger.info(f"  ✓ Provider usado correto: {provider_used}")
         
-        return True
+
 
 
 def test_ffmpeg_unavailable_graceful_failure():
@@ -131,6 +145,9 @@ def test_ffmpeg_unavailable_graceful_failure():
         
         pipeline = VideoGenerationPipeline()
         
+        script_text = mock_script.return_value['script']
+        _ensure_approved_script('test_e2e_ffmpeg_fail', script_text)
+
         # Execute pipeline
         result = pipeline.generate_commercial(
             project_id='test_e2e_ffmpeg_fail',
@@ -139,6 +156,8 @@ def test_ffmpeg_unavailable_graceful_failure():
             progress_callback=None
         )
         
+        shutil.rmtree(PROJECTS_DIR / 'test_e2e_ffmpeg_fail', ignore_errors=True)
+
         # Should fail gracefully (not crash)
         assert result.get('success') is False, "Pipeline deveria ter falhado mas succeeded"
         error_msg = result.get('error', '').lower()
@@ -147,7 +166,7 @@ def test_ffmpeg_unavailable_graceful_failure():
         logger.info("  ✓ Pipeline falhou graciosamente (sem crash)")
         logger.info(f"  Erro reportado: {result.get('error')}")
         
-        return True
+
 
 
 def test_both_available_wangp_used():
@@ -168,6 +187,9 @@ def test_both_available_wangp_used():
         
         pipeline = VideoGenerationPipeline()
         
+        script_text = mock_script.return_value['script']
+        _ensure_approved_script('test_e2e_both_available', script_text)
+
         # Execute pipeline
         result = pipeline.generate_commercial(
             project_id='test_e2e_both_available',
@@ -176,6 +198,8 @@ def test_both_available_wangp_used():
             progress_callback=None
         )
         
+        shutil.rmtree(PROJECTS_DIR / 'test_e2e_both_available', ignore_errors=True)
+
         # Should succeed
         assert result.get('success') is True, f"Pipeline falhou: {result.get('error')}"
         logger.info("  SUCESSO! Pipeline executado com WanGP (preferido)")
@@ -187,7 +211,7 @@ def test_both_available_wangp_used():
         # FFmpeg might still be called for concatenation or other tasks
         # but video generation should use WanGP
         
-        return True
+
 
 
 def test_files_exist():
@@ -201,7 +225,7 @@ def test_files_exist():
     logger.info(f"  OK: {wangp_path.name} encontrado")
     logger.info(f"  OK: {ffmpeg_path.name} encontrado")
     
-    return True
+
 
 
 if __name__ == "__main__":

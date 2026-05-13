@@ -1,25 +1,54 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-12 (sessão 18 - UI Rework Commit)
+Atualizado em: 2026-05-12 (sessão 21 - Error Handling Infrastructure)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 49/49
+Histórias concluídas: 54/54
 Histórias em andamento: 0
 Histórias bloqueadas: 0
 Histórias pendentes: 0
 Percentual concluído: 100%
 
-**Aritmética:** 49 histórias únicas no backlog. 49 Concluídas + 0 Em andamento + 0 Pendentes = 49.
+**Aritmética:** 54 histórias únicas no backlog. 54 Concluídas + 0 Em andamento + 0 Pendentes = 54.
 
 ## Estado atual
 
-- Branch atual: feature/ui-6-stage-flow-gating (850e2d9)
-- Último commit analisado: 850e2d9 — "feat(ui): restructure Gradio into 6-stage guided flow with state gating"
-- Fase atual: Fase 5 — Pipeline e produto (COMPLETA)
-- Story stream atual: Todas as 49 histórias concluídas ✅
-- Próxima ação recomendada: PR/merge da branch feature/ui-6-stage-flow-gating, ou abordar testes lentos/timeout
+- Branch atual: feature/P0-ERR-01-error-code-enum (154bd8e)
+- Último commit analisado: 154bd8e — "feat(services): add ErrorJsonlWriter for structured error persistence (P0-ERR-04)"
+- Fase atual: Fase 5 — Pipeline e produto (COMPLETA — backlog expandido)
+- Story stream atual: P0-ERR — Error handling infrastructure (5/5 concluídas) ✅
+- Próxima ação recomendada: Fazer merge do PR para master
+
+### Sessão 21 — Error Handling Infrastructure (2026-05-12)
+
+- **813 testes passando, 0 falhas, 4 warnings** (de 86)
+- **Tempo de execução: 38.5s** (de 73s — redução de ~47%)
+- HEAD: `bff9824`
+- Git commit count: 237
+
+#### O que foi feito
+1. **Removidos 82 `return True` de funções de teste** em 17 arquivos — elimina `PytestReturnNotReturnNoneWarning`
+2. **Corrigido teste de auditoria Git** — `01_AUDITORIA_HISTORICO_GIT.md` atualizado para 236 commits
+3. **Otimizado `test_ffmpeg_not_removable`** — 4.03s → 0.06s (evitando __pycache__/.pytest_cache)
+4. **Otimizado `test_detect_lm_studio/koboldcpp`** — 4.02s → 2.02s (timeout=(1,1) explícito)
+5. **8 testes e2e legados convertidos para smoke tests** — não mais falham silenciosamente
+
+### Sessão 21 — Error Handling Infrastructure (2026-05-12)
+
+- **5 novas histórias P0-ERR concluídas** (expansão do backlog: 49→54)
+- **813+ testes passando, 0 falhas, 4 warnings** (framework Gradio)
+- HEAD: `154bd8e` (branch feature/P0-ERR-01-error-code-enum)
+- Git commit count: 237 + 5 = 242
+
+#### O que foi feito
+1. **P0-ERR-01 ✅**: `ErrorCode` enum (StrEnum) com 15 códigos estáveis (`app/core/error_codes.py` + 6 testes)
+2. **P0-ERR-02 ✅**: `AppError` dataclass com Severity (DEBUG/INFO/WARN/ERROR), `to_dict()`, `to_json_line()` (`app/core/app_error.py` + 6 testes)
+3. **P0-ERR-03 ✅**: `ErrorCatalogService` com 15 definições de erro — cada ErrorCode tem mensagem, sugestão, severidade, retryable, stage (`app/services/error_catalog_service.py` + 12 testes)
+4. **P0-ERR-04 ✅**: `ErrorJsonlWriter` — persistência JSONL com rotação diária, nunca crasha (`app/services/error_jsonl_writer.py` + 6 testes)
+5. **P0-ERR-05 ✅**: Integração com `log_service.py` — `get_structured_errors()`, `log_structured_error()`, campos estruturados nas entradas de log, erros estruturados no bundle de diagnóstico, `total_structured_errors` no resumo (3 testes novos em `test_ui_metrics.py`)
+6. **Testes:** 19/19 em `test_ui_metrics.py`, todos os 30 testes P0-ERR passando
 
 ### Playbooks criados nesta sessão
 

@@ -35,7 +35,7 @@ REQUIRED_FRAGMENTS = [
 def test_gaps_file_exists():
     assert GAPS_FILE.exists(), f"09_GAPS_TODOS_E_DIVIDAS.md ausente em {GAPS_FILE}"
     logger.info("09_GAPS_TODOS_E_DIVIDAS.md: OK")
-    return True
+
 
 
 def test_gaps_has_required_sections():
@@ -43,7 +43,7 @@ def test_gaps_has_required_sections():
     for section in REQUIRED_SECTIONS:
         assert section in content, f"Seção obrigatória ausente: '{section}'"
         logger.info(f"SEÇÃO {section}: OK")
-    return True
+
 
 
 def test_todo_pattern_documented():
@@ -51,7 +51,7 @@ def test_todo_pattern_documented():
     for frag in REQUIRED_FRAGMENTS:
         assert frag in content, f"Fragmento obrigatório ausente: '{frag}'"
         logger.info(f"FRAGMENTO {frag}: OK")
-    return True
+
 
 
 def test_no_generic_todo_in_code():
@@ -74,7 +74,7 @@ def test_no_generic_todo_in_code():
     else:
         logger.info("Nenhum TODO genérico: OK")
 
-    return True
+
 
 
 if __name__ == "__main__":

@@ -85,7 +85,7 @@ def test_different_scripts_different_cache_keys():
     artifact_cache.clear()
     
     try:
-        with patch('app.services.script_service.generate_script_with_llm') as mock_llm:
+        with patch('app.application.use_cases.generate_script_use_case.generate_script_with_llm') as mock_llm:
             mock_llm.return_value = {
                 'ok': True,
                 'script': 'Script content',
@@ -136,7 +136,7 @@ def test_cache_persistence_across_instances():
     artifact_cache.clear()
     
     try:
-        with patch('app.services.script_service.generate_script_with_llm') as mock_llm:
+        with patch('app.application.use_cases.generate_script_use_case.generate_script_with_llm') as mock_llm:
             mock_llm.return_value = {
                 'ok': True,
                 'script': 'Persistent script',
@@ -155,9 +155,8 @@ def test_cache_persistence_across_instances():
             
             assert result1["ok"] is True
             assert result1["data"]["cache_hit"] is False
-            # The script service formats the script using TemplateProvider, which adds structure
-            # We verify that our input briefing influenced the output
-            assert "Test for persistence" in result1["data"]["script"]
+            # Mock returns exact script; we verify provider matches
+            assert result1["data"]["script"] == 'Persistent script'
             assert result1["data"]["provider"] == "TemplateProvider"
             
             # Second use case instance should find cached result
@@ -170,8 +169,8 @@ def test_cache_persistence_across_instances():
             
             assert result2["ok"] is True
             assert result2["data"]["cache_hit"] is True
-            # Cached result should contain the original briefing influence
-            assert "Test for persistence" in result2["data"]["script"]
+            # Cached result matches original mock data
+            assert result2["data"]["script"] == 'Persistent script'
             assert result2["data"]["provider"] == "CACHE"
             
     finally:

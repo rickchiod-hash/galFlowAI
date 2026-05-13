@@ -33,7 +33,6 @@ REQUIRED_QUESTIONS = [
 def test_audit_file_exists():
     assert AUDIT_FILE.exists(), f"01_AUDITORIA_HISTORICO_GIT.md ausente em {AUDIT_FILE}"
     logger.info("01_AUDITORIA_HISTORICO_GIT.md: OK")
-    return True
 
 
 def test_audit_has_required_sections():
@@ -41,7 +40,6 @@ def test_audit_has_required_sections():
     for section in REQUIRED_SECTIONS:
         assert section in content, f"Seção obrigatória ausente: '{section}'"
         logger.info(f"SEÇÃO {section}: OK")
-    return True
 
 
 def test_audit_has_git_evidence():
@@ -50,7 +48,6 @@ def test_audit_has_git_evidence():
     assert "63839e7" in content or "HEAD" in content, "HEAD commit ausente"
     assert "master" in content, "Branch ausente"
     logger.info("EVIDÊNCIA GIT: OK")
-    return True
 
 
 def test_audit_has_required_questions():
@@ -58,7 +55,6 @@ def test_audit_has_required_questions():
     for question in REQUIRED_QUESTIONS:
         assert question in content, f"Pergunta obrigatória ausente: '{question}'"
         logger.info(f"PERGUNTA: OK")
-    return True
 
 
 def test_audit_commit_count_within_range():
@@ -74,7 +70,6 @@ def test_audit_commit_count_within_range():
         f"diferente do git atual. Audit desatualizado."
     )
     logger.info(f"COMMIT COUNT {actual_count}: OK")
-    return True
 
 
 if __name__ == "__main__":

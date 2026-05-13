@@ -36,7 +36,7 @@ def test_checkpoint_files_exist():
         assert path.exists(), f"Arquivo obrigatório ausente: {fname}"
         logger.info(f"CHECKPOINT {fname}: OK")
 
-    return True
+
 
 
 def test_status_file_has_required_sections():
@@ -47,7 +47,7 @@ def test_status_file_has_required_sections():
         assert section in content, f"Seção ausente no status: '{section}'"
         logger.info(f"SEÇÃO {section}: OK")
 
-    return True
+
 
 
 def test_daily_log_has_entry_format():
@@ -61,7 +61,7 @@ def test_daily_log_has_entry_format():
     assert "Próximo passo" in content
     logger.info("DAILY_LOG: Formato OK")
 
-    return True
+
 
 
 if __name__ == "__main__":

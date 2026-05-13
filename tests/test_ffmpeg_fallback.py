@@ -140,9 +140,12 @@ class TestFFmpegIsMandatory:
     def test_ffmpeg_not_removable(self):
         """Nao deve haver TODO/FIXME sugerindo remocao do FFmpeg."""
         import re
-        app_files = list(Path("app").rglob("*.py")) + list(Path("tests").rglob("*.py"))
+        root = Path(__file__).parent.parent
+        app_files = list((root / "app").rglob("*.py")) + list((root / "tests").rglob("*.py"))
         suspicious = []
         for f in app_files:
+            if ".pytest_cache" in str(f) or "__pycache__" in str(f):
+                continue
             text = f.read_text(encoding="utf-8", errors="ignore")
             if re.search(r"(remove|delete|deprecat).*ffmpeg", text, re.IGNORECASE):
                 suspicious.append(str(f))

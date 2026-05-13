@@ -20,7 +20,7 @@ def test_template_is_fallback():
         if name != "template":
             assert config["priority"] < 999, f"Provider {name} has priority >= 999, should be higher than template"
     print("PASS: test_template_is_fallback")
-    return True
+
 
 
 def test_template_provider_returns_result():
@@ -40,7 +40,7 @@ def test_template_provider_returns_result():
     assert len(result.data["script"]) > 0, "Script should not be empty"
     
     print("PASS: test_template_provider_returns_result")
-    return True
+
 
 
 def test_fallback_when_no_other_provider():
@@ -75,7 +75,7 @@ def test_fallback_when_no_other_provider():
             f"Should use template provider, got {provider}"
     
     print("PASS: test_fallback_when_no_other_provider")
-    return True
+
 
 
 def test_template_minimal_script():
@@ -92,7 +92,7 @@ def test_template_minimal_script():
     assert len(script) > 20, f"Script too short: {script}"
     
     print("PASS: test_template_minimal_script")
-    return True
+
 
 
 if __name__ == "__main__":

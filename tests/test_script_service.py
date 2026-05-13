@@ -4,6 +4,7 @@ Tests for script service.
 import sys
 import os
 import json
+from unittest.mock import patch
 sys.path.insert(0, "K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta")
 
 from app.services.script_service import (
@@ -70,7 +71,11 @@ def test_script_service_versioning_and_approve():
         
         # 1. Generate initial script
         briefing = "Teste de versionamento de roteiro"
-        result = generate_script_with_llm(briefing, mode="template")
+        with patch('app.adapters.llm.lmstudio_provider.LMStudioProvider.is_available', return_value=False), \
+             patch('app.adapters.llm.koboldcpp_provider.KoboldCppProvider.is_available', return_value=False), \
+             patch('app.adapters.llm.llamacpp_provider.LlamaCppProvider.is_available', return_value=False), \
+             patch('app.adapters.llm.gpt4all_provider.GPT4AllProvider.is_available', return_value=False):
+            result = generate_script_with_llm(briefing, mode="template")
         initial_script = result["script"]
         assert initial_script is not None
         assert len(initial_script) > 0

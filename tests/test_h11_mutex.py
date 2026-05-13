@@ -1,15 +1,29 @@
 """Tests for H11 - Mutex: Only 1 render at a time."""
+import tempfile
 import pytest
 from unittest.mock import patch, MagicMock
 from app.jobs.queue import JobQueue, JobStatus
 from app.application.use_cases.job_use_cases import GetQueueStatusUseCase
+from app.pipeline.job_ledger import SQLiteJobLedger
+
+
+def _temp_ledger():
+    """Create SQLiteJobLedger backed by a temp file (fast, shared across connections)."""
+    tmp = tempfile.NamedTemporaryFile(suffix='.db', delete=False)
+    path = tmp.name
+    tmp.close()
+    return SQLiteJobLedger(db_path=path)
+
+
+def _temp_queue():
+    return JobQueue(job_ledger=_temp_ledger())
 
 class TestMutexSingleRender:
     """Test that only 1 job runs at a time."""
     
     def test_get_next_job_returns_none_when_running(self):
         """When a job is running, get_next_job should return None."""
-        queue = JobQueue()
+        queue = _temp_queue()
         
         # Add a job and start it
         job_id = queue.add_job("proj_001", "video_render")
@@ -29,7 +43,7 @@ class TestMutexSingleRender:
     
     def test_get_next_job_returns_queued_when_none_running(self):
         """When no job running, should return queued job."""
-        queue = JobQueue()
+        queue = _temp_queue()
         
         # Add a job
         job_id = queue.add_job("proj_001", "video_render")
@@ -45,7 +59,7 @@ class TestMutexSingleRender:
     
     def test_complete_job_frees_mutex(self):
         """When job completes, next job can start."""
-        queue = JobQueue()
+        queue = _temp_queue()
         
         # Add 2 jobs
         job_id1 = queue.add_job("proj_001", "video_render")
@@ -75,15 +89,16 @@ class TestMutexSingleRender:
     
     def test_running_job_id_persists_after_restart(self):
         """running_job_id should persist after queue reload."""
-        queue1 = JobQueue()
+        shared_ledger = _temp_ledger()
+        queue1 = JobQueue(job_ledger=shared_ledger)
         job_id = queue1.add_job("proj_001", "video_render")
         job = queue1.get_job(job_id)
         job.status = JobStatus.RUNNING
         queue1.running_job_id = job_id
         queue1._save()
         
-        # Create new queue instance (simulate restart)
-        queue2 = JobQueue()
+        # Create new queue instance with SAME ledger (simulate restart)
+        queue2 = JobQueue(job_ledger=shared_ledger)
         assert queue2.running_job_id == job_id
         assert queue2.get_next_job() is None  # Because job is still running
         

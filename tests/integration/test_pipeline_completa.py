@@ -26,6 +26,7 @@ class TestPipelineCompleta:
         # Mockar generate_script_with_llm para retornar um roteiro de template
         with patch('app.pipeline.script_generator.generate_script_with_llm') as mock_llm:
             mock_llm.return_value = {
+                "ok": True,
                 "script": "Cena 1: Apresentação do produto\nCena 2: Demonstração\nCena 3: Chamada para ação",
                 "provider": "template",
                 "time": 0.1,
