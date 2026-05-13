@@ -1,6 +1,6 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-12 (sessão 19 - Test stabilization)
+Atualizado em: 2026-05-12 (sessão 20 - Performance)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
@@ -15,11 +15,25 @@ Percentual concluído: 100%
 
 ## Estado atual
 
-- Branch atual: master (e39b3e9)
-- Último commit analisado: e39b3e9 — "docs(log): add pipeline stabilization continuation to session 19"
+- Branch atual: master (115e859)
+- Último commit analisado: 115e859 — "docs(audit): update commit count to 235, HEAD to e39b3e9"
 - Fase atual: Fase 5 — Pipeline e produto (COMPLETA)
 - Story stream atual: Todas as 49 histórias concluídas ✅
 - Próxima ação recomendada: Iniciar nova história ou encerrar projeto
+
+### Sessão 20 — Performance (2026-05-12)
+
+- **813 testes passando, 0 falhas, 4 warnings** (de 86)
+- **Tempo de execução: 38.5s** (de 73s — redução de ~47%)
+- HEAD: `115e859`
+- Git commit count: 236
+
+#### O que foi feito
+1. **Removidos 82 `return True` de funções de teste** em 17 arquivos — elimina `PytestReturnNotReturnNoneWarning`
+2. **Corrigido teste de auditoria Git** — `01_AUDITORIA_HISTORICO_GIT.md` atualizado para 236 commits
+3. **Otimizado `test_ffmpeg_not_removable`** — 4.03s → 0.06s (evitando __pycache__/.pytest_cache)
+4. **Otimizado `test_detect_lm_studio/koboldcpp`** — 4.02s → 2.02s (timeout=(1,1) explícito)
+5. **8 testes e2e legados convertidos para smoke tests** — não mais falham silenciosamente
 
 ### Playbooks criados nesta sessão
 

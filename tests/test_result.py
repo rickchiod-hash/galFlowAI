@@ -18,7 +18,7 @@ def test_result_success():
     assert r.is_success() is True
     assert r.is_failure() is False
     print("PASS: test_result_success passed")
-    return True
+
 
 
 def test_result_failure():
@@ -32,7 +32,7 @@ def test_result_failure():
     assert r.is_success() is False
     assert r.is_failure() is True
     print("PASS: test_result_failure passed")
-    return True
+
 
 
 def test_result_dict_compatibility():
@@ -46,7 +46,7 @@ def test_result_dict_compatibility():
     assert "data" in r
     assert "extra" in r
     print("PASS: test_result_dict_compatibility passed")
-    return True
+
 
 
 def test_result_boolean_context():
@@ -64,7 +64,7 @@ def test_result_boolean_context():
         pass
 
     print("PASS: test_result_boolean_context passed")
-    return True
+
 
 
 def test_result_repr():
@@ -77,7 +77,7 @@ def test_result_repr():
     assert "ok=True" in repr_success
     assert "ok=False" in repr_failure
     print("PASS: test_result_repr passed")
-    return True
+
 
 
 if __name__ == "__main__":

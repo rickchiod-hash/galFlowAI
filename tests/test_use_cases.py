@@ -21,7 +21,7 @@ def test_generate_script_use_case():
     # May succeed or fail depending on LLM availability
     print(f"GenerateScriptUseCase returned: ok={result.ok}")
     print("PASS: test_generate_script_use_case")
-    return True
+
 
 
 def test_split_scenes_use_case():
@@ -36,7 +36,7 @@ def test_split_scenes_use_case():
     else:
         print(f"SplitScenesUseCase failed: {result.error}")
     print("PASS: test_split_scenes_use_case")
-    return True
+
 
 
 def test_generate_audio_use_case():
@@ -49,7 +49,7 @@ def test_generate_audio_use_case():
     if not result.ok:
         print(f"  (Expected failure if TTS not available: {result.error})")
     print("PASS: test_generate_audio_use_case")
-    return True
+
 
 
 def test_result_integration():
@@ -65,7 +65,7 @@ def test_result_integration():
     assert r.is_failure() is True
     
     print("PASS: test_result_integration")
-    return True
+
 
 
 if __name__ == "__main__":

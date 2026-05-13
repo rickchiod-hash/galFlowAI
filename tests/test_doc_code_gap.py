@@ -46,7 +46,7 @@ GAP_PATTERNS = [
 def test_architecture_file_exists():
     assert ARCH_FILE.exists(), f"03_ARQUITETURA_ATUAL.md ausente em {ARCH_FILE}"
     logger.info("03_ARQUITETURA_ATUAL.md: OK")
-    return True
+
 
 
 def test_architecture_has_required_sections():
@@ -54,7 +54,7 @@ def test_architecture_has_required_sections():
     for section in REQUIRED_SECTIONS:
         assert section in content, f"Seção obrigatória ausente: '{section}'"
         logger.info(f"SEÇÃO {section}: OK")
-    return True
+
 
 
 def test_architecture_lists_providers():
@@ -62,7 +62,7 @@ def test_architecture_lists_providers():
     for provider in REQUIRED_PROVIDERS:
         assert provider in content, f"Provider obrigatório ausente: '{provider}'"
         logger.info(f"PROVIDER {provider}: OK")
-    return True
+
 
 
 def test_architecture_documents_gaps():
@@ -70,7 +70,7 @@ def test_architecture_documents_gaps():
     for gap in REQUIRED_GAPS:
         assert gap in content, f"Gap obrigatório ausente: '{gap}'"
         logger.info(f"GAP {gap}: OK")
-    return True
+
 
 
 def test_architecture_has_gap_patterns():
@@ -78,7 +78,7 @@ def test_architecture_has_gap_patterns():
     for pattern in GAP_PATTERNS:
         assert pattern in content, f"Padrão de gap ausente: '{pattern}'"
         logger.info(f"PATTERN {pattern}: OK")
-    return True
+
 
 
 if __name__ == "__main__":

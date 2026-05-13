@@ -124,7 +124,7 @@ def test_wangp_unavailable_ffmpeg_fallback():
         assert 'FFmpeg' in provider_used or 'Fallback' in provider_used, f"Provider usado incorreto: {provider_used}"
         logger.info(f"  ✓ Provider usado correto: {provider_used}")
         
-        return True
+
 
 
 def test_ffmpeg_unavailable_graceful_failure():
@@ -166,7 +166,7 @@ def test_ffmpeg_unavailable_graceful_failure():
         logger.info("  ✓ Pipeline falhou graciosamente (sem crash)")
         logger.info(f"  Erro reportado: {result.get('error')}")
         
-        return True
+
 
 
 def test_both_available_wangp_used():
@@ -211,7 +211,7 @@ def test_both_available_wangp_used():
         # FFmpeg might still be called for concatenation or other tasks
         # but video generation should use WanGP
         
-        return True
+
 
 
 def test_files_exist():
@@ -225,7 +225,7 @@ def test_files_exist():
     logger.info(f"  OK: {wangp_path.name} encontrado")
     logger.info(f"  OK: {ffmpeg_path.name} encontrado")
     
-    return True
+
 
 
 if __name__ == "__main__":

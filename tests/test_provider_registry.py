@@ -15,7 +15,7 @@ def test_required_providers_present():
         assert "priority" in p, f"Provider {provider} missing 'priority'"
         assert "type" in p, f"Provider {provider} missing 'type'"
     print("PASS: test_required_providers_present")
-    return True
+
 
 
 def test_template_is_fallback():
@@ -26,13 +26,13 @@ def test_template_is_fallback():
         if name != "template":
             assert config["priority"] < 999, f"Provider {name} has priority >= 999"
     print("PASS: test_template_is_fallback")
-    return True
+
 
 
 def test_registry_not_empty():
     assert len(LLM_PROVIDERS) > 0, "LLM_PROVIDERS is empty"
     print("PASS: test_registry_not_empty")
-    return True
+
 
 
 def test_provider_types():
@@ -40,7 +40,7 @@ def test_provider_types():
     for name, config in LLM_PROVIDERS.items():
         assert config.get("type") in valid_types, f"Provider {name} has invalid type: {config.get('type')}"
     print("PASS: test_provider_types")
-    return True
+
 
 
 if __name__ == "__main__":

@@ -42,7 +42,7 @@ REQUIRED_RULES = [
 def test_story_map_file_exists():
     assert MAP_FILE.exists(), f"19_STORY_MAP.md ausente em {MAP_FILE}"
     logger.info("19_STORY_MAP.md: OK")
-    return True
+
 
 
 def test_story_map_has_step_flow():
@@ -50,7 +50,7 @@ def test_story_map_has_step_flow():
     for section in REQUIRED_SECTIONS:
         assert section in content, f"Seção obrigatória ausente: '{section}'"
         logger.info(f"SEÇÃO {section}: OK")
-    return True
+
 
 
 def test_story_map_lists_all_steps():
@@ -58,7 +58,7 @@ def test_story_map_lists_all_steps():
     for step in REQUIRED_STEPS:
         assert step in content, f"Etapa obrigatória ausente: '{step}'"
         logger.info(f"ETAPA {step}: OK")
-    return True
+
 
 
 def test_story_map_has_validation_gates():
@@ -66,7 +66,7 @@ def test_story_map_has_validation_gates():
     for gate in REQUIRED_GATES:
         assert gate in content, f"Gate de validação ausente: '{gate}'"
         logger.info(f"GATE {gate}: OK")
-    return True
+
 
 
 def test_story_map_has_flow_rules():
@@ -74,7 +74,7 @@ def test_story_map_has_flow_rules():
     for rule in REQUIRED_RULES:
         assert rule in content, f"Regra de fluxo ausente: '{rule}'"
         logger.info(f"RULE {rule}: OK")
-    return True
+
 
 
 if __name__ == "__main__":

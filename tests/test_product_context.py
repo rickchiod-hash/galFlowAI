@@ -36,7 +36,7 @@ REQUIRED_KEYWORDS = [
 def test_context_file_exists():
     assert CONTEXT_FILE.exists(), f"PROJECT_REFERENCE_CONTEXT.md ausente em {CONTEXT_FILE}"
     logger.info(f"PROJECT_REFERENCE_CONTEXT.md: OK")
-    return True
+
 
 
 def test_context_has_required_sections():
@@ -44,7 +44,7 @@ def test_context_has_required_sections():
     for section in REQUIRED_SECTIONS:
         assert section in content, f"Seção ausente: '{section}'"
         logger.info(f"SEÇÃO {section}: OK")
-    return True
+
 
 
 def test_context_has_required_keywords():
@@ -52,7 +52,7 @@ def test_context_has_required_keywords():
     for kw in REQUIRED_KEYWORDS:
         assert kw in content, f"Palavra-chave ausente: '{kw}'"
         logger.info(f"KEYWORD {kw}: OK")
-    return True
+
 
 
 def test_context_is_truth_source():
@@ -60,7 +60,7 @@ def test_context_is_truth_source():
     assert "FONTE DE VERDADE DO PRODUTO" in content
     assert "Alteração permitida somente com ADR" in content
     logger.info("STATUS FONTE DE VERDADE: OK")
-    return True
+
 
 
 if __name__ == "__main__":

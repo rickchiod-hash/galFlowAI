@@ -47,7 +47,7 @@ LIBERATION_FEATURES = [
 def test_matrix_file_exists():
     assert MATRIX_FILE.exists(), f"FEATURE_PRESERVATION_MATRIX.md ausente em {MATRIX_FILE}"
     logger.info("FEATURE_PRESERVATION_MATRIX.md: OK")
-    return True
+
 
 
 def test_matrix_has_required_columns():
@@ -55,7 +55,7 @@ def test_matrix_has_required_columns():
     for col in REQUIRED_COLUMNS:
         assert col in content, f"Coluna obrigatória ausente: '{col}'"
         logger.info(f"COLUNA {col}: OK")
-    return True
+
 
 
 def test_mandatory_features_listed():
@@ -63,7 +63,7 @@ def test_mandatory_features_listed():
     for feat in MANDATORY_FEATURES:
         assert feat in content, f"Feature obrigatória ausente na matriz: '{feat}'"
         logger.info(f"FEATURE {feat}: OK")
-    return True
+
 
 
 def test_lib_p1_features_listed():
@@ -71,7 +71,7 @@ def test_lib_p1_features_listed():
     for feat in LIBERATION_FEATURES:
         assert feat in content, f"Feature P1 ausente na matriz: '{feat}'"
         logger.info(f"FEATURE {feat}: OK")
-    return True
+
 
 
 def test_mandatory_marked_not_removable():
@@ -85,7 +85,7 @@ def test_mandatory_marked_not_removable():
                 break
         assert found, f"Feature '{feat}' nao marcada como 'Nao' removivel"
         logger.info(f"REMOVIBILIDADE {feat}: OK (Nao)")
-    return True
+
 
 
 if __name__ == "__main__":

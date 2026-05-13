@@ -39,7 +39,7 @@ REQUIRED_ENTRYPOINTS = [
 def test_map_file_exists():
     assert MAP_FILE.exists(), f"02_MAPA_ATUAL_DO_PROJETO.md ausente em {MAP_FILE}"
     logger.info("02_MAPA_ATUAL_DO_PROJETO.md: OK")
-    return True
+
 
 
 def test_map_has_required_sections():
@@ -47,7 +47,7 @@ def test_map_has_required_sections():
     for section in REQUIRED_SECTIONS:
         assert section in content, f"Seção obrigatória ausente: '{section}'"
         logger.info(f"SEÇÃO {section}: OK")
-    return True
+
 
 
 def test_map_lists_technologies():
@@ -55,7 +55,7 @@ def test_map_lists_technologies():
     for tech in REQUIRED_TECHS:
         assert tech in content, f"Tecnologia obrigatória ausente: '{tech}'"
         logger.info(f"TECH {tech}: OK")
-    return True
+
 
 
 def test_map_lists_entrypoints():
@@ -63,7 +63,7 @@ def test_map_lists_entrypoints():
     for ep in REQUIRED_ENTRYPOINTS:
         assert ep in content, f"Entrypoint obrigatório ausente: '{ep}'"
         logger.info(f"ENTRYPOINT {ep}: OK")
-    return True
+
 
 
 def test_map_references_feature_matrix():
@@ -72,7 +72,7 @@ def test_map_references_feature_matrix():
         "Referência à Feature Preservation Matrix ausente"
     )
     logger.info("REFERÊNCIA FEATURE MATRIX: OK")
-    return True
+
 
 
 if __name__ == "__main__":

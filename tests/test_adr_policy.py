@@ -40,7 +40,7 @@ ADR_REFERENCES = [
 def test_adr_file_exists():
     assert ADR_FILE.exists(), f"11_DECISOES_TECNICAS_ADR.md ausente em {ADR_FILE}"
     logger.info("11_DECISOES_TECNICAS_ADR.md: OK")
-    return True
+
 
 
 def test_adr_template_has_all_fields():
@@ -48,7 +48,7 @@ def test_adr_template_has_all_fields():
     for field in ADR_TEMPLATE_FIELDS:
         assert field in content, f"Campo obrigatório do template ADR ausente: '{field}'"
         logger.info(f"CAMPO {field}: OK")
-    return True
+
 
 
 def test_adr_references_present():
@@ -56,7 +56,7 @@ def test_adr_references_present():
     for ref in ADR_REFERENCES:
         assert ref in content, f"Referência ADR ausente: '{ref}'"
         logger.info(f"ADR {ref}: OK")
-    return True
+
 
 
 if __name__ == "__main__":

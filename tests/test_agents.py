@@ -39,7 +39,7 @@ SKILL_REQUIRED_FRAGMENTS = [
 def test_agents_file_exists():
     assert AGENTS_FILE.exists(), f"AGENTS.md ausente em {AGENTS_FILE}"
     logger.info("AGENTS.md: OK")
-    return True
+
 
 
 def test_agents_has_required_content():
@@ -47,13 +47,13 @@ def test_agents_has_required_content():
     for frag in AGENTS_REQUIRED_FRAGMENTS:
         assert frag in content, f"Fragmento obrigatório ausente no AGENTS.md: '{frag}'"
         logger.info(f"AGENTS {frag}: OK")
-    return True
+
 
 
 def test_skill_file_exists():
     assert SKILL_FILE.exists(), f"SKILL.md ausente em {SKILL_FILE}"
     logger.info("SKILL.md: OK")
-    return True
+
 
 
 def test_skill_has_required_content():
@@ -61,7 +61,7 @@ def test_skill_has_required_content():
     for frag in SKILL_REQUIRED_FRAGMENTS:
         assert frag in content, f"Fragmento obrigatório ausente no SKILL.md: '{frag}'"
         logger.info(f"SKILL {frag}: OK")
-    return True
+
 
 
 if __name__ == "__main__":

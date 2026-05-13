@@ -23,7 +23,7 @@ def test_tts_adapter_files_exist():
     tts_path = REPO_ROOT / "app/adapters/tts_adapter.py"
     assert tts_path.exists(), f"TTS adapter not found: {tts_path}"
     logger.info(f"  OK: {tts_path.name} encontrado")
-    return True
+
 
 
 def test_tts_has_silence_fallback():
@@ -35,7 +35,7 @@ def test_tts_has_silence_fallback():
     assert has_silence, "TTSAdapter missing silence fallback"
     assert has_fallback, "TTSAdapter missing fallback mechanism"
     logger.info("TTS SILENCE FALLBACK: OK")
-    return True
+
 
 
 def test_tts_unavailable_graceful_audio_fallback():
@@ -171,7 +171,7 @@ def test_tts_unavailable_graceful_audio_fallback():
         assert mock_audio_uc.execute.called, "GenerateAudioUseCase não foi chamado"
         logger.info("  ✓ TTS foi tentado (mas indisponível)")
 
-        return True
+
 
 
 def test_tts_available_normal_operation():
@@ -306,7 +306,7 @@ def test_tts_available_normal_operation():
         assert mock_concat_uc.execute.called, "ConcatVideosUseCase não foi chamado"
         logger.info("  ✓ WanGP e TTS usados para geração, FFmpeg apenas para concatenação final")
 
-        return True
+
 
 
 def test_both_wangp_and_tts_unavailable():
@@ -437,7 +437,7 @@ def test_both_wangp_and_tts_unavailable():
         assert mock_audio_uc.execute.called, "GenerateAudioUseCase não foi chamado"
         logger.info("  ✓ TTS foi tentado (mas indisponível → silêncio)")
 
-        return True
+
 
 
 if __name__ == "__main__":
