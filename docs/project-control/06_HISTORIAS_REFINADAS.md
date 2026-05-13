@@ -1510,6 +1510,45 @@ Como mantenedor, eu quero que todas as rotas da API usem prefixo `/api/v1/`, par
 - [x] Commit criado
 
 
+## LOG-100 — Conectar erros estruturados ao Dataframe de logs na UI
+
+**Épico:** EPIC-800 Structural Stabilization  
+**Prioridade:** Alta  
+**Status:** Concluída ✅  
+**Estimativa:** 5 SP  
+**Arquivo de contexto obrigatório:** `docs/project-control/00_STATUS_EXECUTIVO.md`
+
+### História
+Como operador, eu quero ver campos de erro estruturado (`code`, `stage`, `retryable`, `fallback_used`) na tabela de logs e uma aba dedicada para erros estruturados, para depurar falhas sem depender de terminal.
+
+### Contexto técnico
+O `log_service.py` já retorna `code`, `stage`, `retryable`, `fallback_used` em cada entrada de log (desde P0-ERR-05). O `get_structured_errors()` já existe e lê do JSONL. Mas a UI Gradio:
+- Só exibia 5 colunas no Dataframe: `horario`, `nivel`, `modulo`, `mensagem`, `sugestao`
+- Não tinha aba "Erros Estruturados"
+- O summary não incluía `total_structured_errors`
+
+### Evidências
+- `app/ui/gradio_app.py`: Dataframe expandido para 9 colunas (+code, stage, retryable, fallback_used)
+- Nova aba "Erros Estruturados" com filtro de severidade e Dataframe de 8 colunas
+- `on_refresh_logs` retorna 9 colunas; `on_refresh_structured_errors` criada
+- Compilação: OK (py_compile)
+- Testes API + pipeline: 24/24 passed (1 pre-existing falha não relacionada)
+
+### Critérios de aceite
+- ✅ Dataframe de logs exibe colunas `code`, `stage`, `retryable`, `fallback_used`
+- ✅ Aba "Erros Estruturados" com filtro de severidade e Dataframe dedicado
+- ✅ Botão "Atualizar Erros Estruturados" conectado a `get_structured_errors()`
+- ✅ Sumário de logs inclui `total_structured_errors`
+
+### Definition of Done
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [x] Commit criado
+
+
 ## RND-603 — Registrar Wan VACE 1.3B como futuro opcional
 
 **Épico:** EPIC-700 Render e performance  

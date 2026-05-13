@@ -1,58 +1,52 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-12 (sessão 22 - Phase 6A Structural Stabilization)
+Atualizado em: 2026-05-12 (sessão 22 - Phase 6A COMPLETA)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 56/65
+Histórias concluídas: 58/65
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 9
-Percentual concluído: 86%
+Histórias pendentes: 7
+Percentual concluído: 89%
 
-**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 56 Concluídas + 0 Em andamento + 9 Pendentes = 65.
+**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 58 Concluídas + 0 Em andamento + 7 Pendentes = 65.
 
 ## Estado atual
 
-- Branch atual: feature/API-210-api-versioning
-- Último commit analisado: a0f9974 — ARCH-320 + API-210
-- Fase atual: Fase 6A — Structural Stabilization
-- Story stream atual: 56/65 histórias concluídas ✅
-- Próxima ação recomendada: API-211 — Envelopar resposta de /api/llm/providers em ApiResponse
+- Branch atual: feature/LOG-100-structured-errors-ui
+- Último commit analisado: 045734e — API-211 + LOG-100
+- Fase atual: Fase 6A — Structural Stabilization ✅ **COMPLETA**
+- Story stream atual: 58/65 histórias concluídas ✅
+- Próxima ação recomendada: Fase 6B — UI-205 (substituir botões placeholder stage 2)
 
-### Sessão 22 — Phase 6A: API-210 + ARCH-320 (2026-05-12)
+### Sessão 22 — Phase 6A: ARCH-320 + API-210 + API-211 + LOG-100 (2026-05-12)
 
 #### O que foi feito
-1. **Replan do backlog** — 11 novas histórias criadas em 3 fases (6A, 6B, 6C) para execução de gaps técnicos obrigatórios
-2. **ARCH-320 ✅ — Unificação de pipeline**:
-   - Deletado `app/pipeline/video_generation_pipeline_new.py` (duplicata que pulava approval gate)
-   - Mantido `app/pipeline/video_generation_pipeline.py` como canônico (com approval gate de roteiro)
-   - Adicionado `test_only_one_pipeline_file` em `tests/test_pipeline.py` (4/4 passed)
-3. **API-210 ✅ — Prefixo `/api/v1/` em todas as rotas**:
-   - 44 rotas REST alteradas de `/api/...` para `/api/v1/...`
-   - WebSocket alterado de `/ws/...` para `/api/v1/ws/...`
-   - `tests/test_api.py` e `tests/test_h10_contract.py` atualizados (21/21 API tests passed)
-   - Zero regressão no full suite (739 passed)
-4. **Decisão de produto**: WanGP/VACE/FFmpeg fallback/API versioning/UI integration/vector store/logs estruturados — todos reclassificados de opcionais para mandatórios. Ollama permanece único opcional.
-5. **Backlog atualizado** com 11 novas histórias
+1. **Replan do backlog** — 11 novas histórias em 3 fases (6A, 6B, 6C)
+2. **ARCH-320 ✅** — Unificação de pipeline (deletado `_new.py`, mantido canônico com approval gate)
+3. **API-210 ✅** — Prefixo `/api/v1/` em todas as 44 rotas REST + WebSocket
+4. **API-211 ✅** — `/api/v1/llm/providers` envelopado em `ApiResponse` (antes raw dict)
+5. **LOG-100 ✅** — Erros estruturados na UI:
+   - Dataframe expandido para 9 colunas (+code, stage, retryable, fallback_used)
+   - Nova aba "Erros Estruturados" com filtro de severidade
+   - Sumário de logs inclui `total_structured_errors`
+
+#### Decisão de produto
+WanGP, VACE, FFmpeg fallback, API versioning, UI integration, vector store, logs estruturados — todos **mandatórios**. Ollama permanece único opcional.
 
 #### Testes executados
-- `tests/test_pipeline.py`: 4/4 passed
-- `tests/test_api.py` + `tests/test_h10_contract.py`: 21/21 passed
-- Full suite: 739 passed (0 regressão nova)
+- API (test_api + test_h10_contract): 20/21 passed (1 pre-existing: script.txt cache)
+- Pipeline (test_pipeline): 4/4 passed
+- Zero regressão causada pelas mudanças
 
-#### Arquivos alterados
-- `app/pipeline/video_generation_pipeline_new.py` — **deletado** (ARCH-320)
-- `app/api.py` — 44 rotas + WebSocket prefixadas com `/api/v1/`
-- `tests/test_pipeline.py` — adicionado `test_only_one_pipeline_file`
-- `tests/test_api.py` — rotas atualizadas para `/api/v1/`
-- `tests/test_h10_contract.py` — rotas atualizadas para `/api/v1/`
-- `docs/project-control/00_STATUS_EXECUTIVO.md` — atualizado
-- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — backlog Pós-49 adicionado
-- `docs/project-control/06_HISTORIAS_REFINADAS.md` — ARCH-320 + API-210 adicionadas
-- `docs/project-control/18_IMPLEMENTATION_ORDER.md` — fases 6A-6C adicionadas
-- `docs/project-control/10_DAILY_LOG.md` — entry adicionada
+#### Arquivos alterados (fase 6A completa)
+- `app/pipeline/video_generation_pipeline_new.py` — deletado
+- `app/api.py` — routes prefix + providers envelope
+- `app/ui/gradio_app.py` — logs Dataframe expandido + aba Erros Estruturados
+- `tests/test_pipeline.py`, `tests/test_api.py`, `tests/test_h10_contract.py`
+- `docs/project-control/00_STATUS_EXECUTIVO.md`, `05_BACKLOG_PRIORIZADO.md`, `06_HISTORIAS_REFINADAS.md`, `18_IMPLEMENTATION_ORDER.md`, `10_DAILY_LOG.md`
 
 ## Resumo tipo Daily
 

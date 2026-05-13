@@ -22,7 +22,7 @@ from app.services.script_service import (
     get_provider_status,
     get_provider_diagnostics,
 )
-from app.services.log_service import get_recent_logs, get_log_summary, copy_diagnostic_bundle
+from app.services.log_service import get_recent_logs, get_log_summary, copy_diagnostic_bundle, get_structured_errors
 from app.services.metrics_service import get_metrics_service
 from app.services.config_service import get_config_service
 from app.services.tts_service import TTSService
@@ -225,10 +225,43 @@ def on_refresh_logs(level, search, limit):
     logs_data = get_recent_logs(level=level, search=search if search else None, limit=int(limit))
     summary = get_log_summary()
     summary_md = (
-        "**%s** INFO | **%s** WARN | **%s** ERROR"
-        % (summary.get("total_info", 0), summary.get("total_warn", 0), summary.get("total_error", 0))
+        "**%s** INFO | **%s** WARN | **%s** ERROR | **%s** ESTRUTURADOS"
+        % (summary.get("total_info", 0), summary.get("total_warn", 0), summary.get("total_error", 0), summary.get("total_structured_errors", 0))
     )
-    return logs_data.get("logs", []), summary_md
+    rows = []
+    for log in logs_data.get("logs", []):
+        rows.append([
+            log.get("horario", ""),
+            log.get("nivel", ""),
+            log.get("modulo", ""),
+            log.get("mensagem", ""),
+            log.get("sugestao", ""),
+            log.get("code", ""),
+            log.get("stage", ""),
+            "Sim" if log.get("retryable") else "Nao",
+            "Sim" if log.get("fallback_used") else "Nao",
+        ])
+    return rows, summary_md
+
+
+def on_refresh_structured_errors(severity, limit):
+    errors = get_structured_errors(limit=int(limit))
+    rows = []
+    for err in errors:
+        sev = err.get("severity", "")
+        if severity != "TODOS" and sev != severity:
+            continue
+        rows.append([
+            err.get("code", ""),
+            sev,
+            err.get("message", "")[:100],
+            err.get("stage", ""),
+            "Sim" if err.get("retryable") else "Nao",
+            "Sim" if err.get("fallback_used") else "Nao",
+            err.get("provider", ""),
+            err.get("timestamp", ""),
+        ])
+    return rows
 
 
 def on_refresh_metrics():
@@ -679,14 +712,27 @@ def create_gradio_app():
                         log_search = gr.Textbox(label="Buscar", placeholder="Filtrar por texto...")
                     log_limit = gr.Slider(minimum=10, maximum=100, value=20, step=5, label="Limite de linhas")
                     logs_output = gr.Dataframe(
-                        headers=["horario", "nivel", "modulo", "mensagem", "sugestao"],
+                        headers=["horario", "nivel", "modulo", "mensagem", "sugestao", "code", "stage", "retryable", "fallback_used"],
                         label="Logs",
-                        datatype=["str", "str", "str", "str", "str"],
-                        col_count=(5, "fixed"),
+                        datatype=["str", "str", "str", "str", "str", "str", "str", "str", "str"],
+                        col_count=(9, "fixed"),
                     )
                     with gr.Row():
                         refresh_logs_btn = gr.Button("Atualizar Logs")
                         log_summary_output = gr.Markdown()
+                with gr.Tab("Erros Estruturados"):
+                    with gr.Row():
+                        error_severity_filter = gr.Dropdown(
+                            choices=["TODOS", "DEBUG", "INFO", "WARN", "ERROR"], value="ERROR", label="Severidade"
+                        )
+                        error_limit = gr.Slider(minimum=5, maximum=50, value=20, step=5, label="Limite")
+                    errors_output = gr.Dataframe(
+                        headers=["code", "severity", "mensagem", "stage", "retryable", "fallback_used", "provider", "timestamp"],
+                        label="Erros Estruturados",
+                        datatype=["str", "str", "str", "str", "str", "str", "str", "str"],
+                        col_count=(8, "fixed"),
+                    )
+                    refresh_errors_btn = gr.Button("Atualizar Erros Estruturados")
                 with gr.Tab("Diagnostico"):
                     with gr.Row():
                         with gr.Column():
@@ -701,6 +747,11 @@ def create_gradio_app():
                 fn=on_refresh_logs,
                 inputs=[log_level_filter, log_search, log_limit],
                 outputs=[logs_output, log_summary_output],
+            )
+            refresh_errors_btn.click(
+                fn=on_refresh_structured_errors,
+                inputs=[error_severity_filter, error_limit],
+                outputs=[errors_output],
             )
             refresh_diagnostic_btn.click(fn=copy_diagnostic_bundle, outputs=[diagnostic_output])
             refresh_providers_diag_btn.click(
