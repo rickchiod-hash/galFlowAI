@@ -25,8 +25,8 @@ Percentual concluído: 100%
 
 - **813 testes passando, 0 falhas, 4 warnings** (de 86)
 - **Tempo de execução: 38.5s** (de 73s — redução de ~47%)
-- HEAD: `115e859`
-- Git commit count: 236
+- HEAD: `bff9824`
+- Git commit count: 237
 
 #### O que foi feito
 1. **Removidos 82 `return True` de funções de teste** em 17 arquivos — elimina `PytestReturnNotReturnNoneWarning`
