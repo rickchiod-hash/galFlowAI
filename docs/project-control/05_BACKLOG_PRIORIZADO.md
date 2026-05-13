@@ -76,7 +76,7 @@ Backlog expandido por decisão de produto (2026-05-12): WanGP, VACE, FFmpeg fall
 | 54 | UI-205 | Substituir botões placeholder do estágio 2 por chamadas reais de use case | Alta | 8 | ✅ Concluída | ARCH-320 |
 | 55 | RND-610 | Hardening do WanGP adapter (telemetria, erros estruturados) | Alta | 8 | ✅ Concluída | LOG-100 |
 | 56 | RND-611 | Pipeline fallback chama `log_structured_error` | Alta | 5 | ✅ Concluída | RND-610 |
-| 57 | RND-612 | Criar `app/adapters/vace_adapter.py` | Alta | 8 | Pendente | ARCH-320 |
+| 57 | RND-612 | Criar `app/adapters/vace_adapter.py` | Alta | 8 | ✅ Concluída | ARCH-320 |
 
 ### Fase 6C — Complete Platform
 
@@ -90,7 +90,7 @@ Backlog expandido por decisão de produto (2026-05-12): WanGP, VACE, FFmpeg fall
 
 ## Próxima história recomendada
 
-**RND-611 concluída.** Próxima: **RND-612** — Criar `app/adapters/vace_adapter.py`.
+**RND-612 concluída.** Próxima: **VEC-810** — Implementar Qdrant vector store backend.
 
 ## Regras de priorização
 

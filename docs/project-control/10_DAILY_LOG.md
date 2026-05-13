@@ -2132,3 +2132,39 @@ O pipeline (`video_generation_pipeline.py`) fazia fallback WanGP→FFmpeg com ap
 ### Próximo passo
 - **RND-612**: Criar `app/adapters/vace_adapter.py`
 - Abrir PR da branch `feature/RND-611-pipeline-structured-error` e merge para master
+
+
+## 2026-05-12 — Sessão 26: RND-612 — Criar VACE adapter
+
+### Contexto
+O VACE (Wan VACE 1.3B) estava registrado como futuro opcional via RND-603 (EngineType, PromptCompiler, GpuProfile, documentação) mas sem adapter concreto. A história RND-612 exigia criar `app/adapters/vace_adapter.py` seguindo o padrão do WanGPAdapter (RND-600) com o hardening de telemetria e erros estruturados (RND-610).
+
+### O que fiz
+- **Criado `app/adapters/vace_adapter.py`** com classe `VAceAdapter`:
+  - `disponivel()` (static): verifica path + arquivos principais
+  - `__init__(vace_path, project_id)`: init com StageLogger, telemetria, lazy error writer
+  - `render_scene()`: mapeia scene dict → generate_video (mesmo padrão WanGP)
+  - `generate_video()`: comando subprocess, timing, StageLogger, AppError recording
+  - `_build_command()`: parâmetros VACE (24 frames, 720p, 1.3B)
+  - `get_status()`, `get_metrics()`, `get_stage_events()`: interface completa
+  - Hardening completo: StageLogger, AppError (WANGP_UNAVAILABLE / UNKNOWN_ERROR), ErrorJsonlWriter lazy init
+
+### Arquivos alterados
+- `app/adapters/vace_adapter.py` — **novo** (220+ linhas)
+- `tests/test_vace_adapter.py` — **novo** (12 testes)
+
+### Testes executados e resultado
+- 12 novos testes: disponibilidade, init, metrics, sucesso, falha, render_scene, acumulação, stage events, status
+- Full suite: **805 passed, 1 failed** (pre-existing)
+- Zero regressão
+
+### Fase 6B Completa ✅
+- UI-205 ✅, RND-610 ✅, RND-611 ✅, RND-612 ✅
+- Próxima fase: **Fase 6C — Complete Platform** (VEC-810, VEC-811, DOC-120)
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- **VEC-810**: Implementar Qdrant vector store backend
+- Abrir PR da branch `feature/RND-612-vace-adapter` e merge para master

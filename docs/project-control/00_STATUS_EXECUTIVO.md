@@ -5,21 +5,21 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 61/65
+Histórias concluídas: 62/65
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 4
-Percentual concluído: 94%
+Histórias pendentes: 3
+Percentual concluído: 95%
 
-**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 61 Concluídas + 0 Em andamento + 4 Pendentes = 65.
+**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 62 Concluídas + 0 Em andamento + 3 Pendentes = 65.
 
 ## Estado atual
 
-- Branch atual: feature/RND-611-pipeline-structured-error
-- Último commit analisado: 2b30a5f — base (RND-610)
-- Fase atual: Fase 6B — Mandatory Functional Integration 🔄
-- Story stream atual: 61/65 histórias concluídas ✅
-- Próxima ação recomendada: RND-612 — Criar `app/adapters/vace_adapter.py`
+- Branch atual: feature/RND-612-vace-adapter
+- Último commit analisado: 65450b7 — base (RND-611)
+- Fase atual: Fase 6B — Mandatory Functional Integration ✅ **COMPLETA**
+- Story stream atual: 62/65 histórias concluídas ✅
+- Próxima ação recomendada: VEC-810 — Implementar Qdrant vector store backend
 
 ### Sessão 23 — Phase 6B: UI-205 (2026-05-12)
 
@@ -89,6 +89,34 @@ Percentual concluído: 94%
 - `docs/project-control/00_STATUS_EXECUTIVO.md` — esta sessão
 - `docs/project-control/05_BACKLOG_PRIORIZADO.md` — RND-611 marcado concluído
 - `docs/project-control/10_DAILY_LOG.md` — nova entrada
+
+### Sessão 26 — Phase 6B: RND-612 (2026-05-12)
+
+#### O que foi feito
+1. **RND-612 ✅** — Criado `app/adapters/vace_adapter.py` (VAceAdapter):
+   - Segue o padrão do WanGPAdapter: `render_scene()`, `generate_video()`, `disponivel()`, `is_available()`, `get_status()`
+   - Inclui hardening do RND-610: `StageLogger`, `AppError` recording, `get_metrics()`, `get_stage_events()`
+   - `_build_command()` com parâmetros VACE (24 frames, 720p, model 1.3B)
+   - `_get_error_writer()` com lazy import (evita circular)
+   - `_check_availability()` verifica path + PyTorch
+   - Mesmo padrão de suporte a `project_id` e telemetria
+   - 12 novos testes cobrindo: disponibilidade, init, metrics, sucesso, falha, render_scene, acumulação, stage events, status
+
+#### Testes executados
+- 12 novos testes em `test_vace_adapter.py`
+- Full suite: 805/806 passed (1 pre-existing: `test_audit_commit_count_within_range`)
+- Zero regressão
+
+#### Arquivos alterados
+- `app/adapters/vace_adapter.py` — novo (220+ linhas)
+- `tests/test_vace_adapter.py` — novo (12 testes)
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — esta sessão
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — RND-612 marcado concluído
+- `docs/project-control/10_DAILY_LOG.md` — nova entrada
+
+#### Fase 6B Completa ✅
+Todas as 4 histórias da Fase 6B concluídas:
+- UI-205 ✅, RND-610 ✅, RND-611 ✅, RND-612 ✅
 
 ## Resumo tipo Daily
 
