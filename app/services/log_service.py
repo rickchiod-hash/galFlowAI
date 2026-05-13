@@ -7,6 +7,8 @@ from pathlib import Path
 from typing import List, Dict, Optional, Any
 from datetime import datetime
 
+from app.core.app_error import AppError
+
 # Caminho base dos logs
 LOG_DIR = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/logs")
 MAX_LINES = 500  # Limite para não travar UI
@@ -92,15 +94,20 @@ def get_recent_logs(level: Optional[str] = None, search: Optional[str] = None, l
 
         # Parse da linha (formato: timestamp | level | module | message)
         parts = line.split(' | ', 3)
+        suggestion = _get_suggestion(line)
         if len(parts) >= 3:
             results.append({
                 "horario": parts[0].strip() if len(parts) > 0 else "",
                 "nivel": _normalize_level(parts[1].strip()) if len(parts) > 1 else "UNKNOWN",
                 "modulo": parts[2].strip() if len(parts) > 2 else "",
-                "projeto": "",  # Extrair de ' | ' se existir
+                "projeto": "",
                 "job": "",
                 "mensagem": parts[3].strip() if len(parts) > 3 else line,
-                "sugestao": _get_suggestion(line)
+                "sugestao": suggestion,
+                "code": "",
+                "stage": "",
+                "retryable": False,
+                "fallback_used": False,
             })
         else:
             results.append({
@@ -110,7 +117,11 @@ def get_recent_logs(level: Optional[str] = None, search: Optional[str] = None, l
                 "projeto": "",
                 "job": "",
                 "mensagem": line,
-                "sugestao": ""
+                "sugestao": suggestion,
+                "code": "",
+                "stage": "",
+                "retryable": False,
+                "fallback_used": False,
             })
 
     return {
@@ -150,6 +161,9 @@ def get_log_summary() -> Dict[str, Any]:
         # Última atualização
         last_update = datetime.now().strftime("%H:%M:%S")
 
+        structured_errors = get_structured_errors(limit=100)
+        total_structured = len(structured_errors)
+
         return {
             "total_info": total_info,
             "total_warn": total_warn,
@@ -157,6 +171,7 @@ def get_log_summary() -> Dict[str, Any]:
             "last_error": last_error[:200] if last_error else "",
             "last_update": last_update,
             "log_file": str(log_file),
+            "total_structured_errors": total_structured,
             "message": "Resumo atualizado."
         }
     except Exception as e:
@@ -167,6 +182,7 @@ def get_log_summary() -> Dict[str, Any]:
             "last_error": "",
             "last_update": "",
             "log_file": str(log_file),
+            "total_structured_errors": 0,
             "message": f"Erro ao ler resumo: {str(e)}"
         }
 
@@ -241,6 +257,13 @@ def copy_diagnostic_bundle() -> str:
             for e in errors[:10]:
                 bundle.append(f"  {e.get('horario')} [{e.get('nivel')}] {e.get('mensagem')[:100]}")
 
+        # Erros estruturados
+        structured_errors = get_structured_errors(limit=5)
+        if structured_errors:
+            bundle.append("\nErros estruturados:")
+            for se in structured_errors:
+                bundle.append(f"  [{se.get('severity')}] {se.get('code')}: {se.get('message', '')[:80]}")
+
         # Status providers
         bundle.append("\nStatus dos providers:")
         bundle.append("  TemplateProvider: Sempre disponível")
@@ -301,11 +324,11 @@ def _normalize_level(level_str: str) -> str:
 
 
 def _get_suggestion(log_line: str) -> str:
-    """Retorna sugestão baseada no erro."""
+    """Retorna sugestão baseada no erro, usando ErrorCatalog quando possível."""
     line_lower = log_line.lower()
 
-    if 'ffmpeg' in line_lower and 'não' in line_lower:
-        return "Instale FFmpeg ou use WAN GP. Veja docs/TROUBLESHOOTING.md"
+    if 'ffmpeg' in line_lower and ('não' in line_lower or 'not found' in line_lower):
+        return "Instale FFmpeg ou configure o path. Veja docs/TROUBLESHOOTING.md"
     elif 'permission' in line_lower:
         return "Verifique permissões de arquivo/pasta"
     elif 'module' in line_lower and 'not found' in line_lower:
@@ -316,3 +339,23 @@ def _get_suggestion(log_line: str) -> str:
         return "TemplateProvider é fallback obrigatório"
     else:
         return ""
+
+
+def get_structured_errors(limit: int = 20) -> list[dict]:
+    """Retorna erros estruturados do arquivo JSONL."""
+    try:
+        from app.services.error_jsonl_writer import ErrorJsonlWriter
+        writer = ErrorJsonlWriter()
+        return writer.read_recent(limit=limit)
+    except Exception:
+        return []
+
+
+def log_structured_error(error: AppError) -> bool:
+    """Persiste um erro estruturado no JSONL."""
+    try:
+        from app.services.error_jsonl_writer import ErrorJsonlWriter
+        writer = ErrorJsonlWriter()
+        return writer.write(error)
+    except Exception:
+        return False

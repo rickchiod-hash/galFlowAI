@@ -59,5 +59,11 @@ app/state/
 # Gradio runtime logs
 gradio_*.txt
 
+# Error JSONL runtime files (regenerated each run)
+logs/errors/
+
+# Pytest temp directory
+.pytest_temp/
+
 # Bancos de dados SQLite
 *.db

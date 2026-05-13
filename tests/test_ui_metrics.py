@@ -138,7 +138,8 @@ class TestLogScreen:
         from app.services.log_service import get_log_summary
         summary = get_log_summary()
         expected_keys = {"total_info", "total_warn", "total_error",
-                         "last_error", "last_update", "log_file"}
+                         "last_error", "last_update", "log_file",
+                         "total_structured_errors"}
         assert expected_keys.issubset(summary.keys())
 
     def test_get_recent_logs_returns_dataframe_structure(self):
@@ -152,6 +153,43 @@ class TestLogScreen:
         bundle = copy_diagnostic_bundle()
         assert isinstance(bundle, str)
         assert len(bundle) > 50
+
+    def test_get_structured_errors_returns_list(self):
+        from app.services.log_service import get_structured_errors
+        errors = get_structured_errors(limit=10)
+        assert isinstance(errors, list)
+
+    def test_log_structured_error_returns_bool(self):
+        from app.core.app_error import AppError, Severity
+        from app.core.error_codes import ErrorCode
+        from app.services.log_service import log_structured_error
+        error = AppError(
+            code=ErrorCode.FFMPEG_NOT_FOUND,
+            severity=Severity.ERROR,
+            message="Test error.",
+            suggestion="Test suggestion.",
+            stage="render",
+            retryable=False,
+        )
+        result = log_structured_error(error)
+        assert isinstance(result, bool)
+
+    def test_log_structured_error_roundtrip(self):
+        from app.core.app_error import AppError, Severity
+        from app.core.error_codes import ErrorCode
+        from app.services.log_service import log_structured_error, get_structured_errors
+        error = AppError(
+            code=ErrorCode.WANGP_UNAVAILABLE,
+            severity=Severity.WARN,
+            message="WanGP test.",
+            suggestion="Use FFmpeg.",
+            stage="render",
+            retryable=True,
+        )
+        log_structured_error(error)
+        errors = get_structured_errors(limit=50)
+        codes = [e.get("code") for e in errors]
+        assert "WANGP_UNAVAILABLE" in codes
 
 
 # --- UI Structure Tests ---
@@ -172,11 +210,14 @@ class TestGradioAppTabStructure:
 
     def test_log_service_imports_exist(self):
         from app.services.log_service import (
-            get_recent_logs, get_log_summary, copy_diagnostic_bundle
+            get_recent_logs, get_log_summary, copy_diagnostic_bundle,
+            get_structured_errors, log_structured_error,
         )
         assert callable(get_recent_logs)
         assert callable(get_log_summary)
         assert callable(copy_diagnostic_bundle)
+        assert callable(get_structured_errors)
+        assert callable(log_structured_error)
 
 
 # --- Regression: UI still does not import adapters ---
