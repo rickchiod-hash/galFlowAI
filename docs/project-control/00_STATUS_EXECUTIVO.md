@@ -5,57 +5,52 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 55/65
+Histórias concluídas: 56/65
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 10
-Percentual concluído: 85%
+Histórias pendentes: 9
+Percentual concluído: 86%
 
-**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 55 Concluídas + 0 Em andamento + 10 Pendentes = 65.
+**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 56 Concluídas + 0 Em andamento + 9 Pendentes = 65.
 
 ## Estado atual
 
-- Branch atual: feature/ARCH-320-unify-pipeline
-- Último commit analisado: 1ecd9f9 — PR #29 merged: P0-ERR error handling infrastructure
+- Branch atual: feature/API-210-api-versioning
+- Último commit analisado: a0f9974 — ARCH-320 + API-210
 - Fase atual: Fase 6A — Structural Stabilization
-- Story stream atual: 55/65 histórias concluídas ✅
-- Próxima ação recomendada: ARCH-321 — Adicionar versionamento de API (/api/v1/)
+- Story stream atual: 56/65 histórias concluídas ✅
+- Próxima ação recomendada: API-211 — Envelopar resposta de /api/llm/providers em ApiResponse
 
-### Sessão 22 — Phase 6A: ARCH-320 Pipeline Unification (2026-05-12)
-
-- **813 testes passando, 0 falhas, 4 warnings** (de 86)
-- **Tempo de execução: 38.5s** (de 73s — redução de ~47%)
-- HEAD: `bff9824`
-- Git commit count: 237
-
-#### O que foi feito
-1. **Removidos 82 `return True` de funções de teste** em 17 arquivos — elimina `PytestReturnNotReturnNoneWarning`
-2. **Corrigido teste de auditoria Git** — `01_AUDITORIA_HISTORICO_GIT.md` atualizado para 236 commits
-3. **Otimizado `test_ffmpeg_not_removable`** — 4.03s → 0.06s (evitando __pycache__/.pytest_cache)
-4. **Otimizado `test_detect_lm_studio/koboldcpp`** — 4.02s → 2.02s (timeout=(1,1) explícito)
-5. **8 testes e2e legados convertidos para smoke tests** — não mais falham silenciosamente
-
-### Sessão 22 — Phase 6A: ARCH-320 Pipeline Unification (2026-05-12)
+### Sessão 22 — Phase 6A: API-210 + ARCH-320 (2026-05-12)
 
 #### O que foi feito
 1. **Replan do backlog** — 11 novas histórias criadas em 3 fases (6A, 6B, 6C) para execução de gaps técnicos obrigatórios
-2. **ARCH-320 — Unificação de pipeline**:
+2. **ARCH-320 ✅ — Unificação de pipeline**:
    - Deletado `app/pipeline/video_generation_pipeline_new.py` (duplicata que pulava approval gate)
    - Mantido `app/pipeline/video_generation_pipeline.py` como canônico (com approval gate de roteiro)
    - Adicionado `test_only_one_pipeline_file` em `tests/test_pipeline.py` (4/4 passed)
-3. **Decisão de produto**: WanGP/VACE/FFmpeg fallback/API versioning/UI integration/vector store/logs estruturados — todos reclassificados de opcionais para mandatórios. Ollama permanece único opcional.
-4. **Backlog atualizado** com 11 novas histórias (ARCH-320, API-210, API-211, LOG-100, UI-205, RND-610, RND-611, RND-612, VEC-810, VEC-811, DOC-120)
+3. **API-210 ✅ — Prefixo `/api/v1/` em todas as rotas**:
+   - 44 rotas REST alteradas de `/api/...` para `/api/v1/...`
+   - WebSocket alterado de `/ws/...` para `/api/v1/ws/...`
+   - `tests/test_api.py` e `tests/test_h10_contract.py` atualizados (21/21 API tests passed)
+   - Zero regressão no full suite (739 passed)
+4. **Decisão de produto**: WanGP/VACE/FFmpeg fallback/API versioning/UI integration/vector store/logs estruturados — todos reclassificados de opcionais para mandatórios. Ollama permanece único opcional.
+5. **Backlog atualizado** com 11 novas histórias
 
 #### Testes executados
-- `tests/test_pipeline.py`: 4/4 passed (3 existentes + 1 novo ARCH-320)
-- Full suite: 739 passed, 9 failed (4 StrEnum Python 3.10 pre-existing, 1 git audit count, 4 indirect StrEnum) — zero regressão causada pela mudança
+- `tests/test_pipeline.py`: 4/4 passed
+- `tests/test_api.py` + `tests/test_h10_contract.py`: 21/21 passed
+- Full suite: 739 passed (0 regressão nova)
 
 #### Arquivos alterados
 - `app/pipeline/video_generation_pipeline_new.py` — **deletado** (ARCH-320)
+- `app/api.py` — 44 rotas + WebSocket prefixadas com `/api/v1/`
 - `tests/test_pipeline.py` — adicionado `test_only_one_pipeline_file`
+- `tests/test_api.py` — rotas atualizadas para `/api/v1/`
+- `tests/test_h10_contract.py` — rotas atualizadas para `/api/v1/`
 - `docs/project-control/00_STATUS_EXECUTIVO.md` — atualizado
 - `docs/project-control/05_BACKLOG_PRIORIZADO.md` — backlog Pós-49 adicionado
-- `docs/project-control/06_HISTORIAS_REFINADAS.md` — ARCH-320 adicionada
+- `docs/project-control/06_HISTORIAS_REFINADAS.md` — ARCH-320 + API-210 adicionadas
 - `docs/project-control/18_IMPLEMENTATION_ORDER.md` — fases 6A-6C adicionadas
 - `docs/project-control/10_DAILY_LOG.md` — entry adicionada
 

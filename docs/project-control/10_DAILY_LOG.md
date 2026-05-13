@@ -40,11 +40,39 @@ Replan do backlog aprovado pelo usuário. Início da Fase 6A (Structural Stabili
 - Anti-break order: 6A (estrutural, sem mudança funcional) → 6B (integração funcional) → 6C (plataforma completa)
 
 ### Bloqueios
-- 4 testes `test_error_codes.py`/`test_app_error.py`/`test_error_catalog_service.py`/`test_error_jsonl_writer.py` quebram por `StrEnum` (Python 3.10) — pre-existing, não causado por ARCH-320
+- 4 testes `test_error_codes.py`/`test_app_error.py`/`test_error_catalog_service.py`/`test_error_jsonl_writer.py` quebram por `StrEnum` (Python 3.10) — pre-existing
 - `test_audit_commit_count_within_range` desatualizado (240 commits, audit diz 237) — pre-existing
 
 ### Próximo passo
-- **API-210**: Adicionar prefixo `/api/v1/` em todas as rotas
+- **API-211**: Envelopar resposta de `/api/llm/providers` em `ApiResponse`
+
+
+## 2026-05-12 — Sessão 22b: Phase 6A — API-210 API Versioning
+
+### Contexto
+Continuação da sessão 22 após merge do ARCH-320. Próxima história: API-210 — adicionar prefixo `/api/v1/` em todas as rotas.
+
+### O que fiz
+- **API-210 ✅:** Alteradas todas as 44 rotas REST em `app/api.py` de `/api/...` para `/api/v1/...`
+- WebSocket alterado de `/ws/...` para `/api/v1/ws/...`
+- Atualizados `tests/test_api.py` (13 rotas de teste) e `tests/test_h10_contract.py` (8 rotas de teste)
+- 21/21 API + contract tests passed
+- Full suite: 739 passed (zero regressão)
+- Backlog `05_BACKLOG_PRIORIZADO.md` atualizado: API-210 → Concluída
+- `06_HISTORIAS_REFINADAS.md`: API-210 adicionada
+- `10_DAILY_LOG.md`: esta entrada
+
+### Arquivos alterados
+- `app/api.py` — 45 paths alterados (44 REST + 1 WebSocket)
+- `tests/test_api.py` — 13 rotas de teste atualizadas
+- `tests/test_h10_contract.py` — 8 rotas de teste atualizadas
+
+### Decisões
+- Opção por string replace simples em vez de FastAPI `APIRouter` — menor refatoração, mesmo resultado
+- Nenhum cliente externo consome a API (é local-first), então rotas antigas não foram preservadas
+
+### Próximo passo
+- **API-211**: Envelopar resposta de `/api/llm/providers` em `ApiResponse`
 
 ## 2026-05-12 — Sessão 21: Error Handling Infrastructure (P0-ERR-01..05)
 

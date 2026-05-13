@@ -67,7 +67,7 @@ def teardown_test_project(project_id="test_api"):
 def test_api_health_and_llm_providers_contract():
     """Test health check and LLM providers endpoints."""
     # Test health endpoint
-    response = client.get("/api/health")
+    response = client.get("/api/v1/health")
     assert response.status_code == 200
     data = response.json()
     assert data["ok"] == True
@@ -80,7 +80,7 @@ def test_api_health_and_llm_providers_contract():
     assert details["version"] == "2.0"
     
     # Test LLM providers endpoint
-    response = client.get("/api/llm/providers")
+    response = client.get("/api/v1/llm/providers")
     assert response.status_code == 200
     data = response.json()
     assert "template" in data
@@ -96,7 +96,7 @@ def test_api_generate_script_success():
         "mode": "safe"
     }
     
-    response = client.post("/api/llm/script", json=request_data)
+    response = client.post("/api/v1/llm/script", json=request_data)
     assert response.status_code == 200
     data = response.json()
     assert data["ok"] == True
@@ -117,7 +117,7 @@ def test_api_generate_script_provider_failure_fallback():
         "mode": "safe"
     }
     
-    response = client.post("/api/llm/script", json=request_data)
+    response = client.post("/api/v1/llm/script", json=request_data)
     # With provider=auto the system should auto-detect and use template
     assert response.status_code == 200
     data = response.json()
@@ -129,7 +129,7 @@ def test_api_generate_script_provider_failure_fallback():
 
 def test_api_video_status_project_not_found():
     """Test video status endpoint with non-existent project."""
-    response = client.get("/api/video-status/nonexistent_project_12345")
+    response = client.get("/api/v1/video-status/nonexistent_project_12345")
     assert response.status_code == 404
     data = response.json()
     assert "detail" in data
@@ -152,7 +152,7 @@ def test_api_video_status_malformed_prompts_json():
         prompts_file.write_text("{ invalid json content", encoding="utf-8")
         
         # Test endpoint
-        response = client.get(f"/api/video-status/{project_id}")
+        response = client.get(f"/api/v1/video-status/{project_id}")
         assert response.status_code == 200  # Should not crash, just handle gracefully
         data = response.json()
         assert data["ok"] == True
@@ -171,7 +171,7 @@ def test_api_pipeline_status_error_path():
     """Test pipeline status endpoint error handling."""
     # We'll test that the endpoint returns something (even if error)
     # Since we don't want to actually break the pipeline, we'll just test it returns
-    response = client.get("/api/pipeline/status")
+    response = client.get("/api/v1/pipeline/status")
     # Should return either success or error in expected format
     assert response.status_code == 200
     data = response.json()
@@ -198,7 +198,7 @@ def test_pipeline_generate_video_happy_path_with_mocks():
     
     # We expect this to fail due to missing dependencies, but should return structured error
     try:
-        response = client.post("/api/generate-video", json=request_data)
+        response = client.post("/api/v1/generate-video", json=request_data)
         # Should either succeed or return structured error
         assert response.status_code in [200, 500]
         if response.status_code == 200:
@@ -252,7 +252,7 @@ def test_api_generate_script_for_project():
         proj_dir = setup_test_project(project_id)
         
         # Generate script for this project
-        response = client.post(f"/api/projects/{project_id}/script/generate", json={})
+        response = client.post(f"/api/v1/projects/{project_id}/script/generate", json={})
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
         data = response.json()
         assert data["ok"] == True
@@ -281,7 +281,7 @@ def test_api_generate_script_for_project():
 
 def test_api_generate_script_for_project_not_found():
     """Test UI-201: project not found returns 404."""
-    response = client.post("/api/projects/nonexistent_ui201/script/generate", json={})
+    response = client.post("/api/v1/projects/nonexistent_ui201/script/generate", json={})
     assert response.status_code == 404
     data = response.json()
     assert "detail" in data
@@ -318,7 +318,7 @@ def test_split_scenes_happy_path():
         approved_md.write_text(script_content, encoding="utf-8")
         
         # Split scenes
-        response = client.post(f"/api/projects/{project_id}/scenes/split", json={})
+        response = client.post(f"/api/v1/projects/{project_id}/scenes/split", json={})
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
         data = response.json()
         assert data["ok"] == True
@@ -353,7 +353,7 @@ def test_split_scenes_blocked_without_approval():
         
         # Attempt to split scenes (should be blocked)
         # Pass script in request body to bypass load_current_script
-        response = client.post(f"/api/projects/{project_id}/scenes/split", json={"script": script_content})
+        response = client.post(f"/api/v1/projects/{project_id}/scenes/split", json={"script": script_content})
         assert response.status_code == 400, f"Expected 400, got {response.status_code}: {response.text}"
         data = response.json()
         assert "detail" in data
@@ -371,7 +371,7 @@ def test_split_scenes_blocked_without_approval():
 
 def test_split_scenes_project_not_found():
     """Test UI-202: project not found returns 404."""
-    response = client.post("/api/projects/nonexistent_ui202/scenes/split", json={})
+    response = client.post("/api/v1/projects/nonexistent_ui202/scenes/split", json={})
     assert response.status_code == 404
     data = response.json()
     assert "detail" in data

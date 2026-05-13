@@ -1474,6 +1474,42 @@ Dois arquivos `video_generation_pipeline.py` e `video_generation_pipeline_new.py
 - [x] Commit criado
 
 
+## API-210 — Adicionar prefixo `/api/v1/` em todas as rotas
+
+**Épico:** EPIC-800 Structural Stabilization  
+**Prioridade:** Alta  
+**Status:** Concluída ✅  
+**Estimativa:** 5 SP  
+**Arquivo de contexto obrigatório:** `docs/project-control/00_STATUS_EXECUTIVO.md`
+
+### História
+Como mantenedor, eu quero que todas as rotas da API usem prefixo `/api/v1/`, para versionamento explícito e compatibilidade futura.
+
+### Contexto técnico
+`app/api.py` tem 44 rotas REST + 1 WebSocket, todas sem prefixo de versão. O endpoint `/api/llm/providers` também retorna raw dict sem envelope `ApiResponse` (será endereçado em API-211). Nenhum cliente externo consome esta API (é local-first), então não há necessidade de backward compat.
+
+### Evidências
+- `app/api.py`: todas as 44 rotas REST alteradas de `/api/...` para `/api/v1/...`, WebSocket alterado de `/ws/...` para `/api/v1/ws/...`
+- `tests/test_api.py`: 13 rotas de teste atualizadas para `/api/v1/...`
+- `tests/test_h10_contract.py`: 8 rotas de teste atualizadas para `/api/v1/...`
+- Pytest: 21/21 API + contract tests passed
+- Full suite: 739 passed (zero regressão)
+
+### Critérios de aceite
+- ✅ Toda rota REST em `app/api.py` usa prefixo `/api/v1/`
+- ✅ WebSocket usa prefixo `/api/v1/ws/`
+- ✅ Testes de API e contrato atualizados e passando
+- ✅ Nenhuma regressão no full suite
+
+### Definition of Done
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [x] Commit criado
+
+
 ## RND-603 — Registrar Wan VACE 1.3B como futuro opcional
 
 **Épico:** EPIC-700 Render e performance  

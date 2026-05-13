@@ -81,7 +81,7 @@ app.add_middleware(
 # ========== Health ==========
 
 
-@app.get("/api/health")
+@app.get("/api/v1/health")
 async def health_check():
     """Health check endpoint."""
     return success_response({
@@ -105,7 +105,7 @@ class LLMProviderResponse(BaseModel):
     openai_compatible_local: bool
 
 
-@app.get("/api/llm/providers")
+@app.get("/api/v1/llm/providers")
 async def get_llm_providers():
     """Check which LLM providers are available."""
     try:
@@ -144,7 +144,7 @@ class ScriptGenerateRequest(BaseModel):
     endpoint: Optional[str] = None
 
 
-@app.post("/api/llm/script")
+@app.post("/api/v1/llm/script")
 async def generate_script_api(request: ScriptGenerateRequest):
     """Generate script using LLM providers."""
     try:
@@ -178,7 +178,7 @@ class ScriptSaveRequest(BaseModel):
     version_note: Optional[str] = None
 
 
-@app.post("/api/projects/{project_id}/script/save-manual-edit")
+@app.post("/api/v1/projects/{project_id}/script/save-manual-edit")
 async def save_manual_edit(project_id: str, request: ScriptSaveRequest):
     """Save manually edited script."""
     try:
@@ -194,7 +194,7 @@ async def save_manual_edit(project_id: str, request: ScriptSaveRequest):
         raise error_response("SAVE_EDIT_FAILED", str(e), status_code=500)
 
 
-@app.post("/api/projects/{project_id}/script/improve")
+@app.post("/api/v1/projects/{project_id}/script/improve")
 async def improve_script(project_id: str, briefing: str = ""):
     """Improve existing script."""
     try:
@@ -210,7 +210,7 @@ async def improve_script(project_id: str, briefing: str = ""):
         raise error_response("IMPROVE_FAILED", str(e), status_code=500)
 
 
-@app.post("/api/projects/{project_id}/script/more-viral")
+@app.post("/api/v1/projects/{project_id}/script/more-viral")
 async def make_more_viral(project_id: str):
     """Make script more viral."""
     try:
@@ -223,7 +223,7 @@ async def make_more_viral(project_id: str):
     except Exception as e:
         raise error_response("VIRAL_FAILED", str(e), status_code=500)
 
-@app.post("/api/projects/{project_id}/script/more-premium")
+@app.post("/api/v1/projects/{project_id}/script/more-premium")
 async def make_more_premium(project_id: str):
     """Make script more premium."""
     try:
@@ -236,7 +236,7 @@ async def make_more_premium(project_id: str):
     except Exception as e:
         raise error_response("PREMIUM_FAILED", str(e), status_code=500)
 
-@app.post("/api/projects/{project_id}/script/more-direct")
+@app.post("/api/v1/projects/{project_id}/script/more-direct")
 async def make_more_direct(project_id: str):
     """Make script more direct for sales."""
     try:
@@ -249,7 +249,7 @@ async def make_more_direct(project_id: str):
     except Exception as e:
         raise error_response("DIRECT_FAILED", str(e), status_code=500)
 
-@app.post("/api/projects/{project_id}/script/new-version")
+@app.post("/api/v1/projects/{project_id}/script/new-version")
 async def create_new_version(project_id: str):
     """Create new script version."""
     try:
@@ -262,7 +262,7 @@ async def create_new_version(project_id: str):
     except Exception as e:
         raise error_response("NEW_VERSION_FAILED", str(e), status_code=500)
 
-@app.post("/api/projects/{project_id}/script/restore-previous")
+@app.post("/api/v1/projects/{project_id}/script/restore-previous")
 async def restore_previous_version(project_id: str):
     """Restore previous script version."""
     try:
@@ -276,7 +276,7 @@ async def restore_previous_version(project_id: str):
         raise error_response("RESTORE_FAILED", str(e), status_code=500)
 
 
-@app.post("/api/projects/{project_id}/script/approve")
+@app.post("/api/v1/projects/{project_id}/script/approve")
 async def approve_script_api(project_id: str):
     """Approve script for production."""
     try:
@@ -292,7 +292,7 @@ async def approve_script_api(project_id: str):
         raise error_response("APPROVE_FAILED", str(e), status_code=500)
 
 
-@app.get("/api/projects/{project_id}/script/current")
+@app.get("/api/v1/projects/{project_id}/script/current")
 async def get_current_script(project_id: str):
     """Get current script."""
     try:
@@ -303,7 +303,7 @@ async def get_current_script(project_id: str):
         raise error_response("LOAD_SCRIPT_FAILED", str(e), status_code=500)
 
 
-@app.get("/api/projects/{project_id}/script/versions")
+@app.get("/api/v1/projects/{project_id}/script/versions")
 async def get_script_versions(project_id: str):
     """Get all script versions."""
     try:
@@ -320,7 +320,7 @@ class ScriptGenerateForProjectRequest(BaseModel):
     briefing: Optional[str] = None
 
 
-@app.post("/api/projects/{project_id}/script/generate")
+@app.post("/api/v1/projects/{project_id}/script/generate")
 async def generate_script_for_project(project_id: str, request: ScriptGenerateForProjectRequest = None):
     """Generate script for a project without triggering video rendering.
     
@@ -384,7 +384,7 @@ class SplitScenesRequest(BaseModel):
     script: Optional[str] = None
 
 
-@app.post("/api/projects/{project_id}/scenes/split")
+@app.post("/api/v1/projects/{project_id}/scenes/split")
 async def split_project_scenes(project_id: str, request: SplitScenesRequest = None):
     """Split approved script into scenes.
     
@@ -437,7 +437,7 @@ async def split_project_scenes(project_id: str, request: SplitScenesRequest = No
 
 # ========== Hardware ==========
 
-@app.get("/api/hardware")
+@app.get("/api/v1/hardware")
 async def get_hardware_info():
     """Get hardware information."""
     try:
@@ -450,7 +450,7 @@ async def get_hardware_info():
 
 # ========== Jobs (Implemented with Use Cases) ==========
 
-@app.get("/api/jobs/{job_id}")
+@app.get("/api/v1/jobs/{job_id}")
 async def get_job_status(job_id: str):
     """Get job status directly from queue."""
     from app.jobs.queue import queue
@@ -461,7 +461,7 @@ async def get_job_status(job_id: str):
         return error_response("JOB_NOT_FOUND", "Job not found", status_code=404)
 
 
-@app.post("/api/jobs/{job_id}/cancel")
+@app.post("/api/v1/jobs/{job_id}/cancel")
 async def cancel_job(job_id: str):
     """Cancel a job (PIPE-400: formal cancel via queue)."""
     try:
@@ -476,7 +476,7 @@ async def cancel_job(job_id: str):
         raise error_response("CANCEL_FAILED", str(e), status_code=500)
 
 
-@app.get("/api/jobs")
+@app.get("/api/v1/jobs")
 async def list_all_jobs():
     """List all jobs using use case."""
     try:
@@ -498,7 +498,7 @@ class JobCreateRequest(BaseModel):
     project_id: str
     job_type: str = "video_render"
 
-@app.post("/api/jobs")
+@app.post("/api/v1/jobs")
 async def create_job(request: JobCreateRequest):
     """Create new job using use case."""
     try:
@@ -531,7 +531,7 @@ class VideoGenerationRequest(BaseModel):
     keywords: Optional[List[str]] = None
 
 
-@app.post("/api/generate-video")
+@app.post("/api/v1/generate-video")
 async def generate_video(request: VideoGenerationRequest):
     """
     Generate a complete commercial video.
@@ -596,7 +596,7 @@ async def generate_video(request: VideoGenerationRequest):
         return error_response("VIDEO_GENERATION_ERROR", str(e), status_code=500)
 
 
-@app.get("/api/video-status/{project_id}")
+@app.get("/api/v1/video-status/{project_id}")
 async def get_video_status(project_id: str):
     """Get status of video generation project."""
     from app.config import PROJECTS_DIR
@@ -633,7 +633,7 @@ async def get_video_status(project_id: str):
 
 # ========== Pipeline Status ==========
 
-@app.get("/api/pipeline/status")
+@app.get("/api/v1/pipeline/status")
 async def get_pipeline_status():
     """Get status of all pipeline components."""
     try:
@@ -650,7 +650,7 @@ async def get_pipeline_status():
 
 # ========== WebSocket for Progress ==========
 
-@app.websocket("/ws/jobs/{job_id}")
+@app.websocket("/api/v1/ws/jobs/{job_id}")
 async def websocket_progress(websocket: WebSocket, job_id: str):
     """WebSocket for real job progress updates."""
     await websocket.accept()
@@ -694,7 +694,7 @@ async def websocket_progress(websocket: WebSocket, job_id: str):
              pass
 
 
-@app.get("/api/metrics")
+@app.get("/api/v1/metrics")
 async def get_metrics():
     """Get metrics summary."""
     try:
@@ -711,7 +711,7 @@ async def get_metrics():
         raise error_response("METRICS_FAILED", str(e), status_code=500)
 
 
-@app.get("/api/metrics/operations")
+@app.get("/api/v1/metrics/operations")
 async def get_recent_operations(limit: int = 10):
     """Get recent operations."""
     try:
@@ -728,7 +728,7 @@ async def get_recent_operations(limit: int = 10):
         raise error_response("OPERATIONS_FAILED", str(e), status_code=500)
 
 
-@app.get("/api/logs/recent")
+@app.get("/api/v1/logs/recent")
 async def get_recent_logs(level: Optional[str] = None, search: Optional[str] = None, limit: int = 200):
     """Get recent logs with filters."""
     try:
@@ -745,7 +745,7 @@ async def get_recent_logs(level: Optional[str] = None, search: Optional[str] = N
         raise error_response("LOGS_FAILED", str(e), status_code=500)
 
 
-@app.get("/api/logs/summary")
+@app.get("/api/v1/logs/summary")
 async def get_log_summary():
     """Get log summary statistics."""
     try:
@@ -762,7 +762,7 @@ async def get_log_summary():
         raise error_response("LOG_SUMMARY_FAILED", str(e), status_code=500)
 
 
-@app.get("/api/logs/last-error")
+@app.get("/api/v1/logs/last-error")
 async def get_last_error():
     """Get last error from logs."""
     try:
@@ -779,7 +779,7 @@ async def get_last_error():
         raise error_response("LAST_ERROR_FAILED", str(e), status_code=500)
 
 
-@app.get("/api/logs/diagnostic")
+@app.get("/api/v1/logs/diagnostic")
 async def get_diagnostic_bundle():
     """Get diagnostic bundle for support."""
     try:
@@ -796,7 +796,7 @@ async def get_diagnostic_bundle():
         raise error_response("DIAGNOSTIC_FAILED", str(e), status_code=500)
 
 
-@app.post("/api/projects/{project_id}/prompt-pack")
+@app.post("/api/v1/projects/{project_id}/prompt-pack")
 async def create_prompt_pack(project_id: str, request: dict):
     """Create Prompt Context Pack."""
     try:
@@ -818,7 +818,7 @@ async def create_prompt_pack(project_id: str, request: dict):
         raise error_response("PROMPT_PACK_CREATE_FAILED", str(e), status_code=500)
 
 
-@app.get("/api/projects/{project_id}/prompt-pack")
+@app.get("/api/v1/projects/{project_id}/prompt-pack")
 async def get_prompt_pack(project_id: str):
     """Get Prompt Context Pack."""
     try:
@@ -835,7 +835,7 @@ async def get_prompt_pack(project_id: str):
         raise error_response("PROMPT_PACK_FAILED", str(e), status_code=500)
 
 
-@app.post("/api/projects/{project_id}/prompt-pack/validate")
+@app.post("/api/v1/projects/{project_id}/prompt-pack/validate")
 async def validate_prompt_pack(project_id: str, request: dict):
     """Validate Prompt Context Pack consistency."""
     try:
@@ -852,7 +852,7 @@ async def validate_prompt_pack(project_id: str, request: dict):
         raise error_response("PROMPT_VALIDATION_FAILED", str(e), status_code=500)
 
 
-@app.post("/api/scripts/score")
+@app.post("/api/v1/scripts/score")
 async def score_script(request: dict):
     """Score a script based on quality criteria."""
     try:
@@ -872,7 +872,7 @@ async def score_script(request: dict):
         raise error_response("SCRIPT_SCORE_FAILED", str(e), status_code=500)
 
 
-@app.get("/api/scripts/templates/{commercial_type}")
+@app.get("/api/v1/scripts/templates/{commercial_type}")
 async def get_script_template(commercial_type: str = "produto"):
     """Get script template by commercial type."""
     try:
@@ -889,7 +889,7 @@ async def get_script_template(commercial_type: str = "produto"):
         raise error_response("TEMPLATE_FAILED", str(e), status_code=500)
 
 
-@app.post("/api/briefing/enrich")
+@app.post("/api/v1/briefing/enrich")
 async def enrich_briefing(request: dict):
     """Enrich briefing with suggestions."""
     try:
@@ -909,7 +909,7 @@ async def enrich_briefing(request: dict):
         raise error_response("BRIEFING_ENRICH_FAILED", str(e), status_code=500)
 
 
-@app.post("/api/projects/{project_id}/script/improve")
+@app.post("/api/v1/projects/{project_id}/script/improve")
 async def improve_script(project_id: str, request: dict):
     """Improve script with specified type."""
     try:
@@ -930,7 +930,7 @@ async def improve_script(project_id: str, request: dict):
         raise error_response("SCRIPT_IMPROVE_FAILED", str(e), status_code=500)
 
 
-@app.post("/api/projects/{project_id}/script/approve")
+@app.post("/api/v1/projects/{project_id}/script/approve")
 async def approve_script(project_id: str, request: dict):
     """Approve or reject script."""
     try:
@@ -951,7 +951,7 @@ async def approve_script(project_id: str, request: dict):
         raise error_response("SCRIPT_APPROVAL_FAILED", str(e), status_code=500)
 
 
-@app.get("/api/projects/{project_id}/script/versions")
+@app.get("/api/v1/projects/{project_id}/script/versions")
 async def get_script_versions(project_id: str):
     """Get all script versions."""
     try:
@@ -968,7 +968,7 @@ async def get_script_versions(project_id: str):
         raise error_response("SCRIPT_VERSIONS_FAILED", str(e), status_code=500)
 
 
-@app.post("/api/projects/{project_id}/visual-bible")
+@app.post("/api/v1/projects/{project_id}/visual-bible")
 async def create_visual_bible(project_id: str, request: dict):
     """Create Visual Bible for project."""
     try:
@@ -990,7 +990,7 @@ async def create_visual_bible(project_id: str, request: dict):
         raise error_response("VISUAL_BIBLE_CREATE_FAILED", str(e), status_code=500)
 
 
-@app.post("/api/projects/{project_id}/scene-contracts")
+@app.post("/api/v1/projects/{project_id}/scene-contracts")
 async def generate_scene_contracts(project_id: str, request: dict):
     """Generate scene contracts with visual consistency."""
     try:
@@ -1012,7 +1012,7 @@ async def generate_scene_contracts(project_id: str, request: dict):
         raise error_response("SCENE_CONTRACTS_FAILED", str(e), status_code=500)
 
 
-@app.post("/api/projects/{project_id}/validate-visual")
+@app.post("/api/v1/projects/{project_id}/validate-visual")
 async def validate_visual_consistency(project_id: str, request: dict):
     """Validate visual consistency across scenes."""
     try:
@@ -1029,7 +1029,7 @@ async def validate_visual_consistency(project_id: str, request: dict):
         raise error_response("VISUAL_VALIDATION_FAILED", str(e), status_code=500)
 
 
-@app.get("/api/health/dashboard")
+@app.get("/api/v1/health/dashboard")
 async def get_health_dashboard():
     """Get comprehensive health dashboard."""
     try:
@@ -1046,7 +1046,7 @@ async def get_health_dashboard():
         raise error_response("HEALTH_DASHBOARD_FAILED", str(e), status_code=500)
 
 
-@app.get("/api/logs/structured")
+@app.get("/api/v1/logs/structured")
 async def get_structured_logs(level: Optional[str] = None, limit: int = 100):
     """Get logs in structured JSON format."""
     try:
