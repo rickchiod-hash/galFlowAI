@@ -2,6 +2,50 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-12 — Sessão 22: Phase 6A — ARCH-320 Pipeline Unification
+
+### Contexto
+Replan do backlog aprovado pelo usuário. Início da Fase 6A (Structural Stabilization). Primeira história: ARCH-320 — unificar os dois pipelines duplicados (`video_generation_pipeline.py` e `video_generation_pipeline_new.py`) em um único canônico.
+
+### O que fiz
+- **Replan completo apresentado e aprovado**: 11 novas histórias em 3 fases (6A, 6B, 6C)
+  - WanGP, VACE, FFmpeg fallback, API versioning, UI integration, vector store, logs estruturados — todos reclassificados de opcionais para **mandatórios**
+  - Ollama permanece o único opcional
+  - Anti-break order: 6A → 6B → 6C (nunca inverter)
+- **ARCH-320 ✅:**
+  - Comparei os dois arquivos: 94%+ idênticos. Única diferença funcional: `_new.py` não verifica `script_approved.md` (sempre aprova imediatamente). O canônico mantém o approval gate.
+  - Deletado `app/pipeline/video_generation_pipeline_new.py` (0 referências no código)
+  - Adicionado `test_only_one_pipeline_file` em `tests/test_pipeline.py` — verifica exatamente 1 pipeline file
+  - 4/4 passed em `test_pipeline.py`
+  - Full suite: 739 passed (9 pre-existing failures: 4 StrEnum Python 3.10, 1 git audit count, 4 indirect StrEnum)
+  - Zero regressão causada pela mudança
+- **Docs atualizados:**
+  - `00_STATUS_EXECUTIVO.md`: novo backlog 55/65, fase 6A, sessão 22
+  - `05_BACKLOG_PRIORIZADO.md`: Backlog Pós-49 com 11 novas histórias
+  - `06_HISTORIAS_REFINADAS.md`: ARCH-320 refined story adicionada
+  - `18_IMPLEMENTATION_ORDER.md`: fases 6A-6C adicionadas com regra anti-break
+  - `10_DAILY_LOG.md`: esta entrada
+
+### Arquivos alterados
+- `app/pipeline/video_generation_pipeline_new.py` — **deletado** (ARCH-320)
+- `tests/test_pipeline.py` — adicionado `test_only_one_pipeline_file`
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — atualizado
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — backlog expandido
+- `docs/project-control/06_HISTORIAS_REFINADAS.md` — ARCH-320 adicionada
+- `docs/project-control/18_IMPLEMENTATION_ORDER.md` — fases 6A-6C
+- `docs/project-control/10_DAILY_LOG.md` — esta entrada
+
+### Decisões
+- Pipeline canônico = `video_generation_pipeline.py` (com approval gate). `_new.py` deletado sem ADR porque é duplicata, não feature.
+- Anti-break order: 6A (estrutural, sem mudança funcional) → 6B (integração funcional) → 6C (plataforma completa)
+
+### Bloqueios
+- 4 testes `test_error_codes.py`/`test_app_error.py`/`test_error_catalog_service.py`/`test_error_jsonl_writer.py` quebram por `StrEnum` (Python 3.10) — pre-existing, não causado por ARCH-320
+- `test_audit_commit_count_within_range` desatualizado (240 commits, audit diz 237) — pre-existing
+
+### Próximo passo
+- **API-210**: Adicionar prefixo `/api/v1/` em todas as rotas
+
 ## 2026-05-12 — Sessão 21: Error Handling Infrastructure (P0-ERR-01..05)
 
 ### Contexto

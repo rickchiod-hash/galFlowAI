@@ -48,6 +48,27 @@
 5. RND-600.
 6. AUD-700.
 
+### Fase 6A — Structural Stabilization (anti-break order)
+
+1. ARCH-320 ✅
+2. API-210
+3. API-211
+4. LOG-100
+
+### Fase 6B — Mandatory Functional Integration
+
+1. UI-205
+2. RND-610
+3. RND-611
+4. RND-612
+
+### Fase 6C — Complete Platform
+
+1. VEC-810
+2. VEC-811
+3. DOC-120
+
 ## Regra
 
-Não pular fases sem registrar motivo no Status Executivo.
+1. Não pular fases sem registrar motivo no Status Executivo.
+2. **Nunca inverter anti-break order**: 6A → 6B → 6C obrigatório.

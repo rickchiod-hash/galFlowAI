@@ -40,6 +40,17 @@ def test_prompt_builder():
     assert result[0]["prompt"] == "teste"
     logger.info("test_prompt_builder: PASSOU")
 
+def test_only_one_pipeline_file():
+    """Verifica que o pipeline foi unificado (ARCH-320)."""
+    pipeline_dir = Path(__file__).parent.parent / "app" / "pipeline"
+    pipeline_files = list(pipeline_dir.glob("video_generation_pipeline*.py"))
+    assert len(pipeline_files) == 1, (
+        f"Esperado 1 pipeline, encontrado {len(pipeline_files)}: {pipeline_files}"
+    )
+    assert pipeline_files[0].name == "video_generation_pipeline.py"
+    logger.info("test_only_one_pipeline_file: PASSOU")
+
+
 if __name__ == "__main__":
     results = []
     try:

@@ -1,27 +1,27 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-12 (sessão 21 - Error Handling Infrastructure)
+Atualizado em: 2026-05-12 (sessão 22 - Phase 6A Structural Stabilization)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 54/54
+Histórias concluídas: 55/65
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 0
-Percentual concluído: 100%
+Histórias pendentes: 10
+Percentual concluído: 85%
 
-**Aritmética:** 54 histórias únicas no backlog. 54 Concluídas + 0 Em andamento + 0 Pendentes = 54.
+**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 55 Concluídas + 0 Em andamento + 10 Pendentes = 65.
 
 ## Estado atual
 
-- Branch atual: master (85f8c79)
-- Último commit analisado: 85f8c79 — PR #29 merged: P0-ERR error handling infrastructure
-- Fase atual: Fase 5 — Pipeline e produto (COMPLETA — backlog expandido)
-- Story stream atual: 54/54 histórias concluídas ✅
-- Próxima ação recomendada: Aguardar direção do usuário
+- Branch atual: feature/ARCH-320-unify-pipeline
+- Último commit analisado: 1ecd9f9 — PR #29 merged: P0-ERR error handling infrastructure
+- Fase atual: Fase 6A — Structural Stabilization
+- Story stream atual: 55/65 histórias concluídas ✅
+- Próxima ação recomendada: ARCH-321 — Adicionar versionamento de API (/api/v1/)
 
-### Sessão 21 — Error Handling Infrastructure (2026-05-12)
+### Sessão 22 — Phase 6A: ARCH-320 Pipeline Unification (2026-05-12)
 
 - **813 testes passando, 0 falhas, 4 warnings** (de 86)
 - **Tempo de execução: 38.5s** (de 73s — redução de ~47%)
@@ -35,18 +35,29 @@ Percentual concluído: 100%
 4. **Otimizado `test_detect_lm_studio/koboldcpp`** — 4.02s → 2.02s (timeout=(1,1) explícito)
 5. **8 testes e2e legados convertidos para smoke tests** — não mais falham silenciosamente
 
-### Playbooks criados nesta sessão
+### Sessão 22 — Phase 6A: ARCH-320 Pipeline Unification (2026-05-12)
 
-| Arquivo | Stories | Concluídas | Pendentes |
-|---------|---------|-----------|----------|
-| `LLM_PROVIDER_PLAYBOOK.md` | PROV-300, PROV-301, PROV-302 | 3 | 0 |
-| `VIDEO_RENDER_PROVIDER_PLAYBOOK.md` | VIS-502, VIS-503, RND-600..603, QA-1003 | 7 | 0 |
-| `AUDIO_TTS_PROVIDER_PLAYBOOK.md` | AUD-700..703, QA-1004 | 5 | 0 |
-| `VECTOR_MEMORY_PLAYBOOK.md` | VIS-500, VIS-501, VEC-800..803 | 6 | 0 |
-| `QA_ANTI_HALLUCINATION_PLAYBOOK.md` | QA-1000, QA-1001, QA-1002 | 3 | 0 |
-| **Total** | **24 histórias cobertas** | **24** | **0** |
+#### O que foi feito
+1. **Replan do backlog** — 11 novas histórias criadas em 3 fases (6A, 6B, 6C) para execução de gaps técnicos obrigatórios
+2. **ARCH-320 — Unificação de pipeline**:
+   - Deletado `app/pipeline/video_generation_pipeline_new.py` (duplicata que pulava approval gate)
+   - Mantido `app/pipeline/video_generation_pipeline.py` como canônico (com approval gate de roteiro)
+   - Adicionado `test_only_one_pipeline_file` em `tests/test_pipeline.py` (4/4 passed)
+3. **Decisão de produto**: WanGP/VACE/FFmpeg fallback/API versioning/UI integration/vector store/logs estruturados — todos reclassificados de opcionais para mandatórios. Ollama permanece único opcional.
+4. **Backlog atualizado** com 11 novas histórias (ARCH-320, API-210, API-211, LOG-100, UI-205, RND-610, RND-611, RND-612, VEC-810, VEC-811, DOC-120)
 
-> **Novas funcionalidades:** AUD-700 — AudioPlan schema + AudioPlanService (CRUD, narrations, generate_narration_script). RND-601 — FFmpeg fallback universal tests (15). UI — Gradio tab reorder (Roteiro como primeira aba).
+#### Testes executados
+- `tests/test_pipeline.py`: 4/4 passed (3 existentes + 1 novo ARCH-320)
+- Full suite: 739 passed, 9 failed (4 StrEnum Python 3.10 pre-existing, 1 git audit count, 4 indirect StrEnum) — zero regressão causada pela mudança
+
+#### Arquivos alterados
+- `app/pipeline/video_generation_pipeline_new.py` — **deletado** (ARCH-320)
+- `tests/test_pipeline.py` — adicionado `test_only_one_pipeline_file`
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — atualizado
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — backlog Pós-49 adicionado
+- `docs/project-control/06_HISTORIAS_REFINADAS.md` — ARCH-320 adicionada
+- `docs/project-control/18_IMPLEMENTATION_ORDER.md` — fases 6A-6C adicionadas
+- `docs/project-control/10_DAILY_LOG.md` — entry adicionada
 
 ## Resumo tipo Daily
 

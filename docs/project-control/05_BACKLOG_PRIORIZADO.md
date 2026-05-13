@@ -56,10 +56,41 @@ Backlog ordenado por valor, risco técnico, dependência e capacidade de entrega
 | 48 | SEC-1100 | Criar política MCP seguro | Média | 2 | Concluída | Arquitetura/base P0 validada | mcp/README_MCP_OPTIONAL.md criado — MCP desabilitado por padrao. 5 testes. |
 | 49 | SEC-1101 | Criar política de secrets e arquivos sensíveis | Média | 2 | Concluída | Arquitetura/base P0 validada | SECRETS_POLICY.md criado + .gitignore atualizado (env/credentials). 6 testes. |
 
+## Backlog Pós-49 — Fase 6 (Mandatory Technical Gaps)
+
+Backlog expandido por decisão de produto (2026-05-12): WanGP, VACE, FFmpeg fallback, API versioning, UI integrada, vector store, logs estruturados na UI e fluxo stage-gated são **mandatórios**. Ollama permanece único opcional.
+
+### Fase 6A — Structural Stabilization (zero mudança funcional visível)
+
+| Ordem | ID | História | Prioridade | SP | Status | Dependência |
+|------:|---|---------|:---------:|:--:|:------:|:-----------:|
+| 50 | ARCH-320 | Unificar pipeline old/new, deletar `_new.py` | Alta | 2 | ✅ Concluída | Nenhuma |
+| 51 | API-210 | Adicionar prefixo `/api/v1/` em todas as rotas | Alta | 5 | Pendente | Nenhuma |
+| 52 | API-211 | Envelopar resposta de `/api/llm/providers` em `ApiResponse` | Alta | 3 | Pendente | Nenhuma |
+| 53 | LOG-100 | Conectar erros estruturados ao Dataframe de logs na UI | Alta | 5 | Pendente | Nenhuma |
+
+### Fase 6B — Mandatory Functional Integration
+
+| Ordem | ID | História | Prioridade | SP | Status | Dependência |
+|------:|---|---------|:---------:|:--:|:------:|:-----------:|
+| 54 | UI-205 | Substituir botões placeholder do estágio 2 por chamadas reais de use case | Alta | 8 | Pendente | ARCH-320 |
+| 55 | RND-610 | Hardening do WanGP adapter (telemetria, erros estruturados) | Alta | 8 | Pendente | LOG-100 |
+| 56 | RND-611 | Pipeline fallback chama `log_structured_error` | Alta | 5 | Pendente | RND-610 |
+| 57 | RND-612 | Criar `app/adapters/vace_adapter.py` | Alta | 8 | Pendente | ARCH-320 |
+
+### Fase 6C — Complete Platform
+
+| Ordem | ID | História | Prioridade | SP | Status | Dependência |
+|------:|---|---------|:---------:|:--:|:------:|:-----------:|
+| 58 | VEC-810 | Implementar Qdrant vector store backend | Média | 8 | Pendente | Fase 6B |
+| 59 | VEC-811 | Implementar Chroma vector store backend | Média | 5 | Pendente | Fase 6B |
+| 60 | DOC-120 | Reconciliar documentação com novo direcionamento mandatório | Média | 3 | Pendente | Fase 6C |
+
+**Total novas histórias: 11** | **SP total novo: 56** | **SP acumulado: 54 + 56 = 110**
+
 ## Próxima história recomendada
 
-**Todas as 49 histórias do backlog concluídas.**  
-Backlog 100% implementado dentro do escopo P0/P1.
+**ARCH-320 concluída.** Próxima: **API-210** — Adicionar prefixo `/api/v1/` em todas as rotas.
 
 ## Regras de priorização
 
@@ -68,3 +99,4 @@ Backlog 100% implementado dentro do escopo P0/P1.
 3. Fluxo por etapas antes de engine nova.
 4. Fallback antes de provider premium.
 5. Teste antes de declarar conclusão.
+6. **Phase 6A antes de 6B antes de 6C** — nunca inverter a anti-break order.

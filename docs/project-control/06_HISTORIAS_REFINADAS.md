@@ -1437,6 +1437,43 @@ Ver `RND-602` em `08_PLANO_DE_TESTES.md`.
 - [x] Daily log atualizado
 - [x] Commit criado
 
+## ARCH-320 — Unificar pipeline old/new
+
+**Épico:** EPIC-800 Structural Stabilization  
+**Prioridade:** Alta  
+**Status:** Concluída ✅  
+**Estimativa:** 2 SP  
+**Arquivo de contexto obrigatório:** `docs/project-control/00_STATUS_EXECUTIVO.md`
+
+### História
+Como mantenedor, eu quero um único pipeline canônico, para eliminar duplicação e garantir que o approval gate de roteiro nunca seja pulado.
+
+### Contexto técnico
+Dois arquivos `video_generation_pipeline.py` e `video_generation_pipeline_new.py` coexistem em `app/pipeline/`. São 94%+ idênticos. A única diferença funcional é que o `_new` não verifica `script_approved.md` — sempre aprova imediatamente. O canônico mantém o approval gate.
+
+### Evidências
+- `app/pipeline/video_generation_pipeline_new.py` deletado
+- `app/pipeline/video_generation_pipeline.py` mantido como canônico (com approval gate)
+- `tests/test_pipeline.py::test_only_one_pipeline_file` criado (verifica exatamente 1 pipeline)
+- `git diff` master: 1 arquivo deletado, 1 arquivo modificado (teste adicionado)
+- Pytest: 4/4 passed em test_pipeline.py, 739 passed full suite (zero regressão)
+
+### Critérios de aceite
+- ✅ Apenas um arquivo `video_generation_pipeline*.py` existe em `app/pipeline/`
+- ✅ O arquivo canônico mantém o approval gate de roteiro (verifica `script_approved.md`)
+- ✅ `video_generation_pipeline_new.py` não existe mais
+- ✅ Nenhum import quebrado (0 regressão)
+- ✅ Teste `test_only_one_pipeline_file` passando
+
+### Definition of Done
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [x] Commit criado
+
+
 ## RND-603 — Registrar Wan VACE 1.3B como futuro opcional
 
 **Épico:** EPIC-700 Render e performance  
