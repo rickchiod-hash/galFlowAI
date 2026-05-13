@@ -79,12 +79,14 @@ def test_api_health_and_llm_providers_contract():
     assert details["fastapi"] == True
     assert details["version"] == "2.0"
     
-    # Test LLM providers endpoint
+    # Test LLM providers endpoint (API-211: now wrapped in ApiResponse envelope)
     response = client.get("/api/v1/llm/providers")
     assert response.status_code == 200
     data = response.json()
-    assert "template" in data
-    assert data["template"] == True  # Template provider should always be available
+    assert data["ok"] == True
+    details = data.get("details", {})
+    assert "template" in details
+    assert details["template"] == True  # Template provider should always be available
     
     print("test_api_health_and_llm_providers_contract: PASSED")
 

@@ -113,24 +113,24 @@ async def get_llm_providers():
         router = ProviderRouter()
         available = router.detect_available()
         # Mapear nomes de providers para o formato esperado pela UI
-        return {
+        return success_response({
             "template": available.get("template", True),
             "lmstudio": available.get("LMStudioProvider", False),
             "koboldcpp": available.get("KoboldCppProvider", False),
             "gpt4all": available.get("GPT4AllProvider", False),
             "llamacpp": available.get("LlamaCppProvider", False),
             "openai_compatible_local": False  # Não implementado ainda
-        }
+        }, "Providers detected")
     except Exception as e:
         logger.error("Failed to detect providers: %s", e)
-        return {
+        return success_response({
             "template": True,
             "lmstudio": False,
             "koboldcpp": False,
             "gpt4all": False,
             "llamacpp": False,
             "openai_compatible_local": False
-        }
+        }, "Providers detection failed, using defaults")
 
 
 # ========== Script Generation ==========
