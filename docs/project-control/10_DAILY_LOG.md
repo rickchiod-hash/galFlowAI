@@ -2032,3 +2032,35 @@ Sessão 17 (bare except fix + app review) concluída. Havia trabalho não commit
 
 ### Próximo passo
 - Decidir: continuar com a branch (PR/merge) ou abordar os testes lentos/timeout
+
+
+## 2026-05-12 — Sessão 23: UI-205 — Substituir botões placeholder Stage 2
+
+### Contexto
+Os 5 botões de transformação de roteiro na Etapa 2 ("Melhorar", "Complementar", "Mais Viral", "Mais Premium", "Mais Direto") usavam lambdas placeholder que faziam manipulação superficial de string sem persistir mudanças. A história UI-205 exigia conectar esses botões às funções reais do `script_service` que persistem versões em disco e chamam LLM.
+
+### O que fiz
+- **Imports atualizados** em `app/ui/gradio_app.py`: adicionados `improve_script`, `complement_script`, `make_script_more_viral`, `make_script_more_premium`, `make_script_more_direct`, `save_manual_edit`
+- **5 novos callbacks** criados (após `on_save_edit`):
+  - `on_improve_script` — salva texto → chama `improve_script(project_id)` → retorna script atualizado + status
+  - `on_complement_script` — salva texto → chama `complement_script(project_id)` → retorna script atualizado + status
+  - `on_viral_script` — salva texto → chama `make_script_more_viral(project_id)` → retorna script atualizado + status
+  - `on_premium_script` — salva texto → chama `make_script_more_premium(project_id)` → retorna script atualizado + status
+  - `on_direct_script` — salva texto → chama `make_script_more_direct(project_id)` → retorna script atualizado + status
+- **Helper `_ensure_project_id`**: garante que `project_id` exista em `app_state` (default `"web_ui"`)
+- **Wiring substituído**: lambdas nas linhas 603-627 trocadas por `.click(fn=on_X_script, inputs=[script_textbox, app_state], outputs=[script_textbox, stage2_status])`
+- Cada callback salva o texto atual do textbox em disco antes de chamar o serviço, garantindo que edições não salvas não sejam perdidas
+
+### Arquivos alterados
+- `app/ui/gradio_app.py` — imports (linha 20-24), callbacks (linhas 398-468), wiring (linhas 610-634)
+
+### Testes executados e resultado
+- `py -m pytest tests/ --no-header -q --tb=line`: **779 passed, 1 failed** (pre-existing: `test_audit_commit_count_within_range`)
+- Zero regressão causada pela mudança
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- **RND-610**: Hardening do WanGP adapter (telemetria, erros estruturados)
+- Abrir PR da branch `feature/UI-205-real-use-case-buttons` e merge para master

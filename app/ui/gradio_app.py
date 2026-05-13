@@ -21,6 +21,12 @@ from app.services.script_service import (
     generate_script_with_provider,
     get_provider_status,
     get_provider_diagnostics,
+    improve_script,
+    complement_script,
+    make_script_more_viral,
+    make_script_more_premium,
+    make_script_more_direct,
+    save_manual_edit,
 )
 from app.services.log_service import get_recent_logs, get_log_summary, copy_diagnostic_bundle, get_structured_errors
 from app.services.metrics_service import get_metrics_service
@@ -394,6 +400,76 @@ def on_save_edit(script_text):
     return "Edicao registrada. Provedor: %s" % result.get("provider", "-")
 
 
+# ---- Stage 2 Improvement Callbacks ----
+
+def _ensure_project_id(app_state_val):
+    pid = app_state_val.get("project_id", "")
+    if not pid:
+        pid = "web_ui"
+        app_state_val["project_id"] = pid
+    return pid
+
+
+def on_improve_script(script_text, app_state_val):
+    if not script_text:
+        return script_text, "Nada para melhorar."
+    pid = _ensure_project_id(app_state_val)
+    save_manual_edit(pid, script_text, "Salvo antes de melhorar")
+    result = improve_script(pid)
+    if result.get("ok"):
+        app_state_val["script"] = result["script"]
+        return result["script"], "Script melhorado com sucesso (versao %s)." % result.get("version", "?")
+    return script_text, "Erro ao melhorar: %s" % result.get("error", "Falha desconhecida")
+
+
+def on_complement_script(script_text, app_state_val):
+    if not script_text:
+        return script_text, "Nada para complementar."
+    pid = _ensure_project_id(app_state_val)
+    save_manual_edit(pid, script_text, "Salvo antes de complementar")
+    result = complement_script(pid)
+    if result.get("ok"):
+        app_state_val["script"] = result["script"]
+        return result["script"], "Script complementado com sucesso (versao %s)." % result.get("version", "?")
+    return script_text, "Erro ao complementar: %s" % result.get("error", "Falha desconhecida")
+
+
+def on_viral_script(script_text, app_state_val):
+    if not script_text:
+        return script_text, "Nada para tornar viral."
+    pid = _ensure_project_id(app_state_val)
+    save_manual_edit(pid, script_text, "Salvo antes de tornar viral")
+    result = make_script_more_viral(pid)
+    if result.get("ok"):
+        app_state_val["script"] = result["script"]
+        return result["script"], "Script tornado mais viral (versao %s)." % result.get("version", "?")
+    return script_text, "Erro ao tornar viral: %s" % result.get("error", "Falha desconhecida")
+
+
+def on_premium_script(script_text, app_state_val):
+    if not script_text:
+        return script_text, "Nada para tornar premium."
+    pid = _ensure_project_id(app_state_val)
+    save_manual_edit(pid, script_text, "Salvo antes de tornar premium")
+    result = make_script_more_premium(pid)
+    if result.get("ok"):
+        app_state_val["script"] = result["script"]
+        return result["script"], "Script tornado mais premium (versao %s)." % result.get("version", "?")
+    return script_text, "Erro ao tornar premium: %s" % result.get("error", "Falha desconhecida")
+
+
+def on_direct_script(script_text, app_state_val):
+    if not script_text:
+        return script_text, "Nada para tornar direto."
+    pid = _ensure_project_id(app_state_val)
+    save_manual_edit(pid, script_text, "Salvo antes de tornar direto")
+    result = make_script_more_direct(pid)
+    if result.get("ok"):
+        app_state_val["script"] = result["script"]
+        return result["script"], "Script tornado mais direto (versao %s)." % result.get("version", "?")
+    return script_text, "Erro ao tornar direto: %s" % result.get("error", "Falha desconhecida")
+
+
 # ---- UI Build ----
 
 def create_gradio_app():
@@ -601,29 +677,29 @@ def create_gradio_app():
 
             save_edit_btn.click(fn=on_save_edit, inputs=[script_textbox], outputs=[stage2_status])
             improve_btn.click(
-                fn=lambda t: t if t else "Nada para melhorar.",
-                inputs=[script_textbox],
-                outputs=[script_textbox],
+                fn=on_improve_script,
+                inputs=[script_textbox, app_state],
+                outputs=[script_textbox, stage2_status],
             )
             complement_btn.click(
-                fn=lambda t: (t + "\n\n[Complemento - 10s]\nTexto: 'Informacoes adicionais.'" if t else t),
-                inputs=[script_textbox],
-                outputs=[script_textbox],
+                fn=on_complement_script,
+                inputs=[script_textbox, app_state],
+                outputs=[script_textbox, stage2_status],
             )
             viral_btn.click(
-                fn=lambda t: ("[Hook - 3s]\nTexto: 'Voce nao pode perder isso!'\n\n" + t if "[Hook" not in t else t),
-                inputs=[script_textbox],
-                outputs=[script_textbox],
+                fn=on_viral_script,
+                inputs=[script_textbox, app_state],
+                outputs=[script_textbox, stage2_status],
             )
             premium_btn.click(
-                fn=lambda t: t.replace("Texto:", "Texto premium:").replace("Narracao:", "Narracao premium:") if t else t,
-                inputs=[script_textbox],
-                outputs=[script_textbox],
+                fn=on_premium_script,
+                inputs=[script_textbox, app_state],
+                outputs=[script_textbox, stage2_status],
             )
             direct_btn.click(
-                fn=lambda t: (t + "\n\n[Cena CTA - 3s]\nTexto: 'Compre agora!'" if "CTA" not in t else t),
-                inputs=[script_textbox],
-                outputs=[script_textbox],
+                fn=on_direct_script,
+                inputs=[script_textbox, app_state],
+                outputs=[script_textbox, stage2_status],
             )
 
             # Stage 3: Narracao

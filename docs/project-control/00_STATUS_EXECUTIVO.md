@@ -1,52 +1,45 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-12 (sessão 22 - Phase 6A COMPLETA)
+Atualizado em: 2026-05-12 (sessão 23 - UI-205 COMPLETA)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 58/65
+Histórias concluídas: 59/65
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 7
-Percentual concluído: 89%
+Histórias pendentes: 6
+Percentual concluído: 91%
 
-**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 58 Concluídas + 0 Em andamento + 7 Pendentes = 65.
+**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 59 Concluídas + 0 Em andamento + 6 Pendentes = 65.
 
 ## Estado atual
 
-- Branch atual: feature/LOG-100-structured-errors-ui
-- Último commit analisado: 045734e — API-211 + LOG-100
-- Fase atual: Fase 6A — Structural Stabilization ✅ **COMPLETA**
-- Story stream atual: 58/65 histórias concluídas ✅
-- Próxima ação recomendada: Fase 6B — UI-205 (substituir botões placeholder stage 2)
+- Branch atual: feature/UI-205-real-use-case-buttons
+- Último commit analisado: d333330 — base (LOG-100)
+- Fase atual: Fase 6B — Mandatory Functional Integration 🔄
+- Story stream atual: 59/65 histórias concluídas ✅
+- Próxima ação recomendada: RND-610 — Hardening do WanGP adapter
 
-### Sessão 22 — Phase 6A: ARCH-320 + API-210 + API-211 + LOG-100 (2026-05-12)
+### Sessão 23 — Phase 6B: UI-205 (2026-05-12)
 
 #### O que foi feito
-1. **Replan do backlog** — 11 novas histórias em 3 fases (6A, 6B, 6C)
-2. **ARCH-320 ✅** — Unificação de pipeline (deletado `_new.py`, mantido canônico com approval gate)
-3. **API-210 ✅** — Prefixo `/api/v1/` em todas as 44 rotas REST + WebSocket
-4. **API-211 ✅** — `/api/v1/llm/providers` envelopado em `ApiResponse` (antes raw dict)
-5. **LOG-100 ✅** — Erros estruturados na UI:
-   - Dataframe expandido para 9 colunas (+code, stage, retryable, fallback_used)
-   - Nova aba "Erros Estruturados" com filtro de severidade
-   - Sumário de logs inclui `total_structured_errors`
-
-#### Decisão de produto
-WanGP, VACE, FFmpeg fallback, API versioning, UI integration, vector store, logs estruturados — todos **mandatórios**. Ollama permanece único opcional.
+1. **UI-205 ✅** — Botões placeholder do estágio 2 substituídos por chamadas reais ao `script_service`:
+   - 5 novos callbacks: `on_improve_script`, `on_complement_script`, `on_viral_script`, `on_premium_script`, `on_direct_script`
+   - Cada callback salva o texto atual do textbox em disco via `save_manual_edit`, depois chama a função de serviço correspondente
+   - Botões "Melhorar", "Complementar", "Mais Viral", "Mais Premium", "Mais Direto" agora persistem mudanças e atualizam status
+   - Helper `_ensure_project_id` garante project_id "web_ui" para UI sem projeto explícito
+   - Lambdas placeholder removidos (linhas 603-627)
 
 #### Testes executados
-- API (test_api + test_h10_contract): 20/21 passed (1 pre-existing: script.txt cache)
-- Pipeline (test_pipeline): 4/4 passed
-- Zero regressão causada pelas mudanças
+- Full suite: 779/780 passed (1 pre-existing: `test_audit_commit_count_within_range`)
+- Zero regressão causada pela mudança
 
-#### Arquivos alterados (fase 6A completa)
-- `app/pipeline/video_generation_pipeline_new.py` — deletado
-- `app/api.py` — routes prefix + providers envelope
-- `app/ui/gradio_app.py` — logs Dataframe expandido + aba Erros Estruturados
-- `tests/test_pipeline.py`, `tests/test_api.py`, `tests/test_h10_contract.py`
-- `docs/project-control/00_STATUS_EXECUTIVO.md`, `05_BACKLOG_PRIORIZADO.md`, `06_HISTORIAS_REFINADAS.md`, `18_IMPLEMENTATION_ORDER.md`, `10_DAILY_LOG.md`
+#### Arquivos alterados
+- `app/ui/gradio_app.py` — imports, callbacks, wiring
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — esta sessão
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — UI-205 marcado concluído
+- `docs/project-control/10_DAILY_LOG.md` — nova entrada`
 
 ## Resumo tipo Daily
 

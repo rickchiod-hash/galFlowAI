@@ -73,7 +73,7 @@ Backlog expandido por decisão de produto (2026-05-12): WanGP, VACE, FFmpeg fall
 
 | Ordem | ID | História | Prioridade | SP | Status | Dependência |
 |------:|---|---------|:---------:|:--:|:------:|:-----------:|
-| 54 | UI-205 | Substituir botões placeholder do estágio 2 por chamadas reais de use case | Alta | 8 | Pendente | ARCH-320 |
+| 54 | UI-205 | Substituir botões placeholder do estágio 2 por chamadas reais de use case | Alta | 8 | ✅ Concluída | ARCH-320 |
 | 55 | RND-610 | Hardening do WanGP adapter (telemetria, erros estruturados) | Alta | 8 | Pendente | LOG-100 |
 | 56 | RND-611 | Pipeline fallback chama `log_structured_error` | Alta | 5 | Pendente | RND-610 |
 | 57 | RND-612 | Criar `app/adapters/vace_adapter.py` | Alta | 8 | Pendente | ARCH-320 |
@@ -90,7 +90,7 @@ Backlog expandido por decisão de produto (2026-05-12): WanGP, VACE, FFmpeg fall
 
 ## Próxima história recomendada
 
-**ARCH-320 concluída.** Próxima: **API-210** — Adicionar prefixo `/api/v1/` em todas as rotas.
+**UI-205 concluída.** Próxima: **RND-610** — Hardening do WanGP adapter (telemetria, erros estruturados).
 
 ## Regras de priorização
 
