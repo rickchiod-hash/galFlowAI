@@ -5,21 +5,21 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 62/65
+Histórias concluídas: 63/65
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 3
-Percentual concluído: 95%
+Histórias pendentes: 2
+Percentual concluído: 97%
 
-**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 62 Concluídas + 0 Em andamento + 3 Pendentes = 65.
+**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 63 Concluídas + 0 Em andamento + 2 Pendentes = 65.
 
 ## Estado atual
 
-- Branch atual: feature/RND-612-vace-adapter
-- Último commit analisado: 65450b7 — base (RND-611)
-- Fase atual: Fase 6B — Mandatory Functional Integration ✅ **COMPLETA**
-- Story stream atual: 62/65 histórias concluídas ✅
-- Próxima ação recomendada: VEC-810 — Implementar Qdrant vector store backend
+- Branch atual: feature/VEC-810-qdrant-backend
+- Último commit analisado: c08e002 — base (RND-612)
+- Fase atual: Fase 6C — Complete Platform 🔄
+- Story stream atual: 63/65 histórias concluídas ✅
+- Próxima ação recomendada: VEC-811 — Implementar Chroma vector store backend
 
 ### Sessão 23 — Phase 6B: UI-205 (2026-05-12)
 
@@ -117,6 +117,31 @@ Percentual concluído: 95%
 #### Fase 6B Completa ✅
 Todas as 4 histórias da Fase 6B concluídas:
 - UI-205 ✅, RND-610 ✅, RND-611 ✅, RND-612 ✅
+
+### Sessão 27 — Phase 6C: VEC-810 (2026-05-12)
+
+#### O que foi feito
+1. **VEC-810 ✅** — Implementado Qdrant vector store backend (`QdrantStore(VectorStoreAdapter)`):
+   - `app/adapters/vector_store_qdrant.py`: implementação completa do VectorStoreAdapter usando Qdrant
+   - Suporte a modo embedded `:memory:` (sem Docker) e local path
+   - Lazy import do `qdrant-client` (dependência opcional — pipeline funciona sem)
+   - Multi-tenancy via collection por project_id (`galflow_{project_id}`)
+   - Embedding dimension configurável (default 384)
+   - Todos os métodos ABC: `is_available`, `upsert`, `get`, `delete`, `search`, `count`, `clear`
+   - Extra: `list_collections()` para gerenciamento
+   - 14 novos testes com Qdrant mockado (sem runtime real)
+
+#### Testes executados
+- 14 novos testes em `test_vector_store_qdrant.py`
+- Full suite: 819/820 passed (1 pre-existing: `test_audit_commit_count_within_range`)
+- Zero regressão
+
+#### Arquivos alterados
+- `app/adapters/vector_store_qdrant.py` — novo (210+ linhas)
+- `tests/test_vector_store_qdrant.py` — novo (14 testes)
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — esta sessão
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — VEC-810 marcado concluído
+- `docs/project-control/10_DAILY_LOG.md` — nova entrada
 
 ## Resumo tipo Daily
 

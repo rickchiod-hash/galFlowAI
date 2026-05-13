@@ -2168,3 +2168,37 @@ O VACE (Wan VACE 1.3B) estava registrado como futuro opcional via RND-603 (Engin
 ### Próximo passo
 - **VEC-810**: Implementar Qdrant vector store backend
 - Abrir PR da branch `feature/RND-612-vace-adapter` e merge para master
+
+
+## 2026-05-12 — Sessão 27: VEC-810 — Implementar Qdrant vector store backend
+
+### Contexto
+Qdrant estava planejado como backend alvo de produção desde VEC-802, mas sem implementação concreta. A interface `VectorStoreAdapter` (VEC-800) já existia com implementação `InMemoryVectorStore`. VEC-810 exigia criar `QdrantStore(VectorStoreAdapter)` real.
+
+### O que fiz
+- **Criado `app/adapters/vector_store_qdrant.py`** com classe `QdrantStore(VectorStoreAdapter)`:
+  - `__init__(location, embedding_dim, collection_prefix, host, port, prefer_grpc)` — `location=":memory:"` default
+  - `_lazy_init()` — importa `qdrant-client` sob demanda (opcional)
+  - `_ensure_collection(project_id)` — cria coleção por project_id se não existir
+  - **ABC methods**: `is_available()`, `upsert()`, `get()`, `delete()`, `search()`, `count()`, `clear()`
+  - **Extra**: `list_collections()` para gerenciamento
+  - **Multi-tenancy**: `_collection_name(project_id)` → `galflow_{project_id}`
+  - **Payload schema**: `{payload: {...}, metadata: {...}}` compatível com VectorRecord
+  - `delete()` usa Filter com FieldCondition (não point ID direct para evitar erro em modo memory)
+  - `clear()` recria a coleção (delete + recreate)
+
+### Arquivos alterados
+- `app/adapters/vector_store_qdrant.py` — **novo** (210+ linhas)
+- `tests/test_vector_store_qdrant.py` — **novo** (14 testes)
+
+### Testes executados e resultado
+- 14 novos testes: available, upsert, search, count, get (existing/missing), delete, clear, list_collections, multi_tenancy, id generation, empty search
+- Full suite: **819 passed, 1 failed** (pre-existing)
+- Zero regressão
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- **VEC-811**: Implementar Chroma vector store backend
+- Abrir PR da branch `feature/VEC-810-qdrant-backend` e merge para master
