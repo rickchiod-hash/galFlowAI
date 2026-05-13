@@ -2101,3 +2101,34 @@ O WanGP adapter (`app/adapters/wangp_adapter.py`) usava logging plano com string
 ### Próximo passo
 - **RND-611**: Pipeline fallback chama `log_structured_error`
 - Abrir PR da branch `feature/RND-610-wangp-hardening` e merge para master
+
+
+## 2026-05-12 — Sessão 25: RND-611 — Pipeline fallback chama log_structured_error
+
+### Contexto
+O pipeline (`video_generation_pipeline.py`) fazia fallback WanGP→FFmpeg com apenas `logger.info()` e não registrava erros estruturados via `AppError`/`ErrorJsonlWriter`. Após o hardening do WanGP adapter (RND-610), o pipeline precisava ser atualizado para chamar `log_structured_error` nos pontos de fallback.
+
+### O que fiz
+- **Adicionado imports**: `AppError`, `Severity`, `ErrorCode`, `StageLogger`
+- **Adicionado `StageLogger "VideoGenerationPipeline"`** no `__init__` para eventos estruturados
+- **Adicionado `AppError` recording** (via lazy `ErrorJsonlWriter`) em 3 pontos:
+  1. **WanGP falha → FFmpeg fallback**: `ErrorCode.WANGP_UNAVAILABLE` (WARN, `fallback_used=True`)
+  2. **FFmpeg fallback também falha**: `ErrorCode.FFMPEG_NOT_FOUND` (ERROR)
+  3. **FFmpeg concat falha**: `ErrorCode.FFMPEG_CONCAT_FAILED` (ERROR, retryable)
+  4. **Exceção genérica**: `ErrorCode.UNKNOWN_ERROR` (ERROR)
+
+### Arquivos alterados
+- `app/pipeline/video_generation_pipeline.py` — imports, StageLogger, 3 AppError recording points
+- `tests/test_pipeline_structured_errors.py` — novo (4 testes)
+
+### Testes executados e resultado
+- 4 novos testes: fallback WANGP_UNAVAILABLE, concat FFMPEG_CONCAT_FAILED, double failure WANGP+FFMPEG, stage events
+- Full suite: **793 passed, 1 failed** (pre-existing: `test_audit_commit_count_within_range`)
+- Zero regressão
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- **RND-612**: Criar `app/adapters/vace_adapter.py`
+- Abrir PR da branch `feature/RND-611-pipeline-structured-error` e merge para master

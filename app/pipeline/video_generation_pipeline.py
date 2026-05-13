@@ -19,6 +19,9 @@ from app.adapters.wangp_adapter import WanGPAdapter
 from app.adapters.tts_adapter import TTSAdapter
 from app.adapters.ffmpeg_adapter import FFmpegAdapter
 from app.config import BASE_DIR, PROJECTS_DIR
+from app.core.app_error import AppError, Severity
+from app.core.error_codes import ErrorCode
+from app.domain.stage_logger import StageLogger
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +47,8 @@ class VideoGenerationPipeline:
         self.wangp_adapter = WanGPAdapter()
         self.tts_adapter = TTSAdapter()
         self.ffmpeg_adapter = FFmpegAdapter()
+        self._stage_logger = StageLogger("VideoGenerationPipeline")
+        self._error_writer = None
         # Initialize use cases for main pipeline logic
         self.generate_script_use_case = GenerateScriptUseCase()
         self.split_scenes_use_case = SplitScenesUseCase()
@@ -53,6 +58,12 @@ class VideoGenerationPipeline:
         self.create_static_video_use_case = CreateStaticVideoUseCase()
         self.concat_videos_use_case = ConcatVideosUseCase()
         
+    def _get_error_writer(self):
+        if self._error_writer is None:
+            from app.services.error_jsonl_writer import ErrorJsonlWriter
+            self._error_writer = ErrorJsonlWriter()
+        return self._error_writer
+
     def generate_commercial(
         self,
         project_id: str,
@@ -194,6 +205,22 @@ class VideoGenerationPipeline:
                 
                 # Fallback: FFmpeg (vídeo estático com texto)
                 logger.info(f"WanGP não disponível, usando FFmpeg para cena {i}")
+                err = AppError(
+                    code=ErrorCode.WANGP_UNAVAILABLE,
+                    severity=Severity.WARN,
+                    message="WanGP indisponível para cena %d" % i,
+                    suggestion="FFmpeg fallback usado automaticamente.",
+                    stage="render",
+                    retryable=True,
+                    project_id=project_id,
+                    fallback_used=True,
+                )
+                self._get_error_writer().write(err)
+                self._stage_logger.warning(
+                    message="WanGP falhou para cena %d, usando FFmpeg" % i,
+                    cause="WanGP não disponível ou retornou erro",
+                    correction="FFmpeg fallback ativado automaticamente",
+                )
                 # Usa scene_text ou prompt como texto
                 text_for_video = scene_prompt.get("scene_text") or scene_prompt.get("prompt") or "Cena"
                 static_video_result = self.create_static_video_use_case.execute(
@@ -211,6 +238,22 @@ class VideoGenerationPipeline:
                 else:
                     scene_prompt["status"] = "failed"
                     scene_prompt["error"] = static_video_result.get("error", "Erro desconhecido")
+                    err2 = AppError(
+                        code=ErrorCode.FFMPEG_NOT_FOUND,
+                        severity=Severity.ERROR,
+                        message="FFmpeg fallback também falhou para cena %d" % i,
+                        suggestion="Verifique se FFmpeg está instalado.",
+                        stage="render",
+                        retryable=True,
+                        project_id=project_id,
+                        fallback_used=True,
+                    )
+                    self._get_error_writer().write(err2)
+                    self._stage_logger.failure(
+                        message="FFmpeg fallback falhou para cena %d" % i,
+                        cause="FFmpeg não disponível ou erro ao gerar vídeo estático",
+                        correction="Verifique instalação do FFmpeg",
+                    )
             
             # Atualiza prompts com status
             prompts_path.write_text(
@@ -239,6 +282,21 @@ class VideoGenerationPipeline:
             )
             
             if not concat_result.get("ok"):
+                err = AppError(
+                    code=ErrorCode.FFMPEG_CONCAT_FAILED,
+                    severity=Severity.ERROR,
+                    message="Falha ao montar vídeo final: %s" % concat_result.get("error", ""),
+                    suggestion="Valide o arquivo inputs.txt e verifique se todos os vídeos existem.",
+                    stage="render",
+                    retryable=True,
+                    project_id=project_id,
+                )
+                self._get_error_writer().write(err)
+                self._stage_logger.failure(
+                    message="FFmpeg concat falhou",
+                    cause=concat_result.get("error", "Erro desconhecido"),
+                    correction="Valide inputs.txt e verifique ausência de arquivos corrompidos",
+                )
                 return {
                     "success": False,
                     "error": f"Falha ao montar vídeo final: {concat_result.get('error')}"
@@ -260,6 +318,21 @@ class VideoGenerationPipeline:
             
         except Exception as e:
             logger.error(f"Erro no pipeline: {e}", exc_info=True)
+            err = AppError(
+                code=ErrorCode.UNKNOWN_ERROR,
+                severity=Severity.ERROR,
+                message="Erro no pipeline: %s" % e,
+                suggestion="Consulte os logs técnicos para mais detalhes.",
+                stage="render",
+                retryable=True,
+                project_id=project_id,
+            )
+            self._get_error_writer().write(err)
+            self._stage_logger.failure(
+                message="Pipeline abortado",
+                cause=str(e),
+                correction="Consulte os logs técnicos",
+            )
             return {"success": False, "error": str(e)}
     
     def _report_progress(

@@ -5,21 +5,21 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 60/65
+Histórias concluídas: 61/65
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 5
-Percentual concluído: 92%
+Histórias pendentes: 4
+Percentual concluído: 94%
 
-**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 60 Concluídas + 0 Em andamento + 5 Pendentes = 65.
+**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 61 Concluídas + 0 Em andamento + 4 Pendentes = 65.
 
 ## Estado atual
 
-- Branch atual: feature/RND-610-wangp-hardening
-- Último commit analisado: cfadb37 — base (UI-205)
+- Branch atual: feature/RND-611-pipeline-structured-error
+- Último commit analisado: 2b30a5f — base (RND-610)
 - Fase atual: Fase 6B — Mandatory Functional Integration 🔄
-- Story stream atual: 60/65 histórias concluídas ✅
-- Próxima ação recomendada: RND-611 — Pipeline fallback chama `log_structured_error`
+- Story stream atual: 61/65 histórias concluídas ✅
+- Próxima ação recomendada: RND-612 — Criar `app/adapters/vace_adapter.py`
 
 ### Sessão 23 — Phase 6B: UI-205 (2026-05-12)
 
@@ -64,6 +64,30 @@ Percentual concluído: 92%
 - `tests/test_wangp_hardening.py` — novo (10 testes)
 - `docs/project-control/00_STATUS_EXECUTIVO.md` — esta sessão
 - `docs/project-control/05_BACKLOG_PRIORIZADO.md` — RND-610 marcado concluído
+- `docs/project-control/10_DAILY_LOG.md` — nova entrada
+
+### Sessão 25 — Phase 6B: RND-611 (2026-05-12)
+
+#### O que foi feito
+1. **RND-611 ✅** — Pipeline fallback chama `log_structured_error`:
+   - Adicionado `AppError` recording quando WanGP falha e pipeline cai no FFmpeg fallback (`ErrorCode.WANGP_UNAVAILABLE`, severity WARN, `fallback_used=True`)
+   - Adicionado `AppError` recording quando FFmpeg fallback também falha (`ErrorCode.FFMPEG_NOT_FOUND`)
+   - Adicionado `AppError` recording quando FFmpeg concat falha (`ErrorCode.FFMPEG_CONCAT_FAILED`)
+   - Adicionado `AppError` recording no handler de exceção genérico (`ErrorCode.UNKNOWN_ERROR`)
+   - Adicionado `StageLogger "VideoGenerationPipeline"` para eventos estruturados
+   - `ErrorJsonlWriter` importado via lazy init (segue padrão RND-610)
+   - 4 novos testes cobrindo fallback WANPU_UNAVAILABLE, concat failure, double failure, stage events
+
+#### Testes executados
+- 4 novos testes em `test_pipeline_structured_errors.py`
+- Full suite: 793/794 passed (1 pre-existing: `test_audit_commit_count_within_range`)
+- Zero regressão
+
+#### Arquivos alterados
+- `app/pipeline/video_generation_pipeline.py` — imports, StageLogger, AppError nos 3 pontos de fallback
+- `tests/test_pipeline_structured_errors.py` — novo (4 testes)
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — esta sessão
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — RND-611 marcado concluído
 - `docs/project-control/10_DAILY_LOG.md` — nova entrada
 
 ## Resumo tipo Daily
