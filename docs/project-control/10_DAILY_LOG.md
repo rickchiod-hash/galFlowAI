@@ -2,6 +2,52 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-12 — Sessão 21: Error Handling Infrastructure (P0-ERR-01..05)
+
+### Contexto
+Após a sessão 20 de performance, backlog original (49/49) estava completo. Iniciei uma nova série de histórias (P0-ERR) para infraestrutura de tratamento estruturado de erros — códigos estáveis, catalogação, persistência e integração com o log_service existente.
+
+### O que fiz
+- **P0-ERR-01 ✅:** `app/core/error_codes.py` — ErrorCode (StrEnum) com 15 códigos estáveis (FFMPEG_NOT_FOUND, WANGP_UNAVAILABLE, TTS_UNAVAILABLE, etc). 6 testes.
+- **P0-ERR-02 ✅:** `app/core/app_error.py` — AppError dataclass com Severity (DEBUG/INFO/WARN/ERROR), campos opcionais (project_id, job_id, provider, fallback_used, details), to_dict() com filtro None, to_json_line(). 6 testes.
+- **P0-ERR-03 ✅:** `app/services/error_catalog_service.py` — ErrorCatalogService com 15 definições completas (message, suggestion, severity, retryable, stage). Métodos: get_error_definition, build_user_message, build_diagnostic_message, is_retryable, get_suggestion. 12 testes.
+- **P0-ERR-04 ✅:** `app/services/error_jsonl_writer.py` — ErrorJsonlWriter: write() persiste em logs/errors/errors-YYYY-MM-DD.jsonl com rotação diária. read_recent() lê últimas N linhas pulando linhas corrompidas. Nunca crasha (retorna False). 6 testes.
+- **P0-ERR-05 ✅:** `app/services/log_service.py` — integração com infraestrutura de erros:
+  - `get_structured_errors(limit)` — busca erros do JSONL
+  - `log_structured_error(error)` — persiste AppError no JSONL
+  - Campos `code`, `stage`, `retryable`, `fallback_used` nas entradas de log
+  - `total_structured_errors` no resumo de logs
+  - Erros estruturados no bundle de diagnóstico
+  - Import de AppError adicionado (fix: NameError em type hint)
+- **Testes:** 3 novos testes em `test_ui_metrics.py` (structured_returns_list, log_returns_bool, roundtrip). 2 testes atualizados (summary_keys, imports_exist). 19/19 passando.
+- **Warnings:** 4 (Gradio framework, não nosso código)
+
+### Arquivos alterados
+- `app/core/error_codes.py` — Novo (P0-ERR-01)
+- `app/core/app_error.py` — Novo (P0-ERR-02)
+- `app/services/error_catalog_service.py` — Novo (P0-ERR-03)
+- `app/services/error_jsonl_writer.py` — Novo (P0-ERR-04)
+- `app/services/log_service.py` — Modificado (P0-ERR-05): +AppError import, +get_structured_errors, +log_structured_error, campos estruturados
+- `tests/test_error_codes.py` — Novo (6 testes)
+- `tests/test_app_error.py` — Novo (6 testes)
+- `tests/test_error_catalog_service.py` — Novo (12 testes)
+- `tests/test_error_jsonl_writer.py` — Novo (6 testes)
+- `tests/test_ui_metrics.py` — Modificado: 3 novos testes, 2 atualizados
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — Atualizado
+- `.gitignore` — logs/errors/ e .pytest_temp/ adicionados
+
+### Decisões
+- ErrorCode como StrEnum (não Enum ou classe string) para compatibilidade com JSON e comparação direta
+- ErrorCatalogService usa dict interno em vez de DB para zero dependência
+- ErrorJsonlWriter com rotação diária para evitar arquivo único gigante
+- `get_structured_errors` e `log_structured_error` têm try/except — nunca crasham o app
+- Série P0-ERR não estava no backlog original (49 histórias) — foi expansão pós-completa
+
+### Bloqueios
+- Nenhum.
+
+### Próximo passo
+- Aguardar direção do usuário. Projeto 54/54 histórias concluídas, 813+ testes, 0 falhas.
 ## 2026-05-12 — Sessão 20: Performance (test speed + warning cleanup)
 
 ### Contexto
