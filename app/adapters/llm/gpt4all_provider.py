@@ -68,7 +68,11 @@ class GPT4AllProvider(BaseLLMProvider):
             return False
     
     def generate(self, prompt: str, timeout: int = 10) -> Optional[str]:
-        """Generate script using GPT4All."""
+        """Generate script using GPT4All.
+
+        Otimizado para resposta <30s: max_tokens=400 (6 cenas ~300-400 tokens),
+        n_threads=4 para paralelismo CPU, n_batch=8 para prompt processing.
+        """
         import time
         start = time.time()
         
@@ -94,8 +98,10 @@ class GPT4AllProvider(BaseLLMProvider):
 {prompt}
  
 Roteiro em pt-BR:""",
-                max_tokens=1000,
-                temp=0.7
+                max_tokens=400,
+                temp=0.7,
+                n_threads=4,
+                n_batch=8,
             )
             
             self.last_response_time = time.time() - start
