@@ -4,10 +4,12 @@
 
 Este playbook documenta os providers de renderização de vídeo do GalFlowAI. O pipeline de vídeo transforma roteiro em cenas visuais usando engines locais com fallback para FFmpeg (sempre disponível).
 
+**Decisão de produto (2026-05-12):** WanGP, VACE e FFmpeg fallback são **mandatórios**. Ollama é o único componente opcional.
+
 Engines de renderização:
 - **FFmpeg** — fallback universal, sempre disponível, gera MP4 mínimo com imagem estática
 - **WanGP** — engine IA local (GPU NVIDIA), gera vídeo por diffusion
-- **Wan VACE 1.3B** — futuro opcional, documentado para quando GPU superior estiver disponível
+- **Wan VACE 1.3B** — implementado como adapter completo (RND-612), opcional por requisitos de GPU
 
 ## Stories mapeadas
 
@@ -20,6 +22,9 @@ Engines de renderização:
 | RND-602 | Adicionar perfil GTX 1660 Super | Concluída | 3 | Alta | Sim |
 | RND-603 | Registrar Wan VACE 1.3B como futuro opcional | Concluída | 2 | Baixa | Sim |
 | QA-1003 | Criar teste E2E WanGP falha → FFmpeg | Concluída | 5 | Média | Sim |
+| RND-610 | Hardening do WanGP adapter (telemetria, erros estruturados) | Concluída | 8 | Alta | Sim |
+| RND-611 | Pipeline fallback chama `log_structured_error` | Concluída | 5 | Alta | Sim |
+| RND-612 | Criar `app/adapters/vace_adapter.py` | Concluída | 8 | Alta | Sim |
 
 ### VIS-502 — Criar schema SceneContract
 
@@ -148,10 +153,10 @@ Teste end-to-end que valida: quando WanGP falha, o pipeline faz fallback para FF
 SceneContract → PromptCompiler → RenderPlan → EngineRouter → Engine (WanGP|FFmpeg|VACE)
 
 ### EngineRouter
-Seleciona engine por cena baseado no RenderPlan. Ordem de preferência: WanGP > FFmpeg. VACE é futuro.
+Seleciona engine por cena baseado no RenderPlan. Ordem de preferência: WanGP > FFmpeg > VACE (se disponível).
 
 ### FFmpeg como fallback universal
-FFmpeg é o único provider de render obrigatório. WanGP e VACE são opcionais. FFmpeg não pode ser removido.
+FFmpeg é o fallback obrigatório de render. WanGP e VACE são mandatórios (decidido em produto), mas o pipeline funciona sem GPU. FFmpeg não pode ser removido.
 
 ### GPU Budget
 Cada perfil de GPU define: resolução máxima, batch size, limites de VRAM. Perfil GTX 1660 Super (6GB) é o mínimo suportado.
@@ -159,10 +164,11 @@ Cada perfil de GPU define: resolução máxima, batch size, limites de VRAM. Per
 ## Regras de preservação
 
 1. **FFmpeg é fallback obrigatório** — nunca pode ser removido ou despriorizado
-2. **Engine IA é sempre opcional** — pipeline deve funcionar sem GPU
-3. **Provider de render novo deve ser opcional** — nunca quebrar fallback FFmpeg
-4. **RenderPlan deve registrar motivo da escolha** — para debug e rastreabilidade
-5. **Perfil GTX 1660 Super é o mínimo** — resoluções seguras documentadas
+2. **WanGP e VACE são mandatórios** — decido de produto (2026-05-12)
+3. **Pipeline funciona sem GPU** — FFmpeg como fallback universal garante entrega
+4. **Provider de render novo deve ser opcional** — nunca quebrar fallback FFmpeg
+5. **RenderPlan deve registrar motivo da escolha** — para debug e rastreabilidade
+6. **Perfil GTX 1660 Super é o mínimo** — resoluções seguras documentadas
 
 ## Referências
 

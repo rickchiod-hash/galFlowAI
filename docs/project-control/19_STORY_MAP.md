@@ -52,18 +52,19 @@ ETAPA 7: MONTAGEM FINAL (implementado)
 [GATE] MP4 gerado? → Sucesso!
 ```
 
-### Etapas planejadas (futuras)
+### Etapas implementadas (Fase 6)
 
 | Etapa | História | Status |
-|---|---|---|---|
-| SceneContracts | VIS-502 | Concluída |
-| Visual Bible | VIS-501 | Concluída |
-| Ingredient Registry | VIS-500 | Concluída |
-| Prompt Context Pack | VIS-503 | Concluída |
-| RenderPlan | RND-600 | Concluída |
-| AudioPlan por cena | AUD-700, AUD-701 | Concluída |
-| SRT/Legendas | AUD-702 | Concluída |
-| Vector memory | VEC-800..803 | Concluída |
+|---|---|---|---|---|
+| Pipeline unificado | ARCH-320 | Concluída |
+| API versioning | API-210 | Concluída |
+| API envelope | API-211 | Concluída |
+| Logs estruturados na UI | LOG-100 | Concluída |
+| WanGP hardening | RND-610 | Concluída |
+| Pipeline structured errors | RND-611 | Concluída |
+| VACE adapter | RND-612 | Concluída |
+| Qdrant backend | VEC-810 | Concluída |
+| Chroma backend | VEC-811 | Concluída |
 
 ## Story map por atividade
 
@@ -75,11 +76,13 @@ ETAPA 7: MONTAGEM FINAL (implementado)
 | Criar roteiro | LLM provider, template, edição, aprovação | UI-201, PROV-300, PROV-301 | Sim |
 | Aprovar roteiro | versionar, aprovar, bloquear próximas etapas | UI-202 | Sim |
 | Dividir em cenas | split automático, revisão | UI-201 (parcial) | Sim |
-| Gerar prompts | prompt builder por cena | VIS-503 | P1 |
-| Renderizar | WanGP, FFmpeg fallback, cache | RND-600..RND-603 | Sim |
-| Narrar | TTS, áudio por cena, SRT, SFX | AUD-700..AUD-703 | P1 |
+| Gerar prompts | prompt builder por cena | VIS-503 | Sim |
+| Renderizar | WanGP, FFmpeg fallback, VACE, cache | RND-600..RND-603, RND-610..RND-612 | Sim |
+| Narrar | TTS, áudio por cena, SRT, SFX | AUD-700..AUD-703 | Sim |
 | Observar | logs, métricas, diagnóstico | OBS-900, OBS-901, UI-203 | Sim |
-| Evoluir memória | vector adapter, quality gate | VEC-800..VEC-803 | P2 |
+| Vector memory | Qdrant, Chroma, quality gate | VEC-800..VEC-803, VEC-810, VEC-811 | Sim |
+| Infraestrutura | pipeline unificado, API versioning | ARCH-320, API-210, API-211 | Sim |
+| Documentação | reconciliação pós-fase 6 | DOC-120 | Sim |
 
 ## Regras do fluxo
 

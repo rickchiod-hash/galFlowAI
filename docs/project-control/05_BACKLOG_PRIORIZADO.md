@@ -84,13 +84,13 @@ Backlog expandido por decisão de produto (2026-05-12): WanGP, VACE, FFmpeg fall
 |------:|---|---------|:---------:|:--:|:------:|:-----------:|
 | 58 | VEC-810 | Implementar Qdrant vector store backend | Média | 8 | ✅ Concluída | Fase 6B |
 | 59 | VEC-811 | Implementar Chroma vector store backend | Média | 5 | ✅ Concluída | Fase 6B |
-| 60 | DOC-120 | Reconciliar documentação com novo direcionamento mandatório | Média | 3 | Pendente | Fase 6C |
+| 60 | DOC-120 | Reconciliar documentação com novo direcionamento mandatório | Média | 3 | ✅ Concluída | Fase 6C |
 
 **Total novas histórias: 11** | **SP total novo: 56** | **SP acumulado: 54 + 56 = 110**
 
-## Próxima história recomendada
+## Backlog completo ✅
 
-**VEC-811 concluída.** Próxima: **DOC-120** — Reconciliar documentação com novo direcionamento mandatório.
+**65/65 histórias concluídas.** Todas as fases (1-5, 6A, 6B, 6C) finalizadas.
 
 ## Regras de priorização
 
