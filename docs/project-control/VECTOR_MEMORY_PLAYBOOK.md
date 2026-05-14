@@ -2,15 +2,15 @@
 
 ## Visão geral
 
-Este playbook documenta os componentes de memória vetorial e consistência visual do GalFlowAI. A camada de memória é totalmente opcional — o pipeline funciona sem ela. Quando ativa, permite retrieval semântico e consistência visual entre sessões.
+Este playbook documenta os componentes de memória vetorial e consistência visual do GalFlowAI. A camada de memória é **mandatória** (decidido em produto em 2026-05-12). Implementações concretas (Qdrant, Chroma) são opcionais — o pipeline funciona com `InMemoryVectorStore` como fallback.
 
 Componentes:
 - **Ingredient Registry** — catálogo de produtos/personagens/cenários
 - **Visual Bible** — referências visuais aprovadas para consistência
-- **VectorStoreAdapter** — porta de abstração para backend vetorial
+- **VectorStoreAdapter** — porta de abstração para backend vetorial (+ InMemoryVectorStore)
 - **MemoryQualityGate** — barreira de qualidade antes de indexação
-- **Qdrant** — backend alvo para produção (opcional)
-- **Chroma** — backend para protótipo (opcional)
+- **Qdrant** — backend implementado (VEC-810)
+- **Chroma** — backend implementado (VEC-811)
 
 ## Stories mapeadas
 
@@ -22,6 +22,8 @@ Componentes:
 | VEC-801 | Criar MemoryQualityGate | Concluída | 5 | Média | Sim |
 | VEC-802 | Planejar Qdrant local opcional | Concluída | 3 | Baixa | Sim |
 | VEC-803 | Planejar Chroma como protótipo opcional | Concluída | 2 | Baixa | Sim |
+| VEC-810 | Implementar Qdrant vector store backend | Concluída | 8 | Média | Sim |
+| VEC-811 | Implementar Chroma vector store backend | Concluída | 5 | Média | Sim |
 
 ### VIS-500 — Criar schema Ingredient Registry
 
@@ -181,8 +183,8 @@ VectorStoreAdapter (ABC)
 
 ## Arquitetura / Decisões
 
-### Camada de memória opcional
-Vector store nunca é obrigatório. O pipeline funciona sem ele. A ativação é via configuração.
+### Camada de memória mandatória
+Vector store é mandatório (decisão de produto 2026-05-12). `InMemoryVectorStore` é o fallback padrão — pipeline funciona sem backend externo. Qdrant e Chroma são implementações concretas opcionais.
 
 ### Adapter pattern
 VectorStoreAdapter define interface. Implementações concretas (Chroma, Qdrant) são injetadas. O sistema não conhece o backend específico.
@@ -195,12 +197,13 @@ Schemas que vivem na camada de domínio. Alimentam o VectorStoreAdapter quando a
 
 ## Regras de preservação
 
-1. **Vector store é sempre opcional** — pipeline principal não depende dele
-2. **Adapter define interface** — implementações são plugáveis
-3. **Quality Gate é obrigatório quando memória está ativa** — sem ele, não indexar
-4. **Ingredient Registry é o schema base** — Visual Bible é derivação
-5. **Nenhum backend vetorial é obrigatório** — Chroma (protótipo), Qdrant (produção), ambos opcionais
-6. **Backend existente não pode ser removido sem ADR** — documentar motivo
+1. **Vector store é mandatório** — decidido em produto (2026-05-12)
+2. **InMemoryVectorStore é fallback padrão** — pipeline funciona sem backend externo
+3. **Adapter define interface** — implementações são plugáveis
+4. **Quality Gate é obrigatório quando memória está ativa** — sem ele, não indexar
+5. **Ingredient Registry é o schema base** — Visual Bible é derivação
+6. **Qdrant e Chroma são implementações opcionais** — InMemory é suficiente para operação
+7. **Backend existente não pode ser removido sem ADR** — documentar motivo
 
 ## Referências
 

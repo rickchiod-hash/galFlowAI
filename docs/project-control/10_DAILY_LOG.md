@@ -2,6 +2,37 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-14 — Sessão 28b: Phase 6C — DOC-120 Documentação Reconciliação
+
+### Contexto
+VEC-811 concluída e merged (PR #39). Última história pendente do backlog: DOC-120 — reconciliar documentação com novo direcionamento mandatório (WanGP, VACE, FFmpeg, vector store, logs = mandatórios; Ollama = único opcional).
+
+### O que fiz
+- **DOC-120 ✅** — Documentação reconciliada:
+  - `VIDEO_RENDER_PROVIDER_PLAYBOOK.md`: WanGP/VACE reclassificados como mandatórios; tabela expandida com RND-610/611/612; regras atualizadas
+  - `VECTOR_MEMORY_PLAYBOOK.md`: memória reclassificada como mandatória; tabela expandida com VEC-810/811; regras atualizadas
+  - `15_PROVIDER_PLAYBOOK.md`: 29 stories cobertas (antes 24)
+  - `19_STORY_MAP.md`: Fase 6 adicionada; tabela por atividade expandida
+  - `05_BACKLOG_PRIORIZADO.md`: DOC-120 → Concluída; backlog marcado como completo
+  - `00_STATUS_EXECUTIVO.md`: 65/65 (100%)
+  - `10_DAILY_LOG.md`: esta entrada
+
+### Arquivos alterados
+- `docs/project-control/VIDEO_RENDER_PROVIDER_PLAYBOOK.md` — WanGP/VACE mandatory, +3 stories
+- `docs/project-control/VECTOR_MEMORY_PLAYBOOK.md` — memória mandatory, +2 stories
+- `docs/project-control/15_PROVIDER_PLAYBOOK.md` — tabela 29 stories
+- `docs/project-control/19_STORY_MAP.md` — Fase 6, tabela expandida
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — DOC-120 ✅, backlog completo
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — 65/65, 100%
+- `docs/project-control/10_DAILY_LOG.md` — esta entrada
+
+### Decisões
+- Ollama permanece o único componente explicitamente opcional
+- InMemoryVectorStore é fallback padrão para vector store (Qdrant/Chroma são implementações)
+
+### Status final
+**GalFlowAI: 65/65 histórias concluídas (100%).** Backlog completo. Projeto finalizado.
+
 ## 2026-05-13 — Sessão 28: Phase 6C — VEC-811 Chroma Backend
 
 ### Contexto

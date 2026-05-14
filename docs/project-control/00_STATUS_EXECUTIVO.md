@@ -1,25 +1,25 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-13 (sessão 28 - VEC-811 COMPLETA)
+Atualizado em: 2026-05-14 (sessão 28 - GalFlowAI 65/65 COMPLETA ✅)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 64/65
+Histórias concluídas: 65/65
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 1
-Percentual concluído: 98%
+Histórias pendentes: 0
+Percentual concluído: 100%
 
-**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 64 Concluídas + 0 Em andamento + 1 Pendente = 65.
+**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 65 Concluídas + 0 Em andamento + 0 Pendentes = 65.
 
 ## Estado atual
 
-- Branch atual: feature/VEC-811-chroma-backend
-- Último commit analisado: 08596b1 — VEC-810 merged
-- Fase atual: Fase 6C — Complete Platform 🔄
-- Story stream atual: 64/65 histórias concluídas ✅
-- Próxima ação recomendada: DOC-120 — Reconciliar documentação
+- Branch atual: feature/DOC-120-reconcile-docs
+- Último commit analisado: 2e19efd — VEC-811 merged
+- Fase atual: Fase 6C — Complete Platform ✅
+- Story stream atual: 65/65 histórias concluídas ✅
+- Próxima ação recomendada: Nenhuma — backlog completo
 
 ### Sessão 23 — Phase 6B: UI-205 (2026-05-12)
 
@@ -166,6 +166,22 @@ Todas as 4 histórias da Fase 6B concluídas:
 - `docs/project-control/05_BACKLOG_PRIORIZADO.md` — VEC-811 marcado concluído
 - `docs/project-control/06_HISTORIAS_REFINADAS.md` — VEC-811 adicionada
 - `docs/project-control/10_DAILY_LOG.md` — nova entrada
+
+### Sessão 28b — Phase 6C: DOC-120 (2026-05-14)
+
+#### O que foi feito
+1. **DOC-120 ✅** — Documentação reconciliada com novo direcionamento mandatório:
+   - `VIDEO_RENDER_PROVIDER_PLAYBOOK.md`: WanGP e VACE reclassificados como mandatórios; adicionadas RND-610, RND-611, RND-612; regras de preservação atualizadas
+   - `VECTOR_MEMORY_PLAYBOOK.md`: camada de memória reclassificada como mandatória; adicionadas VEC-810, VEC-811; regras de preservação atualizadas
+   - `15_PROVIDER_PLAYBOOK.md`: tabela atualizada com 29 stories cobertas (antes 24); novos stories de Fase 6 adicionados
+   - `19_STORY_MAP.md`: novas etapas de Fase 6 adicionadas; tabela por atividade expandida com Infraestrutura e Vector memory
+   - `00_STATUS_EXECUTIVO.md`: 65/65 histórias (100%)
+   - `05_BACKLOG_PRIORIZADO.md`: DOC-120 → Concluída
+   - `10_DAILY_LOG.md`: nova entrada
+   - Ollama documentado como único componente opcional
+
+#### Backlog completo ✅
+GalFlowAI: **65/65 histórias concluídas** — 54 originais + 11 Pós-49.
 
 ## Resumo tipo Daily
 
