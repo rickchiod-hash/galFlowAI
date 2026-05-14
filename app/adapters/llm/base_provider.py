@@ -89,6 +89,12 @@ class TemplateProvider(BaseLLMProvider):
         else:
             return "viral"
     
+    # TODO(GAL-901, type=debt): TemplateProvider product extraction uses first 5 words only
+    # Contexto: "Comercial de 30 segundos para produto generico, es" extracts "Comercial de 30 segundos para..."
+    # Dependência: Nenhuma
+    # Critério de aceite: extract meaningful product name (heuristic: last noun phrase, or after "para"/"de")
+    # Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md#gal-901
+    
     def _extract_product(self, prompt: str) -> str:
         """Extract product name from briefing."""
         words = prompt.split()

@@ -40,7 +40,7 @@ class LMStudioProvider(BaseLLMProvider):
                 json={
                     "model": "local-model",
                     "messages": [
-                        {"role": "system", "content": "Voce e um roteirista profissional especializado em comerciais curtos para redes sociais. Crie roteiros estruturados com cenas, tempos, textos na tela, narracao e prompts visuais."},
+                        {"role": "system", "content": "Voce e um roteirista profissional especializado em comerciais curtos para redes sociais. Crie roteiros estruturados com cenas, tempos, textos na tela, narracao e prompts visuais. Responda SEMPRE em portugues brasileiro (pt-BR)."},
                         {"role": "user", "content": prompt}
                     ],
                     "max_tokens": 1000,

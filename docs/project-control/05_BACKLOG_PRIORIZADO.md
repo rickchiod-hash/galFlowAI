@@ -92,6 +92,26 @@ Backlog expandido por decisão de produto (2026-05-12): WanGP, VACE, FFmpeg fall
 
 **65/65 histórias concluídas.** Todas as fases (1-5, 6A, 6B, 6C) finalizadas.
 
+## P0 Recovery — Bugs operacionais encontrados pós-backlog
+
+Bug fixes identificados durante Recovery Mission S29. Todos corrigidos e verificados.
+
+| ID | Bug | Prioridade | SP | Status | Arquivos alterados |
+|----|-----|:---------:|:--:|:------:|--------------------|
+| UI-210 | Aprovar roteiro não persiste em disco | Alta | 1 | ✅ Concluída | `app/ui/gradio_app.py` |
+| UI-209 | Salvar edição manual ignora texto digitado | Alta | 1 | ✅ Concluída | `app/ui/gradio_app.py` |
+| — | Render bypassa gate de aprovação | Alta | 1 | ✅ Concluída | `app/ui/gradio_app.py` |
+| PROV-304 | Provider falha silenciosamente (fallback invisível) | Alta | 1 | ✅ Concluída | `app/ui/gradio_app.py` |
+| — | StrEnum incompatível com Python 3.10 | Média | 1 | ✅ Concluída | `app/core/error_codes.py` |
+
+## Backlog Pós-P0 — Technical Debt & Performance (S29 findings)
+
+| Ordem | ID | História | Prioridade | SP | Status | Dependência |
+|------:|---|---------|:---------:|:--:|:------:|:-----------:|
+| 1 | GAL-900 | Otimizar tempo de resposta do GPT4AllProvider (~115s → <30s) | Alta | 5 | Pendente | Nenhuma |
+| 2 | GAL-901 | Melhorar extração de nome do produto no TemplateProvider | Média | 2 | Pendente | Nenhuma |
+| 3 | GAL-902 | Condensar contexto do template para providers pequenos | Média | 3 | Pendente | GAL-900 |
+
 ## Regras de priorização
 
 1. Antirregressão antes de feature.

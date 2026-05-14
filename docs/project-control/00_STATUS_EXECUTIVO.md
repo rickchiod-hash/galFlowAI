@@ -1,11 +1,33 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-14 (sessão 28 - GalFlowAI 65/65 COMPLETA ✅)
+Atualizado em: 2026-05-14 (sessão 29 — P0 Recovery Mission ✅)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
+
+## Sessão 29 — P0 Recovery Mission (2026-05-14)
+
+4 P0 bugs operacionais identificados e corrigidos, 1 compat fix, 828 testes passando (0 regressão).
+
+### Bugs corrigidos
+
+| ID | Bug | Arquivo | Fix |
+|----|-----|---------|-----|
+| UI-210 | Aprovar roteiro não persiste | `gradio_app.py:107-118` | `on_approve_script` agora chama `approve_script(project_id)` real |
+| UI-209 | Salvar edição ignora texto | `gradio_app.py:397-405` | `on_save_edit` agora chama `save_manual_edit(pid, script_text, ...)` |
+| — | Render bypassa aprovação | `gradio_app.py:329-356` | Gate `script_approved` adicionado; removed write unconditional |
+| PROV-304 | Provider falha silenciosamente | `gradio_app.py:91-104` | Warning no status quando qualidade for "fallback" |
+| — | StrEnum Python 3.10 | `error_codes.py` | Shim try/except + str+Enum fallback |
+
+### QA artifacts criados
+- `artifacts/qa/curl_smoke_test.ps1` — 11 testes smoke
+- `artifacts/qa/root_cause_matrix.md` — matriz causa raiz
+- `artifacts/qa/ui_event_inventory.md` — inventário de 25+ callbacks
+
+### Testes
+- 828 passed, 0 regressions (1 pre-existing git audit count)
 
 ## Progresso geral
 
-Histórias concluídas: 65/65
+Histórias concluídas: 65/65 + 5 P0 bugs
 Histórias em andamento: 0
 Histórias bloqueadas: 0
 Histórias pendentes: 0
@@ -15,11 +37,12 @@ Percentual concluído: 100%
 
 ## Estado atual
 
-- Branch atual: feature/DOC-120-reconcile-docs
-- Último commit analisado: 2e19efd — VEC-811 merged
-- Fase atual: Fase 6C — Complete Platform ✅
-- Story stream atual: 65/65 histórias concluídas ✅
-- Próxima ação recomendada: Nenhuma — backlog completo
+- Branch atual: fix/P0-recovery-gate-provider-edit (fc6ea7f)
+- PR #41: https://github.com/rickchiod-hash/galFlowAI/pull/41
+- Último commit: fc6ea7f — fix(ui): P0 recovery (approval gate, save edit, provider fallback)
+- Fase atual: P0 Recovery ✅
+- Story stream atual: 65/65 histórias concluídas + 5 P0 bugs corrigidos
+- Próxima ação recomendada: Fazer merge do PR #41 para master
 
 ### Sessão 23 — Phase 6B: UI-205 (2026-05-12)
 

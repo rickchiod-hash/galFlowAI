@@ -11,6 +11,7 @@ from datetime import datetime
 from app.logging_config import setup_logger
 from app.config import PROJECTS_DIR
 from app.adapters.llm import ProviderRouter
+from app.adapters.llm.base_provider import TemplateProvider
 
 logger = setup_logger()
 
@@ -19,6 +20,11 @@ logger = setup_logger()
 # 2) Garantir idempotência para salvar/aprovar versões de roteiro.
 # 3) Introduzir Result Object padronizado para erros/retornos.
 # 4) Criar testes unitários para geração, versionamento e aprovação.
+# TODO(GAL-902, type=follow-up): enhanced prompt with template context should trim template to key structure only
+# Contexto: full template script (6 cenas) sent as context — may overwhelm small models
+# Dependência: GAL-900 (performance)
+# Critério de aceite: template context condensed to 2-3 scene summary before sending to real provider
+# Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md#gal-902
 
 # ========== Generation ==========
 
@@ -31,10 +37,28 @@ _PROVIDER_CLASSES = {
 }
 
 
+def _build_enhanced_prompt(briefing: str, template_script: str) -> str:
+    """Build enriched prompt: briefing + template context + pt-BR instruction."""
+    return (
+        briefing + "\n\n"
+        "---\n"
+        "Contexto — use este roteiro como BASE de estrutura (melhore o conteudo):\n"
+        + template_script + "\n\n"
+        "---\n"
+        "IMPORTANTE: Escreva TODO o roteiro em portugues brasileiro (pt-BR). "
+        "Melhore o roteiro acima com linguagem natural, criativa e autenticamente brasileira. "
+        "Mantenha a estrutura de cenas com tempos, textos na tela, narracao e prompts visuais.\n\n"
+        "Roteiro melhorado em pt-BR:\n"
+    )
+
+
 def generate_script_with_provider(briefing: str, provider_name: str = "auto") -> Dict:
     """Generate script using a specific named provider.
 
-    Tenta o provider selecionado por até 120s antes de fallback para Template.
+    Fluxo:
+      1. Se nao for template, gera roteiro base via TemplateProvider como contexto.
+      2. Envia briefing + contexto + instrucao pt-BR para o provider real.
+      3. Se o provider real falhar, usa TemplateProvider como fallback.
 
     Args:
         briefing: The product briefing text (min 10 chars)
@@ -44,13 +68,21 @@ def generate_script_with_provider(briefing: str, provider_name: str = "auto") ->
     Returns:
         Dict with keys: ok, script, provider, time, quality, error
     """
-    FALLBACK_TIMEOUT = 120  # segundos antes de cair no template
+    FALLBACK_TIMEOUT = 120
 
     if provider_name == "auto":
         return generate_script_with_llm(briefing, mode="auto")
 
     if provider_name not in _PROVIDER_CLASSES:
         return {"ok": False, "error": f"Provider desconhecido: {provider_name}"}
+
+    if provider_name == "template":
+        return _call_template(briefing)
+
+    # Gera base via TemplateProvider como contexto
+    template_result = _call_template(briefing)
+    template_script = template_result["script"]
+    enhanced_prompt = _build_enhanced_prompt(briefing, template_script)
 
     mod_path, cls_name = _PROVIDER_CLASSES[provider_name]
     try:
@@ -59,10 +91,9 @@ def generate_script_with_provider(briefing: str, provider_name: str = "auto") ->
         provider = cls()
         actual_cls_name = cls_name
 
-        # Tenta gerar com o provider selecionado (timeout 120s)
         start = time.time()
         try:
-            result = provider.generate(briefing, timeout=FALLBACK_TIMEOUT)
+            result = provider.generate(enhanced_prompt, timeout=FALLBACK_TIMEOUT)
             elapsed = time.time() - start
         except Exception as e:
             elapsed = time.time() - start
@@ -75,7 +106,7 @@ def generate_script_with_provider(briefing: str, provider_name: str = "auto") ->
         if result and isinstance(result, str) and len(result.strip()) > 50:
             script_text = result
             logger.info(
-                "Script generated via %s (time: %.2fs)",
+                "Script generated via %s com contexto template (time: %.2fs)",
                 actual_cls_name, elapsed
             )
             return {
@@ -86,7 +117,6 @@ def generate_script_with_provider(briefing: str, provider_name: str = "auto") ->
                 "quality": "template",
             }
 
-        # Fallback para TemplateProvider após timeout/falha
         if result is None:
             logger.warning(
                 "Provider %s falhou em %.1fs (timeout=%ds), usando TemplateProvider como fallback.",
@@ -97,16 +127,12 @@ def generate_script_with_provider(briefing: str, provider_name: str = "auto") ->
                 "Provider %s retornou resultado invalido em %.1fs, usando TemplateProvider como fallback.",
                 provider_name, elapsed
             )
-        fallback_mod = __import__("app.adapters.llm.base_provider", fromlist=["TemplateProvider"])
-        fallback_cls = getattr(fallback_mod, "TemplateProvider")
-        fallback_provider = fallback_cls()
 
         fallback_start = time.time()
-        fallback_result = fallback_provider.generate(briefing)
+        fallback_result = _call_template(briefing)
         fallback_elapsed = time.time() - fallback_start
 
-        script_text = fallback_result if isinstance(fallback_result, str) else ""
-
+        script_text = fallback_result["script"]
         logger.info(
             "Fallback: Script generated via TemplateProvider (time: %.2fs)",
             fallback_elapsed
@@ -124,9 +150,24 @@ def generate_script_with_provider(briefing: str, provider_name: str = "auto") ->
         return {"ok": False, "error": str(e)}
 
 
+def _call_template(briefing: str) -> Dict:
+    """Generate script using TemplateProvider directly."""
+    provider = TemplateProvider()
+    start = time.time()
+    script = provider.generate(briefing)
+    elapsed = time.time() - start
+    text = script if isinstance(script, str) else ""
+    return {
+        "ok": True,
+        "script": text,
+        "provider": "TemplateProvider",
+        "time": elapsed,
+        "quality": "template",
+    }
+
+
 def get_provider_diagnostics() -> Dict[str, Any]:
     """Get full provider diagnostics including router's detect_available."""
-    from app.adapters.llm import ProviderRouter
     status = get_provider_status()
     router = ProviderRouter("auto")
     available = router.detect_available()

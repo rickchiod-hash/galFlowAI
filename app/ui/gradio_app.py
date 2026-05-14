@@ -27,6 +27,7 @@ from app.services.script_service import (
     make_script_more_premium,
     make_script_more_direct,
     save_manual_edit,
+    approve_script,
 )
 from app.services.log_service import get_recent_logs, get_log_summary, copy_diagnostic_bundle, get_structured_errors
 from app.services.metrics_service import get_metrics_service
@@ -46,6 +47,7 @@ _STATE_DEFAULT = {
     "project_id": "",
     "script": "",
     "script_provider": "",
+    "script_quality": "",
     "script_time": 0,
     "script_approved": False,
     "narration_plan_id": "",
@@ -95,17 +97,27 @@ def on_generate_script(briefing, provider, app_state_val):
         app_state_val["script"] = result.get("script", "")
         app_state_val["script_provider"] = result.get("provider", "-")
         app_state_val["script_time"] = result.get("time", 0)
+        app_state_val["script_quality"] = result.get("quality", "")
         app_state_val["current_step"] = max(app_state_val.get("current_step", 1), 2)
     else:
         return None, app_state_val, "Erro: %s" % result.get("error", "Falha desconhecida")
     nav, next_s = _step_status(app_state_val)
-    status_md = "**Etapa atual:** %s  \n**Proximo passo:** %s" % (next_s, next_s)
+    fallback_note = ""
+    if result.get("quality") == "fallback":
+        selected = provider or "auto"
+        actual = result.get("provider", "TemplateProvider")
+        fallback_note = " \\n⚠️ **Provedor '%s' falhou — usando fallback '%s'.**" % (selected, actual)
+    status_md = "**Etapa atual:** %s  \n**Proximo passo:** %s%s" % (next_s, next_s, fallback_note)
     return result.get("script", ""), app_state_val, status_md
 
 
 def on_approve_script(app_state_val):
     if not app_state_val.get("script"):
         return app_state_val, "Nao ha roteiro para aprovar."
+    project_id = app_state_val.get("project_id", "web_ui")
+    result = approve_script(project_id)
+    if not result.get("ok"):
+        return app_state_val, "Erro ao aprovar: %s" % result.get("error", "Falha desconhecida")
     app_state_val["script_approved"] = True
     app_state_val["current_step"] = max(app_state_val.get("current_step", 1), 3)
     nav, next_s = _step_status(app_state_val)
@@ -326,17 +338,13 @@ def on_render_scenes(app_state_val):
     scenes = app_state_val.get("scenes", [])
     if not scenes:
         return app_state_val, 0, "Nenhuma cena para renderizar.", ""
+    if not app_state_val.get("script_approved", False):
+        return app_state_val, 0, "ERRO: Roteiro nao aprovado. Aprove o roteiro antes de renderizar.", ""
     project_id = app_state_val.get("project_id", "web_ui")
     from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
     pipeline = VideoGenerationPipeline()
     from app.pipeline.scene_splitter import save_scenes
     save_scenes(project_id, scenes)
-    from app.config import PROJECTS_DIR
-    script_path = PROJECTS_DIR / project_id / "script"
-    script_path.mkdir(parents=True, exist_ok=True)
-    (script_path / "script_approved.md").write_text(
-        app_state_val.get("script", ""), encoding="utf-8"
-    )
     try:
         result = pipeline.generate_commercial(
             project_id=project_id,
@@ -393,11 +401,15 @@ def on_quick_generate(product, audience, duration, style):
     return "", result.get("error", "Falha desconhecida")
 
 
-def on_save_edit(script_text):
+def on_save_edit(script_text, app_state_val):
     if not script_text or script_text.startswith("Erro"):
         return "Nada para salvar."
-    result = generate_script_with_provider("Edicao manual salva", "template")
-    return "Edicao registrada. Provedor: %s" % result.get("provider", "-")
+    pid = _ensure_project_id(app_state_val)
+    result = save_manual_edit(pid, script_text, "Edicao manual salva")
+    if result.get("ok"):
+        app_state_val["script"] = script_text
+        return "Edicao salva como versao %s." % result.get("version", "?")
+    return "Erro ao salvar: %s" % result.get("error", "Falha")
 
 
 # ---- Stage 2 Improvement Callbacks ----
@@ -649,7 +661,7 @@ def create_gradio_app():
             ).then(
                 fn=lambda s: (
                     s.get("script_provider", "-"),
-                    "template",
+                    s.get("script_quality", ""),
                     "%.2f" % s.get("script_time", 0),
                 ),
                 inputs=[app_state],
@@ -675,7 +687,7 @@ def create_gradio_app():
                 outputs=[stage3_group],
             )
 
-            save_edit_btn.click(fn=on_save_edit, inputs=[script_textbox], outputs=[stage2_status])
+            save_edit_btn.click(fn=on_save_edit, inputs=[script_textbox, app_state], outputs=[stage2_status])
             improve_btn.click(
                 fn=on_improve_script,
                 inputs=[script_textbox, app_state],

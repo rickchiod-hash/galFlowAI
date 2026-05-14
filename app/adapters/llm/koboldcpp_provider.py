@@ -36,11 +36,11 @@ class KoboldCppProvider(BaseLLMProvider):
             response = requests.post(
                 f"{self.base_url}/api/v1/generate",
                 json={
-                    "prompt": f"""Voce e um roteirista profissional. Crie um roteiro para comercial seguindo este formato:
+                    "prompt": f"""Voce e um roteirista profissional. Crie um roteiro para comercial em portugues brasileiro (pt-BR) seguindo este formato:
 
 {prompt}
 
-Roteiro:""",
+Roteiro em pt-BR:""",
                     "max_length": 1000,
                     "temperature": 0.7,
                     "top_p": 0.9

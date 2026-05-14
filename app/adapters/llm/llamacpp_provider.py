@@ -40,7 +40,7 @@ class LlamaCppProvider(BaseLLMProvider):
                 json={
                     "model": "local-model",
                     "messages": [
-                        {"role": "system", "content": "Voce e um roteirista profissional especializado em comerciais."},
+                        {"role": "system", "content": "Voce e um roteirista profissional especializado em comerciais. Responda SEMPRE em portugues brasileiro (pt-BR)."},
                         {"role": "user", "content": prompt}
                     ],
                     "max_tokens": 1000,
