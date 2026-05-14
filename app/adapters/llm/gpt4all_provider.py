@@ -72,6 +72,12 @@ class GPT4AllProvider(BaseLLMProvider):
         import time
         start = time.time()
         
+        # TODO(GAL-900, type=debt): GPT4All response time is ~115s — needs optimization
+        # Contexto: orca-mini-3b-gguf2-q4_0.gguf on consumer GPU takes 115s for 1000 tokens
+        # Dependência: model quantization, max_tokens tuning, or streaming
+        # Critério de aceite: response time < 30s for same model
+        # Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md#gal-900
+        
         try:
             from gpt4all import GPT4All
             
@@ -83,11 +89,11 @@ class GPT4AllProvider(BaseLLMProvider):
                 self.model = GPT4All(self.model_name, model_path=str(self.model_dir))
             
             response = self.model.generate(
-                f"""Voce e um roteirista profissional. Crie um roteiro para comercial:
+                f"""Voce e um roteirista profissional. Crie um roteiro para comercial em portugues brasileiro (pt-BR).
  
 {prompt}
  
-Roteiro:""",
+Roteiro em pt-BR:""",
                 max_tokens=1000,
                 temp=0.7
             )

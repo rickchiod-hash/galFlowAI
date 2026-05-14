@@ -2,6 +2,44 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-14 — Sessão 29: P0 Recovery Mission — Template context + pt-BR + TODOs
+
+### Contexto
+Continuação da Recovery Mission. Usuário solicitou: usar TemplateProvider como base de contexto para providers reais, forçar pt-BR, adicionar TODOs para problemas encontrados, e continuar com o backlog.
+
+### O que fiz
+- **Template context flow:** `generate_script_with_provider` agora (1) gera script via TemplateProvider, (2) constrói prompt enriquecido com briefing + template base + instrução pt-BR, (3) envia para o provider real. Provider "template" continua direto.
+- **pt-BR enforcement:** Todos os 4 providers (GPT4All, LM Studio, KoboldCpp, LlamaCpp) atualizados com instrução "Sempre responda em portugues brasileiro (pt-BR)"
+- **App testado:** Aplicação iniciada, GPT4All gerou roteiro com contexto template (115.48s), LM Studio falhou como esperado (4.1s → fallback)
+- **TODOs adicionados:**
+  - `gpt4all_provider.py` — GAL-900: performance (115s → <30s)
+  - `base_provider.py` — GAL-901: extração de nome do produto
+  - `script_service.py` — GAL-902: condensar contexto do template
+- **Novas stories:** GAL-900, GAL-901, GAL-902 adicionadas ao backlog
+
+### Problemas encontrados (logs)
+1. **GPT4All 115s** — orca-mini-3b leva ~2min para gerar 1000 tokens. Crítico para UX.
+2. **Template product extraction** — "Comercial de 30 segundos para..." não é um nome de produto útil.
+3. **Template context verboso** — script completo de 6 cenas como contexto pode sobrecarregar modelos pequenos.
+
+### Testes
+- `pytest tests/` → 833 passed, 0 regressions
+- App real: GPT4All gerou roteiro com template context, estrutura mantida
+
+### Arquivos alterados
+- `app/services/script_service.py` — fluxo template-context, _build_enhanced_prompt, _call_template, TODO GAL-902
+- `app/adapters/llm/gpt4all_provider.py` — pt-BR prompt, TODO GAL-900
+- `app/adapters/llm/base_provider.py` — TODO GAL-901
+- `app/adapters/llm/lmstudio_provider.py` — pt-BR system prompt
+- `app/adapters/llm/koboldcpp_provider.py` — pt-BR prompt
+- `app/adapters/llm/llamacpp_provider.py` — pt-BR system prompt
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — GAL-900/901/902 adicionadas
+- `docs/project-control/10_DAILY_LOG.md` — esta entrada
+
+### Próximo passo
+- Implementar GAL-900: otimizar GPT4All (max_tokens menor, streaming, modelo menor)
+- Implementar GAL-901: melhor extração de produto no template
+
 ## 2026-05-14 — Sessão 29: P0 Recovery Mission — Approval gate, provider, edit bugs
 
 ### Contexto

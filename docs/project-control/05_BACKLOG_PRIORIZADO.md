@@ -104,6 +104,14 @@ Bug fixes identificados durante Recovery Mission S29. Todos corrigidos e verific
 | PROV-304 | Provider falha silenciosamente (fallback invisível) | Alta | 1 | ✅ Concluída | `app/ui/gradio_app.py` |
 | — | StrEnum incompatível com Python 3.10 | Média | 1 | ✅ Concluída | `app/core/error_codes.py` |
 
+## Backlog Pós-P0 — Technical Debt & Performance (S29 findings)
+
+| Ordem | ID | História | Prioridade | SP | Status | Dependência |
+|------:|---|---------|:---------:|:--:|:------:|:-----------:|
+| 1 | GAL-900 | Otimizar tempo de resposta do GPT4AllProvider (~115s → <30s) | Alta | 5 | Pendente | Nenhuma |
+| 2 | GAL-901 | Melhorar extração de nome do produto no TemplateProvider | Média | 2 | Pendente | Nenhuma |
+| 3 | GAL-902 | Condensar contexto do template para providers pequenos | Média | 3 | Pendente | GAL-900 |
+
 ## Regras de priorização
 
 1. Antirregressão antes de feature.
