@@ -30,7 +30,8 @@ Backlog 65/65 completo. Durante revisão pós-merge, 4 P0 bugs operacionais fora
 - `docs/project-control/00_STATUS_EXECUTIVO.md` — atualizado
 
 ### Testes executados
-- `pytest tests/ -k "not test_audit_commit_count_within_range" --ignore=tests/integration` → **828 passed, 0 failures**
+- `pytest tests/ -k "not test_audit_commit_count_within_range" --ignore=tests/integration` → **833 passed, 0 failures** (5 novos: provider behavior)
+- `tests/test_provider_behavior.py` — 5/5 passed: GPT4All success, LM Studio fallback, KoboldCpp fallback, all providers quality=fallback, provider name visibility
 - Pre-existing known failure: `test_audit_commit_count_within_range` (audit doc needs update: 254→256 commits)
 
 ### Decisões
@@ -42,7 +43,12 @@ Backlog 65/65 completo. Durante revisão pós-merge, 4 P0 bugs operacionais fora
 - Nenhum
 
 ### Status final
-**4/4 P0 bugs corrigidos, 1 compat fix, 828 testes passando.** PR #41 aguardando merge.
+**4/4 P0 bugs corrigidos, 1 compat fix, 833 testes passando (5 novos: provider behavior).** PR #41 aguardando merge.
+
+### Próximo passo
+- Fazer merge do PR #41 para master
+- Rodar `pwsh artifacts/qa/curl_smoke_test.ps1` com servidor rodando
+- Atualizar git audit count (254→256)
 
 ## 2026-05-14 — Sessão 28b: Phase 6C — DOC-120 Documentação Reconciliação
 
