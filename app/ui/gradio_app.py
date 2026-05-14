@@ -102,6 +102,12 @@ def on_generate_script(briefing, provider, app_state_val):
         app_state_val["current_step"] = max(app_state_val.get("current_step", 1), 2)
         pid = _ensure_project_id(app_state_val)
         save_manual_edit(pid, script, "Gerado via %s" % result.get("provider", provider))
+        svc = get_metrics_service()
+        svc.record_script_generation(
+            success=True, duration=result.get("time", 0),
+            provider=result.get("provider", provider),
+            used_fallback=result.get("quality") == "fallback", project_id=pid,
+        )
     else:
         return None, app_state_val, "Erro: %s" % result.get("error", "Falha desconhecida")
     nav, next_s = _step_status(app_state_val)
@@ -348,6 +354,8 @@ def on_render_scenes(app_state_val):
     pipeline = VideoGenerationPipeline()
     from app.pipeline.scene_splitter import save_scenes
     save_scenes(project_id, scenes)
+    import time as _time
+    start = _time.time()
     try:
         result = pipeline.generate_commercial(
             project_id=project_id,
@@ -355,14 +363,30 @@ def on_render_scenes(app_state_val):
             target_audience="",
             progress_callback=None,
         )
+        elapsed = _time.time() - start
+        svc = get_metrics_service()
         if result.get("success"):
             final_video = result.get("final_video", result.get("video_path", ""))
             app_state_val["video_path"] = final_video
+            svc.record_video_generation(
+                success=True, duration=elapsed, engine="pipeline",
+                used_fallback=False, project_id=project_id,
+            )
             return app_state_val, 100, "Render concluido via pipeline.", final_video
         app_state_val["video_path"] = ""
+        svc.record_video_generation(
+            success=False, duration=elapsed, engine="pipeline",
+            used_fallback=True, project_id=project_id,
+        )
         return app_state_val, 0, "Pipeline retornou erro: %s" % result.get("error", "desconhecido"), ""
     except Exception as e:
+        elapsed = _time.time() - start
         app_state_val["video_path"] = ""
+        svc = get_metrics_service()
+        svc.record_video_generation(
+            success=False, duration=elapsed, engine="pipeline",
+            used_fallback=True, project_id=project_id,
+        )
         return app_state_val, 0, "Render falhou: %s" % e, ""
 
 
@@ -688,6 +712,10 @@ def create_gradio_app():
                 fn=lambda s: (gr.update(visible=s.get("script_approved", False)),),
                 inputs=[app_state],
                 outputs=[stage3_group],
+            ).then(
+                fn=lambda s: (gr.update(visible=s.get("script_approved", False)),),
+                inputs=[app_state],
+                outputs=[stage4_group],
             )
 
             save_edit_btn.click(fn=on_save_edit, inputs=[script_textbox, app_state], outputs=[stage2_status])

@@ -109,8 +109,8 @@ Bug fixes identificados durante Recovery Mission S29. Todos corrigidos e verific
 | UI-210 | Botões "Nova Versão", "Restaurar Anterior", "Aprovar Roteiro" sem click handler | P0 | 1 | ✅ Concluída | `app/main.py` |
 | UI-211 | "Salvar Edição" output para componente inexistente | P0 | 1 | ✅ Concluída | `app/main.py` |
 | PROV-305 | Ações Melhorar/Complementar/Viral retornam "Erro" (chave "status" inexistente) | Alta | 1 | ✅ Concluída | `app/main.py` |
-| OBS-904 | Etapa 4 (Cenas) nunca fica visível na UI de 6 etapas | Média | 1 | Pendente | `app/ui/gradio_app.py` |
-| OBS-905 | Dashboard não populado pelo fluxo de geração no gradio_app.py | Média | 1 | Pendente | `app/ui/gradio_app.py` |
+| OBS-904 | Etapa 4 (Cenas) nunca fica visível na UI de 6 etapas | Média | 1 | ✅ Concluída | `app/ui/gradio_app.py` |
+| OBS-905 | Dashboard não populado pelo fluxo de geração no gradio_app.py | Média | 1 | ✅ Concluída | `app/ui/gradio_app.py` |
 
 ## S30 Recovery — Operational Fixes (UI wiring, persistence, callbacks)
 

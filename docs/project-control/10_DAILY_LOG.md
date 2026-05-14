@@ -2449,6 +2449,10 @@ Duas UIs coexistem: `app/main.py` (legacy) e `app/ui/gradio_app.py` (new 6-stage
 ### Bloqueios
 - Nenhum
 
+### Fixes adicionais (S30b continuação)
+- **OBS-904 ✅**: stage4_group agora aparece após aprovar roteiro (`.then(outputs=[stage4_group])` na cadeia do approve_btn)
+- **OBS-905 ✅**: `on_generate_script` e `on_render_scenes` agora registram métricas via `MetricsService.record_script_generation()` e `record_video_generation()`
+- Testes: 47 passed, 0 regressões
+
 ### Próximo passo
-- OBS-904: tornar stage4 visível após gerar cenas
-- OBS-905: popular dashboard com métricas do fluxo de geração
+- Nenhum pendente — todos os bugs da S30 Recovery corrigidos
