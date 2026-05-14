@@ -1,0 +1,287 @@
+03:04:36 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/api/telemetry/https%3A/api.gradio.app/gradio-initiated-analytics "HTTP/1.1 200 OK"
+03:04:36 [INFO] httpx: HTTP Request: GET http://127.0.0.1:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+03:04:36 [INFO] httpx: HTTP Request: HEAD http://127.0.0.1:7860/ "HTTP/1.1 200 OK"
+03:04:36 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/api/telemetry/https%3A/api.gradio.app/gradio-launched-telemetry "HTTP/1.1 200 OK"
+03:04:36 [INFO] httpx: HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+03:14:27 [AVISO] [33mBriefing curto; usando fallback.[0m
+03:14:27 [WARNING] galflowai: Briefing curto; usando fallback.
+03:14:27 [INFO] [32mGerando roteiro para: Comercial de 30 segundos para produto generico, es [modo: gpt4all][0m
+03:14:27 [INFO] galflowai: Gerando roteiro para: Comercial de 30 segundos para produto generico, es [modo: gpt4all]
+Failed to load llamamodel-mainline-cuda-avxonly.dll: LoadLibraryExW failed with error 0x7e
+Failed to load llamamodel-mainline-cuda.dll: LoadLibraryExW failed with error 0x7e
+03:16:06 [INFO] [32mScript generated via GPT4AllProvider com contexto template (time: 98.88s)[0m
+03:16:06 [INFO] galflowai: Script generated via GPT4AllProvider com contexto template (time: 98.88s)
+03:16:07 [INFO] [32mRoteiro gerado via GPT4AllProvider[0m
+03:16:07 [INFO] galflowai: Roteiro gerado via GPT4AllProvider
+03:16:07 [INFO] [32mRoteiro salvo: script.txt[0m
+03:16:07 [INFO] galflowai: Roteiro salvo: script.txt
+03:16:10 [INFO] [32mManual edit saved as v001[0m
+03:16:10 [INFO] galflowai: Manual edit saved as v001
+03:16:15 [INFO] [32mGerando roteiro para: 
+
+[Cena 1: Hook - 3s]
+Narracao: 'Voce conhece o 30 [modo: auto][0m
+03:16:15 [INFO] galflowai: Gerando roteiro para: 
+
+[Cena 1: Hook - 3s]
+Narracao: 'Voce conhece o 30 [modo: auto]
+03:16:27 [INFO] [32mAvailable providers: {'template': True, 'GPT4AllProvider': True, 'LlamaCppProvider': False, 'KoboldCppProvider': False, 'LMStudioProvider': False}[0m
+03:16:27 [INFO] galflowai: Available providers: {'template': True, 'GPT4AllProvider': True, 'LlamaCppProvider': False, 'KoboldCppProvider': False, 'LMStudioProvider': False}
+03:17:14 [INFO] [32mGerando roteiro para: bonecoo 3d colecionavelk [modo: template][0m
+03:17:14 [INFO] galflowai: Gerando roteiro para: bonecoo 3d colecionavelk [modo: template]
+03:17:14 [INFO] [32mRoteiro gerado via TemplateProvider[0m
+03:17:14 [INFO] galflowai: Roteiro gerado via TemplateProvider
+03:17:14 [INFO] [32mRoteiro salvo: script.txt[0m
+03:17:14 [INFO] galflowai: Roteiro salvo: script.txt
+03:17:32 [INFO] [32mScript generated using TemplateProvider (time: 65.50s, quality: safe)[0m
+03:17:32 [INFO] galflowai: Script generated using TemplateProvider (time: 65.50s, quality: safe)
+03:17:32 [INFO] [32mRoteiro gerado via TemplateProvider[0m
+03:17:32 [INFO] galflowai: Roteiro gerado via TemplateProvider
+03:17:32 [INFO] [32mManual edit saved as v002[0m
+03:17:32 [INFO] galflowai: Manual edit saved as v002
+03:17:56 [INFO] [32mScript approved: v002[0m
+03:17:56 [INFO] galflowai: Script approved: v002
+03:17:59 [INFO] [32mScript approved: approved[0m
+03:17:59 [INFO] galflowai: Script approved: approved
+03:18:13 [INFO] app.adapters.wangp_adapter: WanGP não encontrado em: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta\engines\Wan2GP
+03:18:13 [INFO] app.adapters.tts_adapter: Kokoro TTS não disponível
+03:18:13 [INFO] app.adapters.tts_adapter: pyttsx3 detectado
+03:18:13 [INFO] app.adapters.tts_adapter: Vozes do Windows detectadas
+03:18:13 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:18:13 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:18:13 [INFO] app.pipeline.video_generation_pipeline: Progresso: 10% - Gerando roteiro...
+03:18:26 [INFO] [32mAvailable providers: {'template': True, 'GPT4AllProvider': True, 'LlamaCppProvider': False, 'KoboldCppProvider': False, 'LMStudioProvider': False}[0m
+03:18:26 [INFO] galflowai: Available providers: {'template': True, 'GPT4AllProvider': True, 'LlamaCppProvider': False, 'KoboldCppProvider': False, 'LMStudioProvider': False}
+03:18:51 [INFO] [32mScript generated using GPT4AllProvider (time: 25.65s, quality: safe)[0m
+03:18:51 [INFO] galflowai: Script generated using GPT4AllProvider (time: 25.65s, quality: safe)
+03:18:51 [INFO] [32mRoteiro salvo: script.txt[0m
+03:18:51 [INFO] galflowai: Roteiro salvo: script.txt
+03:18:51 [INFO] [32mCached content artifact: script_gen:0beda7dd165b95b0ee968ad81a01dd9fc4318e655b5923ceba4e141f568f8529 -> e0c2cec50fbd[0m
+03:18:51 [INFO] galflowai: Cached content artifact: script_gen:0beda7dd165b95b0ee968ad81a01dd9fc4318e655b5923ceba4e141f568f8529 -> e0c2cec50fbd
+03:18:51 [INFO] app.pipeline.video_generation_pipeline: Progresso: 20% - Dividindo em cenas...
+03:18:51 [INFO] [32mDividindo roteiro em cenas para 20260514_031427_comercial_de_30[0m
+03:18:51 [INFO] galflowai: Dividindo roteiro em cenas para 20260514_031427_comercial_de_30
+03:18:51 [INFO] [32mEncontradas 6 cenas via marcadores[0m
+03:18:51 [INFO] galflowai: Encontradas 6 cenas via marcadores
+03:18:51 [INFO] [32mCenas salvas para 20260514_031427_comercial_de_30: 6 cenas[0m
+03:18:51 [INFO] galflowai: Cenas salvas para 20260514_031427_comercial_de_30: 6 cenas
+03:18:51 [INFO] app.pipeline.video_generation_pipeline: Progresso: 30% - Gerando prompts de vídeo...
+03:18:51 [INFO] [32mPrompts gerados para 6 cenas[0m
+03:18:51 [INFO] galflowai: Prompts gerados para 6 cenas
+03:18:51 [INFO] app.pipeline.video_generation_pipeline: Progresso: 40% - Gerando narração...
+03:18:51 [INFO] app.adapters.tts_adapter: Kokoro TTS não disponível
+03:18:51 [INFO] app.adapters.tts_adapter: pyttsx3 detectado
+03:18:51 [INFO] app.adapters.tts_adapter: Vozes do Windows detectadas
+03:18:51 [INFO] app.adapters.tts_adapter: Gerando áudio com motor: pyttsx3
+03:18:51 [INFO] comtypes.client._code_cache: Imported existing <module 'comtypes.gen' from 'K:\\AI_VIDEO_COMERCIAL_STUDIO\\envs\\studio\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+03:18:51 [INFO] comtypes.client._code_cache: Using writeable comtypes cache directory: 'K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Lib\site-packages\comtypes\gen'
+03:18:52 [INFO] app.pipeline.video_generation_pipeline: Progresso: 50% - Gerando vídeos das cenas...
+03:18:52 [INFO] app.pipeline.video_generation_pipeline: Progresso: 50.0% - Gerando cena 1/6...
+03:18:52 [INFO] app.adapters.wangp_adapter: WanGP não encontrado em: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta\engines\Wan2GP
+03:18:52 [ERROR] app.application.use_cases.base_use_case: WanGP not available
+03:18:52 [INFO] app.pipeline.video_generation_pipeline: WanGP não disponível, usando FFmpeg para cena 0
+03:18:52 [WARNING] stage.VideoGenerationPipeline: [VideoGenerationPipeline] warning: WanGP falhou para cena 0, usando FFmpeg | CAUSA: WanGP não disponível ou retornou erro | CORRECAO: FFmpeg fallback ativado automaticamente
+03:18:52 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:18:52 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:18:52 [INFO] [32mCriando vídeo estático com FFmpeg...[0m
+03:18:52 [INFO] galflowai: Criando vídeo estático com FFmpeg...
+03:18:52 [INFO] [32mVídeo estático criado: scene_000.mp4[0m
+03:18:52 [INFO] galflowai: Vídeo estático criado: scene_000.mp4
+03:18:52 [INFO] app.pipeline.video_generation_pipeline: Progresso: 55.0% - Gerando cena 2/6...
+03:18:52 [INFO] app.adapters.wangp_adapter: WanGP não encontrado em: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta\engines\Wan2GP
+03:18:52 [ERROR] app.application.use_cases.base_use_case: WanGP not available
+03:18:52 [INFO] app.pipeline.video_generation_pipeline: WanGP não disponível, usando FFmpeg para cena 1
+03:18:52 [WARNING] stage.VideoGenerationPipeline: [VideoGenerationPipeline] warning: WanGP falhou para cena 1, usando FFmpeg | CAUSA: WanGP não disponível ou retornou erro | CORRECAO: FFmpeg fallback ativado automaticamente
+03:18:52 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:18:52 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:18:52 [INFO] [32mCriando vídeo estático com FFmpeg...[0m
+03:18:52 [INFO] galflowai: Criando vídeo estático com FFmpeg...
+03:18:52 [INFO] [32mVídeo estático criado: scene_001.mp4[0m
+03:18:52 [INFO] galflowai: Vídeo estático criado: scene_001.mp4
+03:18:52 [INFO] app.pipeline.video_generation_pipeline: Progresso: 60.0% - Gerando cena 3/6...
+03:18:52 [INFO] app.adapters.wangp_adapter: WanGP não encontrado em: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta\engines\Wan2GP
+03:18:52 [ERROR] app.application.use_cases.base_use_case: WanGP not available
+03:18:52 [INFO] app.pipeline.video_generation_pipeline: WanGP não disponível, usando FFmpeg para cena 2
+03:18:52 [WARNING] stage.VideoGenerationPipeline: [VideoGenerationPipeline] warning: WanGP falhou para cena 2, usando FFmpeg | CAUSA: WanGP não disponível ou retornou erro | CORRECAO: FFmpeg fallback ativado automaticamente
+03:18:52 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:18:52 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:18:52 [INFO] [32mCriando vídeo estático com FFmpeg...[0m
+03:18:52 [INFO] galflowai: Criando vídeo estático com FFmpeg...
+03:18:52 [INFO] [32mVídeo estático criado: scene_002.mp4[0m
+03:18:52 [INFO] galflowai: Vídeo estático criado: scene_002.mp4
+03:18:52 [INFO] app.pipeline.video_generation_pipeline: Progresso: 65.0% - Gerando cena 4/6...
+03:18:52 [INFO] app.adapters.wangp_adapter: WanGP não encontrado em: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta\engines\Wan2GP
+03:18:52 [ERROR] app.application.use_cases.base_use_case: WanGP not available
+03:18:52 [INFO] app.pipeline.video_generation_pipeline: WanGP não disponível, usando FFmpeg para cena 3
+03:18:52 [WARNING] stage.VideoGenerationPipeline: [VideoGenerationPipeline] warning: WanGP falhou para cena 3, usando FFmpeg | CAUSA: WanGP não disponível ou retornou erro | CORRECAO: FFmpeg fallback ativado automaticamente
+03:18:52 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:18:52 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:18:52 [INFO] [32mCriando vídeo estático com FFmpeg...[0m
+03:18:52 [INFO] galflowai: Criando vídeo estático com FFmpeg...
+03:18:53 [INFO] [32mVídeo estático criado: scene_003.mp4[0m
+03:18:53 [INFO] galflowai: Vídeo estático criado: scene_003.mp4
+03:18:53 [INFO] app.pipeline.video_generation_pipeline: Progresso: 70.0% - Gerando cena 5/6...
+03:18:53 [INFO] app.adapters.wangp_adapter: WanGP não encontrado em: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta\engines\Wan2GP
+03:18:53 [ERROR] app.application.use_cases.base_use_case: WanGP not available
+03:18:53 [INFO] app.pipeline.video_generation_pipeline: WanGP não disponível, usando FFmpeg para cena 4
+03:18:53 [WARNING] stage.VideoGenerationPipeline: [VideoGenerationPipeline] warning: WanGP falhou para cena 4, usando FFmpeg | CAUSA: WanGP não disponível ou retornou erro | CORRECAO: FFmpeg fallback ativado automaticamente
+03:18:53 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:18:53 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:18:53 [INFO] [32mCriando vídeo estático com FFmpeg...[0m
+03:18:53 [INFO] galflowai: Criando vídeo estático com FFmpeg...
+03:18:53 [INFO] [32mVídeo estático criado: scene_004.mp4[0m
+03:18:53 [INFO] galflowai: Vídeo estático criado: scene_004.mp4
+03:18:53 [INFO] app.pipeline.video_generation_pipeline: Progresso: 75.0% - Gerando cena 6/6...
+03:18:53 [INFO] app.adapters.wangp_adapter: WanGP não encontrado em: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta\engines\Wan2GP
+03:18:53 [ERROR] app.application.use_cases.base_use_case: WanGP not available
+03:18:53 [INFO] app.pipeline.video_generation_pipeline: WanGP não disponível, usando FFmpeg para cena 5
+03:18:53 [WARNING] stage.VideoGenerationPipeline: [VideoGenerationPipeline] warning: WanGP falhou para cena 5, usando FFmpeg | CAUSA: WanGP não disponível ou retornou erro | CORRECAO: FFmpeg fallback ativado automaticamente
+03:18:53 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:18:53 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:18:53 [INFO] [32mCriando vídeo estático com FFmpeg...[0m
+03:18:53 [INFO] galflowai: Criando vídeo estático com FFmpeg...
+03:18:53 [INFO] [32mVídeo estático criado: scene_005.mp4[0m
+03:18:53 [INFO] galflowai: Vídeo estático criado: scene_005.mp4
+03:18:53 [INFO] app.pipeline.video_generation_pipeline: Progresso: 85% - Montando vídeo final...
+03:18:53 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:18:53 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:18:53 [INFO] [32mConcatenando 6 vídeos...[0m
+03:18:53 [INFO] galflowai: Concatenando 6 vídeos...
+03:18:54 [INFO] [32mVídeos concatenados: commercial.mp4[0m
+03:18:54 [INFO] galflowai: Vídeos concatenados: commercial.mp4
+03:18:54 [INFO] app.pipeline.video_generation_pipeline: Progresso: 100% - Comercial gerado com sucesso!
+03:23:51 [INFO] [32mGerando roteiro para: inicie a criação do roteiro para whey protein sabo [modo: template][0m
+03:23:51 [INFO] galflowai: Gerando roteiro para: inicie a criação do roteiro para whey protein sabo [modo: template]
+03:23:51 [INFO] [32mRoteiro gerado via TemplateProvider[0m
+03:23:51 [INFO] galflowai: Roteiro gerado via TemplateProvider
+03:23:51 [INFO] [32mRoteiro salvo: script.txt[0m
+03:23:51 [INFO] galflowai: Roteiro salvo: script.txt
+03:23:58 [INFO] [32mManual edit saved as v001[0m
+03:23:58 [INFO] galflowai: Manual edit saved as v001
+03:23:59 [INFO] [32mManual edit saved as v002[0m
+03:23:59 [INFO] galflowai: Manual edit saved as v002
+03:24:25 [INFO] [32mManual edit saved as v003[0m
+03:24:25 [INFO] galflowai: Manual edit saved as v003
+03:24:27 [INFO] [32mGerando roteiro para: inicie a criação do roteiro para whey protein sabo [modo: template][0m
+03:24:27 [INFO] galflowai: Gerando roteiro para: inicie a criação do roteiro para whey protein sabo [modo: template]
+03:24:27 [INFO] [32mRoteiro gerado via TemplateProvider[0m
+03:24:27 [INFO] galflowai: Roteiro gerado via TemplateProvider
+03:24:27 [INFO] [32mRoteiro salvo: script.txt[0m
+03:24:27 [INFO] galflowai: Roteiro salvo: script.txt
+03:24:29 [INFO] [32mManual edit saved as v001[0m
+03:24:29 [INFO] galflowai: Manual edit saved as v001
+03:24:29 [INFO] [32mManual edit saved as v002[0m
+03:24:29 [INFO] galflowai: Manual edit saved as v002
+03:24:30 [INFO] [32mManual edit saved as v003[0m
+03:24:30 [INFO] galflowai: Manual edit saved as v003
+03:24:30 [INFO] [32mManual edit saved as v004[0m
+03:24:30 [INFO] galflowai: Manual edit saved as v004
+03:24:30 [INFO] [32mManual edit saved as v005[0m
+03:24:30 [INFO] galflowai: Manual edit saved as v005
+03:24:31 [INFO] [32mScript approved: v005[0m
+03:24:31 [INFO] galflowai: Script approved: v005
+03:24:36 [INFO] app.adapters.wangp_adapter: WanGP não encontrado em: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta\engines\Wan2GP
+03:24:36 [INFO] app.adapters.tts_adapter: Kokoro TTS não disponível
+03:24:36 [INFO] app.adapters.tts_adapter: pyttsx3 detectado
+03:24:36 [INFO] app.adapters.tts_adapter: Vozes do Windows detectadas
+03:24:36 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:24:36 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:24:36 [INFO] app.pipeline.video_generation_pipeline: Progresso: 10% - Gerando roteiro...
+03:24:48 [INFO] [32mAvailable providers: {'template': True, 'GPT4AllProvider': True, 'LlamaCppProvider': False, 'KoboldCppProvider': False, 'LMStudioProvider': False}[0m
+03:24:48 [INFO] galflowai: Available providers: {'template': True, 'GPT4AllProvider': True, 'LlamaCppProvider': False, 'KoboldCppProvider': False, 'LMStudioProvider': False}
+03:25:16 [INFO] [32mScript generated using GPT4AllProvider (time: 28.28s, quality: safe)[0m
+03:25:16 [INFO] galflowai: Script generated using GPT4AllProvider (time: 28.28s, quality: safe)
+03:25:16 [INFO] [32mRoteiro salvo: script.txt[0m
+03:25:16 [INFO] galflowai: Roteiro salvo: script.txt
+03:25:16 [INFO] [32mCached content artifact: script_gen:0ce31eb707805ff2dc018d0676c85f5109ade5064067eec6af16a8efb7378a14 -> 3ee7fb7b7a81[0m
+03:25:16 [INFO] galflowai: Cached content artifact: script_gen:0ce31eb707805ff2dc018d0676c85f5109ade5064067eec6af16a8efb7378a14 -> 3ee7fb7b7a81
+03:25:16 [INFO] app.pipeline.video_generation_pipeline: Progresso: 20% - Dividindo em cenas...
+03:25:16 [INFO] [32mDividindo roteiro em cenas para 20260514_032427_inicie_a_criação[0m
+03:25:16 [INFO] galflowai: Dividindo roteiro em cenas para 20260514_032427_inicie_a_criação
+03:25:16 [INFO] [32mEncontradas 6 cenas via marcadores[0m
+03:25:16 [INFO] galflowai: Encontradas 6 cenas via marcadores
+03:25:16 [INFO] [32mCenas salvas para 20260514_032427_inicie_a_criação: 6 cenas[0m
+03:25:16 [INFO] galflowai: Cenas salvas para 20260514_032427_inicie_a_criação: 6 cenas
+03:25:16 [INFO] app.pipeline.video_generation_pipeline: Progresso: 30% - Gerando prompts de vídeo...
+03:25:16 [INFO] [32mPrompts gerados para 6 cenas[0m
+03:25:16 [INFO] galflowai: Prompts gerados para 6 cenas
+03:25:16 [INFO] app.pipeline.video_generation_pipeline: Progresso: 40% - Gerando narração...
+03:25:16 [INFO] app.adapters.tts_adapter: Kokoro TTS não disponível
+03:25:16 [INFO] app.adapters.tts_adapter: pyttsx3 detectado
+03:25:16 [INFO] app.adapters.tts_adapter: Vozes do Windows detectadas
+03:25:16 [INFO] app.adapters.tts_adapter: Gerando áudio com motor: pyttsx3
+03:25:17 [INFO] app.pipeline.video_generation_pipeline: Progresso: 50% - Gerando vídeos das cenas...
+03:25:17 [INFO] app.pipeline.video_generation_pipeline: Progresso: 50.0% - Gerando cena 1/6...
+03:25:17 [INFO] app.adapters.wangp_adapter: WanGP não encontrado em: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta\engines\Wan2GP
+03:25:17 [ERROR] app.application.use_cases.base_use_case: WanGP not available
+03:25:17 [INFO] app.pipeline.video_generation_pipeline: WanGP não disponível, usando FFmpeg para cena 0
+03:25:17 [WARNING] stage.VideoGenerationPipeline: [VideoGenerationPipeline] warning: WanGP falhou para cena 0, usando FFmpeg | CAUSA: WanGP não disponível ou retornou erro | CORRECAO: FFmpeg fallback ativado automaticamente
+03:25:17 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:25:17 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:25:17 [INFO] [32mCriando vídeo estático com FFmpeg...[0m
+03:25:17 [INFO] galflowai: Criando vídeo estático com FFmpeg...
+03:25:17 [INFO] [32mVídeo estático criado: scene_000.mp4[0m
+03:25:17 [INFO] galflowai: Vídeo estático criado: scene_000.mp4
+03:25:17 [INFO] app.pipeline.video_generation_pipeline: Progresso: 55.0% - Gerando cena 2/6...
+03:25:17 [INFO] app.adapters.wangp_adapter: WanGP não encontrado em: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta\engines\Wan2GP
+03:25:17 [ERROR] app.application.use_cases.base_use_case: WanGP not available
+03:25:17 [INFO] app.pipeline.video_generation_pipeline: WanGP não disponível, usando FFmpeg para cena 1
+03:25:17 [WARNING] stage.VideoGenerationPipeline: [VideoGenerationPipeline] warning: WanGP falhou para cena 1, usando FFmpeg | CAUSA: WanGP não disponível ou retornou erro | CORRECAO: FFmpeg fallback ativado automaticamente
+03:25:17 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:25:17 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:25:17 [INFO] [32mCriando vídeo estático com FFmpeg...[0m
+03:25:17 [INFO] galflowai: Criando vídeo estático com FFmpeg...
+03:25:17 [INFO] [32mVídeo estático criado: scene_001.mp4[0m
+03:25:17 [INFO] galflowai: Vídeo estático criado: scene_001.mp4
+03:25:17 [INFO] app.pipeline.video_generation_pipeline: Progresso: 60.0% - Gerando cena 3/6...
+03:25:17 [INFO] app.adapters.wangp_adapter: WanGP não encontrado em: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta\engines\Wan2GP
+03:25:17 [ERROR] app.application.use_cases.base_use_case: WanGP not available
+03:25:17 [INFO] app.pipeline.video_generation_pipeline: WanGP não disponível, usando FFmpeg para cena 2
+03:25:17 [WARNING] stage.VideoGenerationPipeline: [VideoGenerationPipeline] warning: WanGP falhou para cena 2, usando FFmpeg | CAUSA: WanGP não disponível ou retornou erro | CORRECAO: FFmpeg fallback ativado automaticamente
+03:25:17 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:25:17 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:25:17 [INFO] [32mCriando vídeo estático com FFmpeg...[0m
+03:25:17 [INFO] galflowai: Criando vídeo estático com FFmpeg...
+03:25:17 [INFO] [32mVídeo estático criado: scene_002.mp4[0m
+03:25:17 [INFO] galflowai: Vídeo estático criado: scene_002.mp4
+03:25:17 [INFO] app.pipeline.video_generation_pipeline: Progresso: 65.0% - Gerando cena 4/6...
+03:25:17 [INFO] app.adapters.wangp_adapter: WanGP não encontrado em: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta\engines\Wan2GP
+03:25:17 [ERROR] app.application.use_cases.base_use_case: WanGP not available
+03:25:17 [INFO] app.pipeline.video_generation_pipeline: WanGP não disponível, usando FFmpeg para cena 3
+03:25:17 [WARNING] stage.VideoGenerationPipeline: [VideoGenerationPipeline] warning: WanGP falhou para cena 3, usando FFmpeg | CAUSA: WanGP não disponível ou retornou erro | CORRECAO: FFmpeg fallback ativado automaticamente
+03:25:17 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:25:17 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:25:17 [INFO] [32mCriando vídeo estático com FFmpeg...[0m
+03:25:17 [INFO] galflowai: Criando vídeo estático com FFmpeg...
+03:25:17 [INFO] [32mVídeo estático criado: scene_003.mp4[0m
+03:25:17 [INFO] galflowai: Vídeo estático criado: scene_003.mp4
+03:25:17 [INFO] app.pipeline.video_generation_pipeline: Progresso: 70.0% - Gerando cena 5/6...
+03:25:17 [INFO] app.adapters.wangp_adapter: WanGP não encontrado em: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta\engines\Wan2GP
+03:25:17 [ERROR] app.application.use_cases.base_use_case: WanGP not available
+03:25:17 [INFO] app.pipeline.video_generation_pipeline: WanGP não disponível, usando FFmpeg para cena 4
+03:25:17 [WARNING] stage.VideoGenerationPipeline: [VideoGenerationPipeline] warning: WanGP falhou para cena 4, usando FFmpeg | CAUSA: WanGP não disponível ou retornou erro | CORRECAO: FFmpeg fallback ativado automaticamente
+03:25:17 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:25:17 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:25:17 [INFO] [32mCriando vídeo estático com FFmpeg...[0m
+03:25:17 [INFO] galflowai: Criando vídeo estático com FFmpeg...
+03:25:17 [INFO] [32mVídeo estático criado: scene_004.mp4[0m
+03:25:17 [INFO] galflowai: Vídeo estático criado: scene_004.mp4
+03:25:17 [INFO] app.pipeline.video_generation_pipeline: Progresso: 75.0% - Gerando cena 6/6...
+03:25:17 [INFO] app.adapters.wangp_adapter: WanGP não encontrado em: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta\engines\Wan2GP
+03:25:17 [ERROR] app.application.use_cases.base_use_case: WanGP not available
+03:25:17 [INFO] app.pipeline.video_generation_pipeline: WanGP não disponível, usando FFmpeg para cena 5
+03:25:17 [WARNING] stage.VideoGenerationPipeline: [VideoGenerationPipeline] warning: WanGP falhou para cena 5, usando FFmpeg | CAUSA: WanGP não disponível ou retornou erro | CORRECAO: FFmpeg fallback ativado automaticamente
+03:25:17 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:25:17 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:25:17 [INFO] [32mCriando vídeo estático com FFmpeg...[0m
+03:25:17 [INFO] galflowai: Criando vídeo estático com FFmpeg...
+03:25:18 [INFO] [32mVídeo estático criado: scene_005.mp4[0m
+03:25:18 [INFO] galflowai: Vídeo estático criado: scene_005.mp4
+03:25:18 [INFO] app.pipeline.video_generation_pipeline: Progresso: 85% - Montando vídeo final...
+03:25:18 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:25:18 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:25:18 [INFO] [32mConcatenando 6 vídeos...[0m
+03:25:18 [INFO] galflowai: Concatenando 6 vídeos...
+03:25:18 [INFO] [32mVídeos concatenados: commercial.mp4[0m
+03:25:18 [INFO] galflowai: Vídeos concatenados: commercial.mp4
+03:25:18 [INFO] app.pipeline.video_generation_pipeline: Progresso: 100% - Comercial gerado com sucesso!

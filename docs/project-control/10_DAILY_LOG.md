@@ -2456,3 +2456,60 @@ Duas UIs coexistem: `app/main.py` (legacy) e `app/ui/gradio_app.py` (new 6-stage
 
 ### Próximo passo
 - Nenhum pendente — todos os bugs da S30 Recovery corrigidos
+
+## 2026-05-14 — Sessão 31: Phase E — QA artifacts, Progress fix, Export unificação, Smoke tests
+
+### Contexto
+Continuação da S30 Recovery — criar QA artifacts pendentes (provider_runtime_matrix, flow_validation_checklist), corrigir progress bar travado, unificar paths de export, rodar smoke tests contra FastAPI.
+
+### O que fiz
+1. **QA artifacts criados:**
+   - `artifacts/qa/provider_runtime_matrix.md` — 6 LLM providers, availability, fallback chains, quality, timeouts
+   - `artifacts/qa/flow_validation_checklist.md` — 63 itens de validação do pipeline completo
+   - `scripts/qa/api_smoke_flow.ps1` — smoke tests com salvamento de respostas em `artifacts/qa/curl/`
+
+2. **Progress bar real-time (P1):**
+   - `gradio_app.py:345` — `on_render_scenes` agora aceita `progress=gr.Progress()` (injetado pelo Gradio)
+   - Pipeline recebe `progress_callback` funcional que atualiza barra via `progress(pct/100, desc=msg)`
+   - `demo.queue()` adicionado antes do `demo.launch()` — necessário para async em Gradio 6
+
+3. **Export path unificado (P3):**
+   - `on_export_final`: `output/final/` → `projects/{project_id}/export/`
+   - `on_generate_tts`: `output/narration.wav` → `projects/{project_id}/audio/narration.wav`
+   - `on_generate_srt`: `output/commercial.srt` → `projects/{project_id}/subtitles/commercial.srt`
+   - Todos os artefatos agora ficam dentro do diretório do projeto
+
+4. **Health dashboard fix:**
+   - `observability_use_cases.py:93` — `import psutil` movido para dentro do try/except (estava fora, causava ImportError não capturado → 500)
+   - `psutil` instalado no ambiente studio
+
+5. **API smoke tests (QA-1007/1008/1009):**
+   - Rotas corrigidas para bater nos paths reais do FastAPI (`/api/v1/llm/script`, `/api/v1/projects/{id}/script/*`)
+   - 18/18 endpoints passando contra `:8000`
+   - Respostas JSON salvas em `artifacts/qa/curl/`
+
+6. **Fase E concluída:**
+   - QA-1007 ✅ — curl: script gera (200), salva (200), aprova (200), carrega (200)
+   - QA-1008 ✅ — provider list retorna template+disponiveis, fallback quality visível
+   - QA-1009 ✅ — logs/dashboard/metrics/jobs endpoints 200
+   - RND-613 ✅ — vídeos MP4 H.264 854x480 em `projects/*/final/commercial.mp4`
+
+### Arquivos alterados
+- `app/ui/gradio_app.py` — on_render_scenes progress callback, demo.queue(), paths unificados
+- `app/application/use_cases/observability_use_cases.py` — import psutil dentro do try
+- `scripts/qa/api_smoke_flow.ps1` — BaseUrl=8000, rotas corrigidas
+- `artifacts/qa/provider_runtime_matrix.md` — novo
+- `artifacts/qa/flow_validation_checklist.md` — novo
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — sessão 31
+- `docs/project-control/18_IMPLEMENTATION_ORDER.md` — Phase E ✅
+- `docs/project-control/10_DAILY_LOG.md` — esta entrada
+
+### Testes executados
+- API smoke: 18/18 passed
+- Pytest: 907 passed, 2 pre-existing fails (git audit count, ignored)
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- Abordar débitos técnicos (GAL-930..935) — cobertura script_service, pipeline unificação, testes e2e

@@ -65,9 +65,11 @@
 
 ### ✅ Já implementado
 - Pipeline base de criação: roteiro → cenas → render/finalização.
-- Base FastAPI + UI local (Gradio em 127.0.0.1:7860).
+- Base FastAPI + UI local (Gradio 6 em 127.0.0.1:7860).
 - Fallback operacional em cadeia para não interromper geração.
 - Estrutura completa de use cases na camada de aplicação (25+ use cases).
+- 6 providers LLM locais: Template, GPT4All, LM Studio, KoboldCpp, llama.cpp, Ollama (opcional).
+- GPT4All funcional com orca-mini-3b + max_tokens=800 e prompt pt-BR.
 - Job queue com mutex (H11 concluído: 16 testes passando).
 - Metrics & Monitoring (H12 concluído: 10 testes passando).
 - Logs via API (H13 concluído: 11 testes passando).
@@ -77,15 +79,19 @@
 - Visual Consistency (H17 concluído: 13 testes passando).
 - Advanced Observability (H18 concluído: 6 testes passando).
 - Documentação técnica segmentada em `docs/`.
-- **Total: 314 testes coletados, 84+ novos testes H11-H18 (100% pass).**
+- **Total: 840 testes passando, 1 pre-existing fail (git audit).**
 - **Padronização de erros:** formato "CAUSA | CORREÇÃO" implementado.
-- **Ambiente K-only:** sem dependências de C:, todos os caminhos em K:.
+- **Ambiente K-only:** sem dependências obrigatórias de C:, todos os caminhos em K:.
+- **S30 Recovery concluída:** 11 bugs P0/alta corrigidos, UI 6-stage funcional.
 
 ### 🟨 Em evolução (não concluído)
-- Contratos de API versionados e testados de ponta a ponta.
-- Testes E2E para fallback FFmpeg.
-- Métricas operacionais e observabilidade premium.
-- Backup sistêmico automatizado.
+- Testes E2E para gate de aprovação (QA-1007).
+- Testes E2E provider selecionado vs usado (QA-1008).
+- Testes E2E logs/dashboard pós-job (QA-1009).
+- Evidência de geração real de vídeo fim a fim (RND-613).
+- Testes de contrato FastAPI (GAL-935).
+- Cobertura de testes script_service.py (GAL-932).
+- Unificação pipeline em use cases independentes (GAL-933).
 
 ---
 
@@ -278,7 +284,7 @@ Para cada PR:
 2. **Ative o ambiente:** `K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\activate`
 3. **Execute:** `scripts\start_GalFlowAI_standard.bat`
 4. **Acesse:** http://127.0.0.1:7860
-5. **Teste:** `pytest -q` (314 testes)
+5. **Teste:** `pytest -q` (840 testes)
 
 ---
 

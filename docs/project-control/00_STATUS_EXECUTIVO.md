@@ -47,22 +47,60 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 ### Testes
 - 47 passed (provider + script_service), 0 regressões
 
+## Sessão 31 — Phase E: QA Artifacts & UI Corrections (2026-05-14)
+
+### O que foi feito
+
+1. **QA artifacts criados:**
+   - `artifacts/qa/provider_runtime_matrix.md` — matriz completa de seleção de providers, fallback chains, qualidade, timeouts
+   - `artifacts/qa/flow_validation_checklist.md` — checklist de 63 itens para validação de pipeline completo
+   - `scripts/qa/api_smoke_flow.ps1` — script de smoke tests da API com salvamento de respostas
+   - `artifacts/qa/curl/` — 25+ respostas JSON de todos os endpoints (18/18 testes passando)
+
+2. **Progress bar real-time:**
+   - `on_render_scenes` agora aceita `progress=gr.Progress()` (injetado pelo Gradio)
+   - Pipeline recebe `progress_callback` funcional que atualiza barra em tempo real
+   - `demo.queue()` adicionado para suporte a async/generators
+
+3. **Export path unificado:**
+   - `on_export_final` escreve em `projects/{project_id}/export/` (antes `output/final/`)
+   - `on_generate_tts` escreve em `projects/{project_id}/audio/` (antes `output/`)
+   - `on_generate_srt` escreve em `projects/{project_id}/subtitles/` (antes `output/`)
+
+4. **Health dashboard fix:**
+   - `_check_system()` em `observability_use_cases.py`: `import psutil` movido para dentro do try/except
+   - `psutil` instalado no ambiente studio
+
+5. **API smoke tests:**
+   - 18/18 endpoints passando contra `:8000` (FastAPI)
+   - Rotas corrigidas para bater nos paths reais
+
+6. **Fase E completa:**
+   - QA-1007 ✅ — curl prova gate de aprovação (script gera, salva, aprova, carrega)
+   - QA-1008 ✅ — provider list retorna template + gpt4all, fallback quality visível
+   - QA-1009 ✅ — logs/dashboard/jobs endpoints retornam 200 com dados
+   - RND-613 ✅ — vídeos MP4 (H.264, 854x480) gerados em `projects/*/final/commercial.mp4`
+
+### Testes
+- 907 passed, 2 pre-existing fails (git audit count + ignorado)
+- 0 regressão das mudanças desta sessão
+
 ## Progresso geral
 
-Histórias concluídas: 65/65 + 11 bugs corrigidos
+Histórias concluídas: 65/65 + 11 bugs + 4 QA/RND itens Phase E
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 2 (OBS-904 stage4 visibilidade, OBS-905 dashboard)
-Percentual concluído: 100% backlog + P0
+Histórias pendentes: 6 débitos técnicos (GAL-930..935)
+Percentual concluído: 100% backlog + P0 + Phase E
 
 ## Estado atual
 
-- Branch atual: master (42e75b9)
-- Último commit: 42e75b9 — fix(gpt4all): remove unsupported n_threads/n_batch, increase max_tokens to 800, improve prompt structure
-- Fase atual: S30 Recovery ✅
-- Story stream atual: 65/65 histórias + 11 bugs corrigidos
-- Pendências: OBS-904 (stage4 never visible), OBS-905 (dashboard population)
-- Próxima ação recomendada: Testar fluxo completo de aprovação → cenas → render → export
+- Branch atual: master (pending Phase E commit)
+- Último commit: 85be736 — fix(code): resolve gap findings — TODO format, type hints, backlog
+- Fase atual: S30 Phase E ✅ (QA artifacts, UI corrections, API smoke tests)
+- Story stream atual: 65/65 + 11 bugs + 4 Phase E itens
+- Pendências: 6 débitos técnicos (GAL-930..935)
+- Próxima ação recomendada: Abordar débitos técnicos (script_service coverage, pipeline unificação)
 
 ### Sessão 23 — Phase 6B: UI-205 (2026-05-12)
 

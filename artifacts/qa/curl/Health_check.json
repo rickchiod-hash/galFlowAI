@@ -1,0 +1,1 @@
+{"ok":true,"code":"SUCCESS","message":"Service is healthy","details":{"status":"ok","app":"GalFlowAI","mode":"local","ui":"gradio","fastapi":true,"version":"2.0"}}

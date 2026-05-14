@@ -68,7 +68,28 @@
 2. VEC-811
 3. DOC-120
 
+### Fase S30 — Recovery Mission (bugs P0 encontrados pós-backlog)
+
+Ordem anti-quebra: A → B → C → D → E (não pular, não inverter).
+
+| Fase | ID | Descrição | Prioridade | Status |
+|:----:|---|-----------|:---------:|:------:|
+| A | GAL-903 | GPT4All crash — n_threads/n_batch não suportados | P0 | ✅ Resolvido |
+| A | GAL-904 | GPT4All output quality — max_tokens, prompt, Narracao: | Alta | ✅ Resolvido |
+| A | UI-209 | Aprovar Roteiro sem efeito — script não persistido | P0 | ✅ Resolvido |
+| A | UI-210 | 3 botões sem click handler (main.py) | P0 | ✅ Resolvido |
+| A | UI-211 | Salvar Edição output quebrado | P0 | ✅ Resolvido |
+| B | PROV-305 | Ações retornam "Erro" — chave "status" inexistente | Alta | ✅ Resolvido |
+| B | PROV-304 | Provider explícito ignorado → TemplateProvider | P0 | ✅ Resolvido |
+| C | OBS-904 | Stage4 (Cenas) nunca visível | Média | ✅ Resolvido |
+| D | OBS-905 | Dashboard sem métricas | Média | ✅ Resolvido |
+| D | GAL-935 | Type hints API routes + import fix | Média | ✅ Resolvido |
+| E | QA-1007 | E2E gate aprovação | Média | ✅ Resolvido |
+| E | QA-1008 | E2E provider vs usado | Média | ✅ Resolvido |
+| E | QA-1009 | E2E logs/dashboard pós-job | Média | ✅ Resolvido |
+| E | RND-613 | Evidência geração real vídeo fim a fim | Alta | ✅ Resolvido |
+
 ## Regra
 
 1. Não pular fases sem registrar motivo no Status Executivo.
-2. **Nunca inverter anti-break order**: 6A → 6B → 6C obrigatório.
+2. **Nunca inverter anti-break order**: 6A → 6B → 6C → S30(A→E) obrigatório.

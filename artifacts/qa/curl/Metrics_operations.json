@@ -1,0 +1,1 @@
+{"ok":true,"code":"SUCCESS","message":"Operations retrieved","details":{"operations":[{"type":"script_generation","timestamp":"2026-05-04T05:39:47.095319","success":true,"duration":1.0,"provider":"Template","used_fallback":false,"project_id":""}],"count":1}}

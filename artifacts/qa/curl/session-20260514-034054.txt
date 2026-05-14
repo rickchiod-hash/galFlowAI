@@ -1,0 +1,26 @@
+=== GalFlowAI API Smoke Test ===
+Date: 2026-05-14 03:40:54 UTC
+Base URL: http://127.0.0.1:8000
+Output: artifacts/qa/curl
+---
+PASS [200] GET /api/v1/health → artifacts/qa/curl/Health_check.json
+PASS [200] GET /api/v1/llm/providers → artifacts/qa/curl/Provider_list.json
+PASS [200] GET /api/v1/pipeline/status → artifacts/qa/curl/Pipeline_status.json
+PASS [200] GET /api/v1/hardware → artifacts/qa/curl/Hardware_info.json
+PASS [200] POST /api/v1/llm/script → artifacts/qa/curl/Generate_script__template_.json
+PASS [200] POST /api/v1/projects/test_project_qa/script/save-manual-edit → artifacts/qa/curl/Save_script.json
+PASS [200] POST /api/v1/projects/test_project_qa/script/approve → artifacts/qa/curl/Approve_script.json
+PASS [200] GET /api/v1/projects/test_project_qa/script/current → artifacts/qa/curl/Load_current_script.json
+PASS [200] GET /api/v1/projects/test_project_qa/script/versions → artifacts/qa/curl/List_versions.json
+PASS [200] GET /api/v1/metrics → artifacts/qa/curl/Metrics_summary.json
+PASS [200] GET /api/v1/metrics/operations → artifacts/qa/curl/Metrics_operations.json
+PASS [200] GET /api/v1/logs/recent?limit=10 → artifacts/qa/curl/Recent_logs.json
+PASS [200] GET /api/v1/logs/summary → artifacts/qa/curl/Logs_summary.json
+PASS [200] GET /api/v1/logs/last-error → artifacts/qa/curl/Last_error.json
+PASS [200] GET /api/v1/logs/structured → artifacts/qa/curl/Structured_logs.json
+PASS [200] GET /api/v1/logs/diagnostic → artifacts/qa/curl/Diagnostic_bundle.json
+PASS [200] GET /api/v1/jobs → artifacts/qa/curl/List_jobs.json
+PASS [200] GET /api/v1/health/dashboard → artifacts/qa/curl/Health_dashboard.json
+
+=== FINAL ===
+18 passed, 0 failed

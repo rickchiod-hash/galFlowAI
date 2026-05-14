@@ -90,9 +90,8 @@ class GetHealthDashboardUseCase(UseCase):
     
     def _check_system(self) -> Dict[str, Any]:
         """Check system resources."""
-        import psutil
-        
         try:
+            import psutil
             cpu_percent = psutil.cpu_percent(interval=0.1)
             memory = psutil.virtual_memory()
             disk = psutil.disk_usage("K:/")

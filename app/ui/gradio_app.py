@@ -163,8 +163,10 @@ def on_generate_tts(narration_script, engine, voice, allow_no_audio, app_state_v
     if not narration_script:
         return app_state_val, None, "", "Nenhum script de narracao disponivel."
     tts = TTSService()
-    output_path = str(PROJECT_ROOT / ".." / "output" / "narration.wav")
-    os.makedirs(str(Path(output_path).parent), exist_ok=True)
+    pid = app_state_val.get("project_id", "web_ui")
+    audio_dir = PROJECTS_DIR / pid / "audio"
+    audio_dir.mkdir(parents=True, exist_ok=True)
+    output_path = str(audio_dir / "narration.wav")
     try:
         audio_result = tts.generate_audio(
             text=narration_script, output_path=output_path, voice=voice if voice != "default" else None
@@ -204,8 +206,10 @@ def on_generate_srt(app_state_val):
         srt_lines.append("%d\n%s --> %s\n%s\n" % (i, start_s, end_s, line))
         t += dur
     srt_content = "\n".join(srt_lines)
-    output_path = str(PROJECT_ROOT / ".." / "output" / "commercial.srt")
-    os.makedirs(str(Path(output_path).parent), exist_ok=True)
+    pid = app_state_val.get("project_id", "web_ui")
+    sub_dir = PROJECTS_DIR / pid / "subtitles"
+    sub_dir.mkdir(parents=True, exist_ok=True)
+    output_path = str(sub_dir / "commercial.srt")
     Path(output_path).write_text(srt_content, encoding="utf-8")
     app_state_val["srt_path"] = output_path
     return app_state_val, srt_content, "SRT gerado: %s" % output_path
@@ -217,9 +221,10 @@ def on_export_final(app_state_val, audio_path, srt_path, allow_no_audio):
     if not vs.ffmpeg_available:
         return app_state_val, None, "FFmpeg nao disponivel para export."
     video_path = app_state_val.get("video_path", "")
-    final_dir = Path(PROJECT_ROOT) / ".." / "output" / "final"
-    final_dir.mkdir(parents=True, exist_ok=True)
-    export_path = str(final_dir / "commercial.mp4")
+    project_id = app_state_val.get("project_id", "web_ui")
+    export_dir = PROJECTS_DIR / project_id / "export"
+    export_dir.mkdir(parents=True, exist_ok=True)
+    export_path = str(export_dir / "commercial.mp4")
     manifest = {"audio": bool(audio_path), "srt": bool(srt_path), "fallback_sem_audio": not bool(audio_path)}
     try:
         if video_path and Path(video_path).exists():
@@ -231,8 +236,8 @@ def on_export_final(app_state_val, audio_path, srt_path, allow_no_audio):
                 app_state_val["export_path"] = result.get("video_path", export_path)
                 if srt_path and Path(srt_path).exists():
                     import shutil
-                    shutil.copy2(srt_path, str(final_dir / "commercial.srt"))
-                Path(final_dir / "export_manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+                    shutil.copy2(srt_path, str(export_dir / "commercial.srt"))
+                Path(export_dir / "export_manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
                 status = "Export concluido"
                 if app_state_val.get("export_without_audio"):
                     status += " (sem audio por fallback)"
@@ -342,8 +347,8 @@ def on_generate_scenes(app_state_val):
     return app_state_val, rows, "Cenas geradas: %d" % len(scenes)
 
 
-def on_render_scenes(app_state_val):
-    """Attempt real render via pipeline, fallback to FFmpeg placeholder."""
+def on_render_scenes(app_state_val, progress=gr.Progress()):
+    """Attempt real render via pipeline with progress updates."""
     scenes = app_state_val.get("scenes", [])
     if not scenes:
         return app_state_val, 0, "Nenhuma cena para renderizar.", ""
@@ -356,29 +361,36 @@ def on_render_scenes(app_state_val):
     save_scenes(project_id, scenes)
     import time as _time
     start = _time.time()
+    logs = []
+    def progress_callback(pct, msg):
+        progress(pct / 100, desc=msg)
+        logs.append("[%d%%] %s" % (pct, msg))
     try:
         result = pipeline.generate_commercial(
             project_id=project_id,
             product=app_state_val.get("script", "")[:50],
             target_audience="",
-            progress_callback=None,
+            progress_callback=progress_callback,
         )
         elapsed = _time.time() - start
         svc = get_metrics_service()
         if result.get("success"):
             final_video = result.get("final_video", result.get("video_path", ""))
             app_state_val["video_path"] = final_video
+            app_state_val["current_step"] = max(app_state_val.get("current_step", 1), 6)
             svc.record_video_generation(
                 success=True, duration=elapsed, engine="pipeline",
                 used_fallback=False, project_id=project_id,
             )
-            return app_state_val, 100, "Render concluido via pipeline.", final_video
+            log_text = "\n".join(logs[-10:]) + "\nRender concluido via pipeline."
+            return app_state_val, 100, log_text, final_video
         app_state_val["video_path"] = ""
         svc.record_video_generation(
             success=False, duration=elapsed, engine="pipeline",
             used_fallback=True, project_id=project_id,
         )
-        return app_state_val, 0, "Pipeline retornou erro: %s" % result.get("error", "desconhecido"), ""
+        log_text = "\n".join(logs[-10:]) + "\nERRO: %s" % result.get("error", "desconhecido")
+        return app_state_val, 0, log_text, ""
     except Exception as e:
         elapsed = _time.time() - start
         app_state_val["video_path"] = ""
@@ -387,7 +399,8 @@ def on_render_scenes(app_state_val):
             success=False, duration=elapsed, engine="pipeline",
             used_fallback=True, project_id=project_id,
         )
-        return app_state_val, 0, "Render falhou: %s" % e, ""
+        log_text = "\n".join(logs[-10:]) + "\nFALHA: %s" % e
+        return app_state_val, 0, log_text, ""
 
 
 def on_generate_scene_prompts(app_state_val):
@@ -1003,4 +1016,5 @@ if __name__ == "__main__":
     print("Acesse em: http://127.0.0.1:7860")
 
     demo = create_gradio_app()
+    demo.queue()
     demo.launch(server_name="127.0.0.1", server_port=7860, share=False, debug=True)

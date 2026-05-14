@@ -1,0 +1,27 @@
+=== GalFlowAI API Smoke Test ===
+Date: 2026-05-14 03:20:53 UTC
+Base URL: http://127.0.0.1:7860
+Output: artifacts/qa/curl
+---
+FAIL [404, expected 200] GET /api/v1/health → artifacts/qa/curl/Health_check.json
+FAIL [404, expected 200] GET /api/v1/llm/providers → artifacts/qa/curl/Provider_list.json
+FAIL [404, expected 200] GET /api/v1/config → artifacts/qa/curl/Config.json
+FAIL [404, expected 200] GET /api/v1/pipeline/status → artifacts/qa/curl/Pipeline_status.json
+FAIL [404, expected 200] GET /api/v1/hardware → artifacts/qa/curl/Hardware_info.json
+FAIL [404, expected 200] POST /api/v1/script/generate → artifacts/qa/curl/Generate_script__template_.json
+FAIL [404, expected 200] POST /api/v1/script/test_project_qa/save → artifacts/qa/curl/Save_script.json
+FAIL [404, expected 200] POST /api/v1/script/test_project_qa/approve → artifacts/qa/curl/Approve_script.json
+FAIL [404, expected 200] GET /api/v1/script/test_project_qa/current → artifacts/qa/curl/Load_current_script.json
+FAIL [404, expected 200] GET /api/v1/script/test_project_qa/versions → artifacts/qa/curl/List_versions.json
+FAIL [404, expected 200] GET /api/v1/metrics → artifacts/qa/curl/Metrics_summary.json
+FAIL [404, expected 200] GET /api/v1/metrics/operations → artifacts/qa/curl/Metrics_operations.json
+FAIL [404, expected 200] GET /api/v1/logs/recent?limit=10 → artifacts/qa/curl/Recent_logs.json
+FAIL [404, expected 200] GET /api/v1/logs/summary → artifacts/qa/curl/Logs_summary.json
+FAIL [404, expected 200] GET /api/v1/logs/last-error → artifacts/qa/curl/Last_error.json
+FAIL [404, expected 200] GET /api/v1/logs/structured → artifacts/qa/curl/Structured_logs.json
+FAIL [404, expected 200] GET /api/v1/logs/diagnostic → artifacts/qa/curl/Diagnostic_bundle.json
+FAIL [404, expected 200] GET /api/v1/jobs → artifacts/qa/curl/List_jobs.json
+FAIL [404, expected 200] GET /api/v1/health/dashboard → artifacts/qa/curl/Health_dashboard.json
+
+=== FINAL ===
+0 passed, 19 failed

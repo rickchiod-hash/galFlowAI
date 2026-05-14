@@ -1,0 +1,38 @@
+INFO:     Started server process [12580]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+03:39:33 [INFO] app.adapters.wangp_adapter: WanGP não encontrado em: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta\engines\Wan2GP
+03:39:33 [INFO] app.adapters.tts_adapter: Kokoro TTS não disponível
+03:39:33 [INFO] app.adapters.tts_adapter: pyttsx3 detectado
+03:39:33 [INFO] app.adapters.tts_adapter: Vozes do Windows detectadas
+03:39:33 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:39:33 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:39:34 [ERRO] [31mCAUSA: No current script to approve | CORREÇÃO: Verifique parâmetros de entrada[0m
+03:39:34 [ERROR] galflowai: CAUSA: No current script to approve | CORREÇÃO: Verifique parâmetros de entrada
+03:39:50 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:39:50 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:39:50 [INFO] [32mFila carregada do SQLite ledger: 43 jobs[0m
+03:39:50 [INFO] galflowai: Fila carregada do SQLite ledger: 43 jobs
+03:39:50 [ERRO] [31mCAUSA: Erro ao listar jobs do SQLite ledger: name '_job_ledger' is not defined | CORREÇÃO: Verifique o banco de dados[0m
+03:39:50 [ERROR] galflowai: CAUSA: Erro ao listar jobs do SQLite ledger: name '_job_ledger' is not defined | CORREÇÃO: Verifique o banco de dados
+03:39:51 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:39:51 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:39:51 [INFO] app.adapters.wangp_adapter: WanGP não encontrado em: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta\engines\Wan2GP
+03:41:06 [INFO] app.adapters.wangp_adapter: WanGP não encontrado em: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta\engines\Wan2GP
+03:41:06 [INFO] app.adapters.tts_adapter: Kokoro TTS não disponível
+03:41:06 [INFO] app.adapters.tts_adapter: pyttsx3 detectado
+03:41:06 [INFO] app.adapters.tts_adapter: Vozes do Windows detectadas
+03:41:06 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:41:06 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:41:06 [INFO] [32mManual edit saved as v001[0m
+03:41:06 [INFO] galflowai: Manual edit saved as v001
+03:41:06 [INFO] [32mScript approved: v001[0m
+03:41:06 [INFO] galflowai: Script approved: v001
+03:41:20 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:41:20 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:41:20 [ERRO] [31mCAUSA: Erro ao listar jobs do SQLite ledger: name '_job_ledger' is not defined | CORREÇÃO: Verifique o banco de dados[0m
+03:41:20 [ERROR] galflowai: CAUSA: Erro ao listar jobs do SQLite ledger: name '_job_ledger' is not defined | CORREÇÃO: Verifique o banco de dados
+03:41:20 [INFO] [32mFFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE[0m
+03:41:20 [INFO] galflowai: FFmpeg encontrado no PATH: C:\Users\PC GAMER\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg.Essentials_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-essentials_build\bin\ffmpeg.EXE
+03:41:20 [INFO] app.adapters.wangp_adapter: WanGP não encontrado em: K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta\engines\Wan2GP
