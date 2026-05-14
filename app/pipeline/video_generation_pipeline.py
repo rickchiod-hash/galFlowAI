@@ -25,11 +25,17 @@ from app.domain.stage_logger import StageLogger
 
 logger = logging.getLogger(__name__)
 
-# TODO_TECNICO(VIDEO_PIPELINE):
-# 1) Quebrar etapas em casos de uso independentes (gerar roteiro/cenas/prompts/render).
-# 2) Padronizar estado de job (queued/running/succeeded/failed/canceled).
-# 3) Adicionar testes e2e com mocks para fallback WanGP -> FFmpeg.
-# 4) Isolar operações de filesystem em helpers para facilitar testes.
+# TODO(GAL-933, type=debt): Quebrar pipeline em use cases independentes
+# Contexto: VideoGenerationPipeline monolithic — orchestrates 6+ use cases inline
+# Dependência: ARCH-320 (unificação old/new pipeline) — concluída
+# Critério de aceite: Pipeline delega cada etapa a use case com contrato definido
+# Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md
+#
+# TODO(GAL-934, type=debt): Adicionar testes e2e com mocks para fallback WanGP -> FFmpeg
+# Contexto: Sem teste pipeline que valide fallback chain
+# Dependência: GAL-933
+# Critério de aceite: Teste mockado cobre fallback WanGP falha → FFmpeg com logging
+# Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md
 
 
 class VideoGenerationPipeline:

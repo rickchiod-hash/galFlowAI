@@ -15,11 +15,23 @@ from app.adapters.llm.base_provider import TemplateProvider
 
 logger = setup_logger()
 
-# TODO_TECNICO(SCRIPT_SERVICE):
-# 1) Separar IO de arquivos da regra de negócio (SRP).
-# 2) Garantir idempotência para salvar/aprovar versões de roteiro.
-# 3) Introduzir Result Object padronizado para erros/retornos.
-# 4) Criar testes unitários para geração, versionamento e aprovação.
+# TODO(GAL-930, type=debt): Separar IO de arquivos da regra de negócio (SRP)
+# Contexto: ScriptService mistura persistência com lógica — viola SRP
+# Dependência: ARCH-301 (Result Object)
+# Critério de aceite: IO extraído para repositorio dedicado, serviço depende apenas de abstração
+# Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md
+# 
+# TODO(GAL-931, type=debt): Criar Result Object padronizado para erros/retornos
+# Contexto: Funções retornam dict com chaves "ok"/"error" inconsistentes
+# Dependência: Nenhuma
+# Critério de aceite: Result[T] genérico com sucesso/falha tipado
+# Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md
+# 
+# TODO(GAL-932, type=debt): Testes unitários para geração, versionamento e aprovação
+# Contexto: Apenas 1 teste de integração (test_script_service_versioning_and_approve)
+# Dependência: GAL-931
+# Critério de aceite: Cobertura > 70% em script_service.py
+# Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md
 
 # ========== Generation ==========
 

@@ -50,11 +50,11 @@ def error_response(code: str, message: str, details: Any = None, status_code: in
         }
     )
 
-# TODO_TECNICO(API_MODULARIZACAO):
-# 1) Extrair regras de negócio para app/application/use_cases (controller fino). ✅
-# 2) Padronizar envelope de erro/sucesso: {ok, code, message, details}. ✅
-# 3) Adicionar testes de contrato FastAPI para rotas críticas (/api/health, /api/llm/*, /api/projects/*).
-# 4) Manter compatibilidade de endpoints atuais durante refatoração (sem breaking changes). ✅
+# TODO(GAL-935, type=debt): Adicionar testes de contrato FastAPI para rotas críticas
+# Contexto: Rotas /api/health, /api/llm/*, /api/projects/* sem testes de contrato
+# Dependência: Nenhuma
+# Critério de aceite: Testes de contrato para health, providers, projects cobrindo status code + schema
+# Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md
 
 # Import use cases
 from app.application.use_cases.script_generation import GenerateScriptUseCase, SaveManualEditUseCase
@@ -82,7 +82,7 @@ app.add_middleware(
 
 
 @app.get("/api/v1/health")
-async def health_check():
+async def health_check() -> JSONResponse:
     """Health check endpoint."""
     return success_response({
         "status": "ok",
@@ -106,7 +106,7 @@ class LLMProviderResponse(BaseModel):
 
 
 @app.get("/api/v1/llm/providers")
-async def get_llm_providers():
+async def get_llm_providers() -> JSONResponse:
     """Check which LLM providers are available."""
     try:
         from app.adapters.llm import ProviderRouter
@@ -145,7 +145,7 @@ class ScriptGenerateRequest(BaseModel):
 
 
 @app.post("/api/v1/llm/script")
-async def generate_script_api(request: ScriptGenerateRequest):
+async def generate_script_api(request: ScriptGenerateRequest) -> JSONResponse:
     """Generate script using LLM providers."""
     try:
         # Use case: thin controller
@@ -179,7 +179,7 @@ class ScriptSaveRequest(BaseModel):
 
 
 @app.post("/api/v1/projects/{project_id}/script/save-manual-edit")
-async def save_manual_edit(project_id: str, request: ScriptSaveRequest):
+async def save_manual_edit(project_id: str, request: ScriptSaveRequest) -> JSONResponse:
     """Save manually edited script."""
     try:
         # Use case: thin controller
@@ -195,7 +195,7 @@ async def save_manual_edit(project_id: str, request: ScriptSaveRequest):
 
 
 @app.post("/api/v1/projects/{project_id}/script/improve")
-async def improve_script(project_id: str, briefing: str = ""):
+async def improve_script(project_id: str, briefing: str = "") -> JSONResponse:
     """Improve existing script."""
     try:
         from app.application.use_cases.script_generation import ImproveScriptUseCase
@@ -211,7 +211,7 @@ async def improve_script(project_id: str, briefing: str = ""):
 
 
 @app.post("/api/v1/projects/{project_id}/script/more-viral")
-async def make_more_viral(project_id: str):
+async def make_more_viral(project_id: str) -> JSONResponse:
     """Make script more viral."""
     try:
         from app.services.script_service import make_more_viral
@@ -224,7 +224,7 @@ async def make_more_viral(project_id: str):
         raise error_response("VIRAL_FAILED", str(e), status_code=500)
 
 @app.post("/api/v1/projects/{project_id}/script/more-premium")
-async def make_more_premium(project_id: str):
+async def make_more_premium(project_id: str) -> JSONResponse:
     """Make script more premium."""
     try:
         from app.services.script_service import make_more_premium
@@ -237,7 +237,7 @@ async def make_more_premium(project_id: str):
         raise error_response("PREMIUM_FAILED", str(e), status_code=500)
 
 @app.post("/api/v1/projects/{project_id}/script/more-direct")
-async def make_more_direct(project_id: str):
+async def make_more_direct(project_id: str) -> JSONResponse:
     """Make script more direct for sales."""
     try:
         from app.services.script_service import make_more_direct
@@ -250,7 +250,7 @@ async def make_more_direct(project_id: str):
         raise error_response("DIRECT_FAILED", str(e), status_code=500)
 
 @app.post("/api/v1/projects/{project_id}/script/new-version")
-async def create_new_version(project_id: str):
+async def create_new_version(project_id: str) -> JSONResponse:
     """Create new script version."""
     try:
         from app.services.script_service import create_new_version
@@ -263,7 +263,7 @@ async def create_new_version(project_id: str):
         raise error_response("NEW_VERSION_FAILED", str(e), status_code=500)
 
 @app.post("/api/v1/projects/{project_id}/script/restore-previous")
-async def restore_previous_version(project_id: str):
+async def restore_previous_version(project_id: str) -> JSONResponse:
     """Restore previous script version."""
     try:
         from app.services.script_service import restore_previous_version
@@ -277,7 +277,7 @@ async def restore_previous_version(project_id: str):
 
 
 @app.post("/api/v1/projects/{project_id}/script/approve")
-async def approve_script_api(project_id: str):
+async def approve_script_api(project_id: str) -> JSONResponse:
     """Approve script for production."""
     try:
         from app.application.use_cases.script_generation import ApproveScriptUseCase
@@ -293,7 +293,7 @@ async def approve_script_api(project_id: str):
 
 
 @app.get("/api/v1/projects/{project_id}/script/current")
-async def get_current_script(project_id: str):
+async def get_current_script(project_id: str) -> JSONResponse:
     """Get current script."""
     try:
         from app.services.script_service import load_current_script
@@ -321,7 +321,7 @@ class ScriptGenerateForProjectRequest(BaseModel):
 
 
 @app.post("/api/v1/projects/{project_id}/script/generate")
-async def generate_script_for_project(project_id: str, request: ScriptGenerateForProjectRequest = None):
+async def generate_script_for_project(project_id: str, request: ScriptGenerateForProjectRequest = None) -> JSONResponse:
     """Generate script for a project without triggering video rendering.
     
     UI-201: Gerar roteiro sem renderizar vídeo.
@@ -385,7 +385,7 @@ class SplitScenesRequest(BaseModel):
 
 
 @app.post("/api/v1/projects/{project_id}/scenes/split")
-async def split_project_scenes(project_id: str, request: SplitScenesRequest = None):
+async def split_project_scenes(project_id: str, request: SplitScenesRequest = None) -> JSONResponse:
     """Split approved script into scenes.
     
     UI-202: Bloquear cenas sem roteiro aprovado.
@@ -438,7 +438,7 @@ async def split_project_scenes(project_id: str, request: SplitScenesRequest = No
 # ========== Hardware ==========
 
 @app.get("/api/v1/hardware")
-async def get_hardware_info():
+async def get_hardware_info() -> JSONResponse:
     """Get hardware information."""
     try:
         from app.hardware import get_gpu_info
@@ -451,7 +451,7 @@ async def get_hardware_info():
 # ========== Jobs (Implemented with Use Cases) ==========
 
 @app.get("/api/v1/jobs/{job_id}")
-async def get_job_status(job_id: str):
+async def get_job_status(job_id: str) -> JSONResponse:
     """Get job status directly from queue."""
     from app.jobs.queue import queue
     job = queue.get_job(job_id)
@@ -462,7 +462,7 @@ async def get_job_status(job_id: str):
 
 
 @app.post("/api/v1/jobs/{job_id}/cancel")
-async def cancel_job(job_id: str):
+async def cancel_job(job_id: str) -> JSONResponse:
     """Cancel a job (PIPE-400: formal cancel via queue)."""
     try:
         from app.jobs.queue import queue
@@ -477,7 +477,7 @@ async def cancel_job(job_id: str):
 
 
 @app.get("/api/v1/jobs")
-async def list_all_jobs():
+async def list_all_jobs() -> JSONResponse:
     """List all jobs using use case."""
     try:
         from app.application.use_cases.job_use_cases import ListJobsUseCase
@@ -499,7 +499,7 @@ class JobCreateRequest(BaseModel):
     job_type: str = "video_render"
 
 @app.post("/api/v1/jobs")
-async def create_job(request: JobCreateRequest):
+async def create_job(request: JobCreateRequest) -> JSONResponse:
     """Create new job using use case."""
     try:
         from app.application.use_cases.job_use_cases import AddJobUseCase
