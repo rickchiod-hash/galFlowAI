@@ -94,11 +94,14 @@ def on_generate_script(briefing, provider, app_state_val):
         return None, app_state_val, "Briefing muito curto (minimo 5 caracteres)."
     result = generate_script_with_provider(briefing, provider)
     if result.get("ok"):
-        app_state_val["script"] = result.get("script", "")
+        script = result.get("script", "")
+        app_state_val["script"] = script
         app_state_val["script_provider"] = result.get("provider", "-")
         app_state_val["script_time"] = result.get("time", 0)
         app_state_val["script_quality"] = result.get("quality", "")
         app_state_val["current_step"] = max(app_state_val.get("current_step", 1), 2)
+        pid = _ensure_project_id(app_state_val)
+        save_manual_edit(pid, script, "Gerado via %s" % result.get("provider", provider))
     else:
         return None, app_state_val, "Erro: %s" % result.get("error", "Falha desconhecida")
     nav, next_s = _step_status(app_state_val)

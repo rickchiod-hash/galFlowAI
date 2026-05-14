@@ -25,24 +25,44 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 ### Testes
 - 828 passed, 0 regressions (1 pre-existing git audit count)
 
+## Sessão 30 — Recovery Mission S30 (2026-05-14)
+
+5 bugs operacionais corrigidos, 47 testes passando, GPT4All restaurado.
+
+### Bugs corrigidos nesta sessão
+
+| ID | Bug | Arquivo | Causa Raiz | Fix |
+|----|-----|---------|-----------|-----|
+| GAL-903 | GPT4All crash pós-merge | `gpt4all_provider.py` | `n_threads` não suportado pela API | Removeu kwargs inválidos |
+| GAL-904 | Output quality baixo | `gpt4all_provider.py`, `script_service.py` | `max_tokens=400`, prompt sem estrutura, `_condense_template` sem Narracao: | max_tokens=800, formato explícito, +Narracao: |
+| UI-209 | Aprovar Roteiro sem efeito (new UI) | `gradio_app.py` | Script não salvo em disco | `save_manual_edit()` adicionado em `on_generate_script` |
+| UI-210 | 3 botões sem handler (legacy UI) | `main.py` | `btn_approve`, `btn_new_version`, `btn_restore` sem `.click()` | Handlers adicionados |
+| UI-211 | Salvar Edição output quebrado | `main.py` | `outputs` incluía `gr.Textbox(visible=False)` inexistente | Reduzido para `[action_status]` |
+| PROV-305 | Ações retornam "Erro" | `main.py` | `result.get("status", "Erro")` — chave "status" não existe | Wrappers com retorno fixo |
+
+### QA artifacts criados
+- `artifacts/qa/root_cause_matrix.md` — atualizado com 8 bugs
+- `artifacts/qa/ui_event_inventory.md` — 30+ componentes inventariados
+
+### Testes
+- 47 passed (provider + script_service), 0 regressões
+
 ## Progresso geral
 
-Histórias concluídas: 65/65 + 5 P0 bugs
+Histórias concluídas: 65/65 + 11 bugs corrigidos
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 0
-Percentual concluído: 100%
-
-**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 65 Concluídas + 0 Em andamento + 0 Pendentes = 65.
+Histórias pendentes: 2 (OBS-904 stage4 visibilidade, OBS-905 dashboard)
+Percentual concluído: 100% backlog + P0
 
 ## Estado atual
 
-- Branch atual: fix/P0-recovery-gate-provider-edit (fc6ea7f)
-- PR #41: https://github.com/rickchiod-hash/galFlowAI/pull/41
-- Último commit: fc6ea7f — fix(ui): P0 recovery (approval gate, save edit, provider fallback)
-- Fase atual: P0 Recovery ✅
-- Story stream atual: 65/65 histórias concluídas + 5 P0 bugs corrigidos
-- Próxima ação recomendada: Fazer merge do PR #41 para master
+- Branch atual: master (42e75b9)
+- Último commit: 42e75b9 — fix(gpt4all): remove unsupported n_threads/n_batch, increase max_tokens to 800, improve prompt structure
+- Fase atual: S30 Recovery ✅
+- Story stream atual: 65/65 histórias + 11 bugs corrigidos
+- Pendências: OBS-904 (stage4 never visible), OBS-905 (dashboard population)
+- Próxima ação recomendada: Testar fluxo completo de aprovação → cenas → render → export
 
 ### Sessão 23 — Phase 6B: UI-205 (2026-05-12)
 

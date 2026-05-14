@@ -2380,3 +2380,75 @@ Qdrant estava planejado como backend alvo de produção desde VEC-802, mas sem i
 ### Próximo passo
 - **VEC-811**: Implementar Chroma vector store backend
 - Abrir PR da branch `feature/VEC-810-qdrant-backend` e merge para master
+
+## 2026-05-14 — Sessão 30: GPT4All crash fix + quality improvements
+
+### Contexto
+Após merge do PR #42, GPT4AllProvider parou de retornar respostas (falhava em 0.4s). Causa: `n_threads=4` e `n_batch=8` passados como kwargs para `model.generate()`, mas a API do GPT4All Python package não suporta esses parâmetros — causa TypeError silencioso capturado pelo except genérico.
+
+### O que fiz
+- **Bug fix GPT4All**: removi `n_threads=4` e `n_batch=8` do `model.generate()` — parâmetros não suportados pela API GPT4All
+- **Aumentei `max_tokens`**: 400 → 800 (usuário aceita tempo de resposta alto para melhor qualidade)
+- **Prompt melhorado**: adicionei formato explícito de cena no prompt ([Cena N: Titulo - Xs], Texto na tela:, Narracao:, Prompt visual:, Prompt negativo:)
+- **_condense_template expandido**: agora preserva também linhas `Narracao:` (antes só `[Cena`, `Texto:`, `Prompt`)
+- App testada: GPT4All retornou roteiro com sucesso (whey protein sabor abacaxi)
+- **Testes**: 47 passed nos testes de provider + script_service, 0 regressões
+
+### Arquivos alterados
+- `app/adapters/llm/gpt4all_provider.py` — removeu n_threads/n_batch, max_tokens 400→800, prompt aprimorado
+- `app/services/script_service.py` — _condense_template agora preserva Narracao:
+
+### Resultado dos testes
+- 47 passed (provider + script_service tests)
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- Aguardar definição da próxima task do usuário
+
+## 2026-05-14 — Sessão 30b: Recovery Mission — UI wiring, callbacks, persistence
+
+### Contexto
+Usuário reportou que "nenhum botão funciona" na UI — Aprovar Roteiro, Melhorar, Complementar, etc. não tinham efeito observável. Usuário forneceu protocolo detalhado de Recovery Mission.
+
+### Diagnóstico
+Duas UIs coexistem: `app/main.py` (legacy) e `app/ui/gradio_app.py` (new 6-stage flow). Ambas tinham bugs de wiring:
+
+**`app/ui/gradio_app.py` (new UI):**
+- `on_generate_script` gerava roteiro mas NUNCA salvava em disco. `approve_script()`, `improve_script()`, etc. leem do disco via `load_current_script()` → encontravam vazio → operação abortava silenciosamente
+
+**`app/main.py` (legacy UI):**
+- `btn_approve`, `btn_new_version`, `btn_restore` declarados na UI mas **sem `.click()` handlers** — zero reação ao clique
+- `btn_save.click()` com `outputs=[action_status, gr.Textbox(visible=False)]` — segundo output é componente inexistente
+- `on_improve()`, `on_complement()`, `on_make_viral/premium/direct` usam `result.get("status", "Erro")` mas funções retornam dict com chave "ok", não "status" → sempre "Erro"
+
+### O que fiz
+1. **GPT4All fix** (GAL-903): removi `n_threads=4` e `n_batch=8` (não suportados pela API GPT4All Python)
+2. **Output quality** (GAL-904): `max_tokens` 400→800, prompt com formato explícito de cena, `_condense_template` preserva `Narracao:`
+3. **New UI persistence** (UI-209): `on_generate_script` agora chama `save_manual_edit(pid, script, note)` para salvar no disco
+4. **Legacy UI handlers** (UI-210/211): adicionei `.click()` handlers para `btn_approve`, `btn_new_version`, `btn_restore`; corrigi output do `btn_save`
+5. **Improvement status** (PROV-305): substituí callbacks que usavam `result.get("status", "Erro")` por wrappers (`_improve_wrapper`, etc.) com retorno fixo
+6. **QA artifacts**: `root_cause_matrix.md` (8 bugs tabelados), `ui_event_inventory.md` (30+ componentes)
+7. **Backlog/docs**: `05_BACKLOG_PRIORIZADO.md` (novas histórias UI-209..UI-211, PROV-305, OBS-904/905), `00_STATUS_EXECUTIVO.md` (sessão 30), `10_DAILY_LOG.md` (esta entrada)
+
+### Arquivos alterados
+- `app/adapters/llm/gpt4all_provider.py` — fix crash + quality
+- `app/services/script_service.py` — _condense_template +Narracao
+- `app/ui/gradio_app.py` — on_generate_script salva em disco
+- `app/main.py` — +handlers btn_approve/btn_new_version/btn_restore, fix btn_save, fix improvement status
+- `artifacts/qa/root_cause_matrix.md` — novo
+- `artifacts/qa/ui_event_inventory.md` — novo
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — +historias
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — sessao 30
+- `docs/project-control/10_DAILY_LOG.md` — esta entrada
+
+### Resultado dos testes
+- 47 passed (provider + script_service), 0 regressões
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- OBS-904: tornar stage4 visível após gerar cenas
+- OBS-905: popular dashboard com métricas do fluxo de geração

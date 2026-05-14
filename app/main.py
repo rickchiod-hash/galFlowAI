@@ -209,17 +209,14 @@ with gr.Blocks(title="GalFlowAI") as demo:
         btn_restore = gr.Button("Restaurar Anterior")
         btn_approve = gr.Button("Aprovar Roteiro", variant="primary")
     
-    versions_df = gr.DataFrame(label="Versões", interactive=False)
+    versions_df = gr.DataFrame(label="Versões", interactive=False, headers=["version", "note", "status"])
     action_status = gr.Textbox(label="Ação", interactive=False)
     
     # Click handlers
     def on_create(briefing, motor):
-        return create_commercial(briefing, motor)
-        # result: status, video, script_text, provider_msg, action_status, project_id
-        # Garante que script_text não seja None
-        # script_text = result[2] if result[2] else ""
-        # return result[0], result[1], script_text, result[3], result[4], result[5]
-    
+        result = create_commercial(briefing, motor)
+        return result
+
     btn.click(
         on_create,
         inputs=[briefing, motor_llm],
@@ -228,75 +225,116 @@ with gr.Blocks(title="GalFlowAI") as demo:
     
     def on_save(project_id, script):
         if not project_id:
-            return "Erro: Nenhum projeto carregado", ""
+            return "Erro: Nenhum projeto carregado"
         result = save_edit(project_id, script)
-        return result[0], result[1]
+        return result[0]
     
     btn_save.click(
         on_save,
         inputs=[current_project_id, script_editor],
-        outputs=[action_status, gr.Textbox(visible=False)]
+        outputs=[action_status]
     )
 
-    # Script action buttons
-    def on_improve(project_id):
+    def _improve_wrapper(project_id):
         if not project_id:
             return "", "Erro: Nenhum projeto carregado"
-        result = improve_script(project_id)
-        return result.get("script", ""), result.get("status", "Erro")
+        return improve(project_id)
 
-    def on_complement(project_id):
+    def _complement_wrapper(project_id):
         if not project_id:
             return "", "Erro: Nenhum projeto carregado"
-        result = complement_script(project_id)
-        return result.get("script", ""), result.get("status", "Erro")
+        return complement(project_id)
 
-    def on_make_viral(project_id):
+    def _viral_wrapper(project_id):
         if not project_id:
             return "", "Erro: Nenhum projeto carregado"
-        result = make_script_more_viral(project_id)
-        return result.get("script", ""), result.get("status", "Erro")
+        return make_viral(project_id)
 
-    def on_make_premium(project_id):
+    def _premium_wrapper(project_id):
         if not project_id:
             return "", "Erro: Nenhum projeto carregado"
-        result = make_script_more_premium(project_id)
-        return result.get("script", ""), result.get("status", "Erro")
+        return make_premium(project_id)
 
-    def on_make_direct(project_id):
+    def _direct_wrapper(project_id):
         if not project_id:
             return "", "Erro: Nenhum projeto carregado"
-        result = make_script_more_direct(project_id)
-        return result.get("script", ""), result.get("status", "Erro")
+        return make_direct(project_id)
+
+    def _new_version_wrapper(project_id):
+        if not project_id:
+            return "", "Erro: Nenhum projeto carregado"
+        result = new_version(project_id)
+        return result[0], result[1]
+
+    def _restore_wrapper(project_id):
+        if not project_id:
+            return "", "Erro: Nenhum projeto carregado"
+        return restore_version(project_id)
+
+    def _approve_wrapper(project_id):
+        if not project_id:
+            return "", "Erro: Nenhum projeto carregado"
+        return approve(project_id)
+
+    def _refresh_versions(project_id):
+        if not project_id:
+            return []
+        return load_versions(project_id)
 
     btn_improve.click(
-        on_improve,
+        _improve_wrapper,
         inputs=[current_project_id],
         outputs=[script_editor, action_status]
     )
 
     btn_complement.click(
-        on_complement,
+        _complement_wrapper,
         inputs=[current_project_id],
         outputs=[script_editor, action_status]
     )
 
     btn_viral.click(
-        on_make_viral,
+        _viral_wrapper,
         inputs=[current_project_id],
         outputs=[script_editor, action_status]
     )
 
     btn_premium.click(
-        on_make_premium,
+        _premium_wrapper,
         inputs=[current_project_id],
         outputs=[script_editor, action_status]
     )
 
     btn_direct.click(
-        on_make_direct,
+        _direct_wrapper,
         inputs=[current_project_id],
         outputs=[script_editor, action_status]
+    )
+
+    btn_new_version.click(
+        _new_version_wrapper,
+        inputs=[current_project_id],
+        outputs=[action_status, action_status]
+    ).then(
+        _refresh_versions,
+        inputs=[current_project_id],
+        outputs=[versions_df]
+    )
+
+    btn_restore.click(
+        _restore_wrapper,
+        inputs=[current_project_id],
+        outputs=[script_editor, action_status]
+    )
+
+    btn_approve.click(
+        _approve_wrapper,
+        inputs=[current_project_id],
+        outputs=[script_editor, action_status]
+    ).then(
+        _refresh_versions,
+        inputs=[current_project_id],
+        outputs=[versions_df]
     )
 
     # ========== Tab: Gerar Vídeo ==========

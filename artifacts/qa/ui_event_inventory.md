@@ -1,83 +1,70 @@
-# UI Event Inventory — GalFlowAI gradio_app.py
+# UI Event Inventory — GalFlowAI Recovery Mission S30
 
-Todos os callbacks registrados via `.click()` e `.then()` no `create_gradio_app()`.
+## Tab: Criar Comercial (new UI — `app/ui/gradio_app.py`)
 
-## Stage 1 — Briefing
+| Componente | Evento | Callback | Função Destino | Inputs | Outputs | Efeito Esperado | Efeito Real | Status |
+|-----------|-------|---------|---------------|-------|--------|----------------|------------|:------:|
+| `generate_script_btn` | click | `fn=on_generate_script` | `app/ui/gradio_app.py:92` | briefing, provider, app_state | briefing_output, app_state, flow_status | Gera roteiro, atualiza state e status | ✅ Funciona | OK |
+| `.then()` | — | lambda | — | app_state | stage2_group | Mostra stage2 | ✅ Funciona | OK |
+| `.then()` | — | lambda | — | app_state | script_textbox | Preenche script | ✅ Funciona | OK |
+| `.then()` | — | lambda | — | app_state | script_provider_box, script_quality_box, script_time_box | Mostra metadados | ✅ Funciona | OK |
+| `check_providers_btn` | click | lambda | get_provider_status | — | provider_status_md | Mostra status dos providers | ✅ Funciona | OK |
+| **Correção S30:** | | | | | | | | |
+| `on_generate_script` | — | `save_manual_edit()` | `app/services/script_service.py:303` | pid, script, note | — | Salva script no disco | ✅ Agora salva | FIXED |
+| `approve_btn` | click | `on_approve_script` | `app/ui/gradio_app.py:114` | app_state | app_state, flow_status | Aprova roteiro, avança step | ⚠️ Depende do script estar no disco | FIXED |
+| `.then()` | — | lambda | — | app_state | stage3_group | Mostra stage3 | ⚠️ Depende do approve funcionar | FIXED |
+| `save_edit_btn` | click | `on_save_edit` | `app/ui/gradio_app.py:404` | script_textbox, app_state | stage2_status | Salva edição no disco | ✅ Funciona | OK |
+| `improve_btn` | click | `on_improve_script` | `app/ui/gradio_app.py:425` | script_textbox, app_state | script_textbox, stage2_status | Melhora script via LLM | ✅ Funciona | OK |
+| `complement_btn` | click | `on_complement_script` | `app/ui/gradio_app.py:437` | script_textbox, app_state | script_textbox, stage2_status | Complementa script | ✅ Funciona | OK |
+| `viral_btn` | click | `on_viral_script` | `app/ui/gradio_app.py:449` | script_textbox, app_state | script_textbox, stage2_status | Torna mais viral | ✅ Funciona | OK |
+| `premium_btn` | click | `on_premium_script` | `app/ui/gradio_app.py:461` | script_textbox, app_state | script_textbox, stage2_status | Torna mais premium | ✅ Funciona | OK |
+| `direct_btn` | click | `on_direct_script` | `app/ui/gradio_app.py:473` | script_textbox, app_state | script_textbox, stage2_status | Torna mais direto | ✅ Funciona | OK |
+| `gen_narration_btn` | click | `on_generate_narration_script` | `app/ui/gradio_app.py:128` | app_state | app_state, narration_script_box, stage3_status | Gera script de narração | ✅ Funciona | OK |
+| `gen_tts_btn` | click | `on_generate_tts` | `app/ui/gradio_app.py:153` | narration_script_box, tts_engine, tts_voice, allow_no_audio, app_state | app_state, audio_player, srt_output, stage3_status | Gera áudio TTS | ✅ Funciona | OK |
+| `gen_srt_btn` | click | `on_generate_srt` | `app/ui/gradio_app.py:185` | app_state | app_state, srt_output, stage3_status | Gera legendas SRT | ✅ Funciona | OK |
+| `gen_scenes_btn` | click | `on_generate_scenes` | `app/ui/gradio_app.py:316` | app_state | app_state, scenes_output, stage4_status | Gera cenas | ✅ Funciona | OK |
+| `.then()` | — | lambda | — | app_state | stage5_group | Mostra stage5 | ✅ Funciona | OK |
+| **Missing:** | — | — | — | — | stage4_group | **stage4 nunca mostrado** | ❌ Nunca visível | BUG |
+| `gen_prompts_btn` | click | `on_generate_scene_prompts` | `app/ui/gradio_app.py:366` | app_state | stage4_status | Gera prompts visuais | ✅ Funciona | OK |
+| `validate_scenes_btn` | click | `on_validate_scenes` | `app/ui/gradio_app.py:380` | app_state | stage4_status | Valida cenas | ✅ Funciona | OK |
+| `render_btn` | click | `on_render_scenes` | `app/ui/gradio_app.py:336` | app_state | app_state, render_progress, render_logs, preview_video | Renderiza cenas | ✅ Funciona | OK |
+| `.then()` | — | lambda | — | app_state | stage6_group | Mostra stage6 | ✅ Funciona | OK |
+| `sync_btn` | click | lambda | — | app_state | sync_status_md | Sincroniza áudio+video | ✅ Funciona | OK |
+| `export_btn` | click | `on_export_final` | `app/ui/gradio_app.py:205` | app_state, audio_player, srt_output, allow_no_audio | app_state, preview_video, stage6_status | Exporta MP4 | ✅ Funciona | OK |
+| `quick_btn` | click | `on_quick_generate` | `app/ui/gradio_app.py:391` | quick_product, quick_audience, quick_duration, quick_style | quick_video, quick_error | Modo rápido | ✅ Funciona | OK |
 
-| Botão/Ação | Callback | Inputs | Outputs | Status |
-|------------|----------|--------|---------|--------|
-| Gerar Roteiro | `on_generate_script` | briefing, provider, app_state | briefing_output, app_state, flow_status | ✅ Fixed (PROV-304 fallback visible) |
-| → .then() | show stage2 | app_state | stage2_group (visible) | ✅ |
-| → .then() | fill script_textbox | app_state | script_textbox | ✅ |
-| → .then() | show provider/quality/time | app_state | script_provider_box, script_quality_box, script_time_box | ✅ Fixed (quality from result) |
-| Status dos Provedores | `get_provider_status` | — | provider_status_md | ✅ |
+## Tab: Criar Comercial (legacy — `app/main.py`)
 
-## Stage 2 — Roteiro Editável
+| Componente | Evento | Callback | Status |
+|-----------|-------|---------|:------:|
+| `btn` (Criar comercial) | click | `on_create` | ✅ OK |
+| `btn_save` | click | `on_save` | **FIXED** — output incorreto (gr.Textbox novo) |
+| `btn_improve` | click | `_improve_wrapper` | **FIXED** — usava `result.get("status", "Erro")` (chave errada) |
+| `btn_complement` | click | `_complement_wrapper` | **FIXED** |
+| `btn_viral` | click | `_viral_wrapper` | **FIXED** |
+| `btn_premium` | click | `_premium_wrapper` | **FIXED** |
+| `btn_direct` | click | `_direct_wrapper` | **FIXED** |
+| `btn_new_version` | click | `_new_version_wrapper` | **FIXED** — não tinha handler |
+| `btn_restore` | click | `_restore_wrapper` | **FIXED** — não tinha handler |
+| `btn_approve` | click | `_approve_wrapper` | **FIXED** — não tinha handler |
+| `vid_generate_btn` | click | `generate_video_wrapper` | ✅ OK |
 
-| Botão/Ação | Callback | Inputs | Outputs | Status |
-|------------|----------|--------|---------|--------|
-| Aprovar Roteiro | `on_approve_script` | app_state | app_state, flow_status | ✅ Fixed (UI-210) |
-| → .then() | show stage3 | app_state | stage3_group (visible) | ✅ |
-| Salvar Edição Manual | `on_save_edit` | script_textbox, app_state | stage2_status | ✅ Fixed (UI-209) |
-| Melhorar | `on_improve_script` | script_textbox, app_state | script_textbox, stage2_status | ✅ (UI-205) |
-| Complementar | `on_complement_script` | script_textbox, app_state | script_textbox, stage2_status | ✅ (UI-205) |
-| Mais Viral | `on_viral_script` | script_textbox, app_state | script_textbox, stage2_status | ✅ (UI-205) |
-| Mais Premium | `on_premium_script` | script_textbox, app_state | script_textbox, stage2_status | ✅ (UI-205) |
-| Mais Direto | `on_direct_script` | script_textbox, app_state | script_textbox, stage2_status | ✅ (UI-205) |
+## Tab: Logs e Diagnóstico
 
-## Stage 3 — Narração e Legendas
+| Componente | Evento | Status |
+|-----------|-------|:------:|
+| `refresh_logs_btn` | click | ✅ OK |
+| `refresh_errors_btn` | click | ✅ OK |
+| `refresh_diagnostic_btn` | click | ✅ OK |
+| `refresh_providers_diag_btn` | click | ✅ OK |
+| Log tab (new UI) `refresh_logs_btn` | click | ✅ OK |
+| Log tab (new UI) `refresh_errors_btn` | click | ✅ OK |
 
-| Botão/Ação | Callback | Inputs | Outputs | Status |
-|------------|----------|--------|---------|--------|
-| Gerar Script de Narração | `on_generate_narration_script` | app_state | app_state, narration_script_box, stage3_status | ✅ |
-| Gerar Narração/TTS | `on_generate_tts` | narration_script_box, tts_engine, tts_voice, allow_no_audio, app_state | app_state, audio_player, srt_output, stage3_status | ✅ |
-| Gerar Legenda/SRT | `on_generate_srt` | app_state | app_state, srt_output, stage3_status | ✅ |
+## Tab: Dashboard de Projetos
 
-## Stage 4 — Cenas e Prompts
-
-| Botão/Ação | Callback | Inputs | Outputs | Status |
-|------------|----------|--------|---------|--------|
-| Gerar Cenas | `on_generate_scenes` | app_state | app_state, scenes_output, stage4_status | ✅ |
-| → .then() | show stage5 | app_state | stage5_group (visible) | ✅ |
-| Gerar Prompts | `on_generate_scene_prompts` | app_state | stage4_status | ✅ |
-| Validar Cenas | `on_validate_scenes` | app_state | stage4_status | ✅ |
-
-## Stage 5 — Render Visual
-
-| Botão/Ação | Callback | Inputs | Outputs | Status |
-|------------|----------|--------|---------|--------|
-| Renderizar Cenas | `on_render_scenes` | app_state | app_state, render_progress, render_logs, preview_video | ✅ Fixed (gate bypass) |
-| → .then() | show stage6 | app_state | stage6_group (visible) | ✅ |
-
-## Stage 6 — Sincronização e Export
-
-| Botão/Ação | Callback | Inputs | Outputs | Status |
-|------------|----------|--------|---------|--------|
-| Sincronizar Audio + Video | lambda | app_state | sync_status_md | ✅ |
-| Exportar MP4 | `on_export_final` | app_state, audio_player, srt_output, allow_no_audio | app_state, preview_video, stage6_status | ✅ |
-
-## Modo Rápido
-
-| Botão/Ação | Callback | Inputs | Outputs | Status |
-|------------|----------|--------|---------|--------|
-| Executar Modo Rápido | `on_quick_generate` | quick_product, quick_audience, quick_duration, quick_style | quick_video, quick_error | ✅ |
-
-## Abas auxiliares
-
-| Aba | Botão/Ação | Callback | Status |
-|-----|-----------|----------|--------|
-| Logs | Atualizar Logs | `on_refresh_logs` | ✅ |
-| Erros Estruturados | Atualizar Erros | `on_refresh_structured_errors` | ✅ |
-| Diagnóstico | Gerar Diagnóstico | `copy_diagnostic_bundle` | ✅ |
-| Diagnóstico | Verificar Provedores | lambda com `get_provider_diagnostics` | ✅ |
-| Dashboard | Atualizar Dashboard | `on_refresh_dashboard` | ✅ |
-| Configurações | Salvar Configurações | `on_save_config` | ✅ |
-| Configurações | Restaurar Padrões | `on_reset_config` | ✅ |
-
-## Summary
-
-- Total callbacks: **25** (excluindo lambdas simples)
-- P0 bugs corrigidos: **4** (UI-210 ✅, UI-209 ✅, gate bypass ✅, PROV-304 ✅)
-- Total de eventos `.click()`: **28**
-- Total de eventos `.then()`: **5**
-- Total de eventos `.load()`: **1**
+| Componente | Evento | Status |
+|-----------|-------|:------:|
+| `refresh_dashboard_btn` (new UI) | click | ✅ OK |
+| `create_project_btn` (new UI) | click | ✅ OK |
+| `btn_refresh` (legacy) | click | ✅ OK |
+| `demo.load` (legacy) | load | ✅ OK |

@@ -1,20 +1,14 @@
-# Root Cause Matrix — GalFlowAI P0 Recovery
+# Root Cause Matrix — GalFlowAI Recovery Mission S30
 
-| ID | Bug | File | Lines (before fix) | Root Cause | Impact | Fix |
-|----|-----|------|-------------------|------------|--------|-----|
-| UI-210 | Aprovar roteiro não persiste | `gradio_app.py` | 106-113 | `on_approve_script` setava `app_state_val["script_approved"] = True` em memória apenas, sem chamar `approve_script()` de `script_service`. | Script nunca era salvo em disco como `script_approved.md`/`.json`. Pipeline enxergava roteiro não aprovado. | Adicionado `from app.services.script_service import approve_script` e chamada `approve_script(project_id)` com verificação de retorno. |
-| UI-209 | Salvar edição manual ignora texto | `gradio_app.py` | 393-399 | `on_save_edit` recebia `script_text` mas chamava `generate_script_with_provider("Edicao manual salva", "template")` — gerava script dummy no lugar do texto digitado pelo usuário. | Edições manuais do usuário eram perdidas. | Callback agora recebe `app_state` como input e chama `save_manual_edit(pid, script_text, ...)`, atualizando `app_state_val["script"]` com o texto real. |
-| — | Render bypassa aprovação | `gradio_app.py` | 324-355 | `on_render_scenes` criava `script_approved.md` incondicionalmente via `(script_path / "script_approved.md").write_text(...)` antes de renderizar, sem verificar `app_state_val.get("script_approved")`. | Render podia acontecer sem aprovação, quebrando o fluxo stage-gated. | Adicionado gate `if not app_state_val.get("script_approved", False): return ... ERRO`. Removido write unconditional de `script_approved.md`. |
-| PROV-304 | Provider selecionado falha silenciosamente | `gradio_app.py` + `script_service.py` | 91-104 + 55-120 | `generate_script_with_provider` faz fallback para TemplateProvider quando o provider selecionado falha, mas o resultado não expunha o fallback ao usuário. UI hardcodava qualidade como "template". | Usuário não via que o provider selecionado falhou. Parecia que o provider escolhido funcionou normalmente. | Adicionado `fallback_note` no status_md de `on_generate_script` quando `quality == "fallback"`. Qualidade agora lida do resultado em vez de hardcoded. |
+Data: 2026-05-14
+Session: S30
 
-## Resumo
-
-4 bugs P0 identificados, todos corrigidos:
-- **3 bugs de binding/estado** (UI-210, UI-209, gate bypass) — falha na ligação entre callback UI e serviço real
-- **1 bug de observabilidade** (PROV-304) — falha silenciosa mascarada por fallback correto
-
-## Anti-regressão
-
-- Testes existentes: 828 passed (excluindo 1 pre-existing git audit count)
-- Regressão: **zero**
-- Cobertura de approval gate: tests em `test_ui_workflow_order.py` e `test_h10_contract.py`
+| Bug ID | Sintoma | Reproduzido? | Passos | Causa Raiz | Evidência | Severidade | Correção | Risco Regressão |
+|--------|---------|:-----------:|--------|-----------|----------|:---------:|----------|:---------------:|
+| UI-210 | "Aprovar Roteiro" não funciona (sem efeito) | Sim | 1. Gerar roteiro 2. Clicar "Aprovar Roteiro" | `on_generate_script` em `gradio_app.py` não salva script no disco. `approve_script()` chama `load_current_script()` que lê do disco — retorna vazio → operação aborta silenciosamente | `app/ui/gradio_app.py:91-101` — script guardado só em `app_state`, nunca em disco | P0 | Adicionar `save_manual_edit()` em `on_generate_script` para persistir script ao gerar | Baixo |
+| UI-209 | Botões "Nova Versão", "Restaurar Anterior", "Aprovar Roteiro" em `app/main.py` sem efeito | Sim | 1. Abrir app (legacy) 2. Clicar qualquer desses botões | Botões declarados na UI (`app/main.py:208-210`) mas **sem `.click()` handler** — nunca registrados | `app/main.py` — grep por `btn_approve.click`, `btn_new_version.click`, `btn_restore.click` retorna vazio | P0 | Adicionar `.click()` handlers para os 3 botões em `app/main.py` | Baixo |
+| UI-209b | "Salvar Edição" em `app/main.py` quebra callback | Sim | 1. Clicar "Salvar Edição" | `btn_save.click()` tem `outputs=[action_status, gr.Textbox(visible=False)]` — o segundo output é um componente **novo** não existente no layout, quebra o gradio | `app/main.py:235-239` | P0 | Trocar `outputs` para apenas `[action_status]` | Baixo |
+| PROV-304 | Provider selecionado (GPT4All) ignorado — cai em TemplateProvider | Sim | 1. Selecionar "GPT4All local" 2. Gerar roteiro | `n_threads=4` passado para `model.generate()` no GPT4All Python package — **parâmetro não suportado** pela API → TypeError → `except Exception` captura e retorna None → fallback para TemplateProvider | `app/adapters/llm/gpt4all_provider.py:91-99` (antes da correção) — falha em 0.4s | P0 | Remover `n_threads` e `n_batch` da chamada `model.generate()` | Baixo |
+| OBS-902 | Botões de ações de roteiro (Melhorar, Complementar, etc.) retornam "Erro" sempre | Sim | 1. Gerar roteiro 2. Clicar "Melhorar" | `on_improve()` em `app/main.py` usa `result.get("status", "Erro")` mas a função `improve_script()` retorna dict com chave `"ok"`, não `"status"` — sempre cai no default "Erro" | `app/main.py:246,252,258,264,270` — 5 funções com mesmo bug | Média | Usar wrapper que retorna "Melhorado"/"Complementado" como status fixo (já existe `improve()` em `app/main.py:95-100`) | Baixo |
+| UI-208 | Etapa 4 (Cenas) nunca fica visível — `stage4_group` sem `.then()` para mostrar | Sim | 1. Gerar roteiro 2. Aprovar 3. Procurar etapa 4 | `stage4_group` tem `visible=False` mas **nenhum callback** `.then()` o torna visível | `app/ui/gradio_app.py:579` — `visible=False`; nenhum `.then(outputs=[stage4_group])` existe | Média | Adicionar `.then(fn=lambda s: gr.update(visible=bool(s.get("scenes"))), outputs=[stage4_group])` após `gen_scenes_btn.click()` | Baixo |
+| OBS-903 | Dashboard não carrega dados do job atual | Parcial | 1. Executar job 2. Abrir Dashboard | Dashboard em `app/ui/gradio_app.py` usa `get_metrics_service().get_summary()` mas métricas não são populadas pelo fluxo de geração em `gradio_app.py` | `app/ui/gradio_app.py:876-881` | Média | Popular métricas em `on_generate_script`, `on_approve_script`, etc. | Médio |

@@ -103,8 +103,16 @@ Bug fixes identificados durante Recovery Mission S29. Todos corrigidos e verific
 | — | Render bypassa gate de aprovação | Alta | 1 | ✅ Concluída | `app/ui/gradio_app.py` |
 | PROV-304 | Provider falha silenciosamente (fallback invisível) | Alta | 1 | ✅ Concluída | `app/ui/gradio_app.py` |
 | — | StrEnum incompatível com Python 3.10 | Média | 1 | ✅ Concluída | `app/core/error_codes.py` |
+| GAL-903 | GPT4All crash pós-merge: n_threads/n_batch não suportados | Alta | 1 | ✅ Concluída | `app/adapters/llm/gpt4all_provider.py` |
+| GAL-904 | GPT4All output quality: max_tokens baixo e prompt sem estrutura | Média | 2 | ✅ Concluída | `app/adapters/llm/gpt4all_provider.py`, `app/services/script_service.py` |
+| UI-209 | Aprovar Roteiro sem efeito — script não persiste ao gerar | P0 | 1 | ✅ Concluída | `app/ui/gradio_app.py` |
+| UI-210 | Botões "Nova Versão", "Restaurar Anterior", "Aprovar Roteiro" sem click handler | P0 | 1 | ✅ Concluída | `app/main.py` |
+| UI-211 | "Salvar Edição" output para componente inexistente | P0 | 1 | ✅ Concluída | `app/main.py` |
+| PROV-305 | Ações Melhorar/Complementar/Viral retornam "Erro" (chave "status" inexistente) | Alta | 1 | ✅ Concluída | `app/main.py` |
+| OBS-904 | Etapa 4 (Cenas) nunca fica visível na UI de 6 etapas | Média | 1 | Pendente | `app/ui/gradio_app.py` |
+| OBS-905 | Dashboard não populado pelo fluxo de geração no gradio_app.py | Média | 1 | Pendente | `app/ui/gradio_app.py` |
 
-## Backlog Pós-P0 — Technical Debt & Performance (S29 findings)
+## S30 Recovery — Operational Fixes (UI wiring, persistence, callbacks)
 
 | Ordem | ID | História | Prioridade | SP | Status | Dependência |
 |------:|---|---------|:---------:|:--:|:------:|:-----------:|
