@@ -108,9 +108,9 @@ Bug fixes identificados durante Recovery Mission S29. Todos corrigidos e verific
 
 | Ordem | ID | História | Prioridade | SP | Status | Dependência |
 |------:|---|---------|:---------:|:--:|:------:|:-----------:|
-| 1 | GAL-900 | Otimizar tempo de resposta do GPT4AllProvider (~115s → <30s) | Alta | 5 | Pendente | Nenhuma |
-| 2 | GAL-901 | Melhorar extração de nome do produto no TemplateProvider | Média | 2 | Pendente | Nenhuma |
-| 3 | GAL-902 | Condensar contexto do template para providers pequenos | Média | 3 | Pendente | GAL-900 |
+| 1 | GAL-900 | Otimizar tempo de resposta do GPT4AllProvider (~115s → <30s) | Alta | 5 | ✅ Concluída | Nenhuma |
+| 2 | GAL-901 | Melhorar extração de nome do produto no TemplateProvider | Média | 2 | ✅ Concluída | Nenhuma |
+| 3 | GAL-902 | Condensar contexto do template para providers pequenos | Média | 3 | ✅ Concluída | GAL-900 |
 
 ## Regras de priorização
 
