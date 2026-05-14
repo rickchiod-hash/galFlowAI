@@ -92,6 +92,18 @@ Backlog expandido por decisão de produto (2026-05-12): WanGP, VACE, FFmpeg fall
 
 **65/65 histórias concluídas.** Todas as fases (1-5, 6A, 6B, 6C) finalizadas.
 
+## P0 Recovery — Bugs operacionais encontrados pós-backlog
+
+Bug fixes identificados durante Recovery Mission S29. Todos corrigidos e verificados.
+
+| ID | Bug | Prioridade | SP | Status | Arquivos alterados |
+|----|-----|:---------:|:--:|:------:|--------------------|
+| UI-210 | Aprovar roteiro não persiste em disco | Alta | 1 | ✅ Concluída | `app/ui/gradio_app.py` |
+| UI-209 | Salvar edição manual ignora texto digitado | Alta | 1 | ✅ Concluída | `app/ui/gradio_app.py` |
+| — | Render bypassa gate de aprovação | Alta | 1 | ✅ Concluída | `app/ui/gradio_app.py` |
+| PROV-304 | Provider falha silenciosamente (fallback invisível) | Alta | 1 | ✅ Concluída | `app/ui/gradio_app.py` |
+| — | StrEnum incompatível com Python 3.10 | Média | 1 | ✅ Concluída | `app/core/error_codes.py` |
+
 ## Regras de priorização
 
 1. Antirregressão antes de feature.

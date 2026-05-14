@@ -2,6 +2,48 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-14 — Sessão 29: P0 Recovery Mission — Approval gate, provider, edit bugs
+
+### Contexto
+Backlog 65/65 completo. Durante revisão pós-merge, 4 P0 bugs operacionais foram identificados em `app/ui/gradio_app.py`: approval gate não persiste (UI-210), save edit ignora texto (UI-209), render bypassa aprovação, provider falha silenciosamente (PROV-304). 1 bug de compatibilidade: StrEnum (Python 3.11+) quebrava em Python 3.10.
+
+### O que fiz
+- **Branch criada:** `fix/P0-recovery-gate-provider-edit` (fc6ea7f)
+- **PR #41 criado** em `https://github.com/rickchiod-hash/galFlowAI/pull/41`
+- **UI-210 ✅:** `on_approve_script` agora chama `approve_script(project_id)` real de `script_service` — persiste `script_approved.md` e `script_approved.json` em disco
+- **UI-209 ✅:** `on_save_edit` agora chama `save_manual_edit(pid, script_text, ...)` e atualiza `app_state["script"]` — texto digitado pelo usuário é preservado
+- **Gate bypass ✅:** `on_render_scenes` verifica `app_state["script_approved"]` antes de renderizar — removed unconditional `script_approved.md` write
+- **PROV-304 ✅:** `on_generate_script` agora mostra warning no status_md quando `quality == "fallback"` — usuário vê qual provider falhou e qual fallback foi usado
+- **Compatibilidade ✅:** `error_codes.py` com shim Python 3.10 para `StrEnum` via try/except + fallback `str + Enum`
+- **Qualidade:** Qualidade lida do resultado em vez de hardcoded "template"
+- **Artifacts QA:** `artifacts/qa/curl_smoke_test.ps1`, `root_cause_matrix.md`, `ui_event_inventory.md` criados
+- **Testes:** 828 passed (excluindo 1 pre-existing git audit count) — zero regressão
+
+### Arquivos alterados
+- `app/ui/gradio_app.py` — 4 callbacks corrigidos: on_generate_script (PROV-304), on_approve_script (UI-210), on_save_edit (UI-209), on_render_scenes (gate), mais `.then()` wiring quality
+- `app/core/error_codes.py` — shim StrEnum para compat Python 3.10
+- `artifacts/qa/curl_smoke_test.ps1` — novo: 11 testes de smoke via curl
+- `artifacts/qa/root_cause_matrix.md` — novo: matriz de causa raiz dos 4 P0 bugs
+- `artifacts/qa/ui_event_inventory.md` — novo: inventário completo de 25+ callbacks UI
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — nova seção P0 Recovery
+- `docs/project-control/10_DAILY_LOG.md` — esta entrada
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — atualizado
+
+### Testes executados
+- `pytest tests/ -k "not test_audit_commit_count_within_range" --ignore=tests/integration` → **828 passed, 0 failures**
+- Pre-existing known failure: `test_audit_commit_count_within_range` (audit doc needs update: 254→256 commits)
+
+### Decisões
+- P0 bugs corrigidos na mesma branch (anti-break order não se aplica a bug fixes)
+- PROV-304: fallback legítimo mantido — apenas visibilidade adicionada ao usuário
+- StrEnum shim: mínimo possível, sem dependências externas
+
+### Bloqueios
+- Nenhum
+
+### Status final
+**4/4 P0 bugs corrigidos, 1 compat fix, 828 testes passando.** PR #41 aguardando merge.
+
 ## 2026-05-14 — Sessão 28b: Phase 6C — DOC-120 Documentação Reconciliação
 
 ### Contexto

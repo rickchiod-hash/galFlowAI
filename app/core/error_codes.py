@@ -1,7 +1,16 @@
-from enum import StrEnum
+import sys
+from enum import Enum
+
+if sys.version_info >= (3, 11):
+    from enum import StrEnum
+    Base = StrEnum
+else:
+    class Base(str, Enum):
+        def __str__(self):
+            return self.value
 
 
-class ErrorCode(StrEnum):
+class ErrorCode(Base):
     UNKNOWN_ERROR = "UNKNOWN_ERROR"
     GRADIO_START_FAILED = "GRADIO_START_FAILED"
     FASTAPI_UNAVAILABLE = "FASTAPI_UNAVAILABLE"

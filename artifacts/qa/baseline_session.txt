@@ -1,0 +1,28 @@
+BASELINE SESSION — GalFlowAI Recovery Mission
+==============================================
+Data/Hora UTC: 2026-05-14 01:25:01 UTC
+@{DateTime=quinta-feira, 14 de maio de 2026 01:25:01}
+
+Git Root:
+K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta
+
+Git Status:
+
+
+Branch:
+master
+
+Git Log (last 30):
+* 48e423a (HEAD -> master, origin/master) docs(audit): update commit count to 254, HEAD to 3d471b4 *   3d471b4 Merge pull request #40 from rickchiod-hash/feature/DOC-120-reconcile-docs |\   | * 4de6ca1 (origin/feature/DOC-120-reconcile-docs, feature/DOC-120-reconcile-docs) docs: reconcile documentation with mandatory direction (DOC-120) |/   *   2e19efd Merge pull request #39 from rickchiod-hash/feature/VEC-811-chroma-backend |\   | * e3db381 (origin/feature/VEC-811-chroma-backend, feature/VEC-811-chroma-backend) feat(adapter): implement Chroma vector store backend (VEC-811) |/   *   08596b1 Merge pull request #38 from rickchiod-hash/feature/VEC-810-qdrant-backend |\   | * 29e0113 (origin/feature/VEC-810-qdrant-backend, feature/VEC-810-qdrant-backend) feat(adapter): implement Qdrant vector store backend (VEC-810) |/   * c08e002 (origin/feature/RND-612-vace-adapter, feature/RND-612-vace-adapter) feat(adapter): create VAceAdapter for Wan VACE 1.3B engine (RND-612) * 65450b7 (origin/feature/RND-611-pipeline-structured-error, feature/RND-611-pipeline-structured-error) feat(pipeline): record structured errors on WanGP-to-FFmpeg fallback (RND-611) * 2b30a5f (origin/feature/RND-610-wangp-hardening, feature/RND-610-wangp-hardening) feat(adapter): harden WanGP adapter with telemetry and structured errors (RND-610) * cfadb37 (origin/feature/UI-205-real-use-case-buttons, feature/UI-205-real-use-case-buttons) feat(ui): replace Stage 2 placeholder buttons with real script_service calls (UI-205) * d333330 (origin/feature/LOG-100-structured-errors-ui, feature/LOG-100-structured-errors-ui) feat(ui): connect structured errors to logs Dataframe (LOG-100) * 045734e (origin/feature/API-211-providers-envelope, feature/API-211-providers-envelope) fix(api): wrap /api/v1/llm/providers in ApiResponse envelope (API-211) * 61ffbf5 (origin/feature/API-210-api-versioning, feature/API-210-api-versioning) feat(api): add /api/v1/ prefix to all routes (API-210) * a0f9974 (origin/feature/ARCH-320-unify-pipeline, feature/ARCH-320-unify-pipeline) feat(arch): unify old/new pipeline, delete _new.py (ARCH-320) *   1ecd9f9 docs: resolve merge conflicts for P0-ERR session 21 |\   | * 85f8c79 feat(core): add structured error handling infrastructure (P0-ERR-01..05) * | 0517ffd docs(audit): update commit count to 237, HEAD to bff9824 * | bff9824 perf(test): reduce test suite 47% faster (73s->38.5s), remove 82 warnings, fix git audit test * | 115e859 docs(audit): update commit count to 235, HEAD to e39b3e9 * | e39b3e9 docs(log): add pipeline stabilization continuation to session 19 * | a87392e fix(ui): connect stages 4-6 to real pipeline, fix export and render_scene crash, remove TTS truncation * | 35e8c9c docs(status): update status executive and daily log for session 19 test stabilization * | a34a16a fix(test): mock provider is_available to avoid timeouts, add script approval gate to E2E tests |/   * 48f0f55 (origin/feature/ui-6-stage-flow-gating, feature/ui-6-stage-flow-gating) docs(status): update status executive and daily log for session 18 UI rework commit * 850e2d9 feat(ui): restructure Gradio into 6-stage guided flow with state gating * afdf75c docs(daily-log): add session 17 - bare except fix, full import validation, app review * 3d906d8 fix(debt): replace 13 bare except with except Exception across 8 files * 098edbd docs(sync): update playbooks, story map, gaps, and refined stories to reflect all 49 stories completed * d06ebef docs(daily-log): add session 15 - VRAM detection implementation
+
+Python Version:
+Python 3.12.4
+
+Gradio:
+Version: 6.14.0 Requires: anyio, brotli, fastapi, gradio-client, groovy, hf-gradio, httpx, huggingface-hub, jinja2, markupsafe, numpy, orjson, packaging, pandas, pillow, pydantic, pydub, python-multipart, pytz, pyyaml, safehttpx, semantic-version, starlette, tomlkit, typer, typing-extensions, uvicorn
+
+FastAPI:
+Version: 0.136.1
+
+Uvicorn:
+Version: 0.46.0

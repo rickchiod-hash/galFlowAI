@@ -47,6 +47,7 @@ _STATE_DEFAULT = {
     "project_id": "",
     "script": "",
     "script_provider": "",
+    "script_quality": "",
     "script_time": 0,
     "script_approved": False,
     "narration_plan_id": "",
@@ -96,11 +97,17 @@ def on_generate_script(briefing, provider, app_state_val):
         app_state_val["script"] = result.get("script", "")
         app_state_val["script_provider"] = result.get("provider", "-")
         app_state_val["script_time"] = result.get("time", 0)
+        app_state_val["script_quality"] = result.get("quality", "")
         app_state_val["current_step"] = max(app_state_val.get("current_step", 1), 2)
     else:
         return None, app_state_val, "Erro: %s" % result.get("error", "Falha desconhecida")
     nav, next_s = _step_status(app_state_val)
-    status_md = "**Etapa atual:** %s  \n**Proximo passo:** %s" % (next_s, next_s)
+    fallback_note = ""
+    if result.get("quality") == "fallback":
+        selected = provider or "auto"
+        actual = result.get("provider", "TemplateProvider")
+        fallback_note = " \\n⚠️ **Provedor '%s' falhou — usando fallback '%s'.**" % (selected, actual)
+    status_md = "**Etapa atual:** %s  \n**Proximo passo:** %s%s" % (next_s, next_s, fallback_note)
     return result.get("script", ""), app_state_val, status_md
 
 
@@ -654,7 +661,7 @@ def create_gradio_app():
             ).then(
                 fn=lambda s: (
                     s.get("script_provider", "-"),
-                    "template",
+                    s.get("script_quality", ""),
                     "%.2f" % s.get("script_time", 0),
                 ),
                 inputs=[app_state],
