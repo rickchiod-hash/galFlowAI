@@ -39,12 +39,13 @@ _PROVIDER_CLASSES = {
 # Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md#gal-902
 
 def _condense_template(template_script: str) -> str:
-    """Extract only scene headers and key elements from template script."""
+    """Extract scene headers and all content fields from template script."""
     lines = template_script.split("\n")
     condensed = []
     for line in lines:
         stripped = line.strip()
-        if stripped.startswith("[Cena") or stripped.startswith("Texto:") or stripped.startswith("Prompt"):
+        if (stripped.startswith("[Cena") or stripped.startswith("Texto:")
+                or stripped.startswith("Narracao:") or stripped.startswith("Prompt")):
             condensed.append(stripped)
     if len(condensed) < 3:
         return template_script[:500]
