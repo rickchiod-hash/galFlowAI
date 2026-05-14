@@ -96,11 +96,27 @@ class TemplateProvider(BaseLLMProvider):
     # Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md#gal-901
     
     def _extract_product(self, prompt: str) -> str:
-        """Extract product name from briefing."""
-        words = prompt.split()
-        if len(words) > 5:
-            return " ".join(words[:5]) + "..."
-        return prompt[:50] if len(prompt) <= 50 else prompt[:50] + "..."
+        """Extract product name from briefing.
+
+        Heuristica: pega o fragmento apos a ultima ocorrencia de
+        'para'/'de'/'como'/'produto', ou as ultimas 3-5 palavras.
+        Fallback: primeiras 50 chars.
+        """
+        prompt_clean = prompt.strip().rstrip(".,;:!?")
+        markers = ["produto ", "para ", "de ", "como ", "sobre ", "chamado "]
+        best = None
+        for m in markers:
+            idx = prompt_clean.rfind(m)
+            if idx > 0:
+                candidate = prompt_clean[idx + len(m):].strip().rstrip(".,;:!?")
+                if len(candidate) > 3 and len(candidate) < 60:
+                    best = candidate
+        if best:
+            return best
+        words = prompt_clean.split()
+        if len(words) >= 3:
+            return " ".join(words[-3:])
+        return prompt_clean[:50] if len(prompt_clean) <= 50 else prompt_clean[:50] + "..."
     
     def _load_templates(self) -> Dict[str, str]:
         """Load template dictionary."""

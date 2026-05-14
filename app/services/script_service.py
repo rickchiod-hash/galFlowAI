@@ -20,11 +20,6 @@ logger = setup_logger()
 # 2) Garantir idempotência para salvar/aprovar versões de roteiro.
 # 3) Introduzir Result Object padronizado para erros/retornos.
 # 4) Criar testes unitários para geração, versionamento e aprovação.
-# TODO(GAL-902, type=follow-up): enhanced prompt with template context should trim template to key structure only
-# Contexto: full template script (6 cenas) sent as context — may overwhelm small models
-# Dependência: GAL-900 (performance)
-# Critério de aceite: template context condensed to 2-3 scene summary before sending to real provider
-# Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md#gal-902
 
 # ========== Generation ==========
 
@@ -37,16 +32,36 @@ _PROVIDER_CLASSES = {
 }
 
 
+# TODO(GAL-902, type=follow-up): enhanced prompt with template context should trim template to key structure only
+# Contexto: full template script (6 cenas) sent as context — may overwhelm small models
+# Dependencia: GAL-900 (performance)
+# Criterio de aceite: template context condensed to scene headers + key elements only
+# Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md#gal-902
+
+def _condense_template(template_script: str) -> str:
+    """Extract only scene headers and key elements from template script."""
+    lines = template_script.split("\n")
+    condensed = []
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith("[Cena") or stripped.startswith("Texto:") or stripped.startswith("Prompt"):
+            condensed.append(stripped)
+    if len(condensed) < 3:
+        return template_script[:500]
+    return "\n".join(condensed)
+
+
 def _build_enhanced_prompt(briefing: str, template_script: str) -> str:
-    """Build enriched prompt: briefing + template context + pt-BR instruction."""
+    """Build enriched prompt: briefing + condensed template context + pt-BR instruction."""
+    condensed = _condense_template(template_script)
     return (
         briefing + "\n\n"
         "---\n"
-        "Contexto — use este roteiro como BASE de estrutura (melhore o conteudo):\n"
-        + template_script + "\n\n"
+        "Estrutura de referencia (melhore o conteudo em pt-BR):\n"
+        + condensed + "\n\n"
         "---\n"
         "IMPORTANTE: Escreva TODO o roteiro em portugues brasileiro (pt-BR). "
-        "Melhore o roteiro acima com linguagem natural, criativa e autenticamente brasileira. "
+        "Use linguagem natural, criativa e autenticamente brasileira. "
         "Mantenha a estrutura de cenas com tempos, textos na tela, narracao e prompts visuais.\n\n"
         "Roteiro melhorado em pt-BR:\n"
     )

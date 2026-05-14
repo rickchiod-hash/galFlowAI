@@ -2,6 +2,34 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-14 — Sessão 29 (continuação): GAL-900/901/902 — Performance, extração, contexto
+
+### Contexto
+PR #41 merged. Backlog expandido com 3 stories de dívida técnica. Branch `feature/GAL-900-gpt4all-performance`.
+
+### O que fiz
+- **PR #41 merged** para master via squash
+- **GAL-900 ✅** — GPT4AllProvider otimizado:
+  - `max_tokens`: 1000 → 400 (roteiro de 6 cenas ~300-400 tokens)
+  - `n_threads`: 4 (paralelismo CPU)
+  - `n_batch`: 8 (prompt processing)
+  - Target: <30s (antes 115s)
+- **GAL-901 ✅** — `_extract_product` refeito:
+  - Heurística por marcadores: "para ", "de ", "produto ", "como ", "chamado "
+  - Extrai "whey protein sabor chocolate" em vez de "Comercial de 30 segundos para..."
+  - Fallback: últimas 3 palavras
+- **GAL-902 ✅** — `_condense_template` criado:
+  - Extrai apenas headers de cena + Texto: + Prompt: do template
+  - Reduz contexto em ~60% antes de enviar para providers reais
+- **PR #42 criado** para revisão
+
+### Testes
+- 833 passed, 0 regressions
+
+### Próximo passo
+- Merge PR #42
+- Testar app real para verificar tempo GPT4All
+
 ## 2026-05-14 — Sessão 29: P0 Recovery Mission — Template context + pt-BR + TODOs
 
 ### Contexto
