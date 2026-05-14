@@ -1,25 +1,25 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-12 (sessão 23 - UI-205 COMPLETA)
+Atualizado em: 2026-05-13 (sessão 28 - VEC-811 COMPLETA)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 63/65
+Histórias concluídas: 64/65
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 2
-Percentual concluído: 97%
+Histórias pendentes: 1
+Percentual concluído: 98%
 
-**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 63 Concluídas + 0 Em andamento + 2 Pendentes = 65.
+**Aritmética:** 65 histórias no backlog (54 originais + 11 novas Pós-49). 64 Concluídas + 0 Em andamento + 1 Pendente = 65.
 
 ## Estado atual
 
-- Branch atual: feature/VEC-810-qdrant-backend
-- Último commit analisado: c08e002 — base (RND-612)
+- Branch atual: feature/VEC-811-chroma-backend
+- Último commit analisado: 08596b1 — VEC-810 merged
 - Fase atual: Fase 6C — Complete Platform 🔄
-- Story stream atual: 63/65 histórias concluídas ✅
-- Próxima ação recomendada: VEC-811 — Implementar Chroma vector store backend
+- Story stream atual: 64/65 histórias concluídas ✅
+- Próxima ação recomendada: DOC-120 — Reconciliar documentação
 
 ### Sessão 23 — Phase 6B: UI-205 (2026-05-12)
 
@@ -141,6 +141,30 @@ Todas as 4 histórias da Fase 6B concluídas:
 - `tests/test_vector_store_qdrant.py` — novo (14 testes)
 - `docs/project-control/00_STATUS_EXECUTIVO.md` — esta sessão
 - `docs/project-control/05_BACKLOG_PRIORIZADO.md` — VEC-810 marcado concluído
+- `docs/project-control/10_DAILY_LOG.md` — nova entrada
+
+### Sessão 28 — Phase 6C: VEC-811 (2026-05-13)
+
+#### O que foi feito
+1. **VEC-811 ✅** — Implementado Chroma vector store backend (`ChromaStore`):
+   - `app/adapters/vector_store_chroma.py`: implementação completa do VectorStoreAdapter usando Chroma
+   - Suporte a modo ephemeral (`:memory:`, sem dependência externa) e persistent (disco)
+   - Lazy import do `chromadb` (dependência opcional — pipeline funciona sem)
+   - Multi-tenancy via collection por project_id (`galflow_{project_id}`)
+   - Payload/metadata armazenados como JSON em Chroma metadata
+   - Todos os métodos ABC: `is_available`, `upsert`, `get`, `delete`, `search`, `count`, `clear`, `list_collections`
+   - 16 novos testes com Chroma mockado (sem runtime real)
+
+#### Testes executados
+- 16 novos testes em `test_vector_store_chroma.py`
+- Full suite: pendente (VEC-810 já merged, zero regressão esperada)
+
+#### Arquivos alterados
+- `app/adapters/vector_store_chroma.py` — novo (200+ linhas)
+- `tests/test_vector_store_chroma.py` — novo (16 testes)
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — esta sessão
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — VEC-811 marcado concluído
+- `docs/project-control/06_HISTORIAS_REFINADAS.md` — VEC-811 adicionada
 - `docs/project-control/10_DAILY_LOG.md` — nova entrada
 
 ## Resumo tipo Daily

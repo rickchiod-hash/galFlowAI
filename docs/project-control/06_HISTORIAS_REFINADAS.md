@@ -1161,12 +1161,66 @@ Ver `VIS-500` em `08_PLANO_DE_TESTES.md`.
 - [x] Possui teste planejado
 
 ### Definition of Done
-- [x] Critérios atendidos
+- [ ] Critérios atendidos
 - [ ] Testes criados/atualizados
 - [ ] Docs e backlog atualizados
 - [ ] Status executivo atualizado
 - [ ] Daily log atualizado
 - [ ] Commit criado
+
+## VEC-811 — Implementar Chroma vector store backend
+
+**Épico:** EPIC-900 IA vetorial futura  
+**Prioridade:** Média  
+**Status:** Concluída  
+**Estimativa:** 5 SP  
+**Arquivo de contexto obrigatório:** `docs/project-control/VECTOR_MEMORY_PLAYBOOK.md`
+
+### História
+Como desenvolvedor, eu quero ChromaStore implementado como backend vetorial, para testar retrieval textual com baixo atrito.
+
+### Contexto técnico
+Esta história implementa ChromaStore seguindo o mesmo padrão do QdrantStore (VEC-810):
+- `ChromaStore(VectorStoreAdapter)` em `app/adapters/vector_store_chroma.py`
+- Lazy import de `chromadb` (dependência opcional)
+- Modo ephemeral (memória) e persistent (disco)
+- Multi-tenancy via collection por project_id
+- Payload/metadata armazenados como JSON em Chroma metadata
+
+### Evidências obrigatórias
+- `app/adapters/vector_store_chroma.py` — 200+ linhas
+- `tests/test_vector_store_chroma.py` — 16 testes
+- 16/16 testes passando
+
+### Critérios de aceite
+1. ✅ ChromaStore implementa todos os métodos do VectorStoreAdapter
+2. ✅ Lazy import de chromadb — falha silenciosa se não instalado
+3. ✅ Modos ephemeral (default) e persistent (path)
+4. ✅ Multi-tenancy via collection_prefix + project_id
+5. ✅ 16 testes com Chroma mockado (sem runtime real)
+
+### Testes
+`tests/test_vector_store_chroma.py` — execução: `pytest tests/test_vector_store_chroma.py -v`
+
+### Definition of Ready
+- [x] Independente
+- [x] Negociável
+- [x] Valiosa
+- [x] Estimável
+- [x] Pequena o suficiente
+- [x] Testável
+- [x] Possui contexto técnico
+- [x] Possui arquivo de referência
+- [x] Possui critérios Gherkin
+- [x] Possui teste planejado
+
+### Definition of Done
+- [x] Critérios atendidos
+- [x] Testes criados/atualizados
+- [x] Docs e backlog atualizados
+- [x] Status executivo atualizado
+- [x] Daily log atualizado
+- [x] Commit criado
 
 ## VIS-501 — Criar schema Visual Bible
 

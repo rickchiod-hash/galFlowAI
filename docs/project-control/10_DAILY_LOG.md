@@ -2,6 +2,39 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-13 — Sessão 28: Phase 6C — VEC-811 Chroma Backend
+
+### Contexto
+VEC-810 concluída e merged. Próxima história: VEC-811 — implementar Chroma vector store backend seguindo o mesmo padrão do QdrantStore.
+
+### O que fiz
+- **VEC-811 ✅:** `app/adapters/vector_store_chroma.py` — ChromaStore completa:
+  - Modo ephemeral (memória) e persistent (disco)
+  - Lazy import de `chromadb` (opcional)
+  - Multi-tenancy via collection por project_id
+  - Payload/metadata como JSON em Chroma metadata
+  - Todos os métodos ABC: is_available, upsert, get, delete, search, count, clear, list_collections
+- **16 testes** em `tests/test_vector_store_chroma.py` — todos passando
+- **Refined story** adicionada em `06_HISTORIAS_REFINADAS.md`
+- **Backlog atualizado:** VEC-811 → Concluída (64/65)
+- **Status:** 64/65 stories concluídas (98%)
+
+### Arquivos alterados
+- `app/adapters/vector_store_chroma.py` — Novo (VEC-811)
+- `tests/test_vector_store_chroma.py` — Novo (16 testes)
+- `docs/project-control/06_HISTORIAS_REFINADAS.md` — VEC-811 adicionada
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — VEC-811 → Concluída
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — 64/65
+- `docs/project-control/10_DAILY_LOG.md` — esta entrada
+
+### Decisões
+- ChromaStore segue exatamente o mesmo padrão do QdrantStore (VEC-810)
+- Payload/metadata armazenados como JSON strings em Chroma metadata (suporta tipos aninhados)
+- Chroma ephemeral = in-memory (equivalente ao Qdrant `:memory:`)
+
+### Próximo passo
+- **DOC-120**: Reconciliar documentação com novo direcionamento mandatório (última história pendente)
+
 ## 2026-05-12 — Sessão 22: Phase 6A — ARCH-320 Pipeline Unification
 
 ### Contexto
