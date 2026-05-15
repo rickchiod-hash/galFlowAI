@@ -2,6 +2,38 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-14 — Sessão 36: Fix duplicate routes + backlog correction
+
+### Contexto
+Após sessão 35 (todos os débitos concluídos, master merged, suite 1052/1052), uma varredura exploratória revelou:
+- 3 rotas duplicadas em `app/api.py` (`/script/improve`, `/script/approve`, `/script/versions`) — dead code de merge residue, apenas a primeira definição de cada rota era ativa
+- Backlog `05_BACKLOG_PRIORIZADO.md` mostrava API-210, API-211, LOG-100 como "Pendente" quando na verdade estão implementadas (commits `61ffbf5`, `045734e`, `d333330` no histórico)
+
+### O que fiz
+1. **Backlog corrigido**: API-210, API-211, LOG-100 marcados como ✅ Concluída (já existiam no git log)
+2. **Duplicate routes removidos**: 3 blocos de dead code (71 linhas) removidos de `app/api.py`:
+   - `POST /api/v1/projects/{project_id}/script/improve` (linhas 913-931) — duplicava handler da linha 198
+   - `POST /api/v1/projects/{project_id}/script/approve` (linhas 934-952) — duplicava handler da linha 280
+   - `GET /api/v1/projects/{project_id}/script/versions` (linhas 955-965+) — duplicava handler da linha 307
+   - Havia também código órfão (`else` dentro de `except`) após a remoção — corrigido
+3. **Git audit**: Atualizado para 268 commits
+4. **Branch**: `fix/dead-duplicate-routes-api` → merged to master (fast-forward)
+
+### Arquivos alterados
+- `app/api.py` — -71 linhas (3 duplicates + orphaned else)
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — API-210/211/LOG-100 ✅ Concluída
+- `docs/project-control/01_AUDITORIA_HISTORICO_GIT.md` — commit count 268
+
+### Testes executados
+- Full suite: **1052 passed, 0 failed**
+- API module loads and route registration OK
+
+### Próximo passo
+Backlog oficial zerado (74/74). Pendências reais identificadas pela varredura:
+- GAL-900: GPT4All performance ~63-115s (backlog diz ✅ mas TODO no código type=debt)
+- GAL-901: Product extraction first 5 words (backlog diz ✅ mas TODO type=debt)
+- GAP-009: Legacy pipeline modules duplicam use cases
+
 ## 2026-05-14 — Sessão 35: GAL-933/934/935 — Todos os débitos técnicos concluídos
 
 ### Contexto

@@ -1,6 +1,6 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-14 (sessão 33 — GAL-932 Script Service Tests ✅)
+Atualizado em: 2026-05-14 (sessão 36 — Duplicate routes cleanup, backlog corrected ✅)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Sessão 29 — P0 Recovery Mission (2026-05-14)
