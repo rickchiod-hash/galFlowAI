@@ -45,8 +45,8 @@ def test_tts_unavailable_graceful_audio_fallback():
          patch('app.pipeline.video_generation_pipeline.SplitScenesUseCase') as mock_split_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.BuildPromptsUseCase') as mock_build_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.GenerateAudioUseCase') as mock_audio_uc_cls, \
-         patch('app.pipeline.video_generation_pipeline.RenderVideoUseCase') as mock_render_uc_cls, \
-         patch('app.pipeline.video_generation_pipeline.CreateStaticVideoUseCase') as mock_static_uc_cls, \
+         patch('app.application.use_cases.render_all_scenes_use_case.RenderVideoUseCase') as mock_render_uc_cls, \
+         patch('app.application.use_cases.render_all_scenes_use_case.CreateStaticVideoUseCase') as mock_static_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.ConcatVideosUseCase') as mock_concat_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.WanGPAdapter') as mock_wangp_cls, \
          patch('app.pipeline.video_generation_pipeline.TTSAdapter') as mock_tts_cls, \
@@ -181,8 +181,8 @@ def test_tts_available_normal_operation():
          patch('app.pipeline.video_generation_pipeline.SplitScenesUseCase') as mock_split_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.BuildPromptsUseCase') as mock_build_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.GenerateAudioUseCase') as mock_audio_uc_cls, \
-         patch('app.pipeline.video_generation_pipeline.RenderVideoUseCase') as mock_render_uc_cls, \
-         patch('app.pipeline.video_generation_pipeline.CreateStaticVideoUseCase') as mock_static_uc_cls, \
+         patch('app.application.use_cases.render_all_scenes_use_case.RenderVideoUseCase') as mock_render_uc_cls, \
+         patch('app.application.use_cases.render_all_scenes_use_case.CreateStaticVideoUseCase') as mock_static_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.ConcatVideosUseCase') as mock_concat_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.WanGPAdapter') as mock_wangp_cls, \
          patch('app.pipeline.video_generation_pipeline.TTSAdapter') as mock_tts_cls, \
@@ -316,8 +316,8 @@ def test_both_wangp_and_tts_unavailable():
          patch('app.pipeline.video_generation_pipeline.SplitScenesUseCase') as mock_split_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.BuildPromptsUseCase') as mock_build_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.GenerateAudioUseCase') as mock_audio_uc_cls, \
-         patch('app.pipeline.video_generation_pipeline.RenderVideoUseCase') as mock_render_uc_cls, \
-         patch('app.pipeline.video_generation_pipeline.CreateStaticVideoUseCase') as mock_static_uc_cls, \
+         patch('app.application.use_cases.render_all_scenes_use_case.RenderVideoUseCase') as mock_render_uc_cls, \
+         patch('app.application.use_cases.render_all_scenes_use_case.CreateStaticVideoUseCase') as mock_static_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.ConcatVideosUseCase') as mock_concat_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.WanGPAdapter') as mock_wangp_cls, \
          patch('app.pipeline.video_generation_pipeline.TTSAdapter') as mock_tts_cls, \

@@ -12,9 +12,8 @@ from app.application.use_cases.generate_script_use_case import GenerateScriptUse
 from app.application.use_cases.split_scenes_use_case import SplitScenesUseCase
 from app.application.use_cases.build_prompts_use_case import BuildPromptsUseCase
 from app.application.use_cases.generate_audio_use_case import GenerateAudioUseCase
-from app.application.use_cases.render_video_use_case import RenderVideoUseCase
-from app.application.use_cases.create_static_video_use_case import CreateStaticVideoUseCase
 from app.application.use_cases.concat_videos_use_case import ConcatVideosUseCase
+from app.application.use_cases.render_all_scenes_use_case import RenderAllScenesUseCase
 from app.adapters.wangp_adapter import WanGPAdapter
 from app.adapters.tts_adapter import TTSAdapter
 from app.adapters.ffmpeg_adapter import FFmpegAdapter
@@ -25,9 +24,9 @@ from app.domain.stage_logger import StageLogger
 
 logger = logging.getLogger(__name__)
 
-# TODO(GAL-933, type=debt): Quebrar pipeline em use cases independentes
-# Contexto: VideoGenerationPipeline monolithic — orchestrates 6+ use cases inline
-# Dependência: ARCH-320 (unificação old/new pipeline) — concluída
+# TODO(GAL-933, type=completed): Pipeline delega render de cenas a RenderAllScenesUseCase
+# Contexto: Pipeline era monolithic — agora delega cada etapa a use case
+# Dependência: ARCH-320 — concluída
 # Critério de aceite: Pipeline delega cada etapa a use case com contrato definido
 # Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md
 #
@@ -60,8 +59,7 @@ class VideoGenerationPipeline:
         self.split_scenes_use_case = SplitScenesUseCase()
         self.build_prompts_use_case = BuildPromptsUseCase()
         self.generate_audio_use_case = GenerateAudioUseCase()
-        self.render_video_use_case = RenderVideoUseCase()
-        self.create_static_video_use_case = CreateStaticVideoUseCase()
+        self.render_all_scenes_uc = RenderAllScenesUseCase()
         self.concat_videos_use_case = ConcatVideosUseCase()
         
     def _get_error_writer(self):
@@ -184,83 +182,16 @@ class VideoGenerationPipeline:
             
             # 5. Gerar vídeos das cenas (WanGP ou FFmpeg fallback)
             self._report_progress(progress_callback, 50, "Gerando vídeos das cenas...")
-            rendered_scenes = []
-            
-            for i, scene_prompt in enumerate(scene_prompts):
-                self._report_progress(
-                    progress_callback,
-                    50 + (i / len(scene_prompts)) * 30,
-                    f"Gerando cena {i+1}/{len(scene_prompts)}..."
-                )
-                
-                scene_output = project_dir / "renders" / f"scene_{i:03d}.mp4"
-                scene_output.parent.mkdir(exist_ok=True)
-                
-                # Try WanGP first
-                render_result = self.render_video_use_case.execute(
-                    project_id=project_id,
-                    scene=scene_prompt
-                )
-                
-                if render_result.get("ok"):
-                    # WanGP succeeded
-                    scene_prompt["status"] = "completed"
-                    scene_prompt["video_path"] = render_result.get("data", {}).get("video_path")
-                    rendered_scenes.append(scene_prompt)
-                    continue
-                
-                # Fallback: FFmpeg (vídeo estático com texto)
-                logger.info(f"WanGP não disponível, usando FFmpeg para cena {i}")
-                err = AppError(
-                    code=ErrorCode.WANGP_UNAVAILABLE,
-                    severity=Severity.WARN,
-                    message="WanGP indisponível para cena %d" % i,
-                    suggestion="FFmpeg fallback usado automaticamente.",
-                    stage="render",
-                    retryable=True,
-                    project_id=project_id,
-                    fallback_used=True,
-                )
-                self._get_error_writer().write(err)
-                self._stage_logger.warning(
-                    message="WanGP falhou para cena %d, usando FFmpeg" % i,
-                    cause="WanGP não disponível ou retornou erro",
-                    correction="FFmpeg fallback ativado automaticamente",
-                )
-                # Usa scene_text ou prompt como texto
-                text_for_video = scene_prompt.get("scene_text") or scene_prompt.get("prompt") or "Cena"
-                static_video_result = self.create_static_video_use_case.execute(
-                    project_id=project_id,
-                    text=text_for_video,
-                    output_name=f"scene_{i:03d}.mp4",
-                    duration=scene_prompt.get("duration", 5)
-                )
-                
-                if static_video_result.get("ok"):
-                    scene_prompt["status"] = "completed"
-                    scene_prompt["video_path"] = static_video_result.get("data", {}).get("video_path")
-                    rendered_scenes.append(scene_prompt)
-                    continue
-                else:
-                    scene_prompt["status"] = "failed"
-                    scene_prompt["error"] = static_video_result.get("error", "Erro desconhecido")
-                    err2 = AppError(
-                        code=ErrorCode.FFMPEG_NOT_FOUND,
-                        severity=Severity.ERROR,
-                        message="FFmpeg fallback também falhou para cena %d" % i,
-                        suggestion="Verifique se FFmpeg está instalado.",
-                        stage="render",
-                        retryable=True,
-                        project_id=project_id,
-                        fallback_used=True,
-                    )
-                    self._get_error_writer().write(err2)
-                    self._stage_logger.failure(
-                        message="FFmpeg fallback falhou para cena %d" % i,
-                        cause="FFmpeg não disponível ou erro ao gerar vídeo estático",
-                        correction="Verifique instalação do FFmpeg",
-                    )
-            
+            render_all_result = self.render_all_scenes_uc.execute(
+                project_id=project_id,
+                scene_prompts=scene_prompts,
+            )
+
+            if not render_all_result.get("ok"):
+                return {"success": False, "error": render_all_result.get("error", "Falha ao renderizar cenas")}
+
+            rendered_scenes = render_all_result.get("data", {}).get("rendered_scenes", [])
+
             # Atualiza prompts com status
             prompts_path.write_text(
                 json.dumps(scene_prompts, indent=2, ensure_ascii=False),

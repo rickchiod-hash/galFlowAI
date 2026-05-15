@@ -22,8 +22,8 @@ def _make_pipeline():
     pipeline.split_scenes_use_case = MagicMock()
     pipeline.build_prompts_use_case = MagicMock()
     pipeline.generate_audio_use_case = MagicMock()
-    pipeline.render_video_use_case = MagicMock()
-    pipeline.create_static_video_use_case = MagicMock()
+    pipeline.render_all_scenes_uc._render_video_uc = MagicMock()
+    pipeline.render_all_scenes_uc._create_static_video_uc = MagicMock()
     pipeline.concat_videos_use_case = MagicMock()
     return pipeline
 
@@ -31,7 +31,7 @@ def _make_pipeline():
 def test_fallback_records_wangp_unavailable():
     pipeline = _make_pipeline()
     writer_mock = MagicMock()
-    pipeline._get_error_writer = MagicMock(return_value=writer_mock)
+    pipeline.render_all_scenes_uc._get_error_writer = MagicMock(return_value=writer_mock)
 
     pipeline.generate_script_use_case.execute.return_value = {
         "ok": True,
@@ -44,11 +44,11 @@ def test_fallback_records_wangp_unavailable():
 
     with patch("pathlib.Path.exists", return_value=True):
         with patch("pathlib.Path.read_text", return_value="test script approved"):
-            pipeline.render_video_use_case.execute.return_value = {
+            pipeline.render_all_scenes_uc._render_video_uc.execute.return_value = {
                 "ok": False,
                 "error": "WanGP not available",
             }
-            pipeline.create_static_video_use_case.execute.return_value = {
+            pipeline.render_all_scenes_uc._create_static_video_uc.execute.return_value = {
                 "ok": True,
                 "data": {"video_path": "/tmp/scene_000.mp4"},
             }
@@ -88,7 +88,7 @@ def test_ffmpeg_concat_failure_records_error():
 
     with patch("pathlib.Path.exists", return_value=True):
         with patch("pathlib.Path.read_text", return_value="test script approved"):
-            pipeline.render_video_use_case.execute.return_value = {
+            pipeline.render_all_scenes_uc._render_video_uc.execute.return_value = {
                 "ok": True,
                 "data": {"video_path": "/tmp/scene_000.mp4"},
             }
@@ -114,7 +114,7 @@ def test_ffmpeg_concat_failure_records_error():
 def test_ffmpeg_fallback_also_fails_records_both():
     pipeline = _make_pipeline()
     writer_mock = MagicMock()
-    pipeline._get_error_writer = MagicMock(return_value=writer_mock)
+    pipeline.render_all_scenes_uc._get_error_writer = MagicMock(return_value=writer_mock)
 
     pipeline.generate_script_use_case.execute.return_value = {
         "ok": True,
@@ -127,11 +127,11 @@ def test_ffmpeg_fallback_also_fails_records_both():
 
     with patch("pathlib.Path.exists", return_value=True):
         with patch("pathlib.Path.read_text", return_value="test script approved"):
-            pipeline.render_video_use_case.execute.return_value = {
+            pipeline.render_all_scenes_uc._render_video_uc.execute.return_value = {
                 "ok": False,
                 "error": "WanGP not available",
             }
-            pipeline.create_static_video_use_case.execute.return_value = {
+            pipeline.render_all_scenes_uc._create_static_video_uc.execute.return_value = {
                 "ok": False,
                 "error": "FFmpeg not found",
             }
@@ -151,7 +151,7 @@ def test_ffmpeg_fallback_also_fails_records_both():
 
 def test_stage_logger_has_events_on_fallback():
     pipeline = _make_pipeline()
-    pipeline._get_error_writer = MagicMock(return_value=MagicMock())
+    pipeline.render_all_scenes_uc._get_error_writer = MagicMock(return_value=MagicMock())
 
     pipeline.generate_script_use_case.execute.return_value = {
         "ok": True,
@@ -164,11 +164,11 @@ def test_stage_logger_has_events_on_fallback():
 
     with patch("pathlib.Path.exists", return_value=True):
         with patch("pathlib.Path.read_text", return_value="test script approved"):
-            pipeline.render_video_use_case.execute.return_value = {
+            pipeline.render_all_scenes_uc._render_video_uc.execute.return_value = {
                 "ok": False,
                 "error": "WanGP not available",
             }
-            pipeline.create_static_video_use_case.execute.return_value = {
+            pipeline.render_all_scenes_uc._create_static_video_uc.execute.return_value = {
                 "ok": True,
                 "data": {"video_path": "/tmp/scene_000.mp4"},
             }
@@ -183,7 +183,7 @@ def test_stage_logger_has_events_on_fallback():
                 target_audience="Teste",
             )
 
-    events = pipeline._stage_logger.events
+    events = pipeline.render_all_scenes_uc._stage_logger.events
     assert len(events) >= 1
     assert any(
         e.event_type in ("warning", "failure") and "WanGP" in e.message

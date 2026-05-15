@@ -97,7 +97,7 @@ class JobQueue:
             return self.jobs[job_id]
         
         # Fallback to ledger
-        job = _job_ledger.load_job(job_id)
+        job = self._job_ledger.load_job(job_id)
         if job:
             self.jobs[job_id] = job  # Cache for future access
         return job
@@ -120,7 +120,7 @@ class JobQueue:
                 return job
         
         # If not found in cache, check ledger directly
-        queued_jobs = _job_ledger.load_jobs(status=JobStatus.QUEUED, limit=1)
+        queued_jobs = self._job_ledger.load_jobs(status=JobStatus.QUEUED, limit=1)
         if queued_jobs:
             job = queued_jobs[0]
             job.start()
@@ -136,7 +136,7 @@ class JobQueue:
         job = self.jobs.get(job_id)
         if not job:
             # Try to load from ledger if not in cache
-            job = _job_ledger.load_job(job_id)
+            job = self._job_ledger.load_job(job_id)
             if job:
                 self.jobs[job_id] = job  # Cache it
         
@@ -158,7 +158,7 @@ class JobQueue:
         job = self.jobs.get(job_id)
         if not job:
             # Try to load from ledger if not in cache
-            job = _job_ledger.load_job(job_id)
+            job = self._job_ledger.load_job(job_id)
             if job:
                 self.jobs[job_id] = job  # Cache it
         
@@ -179,7 +179,7 @@ class JobQueue:
         job = self.jobs.get(job_id)
         if not job:
             # Try to load from ledger if not in cache
-            job = _job_ledger.load_job(job_id)
+            job = self._job_ledger.load_job(job_id)
             if job:
                 self.jobs[job_id] = job  # Cache it
         
@@ -201,14 +201,14 @@ class JobQueue:
         """Remove a job entirely from the queue. Returns True if removed."""
         if job_id not in self.jobs:
             # Check ledger directly
-            if not _job_ledger.load_job(job_id):
+            if not self._job_ledger.load_job(job_id):
                 return False
         
         # Remove from cache and ledger
         if job_id in self.jobs:
             del self.jobs[job_id]
         
-        deleted = _job_ledger.delete_job(job_id)
+        deleted = self._job_ledger.delete_job(job_id)
         
         if self.running_job_id == job_id:
             self.running_job_id = None
@@ -222,9 +222,9 @@ class JobQueue:
         try:
             if status is not None:
                 job_status = JobStatus(status)
-                jobs_from_ledger = _job_ledger.load_jobs(status=job_status)
+                jobs_from_ledger = self._job_ledger.load_jobs(status=job_status)
             else:
-                jobs_from_ledger = _job_ledger.load_jobs()
+                jobs_from_ledger = self._job_ledger.load_jobs()
             
             # Update cache
             for job in jobs_from_ledger:
