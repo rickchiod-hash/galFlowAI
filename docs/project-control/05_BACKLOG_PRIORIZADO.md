@@ -65,9 +65,9 @@ Backlog expandido por decisão de produto (2026-05-12): WanGP, VACE, FFmpeg fall
 | Ordem | ID | História | Prioridade | SP | Status | Dependência |
 |------:|---|---------|:---------:|:--:|:------:|:-----------:|
 | 50 | ARCH-320 | Unificar pipeline old/new, deletar `_new.py` | Alta | 2 | ✅ Concluída | Nenhuma |
-| 51 | API-210 | Adicionar prefixo `/api/v1/` em todas as rotas | Alta | 5 | Pendente | Nenhuma |
-| 52 | API-211 | Envelopar resposta de `/api/llm/providers` em `ApiResponse` | Alta | 3 | Pendente | Nenhuma |
-| 53 | LOG-100 | Conectar erros estruturados ao Dataframe de logs na UI | Alta | 5 | Pendente | Nenhuma |
+| 51 | API-210 | Adicionar prefixo `/api/v1/` em todas as rotas | Alta | 5 | ✅ Concluída | Nenhuma |
+| 52 | API-211 | Envelopar resposta de `/api/llm/providers` em `ApiResponse` | Alta | 3 | ✅ Concluída | Nenhuma |
+| 53 | LOG-100 | Conectar erros estruturados ao Dataframe de logs na UI | Alta | 5 | ✅ Concluída | Nenhuma |
 
 ### Fase 6B — Mandatory Functional Integration
 

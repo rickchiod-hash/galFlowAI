@@ -892,14 +892,11 @@ async def get_script_template(commercial_type: str = "produto"):
 
 @app.post("/api/v1/briefing/enrich")
 async def enrich_briefing(request: dict):
-    """Enrich briefing with suggestions."""
+    """Enrich briefing with additional context."""
     try:
-        from app.application.use_cases.script_quality_use_cases import EnrichBriefingUseCase
-        uc = EnrichBriefingUseCase()
-        result = uc.execute(
-            briefing=request.get("briefing", ""),
-            project_id=request.get("project_id", "")
-        )
+        from app.application.use_cases.briefing_enrichment_use_case import BriefingEnrichmentUseCase
+        uc = BriefingEnrichmentUseCase()
+        result = uc.execute(briefing=request.get("briefing", ""))
         
         if result["ok"]:
             return success_response(result["data"], "Briefing enriched")
@@ -908,65 +905,6 @@ async def enrich_briefing(request: dict):
     except Exception as e:
         logger.error("Briefing enrichment failed: %s", e)
         raise error_response("BRIEFING_ENRICH_FAILED", str(e), status_code=500)
-
-
-@app.post("/api/v1/projects/{project_id}/script/improve")
-async def improve_script(project_id: str, request: dict):
-    """Improve script with specified type."""
-    try:
-        from app.application.use_cases.script_improvement_use_cases import ImproveScriptUseCase
-        uc = ImproveScriptUseCase()
-        result = uc.execute(
-            project_id=project_id,
-            script=request.get("script", ""),
-            improvement_type=request.get("improvement_type", "general")
-        )
-        
-        if result["ok"]:
-            return success_response(result["data"], "Script improved")
-        else:
-            raise error_response("SCRIPT_IMPROVE_FAILED", result["error"], status_code=500)
-    except Exception as e:
-        logger.error("Script improvement failed: %s", e)
-        raise error_response("SCRIPT_IMPROVE_FAILED", str(e), status_code=500)
-
-
-@app.post("/api/v1/projects/{project_id}/script/approve")
-async def approve_script(project_id: str, request: dict):
-    """Approve or reject script."""
-    try:
-        from app.application.use_cases.script_improvement_use_cases import ApproveScriptUseCase
-        uc = ApproveScriptUseCase()
-        result = uc.execute(
-            project_id=project_id,
-            script=request.get("script", ""),
-            approved=request.get("approved", True)
-        )
-        
-        if result["ok"]:
-            return success_response(result["data"], "Script approval updated")
-        else:
-            raise error_response("SCRIPT_APPROVAL_FAILED", result["error"], status_code=500)
-    except Exception as e:
-        logger.error("Script approval failed: %s", e)
-        raise error_response("SCRIPT_APPROVAL_FAILED", str(e), status_code=500)
-
-
-@app.get("/api/v1/projects/{project_id}/script/versions")
-async def get_script_versions(project_id: str):
-    """Get all script versions."""
-    try:
-        from app.application.use_cases.script_improvement_use_cases import GetScriptVersionsUseCase
-        uc = GetScriptVersionsUseCase()
-        result = uc.execute(project_id=project_id)
-        
-        if result["ok"]:
-            return success_response(result["data"], "Script versions retrieved")
-        else:
-            raise error_response("SCRIPT_VERSIONS_FAILED", result["error"], status_code=500)
-    except Exception as e:
-        logger.error("Script versions retrieval failed: %s", e)
-        raise error_response("SCRIPT_VERSIONS_FAILED", str(e), status_code=500)
 
 
 @app.post("/api/v1/projects/{project_id}/visual-bible")
