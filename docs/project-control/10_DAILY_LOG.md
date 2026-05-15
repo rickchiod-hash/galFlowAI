@@ -2,6 +2,36 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-14 — Sessão 33: GAL-932 — Script service unit tests (91% coverage)
+
+### Contexto
+GAL-930 (ScriptRepository) estava completo mas não mergeado ao master (rede indisponível). Branch criada a partir de feature/GAL-930-script-repository. O objetivo era elevar cobertura de script_service.py de 28% para >70%.
+
+### O que fiz
+- **GAL-932 ✅** — 94 novos testes unitários em `test_script_service_coverage.py`:
+  - **Mock ScriptRepository**: save_manual_edit, create_new_version, restore_previous_version, approve_script, load_current_script, load_script_versions (todas com success/failure/exception)
+  - **Mock ProviderRouter**: auto, safe, fast, quality modes, com/sem running loop
+  - **Mock load_current_script + save_manual_edit**: improve, complement, viral, premium, direct
+  - **Pure functions**: _condense_template, _build_enhanced_prompt, _call_template, validate_script_quality
+  - **Async wrappers**: generate_script_fast, generate_script_quality
+  - Cobertura: **28% → 91%** (265 stmts, 25 missed — linhas 116-166 são provider dinâmico com __import__)
+
+### Arquivos alterados
+- `tests/test_script_service_coverage.py` — novo (94 testes)
+- `tests/test_script_service.py` — sem alterações (teste existente continua passando)
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — GAL-932 marcado concluído
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — S33 adicionado
+- `docs/project-control/10_DAILY_LOG.md` — esta entrada
+
+### Testes executados
+- 94 novos testes: 94/94 passed
+- Existing test_script_service_versioning_and_approve: passed
+- Full suite: **1005 passed, 1 pre-existing fail** (git audit count)
+- Zero regressão
+
+### Próximo passo
+- **GAL-935** — FastAPI contract tests (próximo da fila, sem dependência pendente)
+
 ## 2026-05-14 — Sessão 32: GAL-930 — ScriptRepository (SRP)
 
 ### Contexto

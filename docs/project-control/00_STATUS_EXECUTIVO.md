@@ -1,6 +1,6 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-14 (sessão 32 — GAL-930 ScriptRepository ✅)
+Atualizado em: 2026-05-14 (sessão 33 — GAL-932 Script Service Tests ✅)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Sessão 29 — P0 Recovery Mission (2026-05-14)
@@ -104,22 +104,38 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 - 935 passed, 1 pre-existing fail (git audit count)
 - Zero regressão
 
+## Sessão 33 — GAL-932: Script Service Unit Tests (2026-05-14)
+
+### O que foi feito
+
+1. **GAL-932 ✅** — 94 testes unitários em `test_script_service_coverage.py`:
+   - Mock ScriptRepository: save_manual_edit, create_new_version, restore_previous_version, approve_script, load_current_script, load_script_versions
+   - Mock ProviderRouter: auto, safe, fast, quality modes, event loop handling
+   - Mock load_current_script + save_manual_edit: improve, complement, viral, premium, direct
+   - Pure functions: _condense_template, _build_enhanced_prompt, _call_template, validate_script_quality
+   - Async wrappers: generate_script_fast, generate_script_quality
+   - Cobertura: **28% → 91%** (265 stmts, 25 missed — linhas 116-166 são provider dinâmico)
+
+### Testes
+- 1005 passed, 1 pre-existing fail (git audit count)
+- Zero regressão
+
 ## Progresso geral
 
-Histórias concluídas: 65/65 + 11 bugs + 4 QA/RND itens Phase E + 2 débitos (GAL-930, GAL-931)
+Histórias concluídas: 65/65 + 11 bugs + 4 QA/RND itens Phase E + 3 débitos (GAL-930, GAL-931, GAL-932)
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 4 débitos técnicos (GAL-932..935)
-Percentual concluído: 100% backlog + P0 + Phase E + 2/6 débitos
+Histórias pendentes: 3 débitos técnicos (GAL-933..935)
+Percentual concluído: 100% backlog + P0 + Phase E + 3/6 débitos
 
 ## Estado atual
 
-- Branch atual: feature/GAL-930-script-repository
+- Branch atual: feature/GAL-932-script-service-tests
 - Último commit: (este)
-- Fase atual: S32 — Débitos técnicos (GAL-930 ✅)
-- Story stream atual: 67 histórias concluídas (65 backlog + 2 débitos)
-- Pendências: 4 débitos técnicos (GAL-932..935)
-- Próxima ação recomendada: GAL-932 (testes unitários script_service, cobertura > 70%)
+- Fase atual: S33 — Débitos técnicos (GAL-932 ✅)
+- Story stream atual: 68 histórias concluídas
+- Pendências: 3 débitos técnicos (GAL-933..935)
+- Próxima ação recomendada: GAL-935 (FastAPI contract tests)
 
 ### Sessão 23 — Phase 6B: UI-205 (2026-05-12)
 
