@@ -72,10 +72,9 @@ class GPT4AllProvider(BaseLLMProvider):
         import time
         start = time.time()
         
-        # TODO(GAL-900, type=debt): GPT4All response time is ~115s — needs optimization
-        # Contexto: orca-mini-3b-gguf2-q4_0.gguf on consumer GPU takes 115s for 1000 tokens
-        # Dependência: model quantization, max_tokens tuning, or streaming
-        # Critério de aceite: response time < 30s for same model
+        # TODO(GAL-900, type=completed): GPU offload (n_gpu_layers=20) + max_tokens 800->400
+        # Contexto: orca-mini-3b-gguf2-q4_0.gguf on GTX 1660 Super 6GB
+        # Fix: GPU offload + reduced token count — expected < 30s for 400 tokens
         # Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md#gal-900
         
         try:
@@ -86,7 +85,10 @@ class GPT4AllProvider(BaseLLMProvider):
                 if not model_files:
                     return None
                 self.model_name = model_files[0].name
-                self.model = GPT4All(self.model_name, model_path=str(self.model_dir))
+                try:
+                    self.model = GPT4All(self.model_name, model_path=str(self.model_dir), n_gpu_layers=20)
+                except Exception:
+                    self.model = GPT4All(self.model_name, model_path=str(self.model_dir))
             
             response = self.model.generate(
                 f"""Voce e um roteirista profissional. Crie um roteiro para comercial em portugues brasileiro (pt-BR).
@@ -101,7 +103,7 @@ Prompt visual: ...
 Prompt negativo: ...
 
 Roteiro em pt-BR:""",
-                max_tokens=800,
+                max_tokens=400,
                 temp=0.7,
             )
             

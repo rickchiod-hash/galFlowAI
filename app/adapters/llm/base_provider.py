@@ -89,10 +89,8 @@ class TemplateProvider(BaseLLMProvider):
         else:
             return "viral"
     
-    # TODO(GAL-901, type=debt): TemplateProvider product extraction uses first 5 words only
-    # Contexto: "Comercial de 30 segundos para produto generico, es" extracts "Comercial de 30 segundos para..."
-    # Dependência: Nenhuma
-    # Critério de aceite: extract meaningful product name (heuristic: last noun phrase, or after "para"/"de")
+    # TODO(GAL-901, type=completed): Product extraction heuristic implemented in _extract_product
+    # Heuristic: searches for markers (para/de/produto/chamado), falls back to last 3 words or first 50 chars
     # Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md#gal-901
     
     def _extract_product(self, prompt: str) -> str:
