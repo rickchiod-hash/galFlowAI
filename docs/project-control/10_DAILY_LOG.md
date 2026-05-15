@@ -2,6 +2,56 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-14 — Sessão 35: GAL-933/934/935 — Todos os débitos técnicos concluídos
+
+### Contexto
+Sessão iniciada com GAL-933 (RenderAllScenesUseCase), GAL-935 (contract tests) e GAL-934 (mock E2E) como os 3 últimos débitos técnicos pendentes. Todos estavam parcialmente implementados na branch `feature/GAL-935-api-contract-tests` sem commit. Objetivo: finalizar, comitar, criar branch GAL-934, escrever testes, validar suite e atualizar docs.
+
+### O que fiz
+1. **Verificação de estado**: Git status mostrou 4 arquivos modificados e 4 untracked — mudanças de GAL-933 + GAL-935 não commitadas. Branch atual: `feature/GAL-935-api-contract-tests`.
+2. **Testes validados**:
+   - `test_ffmpeg_concat_failure_records_error` — PASSED (mock target `pipeline._get_error_writer` já estava correto)
+   - Full suite: **1047 passed, 1 pre-existing fail** (git audit count)
+3. **Commit GAL-933 + GAL-935**: Stage e commit de 7 arquivos (pipeline refactor, queue.py `_job_ledger` fix, test updates, new use case + tests)
+4. **Branch GAL-934**: `git checkout -b feature/GAL-934-mock-e2e` a partir do commit anterior
+5. **Mock E2E tests**: Escrito `tests/test_wangp_fallback.py` com 4 testes seguindo o padrão import-patching de `test_tts_fallback.py`:
+   - `test_wangp_fail_ffmpeg_fallback_logs_error` — WanGP fail → FFmpeg fallback → WANGP_UNAVAILABLE no error writer + stage logger
+   - `test_wangp_and_ffmpeg_both_fail_records_both` — ambos falham → pipeline fail + WANGP_UNAVAILABLE + FFMPEG_NOT_FOUND
+   - `test_wangp_available_no_fallback` — happy path → sem erros
+   - `test_concat_failure_logs_ffmpeg_concat_failed` — concat fail → FFMPEG_CONCAT_FAILED no pipeline level
+   - Aprendizado: `ErrorJsonlWriter` é importado lazy via `from app.services.error_jsonl_writer import ErrorJsonlWriter` — patch target deve ser `app.services.error_jsonl_writer.ErrorJsonlWriter`, não `app.application.use_cases.render_all_scenes_use_case.ErrorJsonlWriter`
+   - Aprendizado: Quando WanGP + FFmpeg ambos falham, `RenderAllScenesUseCase` retorna sucesso com 0 cenas → pipeline retorna `success: False` com "Nenhum vídeo de cena foi gerado"
+6. **Suite completa**: **1051 passed, 1 pre-existing fail** — 4 novos testes, zero regressão
+7. **Commit e push**: Branch `feature/GAL-934-mock-e2e` commitada (ed8713d) e pusheada. PR via `gh pr create` falhou — rede GitHub indisponível (`dial tcp 4.228.31.149:443`). URL manual: https://github.com/rickchiod-hash/galFlowAI/pull/new/feature/GAL-934-mock-e2e
+8. **Status docs atualizados**: `00_STATUS_EXECUTIVO.md` (S35 adicionada, progresso 71 histórias, pendências 0), `05_BACKLOG_PRIORIZADO.md` (GAL-933/934/935 ✅ Concluída), `10_DAILY_LOG.md` (esta entrada)
+
+### Arquivos criados
+- `app/application/use_cases/render_all_scenes_use_case.py` — GAL-933
+- `tests/test_render_all_scenes_use_case.py` — GAL-933 (9 testes)
+- `tests/test_api_contract.py` — GAL-935 (33 contratos)
+- `tests/test_wangp_fallback.py` — GAL-934 (4 testes E2E mockados)
+
+### Arquivos alterados
+- `app/pipeline/video_generation_pipeline.py` — GAL-933: delega render a RenderAllScenesUseCase
+- `app/jobs/queue.py` — GAL-935: `_job_ledger` → `self._job_ledger` (6x)
+- `tests/test_pipeline_structured_errors.py` — mock targets atualizados para render_all_scenes_uc
+- `tests/test_tts_fallback.py` — patch targets redirecionados
+
+### Testes executados
+- Full suite: **1051 passed, 1 pre-existing fail** (git audit count 265)
+- 4 novos testes em `test_wangp_fallback.py`: 4/4 passed
+- 9 novos testes em `test_render_all_scenes_use_case.py`: 9/9 passed
+- 33 novos testes em `test_api_contract.py`: 33/33 passed
+- Zero regressão
+
+### Bloqueios
+- GitHub API unreachable (`dial tcp 4.228.31.149:443`) — PR não pode ser criado via CLI. URL manual gerada.
+- 3 branches pendentes de merge: `feature/GAL-930-script-repository`, `feature/GAL-932-script-service-tests`, `feature/GAL-934-mock-e2e`
+
+### Próximo passo
+- Merge manual via GitHub UI ou quando rede恢复正常 das branches pendentes para master
+- Retorno ao desenvolvimento normal (próximas histórias do roadmap)
+
 ## 2026-05-14 — Sessão 33: GAL-932 — Script service unit tests (91% coverage)
 
 ### Contexto

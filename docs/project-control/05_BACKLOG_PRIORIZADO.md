@@ -114,9 +114,9 @@ Bug fixes identificados durante Recovery Mission S29. Todos corrigidos e verific
 | GAL-930 | Separar IO de arquivos da regra de negócio em script_service | Baixa | 3 | ✅ Concluída | `app/repositories/script_repository.py` |
 | GAL-931 | Criar Result Object padronizado para erros/retornos | Baixa | 3 | ✅ Concluída | `app/core/result.py` |
 | GAL-932 | Testes unitários para geração, versionamento e aprovação | Baixa | 5 | ✅ Concluída | `tests/test_script_service_coverage.py` |
-| GAL-933 | Quebrar VideoGenerationPipeline em use cases independentes | Baixa | 5 | Pendente | `app/pipeline/video_generation_pipeline.py` |
-| GAL-934 | Testes e2e mockados para fallback WanGP -> FFmpeg | Baixa | 5 | Pendente | `app/pipeline/video_generation_pipeline.py` |
-| GAL-935 | Testes de contrato FastAPI para rotas críticas | Baixa | 3 | Pendente | `app/api.py` |
+| GAL-933 | Quebrar VideoGenerationPipeline em use cases independentes | Baixa | 5 | ✅ Concluída | `app/application/use_cases/render_all_scenes_use_case.py` |
+| GAL-934 | Testes e2e mockados para fallback WanGP -> FFmpeg | Baixa | 5 | ✅ Concluída | `tests/test_wangp_fallback.py` |
+| GAL-935 | Testes de contrato FastAPI para rotas críticas | Baixa | 3 | ✅ Concluída | `tests/test_api_contract.py` |
 
 ## S30 Recovery — Operational Fixes (UI wiring, persistence, callbacks)
 

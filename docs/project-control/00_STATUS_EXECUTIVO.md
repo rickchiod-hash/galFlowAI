@@ -120,22 +120,56 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 - 1005 passed, 1 pre-existing fail (git audit count)
 - Zero regressão
 
+## Sessão 35 — GAL-933/934/935: Todos os débitos técnicos concluídos (2026-05-14)
+
+### O que foi feito
+
+1. **GAL-933 ✅** — `RenderAllScenesUseCase` extraído do pipeline:
+   - Criado `app/application/use_cases/render_all_scenes_use_case.py` — WanGP→FFmpeg fallback loop por cena em `BaseUseCase` com dependências injetáveis
+   - Pipeline agora usa `self.render_all_scenes_uc.execute()` em vez de inline render loop
+   - `RenderVideoUseCase`/`CreateStaticVideoUseCase` removidos dos imports do pipeline
+   - 9 testes em `test_render_all_scenes_use_case.py`
+
+2. **GAL-934 ✅** — Mock E2E tests para fallback WanGP→FFmpeg com logging:
+   - `tests/test_wangp_fallback.py` com 4 testes no padrão import-patching (como `test_tts_fallback.py`)
+   - Valida ErrorJsonlWriter + StageLogger em fallback, double-failure, happy path e concat failure
+
+3. **GAL-935 ✅** — 33 contract tests FastAPI:
+   - `tests/test_api_contract.py` cobre rotas críticas de LLM, jobs, projetos, scripts
+   - Fix: `_job_ledger` → `self._job_ledger` (NameError) em `app/jobs/queue.py` (6 ocorrências)
+
+### Arquivos criados
+- `app/application/use_cases/render_all_scenes_use_case.py` — novo
+- `tests/test_render_all_scenes_use_case.py` — 9 testes
+- `tests/test_api_contract.py` — 33 testes de contrato
+- `tests/test_wangp_fallback.py` — 4 testes E2E mockados
+
+### Arquivos alterados
+- `app/pipeline/video_generation_pipeline.py` — delega render de cenas a `RenderAllScenesUseCase`
+- `app/jobs/queue.py` — `_job_ledger` → `self._job_ledger`
+- `tests/test_pipeline_structured_errors.py` — mock targets atualizados para `render_all_scenes_uc.*`
+- `tests/test_tts_fallback.py` — patch targets redirecionados para `render_all_scenes_use_case.*`
+
+### Testes
+- **1051 passed, 1 pre-existing fail** (git audit count)
+- Zero regressão
+
 ## Progresso geral
 
-Histórias concluídas: 65/65 + 11 bugs + 4 QA/RND itens Phase E + 3 débitos (GAL-930, GAL-931, GAL-932)
+Histórias concluídas: 65/65 + 11 bugs + 4 QA/RND itens Phase E + 6 débitos (GAL-930..935)
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 3 débitos técnicos (GAL-933..935)
-Percentual concluído: 100% backlog + P0 + Phase E + 3/6 débitos
+Histórias pendentes: 0
+Percentual concluído: 100% backlog + P0 + Phase E + 6/6 débitos ✅
 
 ## Estado atual
 
-- Branch atual: feature/GAL-932-script-service-tests
-- Último commit: (este)
-- Fase atual: S33 — Débitos técnicos (GAL-932 ✅)
-- Story stream atual: 68 histórias concluídas
-- Pendências: 3 débitos técnicos (GAL-933..935)
-- Próxima ação recomendada: GAL-935 (FastAPI contract tests)
+- Branch atual: feature/GAL-934-mock-e2e
+- Último commit: ed8713d
+- Fase atual: S35 — Todos os débitos técnicos concluídos
+- Story stream atual: 71 histórias concluídas (65 originais + 6 débitos)
+- Pendências: 0
+- Próxima ação recomendada: Merge das branches e retorno ao desenvolvimento normal
 
 ### Sessão 23 — Phase 6B: UI-205 (2026-05-12)
 
