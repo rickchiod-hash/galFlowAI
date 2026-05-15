@@ -475,7 +475,7 @@ def validate_script_quality(script: str) -> Dict:
     
     # Check for robotic phrases
     bad_phrases = [
-        "Apresentamos", "Solucao completa", "Adquira agora",
+        "apresentamos", "solucao completa", "adquira agora",
         "pessoas que tem interesse", "produto de qualidade"
     ]
     script_lower = script.lower()
