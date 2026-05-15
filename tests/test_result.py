@@ -1,120 +1,44 @@
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from app.application.result import Result
+from app.core.result import Result
 
 
-def test_result_success():
-    r = Result.success(data={"script": "test"}, provider="test_provider")
-    assert r.ok is True
-    assert r["ok"] is True
-    assert r.data == {"script": "test"}
-    assert r["data"] == {"script": "test"}
-    assert r.provider == "test_provider"
-    assert r["provider"] == "test_provider"
-    assert bool(r) is True
-    assert r.is_success() is True
-    assert r.is_failure() is False
-    print("PASS: test_result_success passed")
+class TestResult:
+    def test_success_creates_ok_result(self):
+        r = Result.success(data={"script": "hello"})
+        assert r.ok is True
+        assert r.data == {"script": "hello"}
+        assert r.error is None
+        assert r.code == "SUCCESS"
 
+    def test_failure_creates_error_result(self):
+        r = Result.failure(error="something went wrong")
+        assert r.ok is False
+        assert r.error == "something went wrong"
+        assert r.data is None
 
+    def test_success_default_data_is_none(self):
+        r = Result.success()
+        assert r.ok is True
+        assert r.data is None
 
-def test_result_failure():
-    r = Result.failure(error="something went wrong", project_id="123")
-    assert r.ok is False
-    assert r["ok"] is False
-    assert r.error == "something went wrong"
-    assert r["error"] == "something went wrong"
-    assert r.project_id == "123"
-    assert bool(r) is False
-    assert r.is_success() is False
-    assert r.is_failure() is True
-    print("PASS: test_result_failure passed")
+    def test_failure_custom_code(self):
+        r = Result.failure(error="not found", code="NOT_FOUND")
+        assert r.ok is False
+        assert r.code == "NOT_FOUND"
 
+    def test_bool_magic(self):
+        assert bool(Result.success()) is True
+        assert bool(Result.failure("err")) is False
 
+    def test_to_dict_success(self):
+        d = Result.success(data="val").to_dict()
+        assert d == {"ok": True, "code": "SUCCESS", "data": "val"}
 
-def test_result_dict_compatibility():
-    r = Result.success(data={"key": "value"}, extra="extra")
-    assert r.get("ok") is True
-    assert r.get("data") == {"key": "value"}
-    assert r.get("extra") == "extra"
-    assert r.get("nonexistent") is None
-    assert r.get("nonexistent", "default") == "default"
-    assert "ok" in r
-    assert "data" in r
-    assert "extra" in r
-    print("PASS: test_result_dict_compatibility passed")
+    def test_to_dict_failure(self):
+        d = Result.failure(error="fail", code="ERR").to_dict()
+        assert d == {"ok": False, "code": "ERR", "error": "fail"}
 
+    def test_repr_success(self):
+        assert repr(Result.success(data=42)) == "Result.ok(data=42)"
 
-
-def test_result_boolean_context():
-    success = Result.success(data="test")
-    failure = Result.failure(error="fail")
-
-    if success:
-        pass
-    else:
-        assert False, "Success result should be truthy"
-
-    if failure:
-        assert False, "Failure result should be falsy"
-    else:
-        pass
-
-    print("PASS: test_result_boolean_context passed")
-
-
-
-def test_result_repr():
-    success = Result.success(data="test")
-    failure = Result.failure(error="oops")
-
-    repr_success = repr(success)
-    repr_failure = repr(failure)
-
-    assert "ok=True" in repr_success
-    assert "ok=False" in repr_failure
-    print("PASS: test_result_repr passed")
-
-
-
-if __name__ == "__main__":
-    results = []
-    for name, fn in [
-        ("Result success", test_result_success),
-        ("Result failure", test_result_failure),
-        ("Result dict compatibility", test_result_dict_compatibility),
-        ("Result boolean context", test_result_boolean_context),
-        ("Result repr", test_result_repr),
-    ]:
-        try:
-            result = fn()
-            results.append((name, result))
-            if result:
-                print(f"PASS: {name}")
-            else:
-                print(f"FAIL: {name}")
-        except Exception as e:
-            print(f"FAIL: {name} with exception: {e}")
-            results.append((name, False))
-
-    print("\n" + "="*60)
-    print("RESULTS: Result class tests")
-    print("="*60)
-    for name, result in results:
-        status = "PASSED" if result else "FAILED"
-        print(f"{name:<50} {status}")
-    print("="*60)
-
-    passed = sum(1 for _, result in results if result)
-    total = len(results)
-    print(f"\nPASSED: {passed}/{total}")
-
-    if passed == total:
-        print("ALL TESTS PASSED!")
-        sys.exit(0)
-    else:
-        print("SOME TESTS FAILED!")
-        sys.exit(1)
+    def test_repr_failure(self):
+        assert repr(Result.failure(error="bad")) == "Result.fail(error='bad')"

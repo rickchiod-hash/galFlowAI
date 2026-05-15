@@ -111,8 +111,8 @@ Bug fixes identificados durante Recovery Mission S29. Todos corrigidos e verific
 | PROV-305 | Ações Melhorar/Complementar/Viral retornam "Erro" (chave "status" inexistente) | Alta | 1 | ✅ Concluída | `app/main.py` |
 | OBS-904 | Etapa 4 (Cenas) nunca fica visível na UI de 6 etapas | Média | 1 | ✅ Concluída | `app/ui/gradio_app.py` |
 | OBS-905 | Dashboard não populado pelo fluxo de geração no gradio_app.py | Média | 1 | ✅ Concluída | `app/ui/gradio_app.py` |
-| GAL-930 | Separar IO de arquivos da regra de negócio em script_service | Baixa | 3 | Pendente | `app/services/script_service.py` |
-| GAL-931 | Criar Result Object padronizado para erros/retornos | Baixa | 3 | Pendente | `app/services/script_service.py` |
+| GAL-930 | Separar IO de arquivos da regra de negócio em script_service | Baixa | 3 | ✅ Concluída | `app/repositories/script_repository.py` |
+| GAL-931 | Criar Result Object padronizado para erros/retornos | Baixa | 3 | ✅ Concluída | `app/core/result.py` |
 | GAL-932 | Testes unitários para geração, versionamento e aprovação | Baixa | 5 | Pendente | `app/services/script_service.py` |
 | GAL-933 | Quebrar VideoGenerationPipeline em use cases independentes | Baixa | 5 | Pendente | `app/pipeline/video_generation_pipeline.py` |
 | GAL-934 | Testes e2e mockados para fallback WanGP -> FFmpeg | Baixa | 5 | Pendente | `app/pipeline/video_generation_pipeline.py` |

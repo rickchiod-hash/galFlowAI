@@ -2,6 +2,38 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-14 — Sessão 32: GAL-930 — ScriptRepository (SRP)
+
+### Contexto
+GAL-931 (Result Object) já existia como arquivo não commitado. GAL-930 era o próximo débito técnico do backlog.
+
+### O que fiz
+- **GAL-930 ✅** — IO de arquivos extraído de `script_service.py` para `ScriptRepository`:
+  - Criado `app/repositories/script_repository.py` com `ScriptRepository` usando `Result[T]` para retornos tipados
+  - `script_service.py` agora delega toda persistência ao repositório — sem `json.dumps`, `Path.read_text`, `datetime` direto
+  - `_load_versions`, `_save_versions`, `_next_version`, `_get_script_dir` removidos do service
+  - `save_manual_edit`, `create_new_version`, `restore_previous_version`, `approve_script`, `load_current_script`, `load_script_versions` refatorados para usar `ScriptRepository`
+  - `VERSION_METADATA_FIELDS` definido no repositório como constante
+
+### Arquivos alterados
+- `app/repositories/__init__.py` — novo
+- `app/repositories/script_repository.py` — novo (195 linhas)
+- `app/services/script_service.py` — refatorado: IO removido, 512→514 linhas (--22 +24)
+- `tests/test_script_repository.py` — novo (23 testes)
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — GAL-930/931 marcados concluídos
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — S32 adicionado
+- `docs/project-control/10_DAILY_LOG.md` — esta entrada
+
+### Testes executados
+- 23 novos testes em `test_script_repository.py`: init, versions list CRUD, version files, current script loading (approved first / latest / none), approval, summaries, previous version
+- 1 existing test `test_script_service_versioning_and_approve` — passa sem alterações
+- Full suite: **935 passed, 1 pre-existing fail** (git audit count)
+- Zero regressão
+
+### Próximo passo
+- **GAL-932** — Testes unitários para script_service (cobertura > 70%)
+- **GAL-935** — FastAPI contract tests
+
 ## 2026-05-14 — Sessão 29 (continuação): GAL-900/901/902 — Performance, extração, contexto
 
 ### Contexto

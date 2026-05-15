@@ -1,6 +1,6 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-14 (sessão 29 — P0 Recovery Mission ✅)
+Atualizado em: 2026-05-14 (sessão 32 — GAL-930 ScriptRepository ✅)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Sessão 29 — P0 Recovery Mission (2026-05-14)
@@ -85,22 +85,41 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 - 907 passed, 2 pre-existing fails (git audit count + ignorado)
 - 0 regressão das mudanças desta sessão
 
+## Sessão 32 — GAL-930: ScriptRepository (2026-05-14)
+
+### O que foi feito
+
+1. **GAL-930 ✅** — IO de arquivos extraído de `script_service.py` para `ScriptRepository`:
+   - Criado `app/repositories/script_repository.py` com `ScriptRepository` usando `Result[T]`
+   - `script_service.py` delegou toda persistência: sem `json`, `Path`, `datetime` direto
+   - Funções removidas do service: `_load_versions`, `_save_versions`, `_next_version`, `_get_script_dir`
+   - Funções refatoradas: `save_manual_edit`, `create_new_version`, `restore_previous_version`, `approve_script`, `load_current_script`, `load_script_versions`
+   - GAL-931 (Result Object) commitado junto como dependência
+
+2. **23 novos testes** em `tests/test_script_repository.py`:
+   - Init, versions list CRUD, version files save/load, current script loading, approval, summaries, previous version
+   - Teste existente `test_script_service_versioning_and_approve` passa sem alterações
+
+### Testes
+- 935 passed, 1 pre-existing fail (git audit count)
+- Zero regressão
+
 ## Progresso geral
 
-Histórias concluídas: 65/65 + 11 bugs + 4 QA/RND itens Phase E
+Histórias concluídas: 65/65 + 11 bugs + 4 QA/RND itens Phase E + 2 débitos (GAL-930, GAL-931)
 Histórias em andamento: 0
 Histórias bloqueadas: 0
-Histórias pendentes: 6 débitos técnicos (GAL-930..935)
-Percentual concluído: 100% backlog + P0 + Phase E
+Histórias pendentes: 4 débitos técnicos (GAL-932..935)
+Percentual concluído: 100% backlog + P0 + Phase E + 2/6 débitos
 
 ## Estado atual
 
-- Branch atual: master (pending Phase E commit)
-- Último commit: 85be736 — fix(code): resolve gap findings — TODO format, type hints, backlog
-- Fase atual: S30 Phase E ✅ (QA artifacts, UI corrections, API smoke tests)
-- Story stream atual: 65/65 + 11 bugs + 4 Phase E itens
-- Pendências: 6 débitos técnicos (GAL-930..935)
-- Próxima ação recomendada: Abordar débitos técnicos (script_service coverage, pipeline unificação)
+- Branch atual: feature/GAL-930-script-repository
+- Último commit: (este)
+- Fase atual: S32 — Débitos técnicos (GAL-930 ✅)
+- Story stream atual: 67 histórias concluídas (65 backlog + 2 débitos)
+- Pendências: 4 débitos técnicos (GAL-932..935)
+- Próxima ação recomendada: GAL-932 (testes unitários script_service, cobertura > 70%)
 
 ### Sessão 23 — Phase 6B: UI-205 (2026-05-12)
 

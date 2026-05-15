@@ -1,28 +1,26 @@
 """
-Script Service - Single layer for script business logic.
+Script Service - Business logic for script operations.
 Provides: generate, edit, improve, versioning, approval.
+Delegates all file IO to ScriptRepository.
 """
-import json
 import time
-from pathlib import Path
 from typing import Dict, List, Optional, Any
-from datetime import datetime
 
 from app.logging_config import setup_logger
-from app.config import PROJECTS_DIR
 from app.adapters.llm import ProviderRouter
 from app.adapters.llm.base_provider import TemplateProvider
+from app.repositories.script_repository import ScriptRepository
 
 logger = setup_logger()
 
-# TODO(GAL-930, type=debt): Separar IO de arquivos da regra de negócio (SRP)
-# Contexto: ScriptService mistura persistência com lógica — viola SRP
-# Dependência: ARCH-301 (Result Object)
+# TODO(GAL-930, type=completed): IO extraído para ScriptRepository
+# Contexto: ScriptService agora delega persistência para ScriptRepository (SRP)
+# Dependência: GAL-931 (Result Object)
 # Critério de aceite: IO extraído para repositorio dedicado, serviço depende apenas de abstração
 # Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md
 # 
-# TODO(GAL-931, type=debt): Criar Result Object padronizado para erros/retornos
-# Contexto: Funções retornam dict com chaves "ok"/"error" inconsistentes
+# TODO(GAL-931, type=completed): Result Object criado em app/core/result.py
+# Contexto: Result[T] genérico com success()/failure() factory methods
 # Dependência: Nenhuma
 # Critério de aceite: Result[T] genérico com sucesso/falha tipado
 # Backlog: docs/project-control/05_BACKLOG_PRIORIZADO.md
@@ -271,79 +269,23 @@ def generate_script_with_llm(briefing: str, mode: str = "auto") -> Dict:
 
 # ========== Version Management ==========
 
-def _get_script_dir(project_id: str) -> Path:
-    """Get script directory for project."""
-    return PROJECTS_DIR / project_id / "script"
-
-
-def _load_versions(project_id: str) -> List[Dict]:
-    """Load all script versions."""
-    script_dir = _get_script_dir(project_id)
-    versions_file = script_dir / "script_versions.json"
-    
-    if not versions_file.exists():
-        return []
-    
-    try:
-        return json.loads(versions_file.read_text(encoding="utf-8"))
-    except Exception as e:
-        logger.error("CAUSA: Failed to load versions: %s | CORREÇÃO: Verify script_versions.json exists and is valid JSON", e)
-        return []
-
-
-def _save_versions(project_id: str, versions: List[Dict]):
-    """Save versions list."""
-    script_dir = _get_script_dir(project_id)
-    script_dir.mkdir(parents=True, exist_ok=True)
-    versions_file = script_dir / "script_versions.json"
-    versions_file.write_text(
-        json.dumps(versions, indent=2, ensure_ascii=False),
-        encoding="utf-8"
-    )
-
-
-def _next_version(project_id: str) -> str:
-    """Get next version number."""
-    versions = _load_versions(project_id)
-    if not versions:
-        return "v001"
-    last = versions[-1]["version"]
-    num = int(last[1:]) + 1
-    return "v{:03d}".format(num)
+def _get_repo(project_id: str) -> ScriptRepository:
+    return ScriptRepository(project_id)
 
 
 def save_manual_edit(project_id: str, script_markdown: str, note: str = "Edição manual") -> Dict:
     """Save manually edited script as new version."""
     try:
-        version = _next_version(project_id)
-        script_dir = _get_script_dir(project_id)
-        script_dir.mkdir(parents=True, exist_ok=True)
-        
-        # Save version file
-        md_file = script_dir / f"script_{version}.md"
-        md_file.write_text(script_markdown, encoding="utf-8")
-        
-        # Save metadata
-        json_file = script_dir / f"script_{version}.json"
-        metadata = {
-            "version": version,
-            "timestamp": datetime.now().isoformat(),
-            "note": note,
-            "provider_used": "Manual",
-            "response_time_seconds": 0,
-            "quality_score": 0,
-            "status": "Draft"
-        }
-        json_file.write_text(
-            json.dumps(metadata, indent=2, ensure_ascii=False),
-            encoding="utf-8"
-        )
-        
-        # Update versions list
-        versions = _load_versions(project_id)
-        versions.append(metadata)
-        _save_versions(project_id, versions)
-        
+        repo = _get_repo(project_id)
+        version_result = repo.next_version()
+        if not version_result:
+            return {"ok": False, "error": version_result.error}
+        version = version_result.data
+
+        save_result = repo.save_version_files(version, script_markdown, note=note)
+        if not save_result:
+            return {"ok": False, "error": save_result.error}
+
         logger.info("Manual edit saved as %s", version)
         return {"ok": True, "version": version, "script": script_markdown}
     except Exception as e:
@@ -448,37 +390,19 @@ def make_script_more_direct(project_id: str) -> Dict:
 def create_new_version(project_id: str) -> Dict:
     """Create new empty version."""
     try:
-        version = _next_version(project_id)
-        script_dir = _get_script_dir(project_id)
-        script_dir.mkdir(parents=True, exist_ok=True)
-        
-        # Create empty script
-        md_file = script_dir / f"script_{version}.md"
-        md_file.write_text("[Nova versão]\nAdicione o conteudo aqui.", encoding="utf-8")
-        
-        # Save metadata
-        json_file = script_dir / f"script_{version}.json"
-        metadata = {
-            "version": version,
-            "timestamp": datetime.now().isoformat(),
-            "note": "Nova versão criada",
-            "provider_used": "Manual",
-            "response_time_seconds": 0,
-            "quality_score": 0,
-            "status": "Draft"
-        }
-        json_file.write_text(
-            json.dumps(metadata, indent=2, ensure_ascii=False),
-            encoding="utf-8"
-        )
-        
-        # Update versions list
-        versions = _load_versions(project_id)
-        versions.append(metadata)
-        _save_versions(project_id, versions)
-        
+        repo = _get_repo(project_id)
+        version_result = repo.next_version()
+        if not version_result:
+            return {"ok": False, "error": version_result.error}
+        version = version_result.data
+
+        empty_script = "[Nova versão]\nAdicione o conteudo aqui."
+        save_result = repo.save_version_files(version, empty_script, note="Nova versão criada")
+        if not save_result:
+            return {"ok": False, "error": save_result.error}
+
         logger.info("New version created: %s", version)
-        return {"ok": True, "version": version, "script": md_file.read_text(encoding="utf-8")}
+        return {"ok": True, "version": version, "script": empty_script}
     except Exception as e:
         return {"ok": False, "error": str(e)}
 
@@ -486,23 +410,11 @@ def create_new_version(project_id: str) -> Dict:
 def restore_previous_version(project_id: str) -> Dict:
     """Restore previous version as current."""
     try:
-        versions = _load_versions(project_id)
-        if len(versions) < 2:
-            return {"ok": False, "error": "No previous version to restore"}
-        
-        # Get previous version
-        prev = versions[-2]
-        version = prev["version"]
-        
-        # Load that version's script
-        script_dir = _get_script_dir(project_id)
-        md_file = script_dir / f"script_{version}.md"
-        if md_file.exists():
-            script = md_file.read_text(encoding="utf-8")
-        else:
-            return {"ok": False, "error": "Previous version file not found"}
-        
-        return {"ok": True, "script": script, "version": version}
+        repo = _get_repo(project_id)
+        result = repo.find_previous_version()
+        if not result:
+            return {"ok": False, "error": result.error or "No previous version to restore"}
+        return {"ok": True, "script": result.data["script"], "version": result.data["version"]}
     except Exception as e:
         return {"ok": False, "error": str(e)}
 def approve_script(project_id: str) -> Dict:
@@ -511,34 +423,16 @@ def approve_script(project_id: str) -> Dict:
         current = load_current_script(project_id)
         if not current.get("script"):
             return {"ok": False, "error": "No current script to approve"}
-        
+
         script = current["script"]
-        script_dir = _get_script_dir(project_id)
-        
-        # Save as approved
-        approved_md = script_dir / "script_approved.md"
-        approved_md.write_text(script, encoding="utf-8")
-        
-        approved_json = script_dir / "script_approved.json"
-        metadata = {
-            "approved_at": datetime.now().isoformat(),
-            "version": current.get("version", "unknown"),
-            "script": script
-        }
-        approved_json.write_text(
-            json.dumps(metadata, indent=2, ensure_ascii=False),
-            encoding="utf-8"
-        )
-        
-        # Update status in versions
-        versions = _load_versions(project_id)
-        for v in versions:
-            if v["version"] == current.get("version"):
-                v["status"] = "Approved"
-                break
-        _save_versions(project_id, versions)
-        
-        logger.info("Script approved: %s", current.get("version"))
+        version = current.get("version", "unknown")
+
+        repo = _get_repo(project_id)
+        result = repo.save_approved(script, version)
+        if not result:
+            return {"ok": False, "error": result.error}
+
+        logger.info("Script approved: %s", version)
         return {"ok": True, "script": script, "status": "Approved"}
     except Exception as e:
         return {"ok": False, "error": str(e)}
@@ -549,27 +443,11 @@ def approve_script(project_id: str) -> Dict:
 def load_current_script(project_id: str) -> Dict:
     """Load current script (approved if exists, else latest)."""
     try:
-        script_dir = _get_script_dir(project_id)
-        
-        # Try approved first
-        approved = script_dir / "script_approved.md"
-        if approved.exists():
-            version = "approved"
-            script = approved.read_text(encoding="utf-8")
-        else:
-            # Load latest version
-            versions = _load_versions(project_id)
-            if not versions:
-                return {"ok": False, "error": "No script found"}
-            latest = versions[-1]
-            version = latest["version"]
-            md_file = script_dir / f"script_{version}.md"
-            if md_file.exists():
-                script = md_file.read_text(encoding="utf-8")
-            else:
-                return {"ok": False, "error": "Script file not found"}
-        
-        return {"ok": True, "script": script, "version": version}
+        repo = _get_repo(project_id)
+        result = repo.load_current_script()
+        if not result:
+            return {"ok": False, "error": result.error or "No script found"}
+        return {"ok": True, "script": result.data["script"], "version": result.data["version"]}
     except Exception as e:
         return {"ok": False, "error": str(e)}
 
@@ -577,8 +455,8 @@ def load_current_script(project_id: str) -> Dict:
 def load_script_versions(project_id: str) -> List[Dict]:
     """Load all script versions."""
     try:
-        versions = _load_versions(project_id)
-        return [{"version": v["version"], "note": v.get("note", ""), "status": v.get("status", "Draft")} for v in versions]
+        repo = _get_repo(project_id)
+        return repo.load_versions_summary()
     except Exception as e:
         logger.error("Failed to load script versions: %s", e)
         return []
