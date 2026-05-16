@@ -27,9 +27,7 @@ def test_wangp_fail_ffmpeg_fallback_logs_error():
         patch("app.pipeline.video_generation_pipeline.ConcatVideosUseCase") as mock_concat_uc_cls,
         patch("app.pipeline.video_generation_pipeline.WanGPAdapter") as mock_wangp_cls,
         patch("app.pipeline.video_generation_pipeline.TTSAdapter") as mock_tts_cls,
-        patch("app.pipeline.video_generation_pipeline.FFmpegAdapter") as mock_ffmpeg_cls,
-        patch("app.pipeline.prompt_builder.build_prompts_for_scenes") as mock_build_prompts,
-    ):
+        patch("app.pipeline.video_generation_pipeline.FFmpegAdapter") as mock_ffmpeg_cls):
         mock_writer = MagicMock()
         mock_writer_cls.return_value = mock_writer
 
@@ -71,9 +69,6 @@ def test_wangp_fail_ffmpeg_fallback_logs_error():
         mock_tts_cls.return_value = MagicMock()
         mock_ffmpeg_cls.return_value = MagicMock()
 
-        mock_build_prompts.return_value = [
-            {"id": 1, "prompt": "Prompt 1", "scene_text": "Scene 1", "duration": 5}
-        ]
 
         from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
 
@@ -116,9 +111,7 @@ def test_wangp_and_ffmpeg_both_fail_records_both():
         patch("app.pipeline.video_generation_pipeline.ConcatVideosUseCase") as mock_concat_uc_cls,
         patch("app.pipeline.video_generation_pipeline.WanGPAdapter") as mock_wangp_cls,
         patch("app.pipeline.video_generation_pipeline.TTSAdapter") as mock_tts_cls,
-        patch("app.pipeline.video_generation_pipeline.FFmpegAdapter") as mock_ffmpeg_cls,
-        patch("app.pipeline.prompt_builder.build_prompts_for_scenes") as mock_build_prompts,
-    ):
+        patch("app.pipeline.video_generation_pipeline.FFmpegAdapter") as mock_ffmpeg_cls):
         mock_writer = MagicMock()
         mock_writer_cls.return_value = mock_writer
 
@@ -160,10 +153,6 @@ def test_wangp_and_ffmpeg_both_fail_records_both():
         mock_tts_cls.return_value = MagicMock()
         mock_ffmpeg_cls.return_value = MagicMock()
 
-        mock_build_prompts.return_value = [
-            {"id": 1, "prompt": "Prompt 1", "scene_text": "Scene 1", "duration": 5}
-        ]
-
         from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
 
         pipeline = VideoGenerationPipeline()
@@ -203,9 +192,7 @@ def test_wangp_available_no_fallback():
         patch("app.pipeline.video_generation_pipeline.ConcatVideosUseCase") as mock_concat_uc_cls,
         patch("app.pipeline.video_generation_pipeline.WanGPAdapter") as mock_wangp_cls,
         patch("app.pipeline.video_generation_pipeline.TTSAdapter") as mock_tts_cls,
-        patch("app.pipeline.video_generation_pipeline.FFmpegAdapter") as mock_ffmpeg_cls,
-        patch("app.pipeline.prompt_builder.build_prompts_for_scenes") as mock_build_prompts,
-    ):
+        patch("app.pipeline.video_generation_pipeline.FFmpegAdapter") as mock_ffmpeg_cls):
         mock_writer = MagicMock()
         mock_writer_cls.return_value = mock_writer
 
@@ -245,9 +232,6 @@ def test_wangp_available_no_fallback():
         mock_tts_cls.return_value = MagicMock()
         mock_ffmpeg_cls.return_value = MagicMock()
 
-        mock_build_prompts.return_value = [
-            {"id": 1, "prompt": "Prompt 1", "scene_text": "Scene 1", "duration": 5}
-        ]
 
         from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
 
@@ -283,9 +267,7 @@ def test_concat_failure_logs_ffmpeg_concat_failed():
         patch("app.pipeline.video_generation_pipeline.ConcatVideosUseCase") as mock_concat_uc_cls,
         patch("app.pipeline.video_generation_pipeline.WanGPAdapter") as mock_wangp_cls,
         patch("app.pipeline.video_generation_pipeline.TTSAdapter") as mock_tts_cls,
-        patch("app.pipeline.video_generation_pipeline.FFmpegAdapter") as mock_ffmpeg_cls,
-        patch("app.pipeline.prompt_builder.build_prompts_for_scenes") as mock_build_prompts,
-    ):
+        patch("app.pipeline.video_generation_pipeline.FFmpegAdapter") as mock_ffmpeg_cls):
         mock_writer = MagicMock()
         mock_writer_cls.return_value = mock_writer
 
@@ -325,9 +307,6 @@ def test_concat_failure_logs_ffmpeg_concat_failed():
         mock_tts_cls.return_value = MagicMock()
         mock_ffmpeg_cls.return_value = MagicMock()
 
-        mock_build_prompts.return_value = [
-            {"id": 1, "prompt": "Prompt 1", "scene_text": "Scene 1", "duration": 5}
-        ]
 
         from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
 

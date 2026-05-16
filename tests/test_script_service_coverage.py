@@ -452,7 +452,7 @@ class TestImproveScript:
         mock_load.return_value = {"ok": True, "script": "existing script"}
         mock_save.return_value = {"ok": True, "version": "v002", "script": "improved script"}
 
-        with patch("app.pipeline.script_generator.generate_script", return_value="improved script"):
+        with patch("app.services.script_service.generate_script", return_value="improved script"):
             result = improve_script("p1", "make it better")
 
         assert result["ok"] is True
@@ -470,7 +470,7 @@ class TestImproveScript:
         mock_load.return_value = {"ok": True, "script": "current script text"}
         mock_save.return_value = {"ok": True, "version": "v002", "script": "improved"}
 
-        with patch("app.pipeline.script_generator.generate_script", return_value="improved") as mock_gen:
+        with patch("app.services.script_service.generate_script", return_value="improved") as mock_gen:
             result = improve_script("p1")
 
         mock_gen.assert_called_once()

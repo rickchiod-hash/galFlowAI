@@ -1,7 +1,8 @@
 """Use case for building scene prompts."""
 from typing import Dict, Any
 from app.application.use_cases.base_use_case import BaseUseCase
-from app.pipeline.prompt_builder import build_prompts_for_scenes, save_prompts
+from app.domain.prompt_builder_service import build_prompts_for_scenes
+from app.repositories.prompt_repository import PromptRepository
 
 class BuildPromptsUseCase(BaseUseCase):
     """Build prompts for video scenes.
@@ -20,8 +21,8 @@ class BuildPromptsUseCase(BaseUseCase):
                 return self._build_error("Invalid scenes, style or project_id")
             
             # 2. Execute business logic
-            scenes_with_prompts = build_prompts_for_scenes(scenes, style)
-            save_prompts(project_id, scenes_with_prompts)
+            scenes_with_prompts = build_prompts_for_scenes(scenes, project_id)
+            PromptRepository(project_id).save_prompts(scenes_with_prompts)
             
             # 3. Return result with status
             return self._build_success(

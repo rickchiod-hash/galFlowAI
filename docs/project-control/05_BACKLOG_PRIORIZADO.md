@@ -126,6 +126,12 @@ Bug fixes identificados durante Recovery Mission S29. Todos corrigidos e verific
 | 2 | GAL-901 | Melhorar extração de nome do produto no TemplateProvider | Média | 2 | ✅ Concluída | Nenhuma |
 | 3 | GAL-902 | Condensar contexto do template para providers pequenos | Média | 3 | ✅ Concluída | GAL-900 |
 
+## Pós-S30 — Pipeline Gap Closure
+
+| Ordem | ID | História | Prioridade | SP | Status | Dependência |
+|------:|---|---------|:---------:|:--:|:------:|:-----------:|
+| 1 | GAL-936 | Remover módulos legados do pipeline (`script_generator.py`, `scene_splitter.py`, `prompt_builder.py`) — realocar lógica para domain/repositories, atualizar importers, deletar 3 arquivos | Média | 8 | ✅ Concluída | Nenhuma |
+
 ## Regras de priorização
 
 1. Antirregressão antes de feature.

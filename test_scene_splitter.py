@@ -13,7 +13,7 @@ class TestSceneSplitter(unittest.TestCase):
     
     def setUp(self):
         """Configuração antes de cada teste"""
-        from app.pipeline.scene_splitter import split_script_into_scenes
+        from app.domain.scene_parser import split_script_into_scenes
         self.split_func = split_script_into_scenes
         self.test_project_id = "test_project_123"
     
@@ -71,7 +71,7 @@ class TestSceneSplitterEdgeCases(unittest.TestCase):
     
     def test_script_with_special_chars(self):
         """Testa roteiro com caracteres especiais"""
-        from app.pipeline.scene_splitter import split_script_into_scenes
+        from app.domain.scene_parser import split_script_into_scenes
         
         script = "Cena 1: Texto com açúcar, ção, ã. Cena 2: Mais ç."
         result = split_script_into_scenes(script, project_id="test")
@@ -79,7 +79,7 @@ class TestSceneSplitterEdgeCases(unittest.TestCase):
     
     def test_script_very_short(self):
         """Testa roteiro muito curto"""
-        from app.pipeline.scene_splitter import split_script_into_scenes
+        from app.domain.scene_parser import split_script_into_scenes
         
         script = "OK"
         result = split_script_into_scenes(script, project_id="test")
@@ -87,7 +87,7 @@ class TestSceneSplitterEdgeCases(unittest.TestCase):
     
     def test_script_no_scene_markers(self):
         """Testa roteiro sem marcadores de cena"""
-        from app.pipeline.scene_splitter import split_script_into_scenes
+        from app.domain.scene_parser import split_script_into_scenes
         
         script = "Este é um texto sem marcadores de cena. Apenas um parágrafo."
         result = split_script_into_scenes(script, project_id="test")

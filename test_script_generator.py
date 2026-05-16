@@ -13,12 +13,12 @@ class TestScriptGenerator(unittest.TestCase):
     
     def setUp(self):
         """Configuração antes de cada teste"""
-        from app.pipeline.script_generator import generate_script
+        from app.services.script_service import generate_script
         self.generate_func = generate_script
     
     def test_generate_script_returns_string(self):
         """Testa se retorna uma string"""
-        with patch('app.pipeline.script_generator.generate_script_with_llm') as mock_llm:
+        with patch('app.services.script_service.generate_script_with_llm') as mock_llm:
             mock_llm.return_value = {"script": "Roteiro de teste", "provider": "test"}
             
             result = self.generate_func("Briefing de teste")
@@ -26,7 +26,7 @@ class TestScriptGenerator(unittest.TestCase):
     
     def test_generate_script_with_mode(self):
         """Testa diferentes modos de geração"""
-        with patch('app.pipeline.script_generator.generate_script_with_llm') as mock_llm:
+        with patch('app.services.script_service.generate_script_with_llm') as mock_llm:
             mock_llm.return_value = {"script": "Roteiro", "provider": "test"}
             
             for mode in ["auto", "fast", "quality", "safe", "template"]:
@@ -35,7 +35,7 @@ class TestScriptGenerator(unittest.TestCase):
     
     def test_generate_script_fallback_on_error(self):
         """Testa se faz fallback quando LLM falha"""
-        with patch('app.pipeline.script_generator.generate_script_with_llm') as mock_llm:
+        with patch('app.services.script_service.generate_script_with_llm') as mock_llm:
             mock_llm.side_effect = Exception("LLM error")
             
             # Deve usar TemplateProvider como fallback
@@ -45,7 +45,7 @@ class TestScriptGenerator(unittest.TestCase):
     
     def test_generate_script_with_project_id(self):
         """Testa se project_id é passado corretamente"""
-        with patch('app.pipeline.script_generator.generate_script_with_llm') as mock_llm:
+        with patch('app.services.script_service.generate_script_with_llm') as mock_llm:
             mock_llm.return_value = {"script": "Roteiro", "provider": "test"}
             
             result = self.generate_func("Briefing", project_id="test_123")
@@ -57,11 +57,10 @@ class TestScriptGeneratorIntegration(unittest.TestCase):
     
     def test_save_script_creates_file(self):
         """Testa se save_script cria arquivo"""
-        from app.pipeline.script_generator import save_script
+        from app.repositories.script_repository import ScriptRepository
         from app.config import PROJECTS_DIR
         from pathlib import Path
         import tempfile
-        import shutil
         
         # Cria um diretório temporário para o teste
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -74,7 +73,7 @@ class TestScriptGeneratorIntegration(unittest.TestCase):
                 project_id = "test_save_script"
                 script_text = "Roteiro de teste para salvar"
                 
-                save_script(project_id, script_text)
+                ScriptRepository(project_id).save_script(script_text)
                 
                 # Verifica se arquivo foi criado (o arquivo real é script.txt)
                 script_path = Path(tmpdir) / project_id / "script" / "script.txt"
@@ -85,7 +84,7 @@ class TestScriptGeneratorIntegration(unittest.TestCase):
     def test_import_works(self):
         """Testa se módulo pode ser importado"""
         try:
-            from app.pipeline.script_generator import generate_script, save_script
+            from app.services.script_service import generate_script
             self.assertTrue(True)
         except ImportError as e:
             self.fail(f"Erro de import: {e}")

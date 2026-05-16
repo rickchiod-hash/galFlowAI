@@ -153,20 +153,12 @@ class VideoGenerationPipeline:
             
             # 3. Gerar prompts para cada cena
             self._report_progress(progress_callback, 30, "Gerando prompts de vídeo...")
-            # Note: build_prompts_for_scenes is still used, but we can refactor later.
-            from app.pipeline.prompt_builder import build_prompts_for_scenes
-            scene_prompts = build_prompts_for_scenes(
+            prompts_result = self.build_prompts_use_case.execute(
                 scenes=scenes,
+                style=style,
                 project_id=project_id
             )
-            
-            # Salva prompts
-            prompts_path = project_dir / "prompts" / "prompts.json"
-            prompts_path.parent.mkdir(exist_ok=True)
-            prompts_path.write_text(
-                json.dumps(scene_prompts, indent=2, ensure_ascii=False),
-                encoding="utf-8"
-            )
+            scene_prompts = prompts_result.get("data", {}).get("scenes", [])
             
             # 4. Gerar narração (TTS)
             self._report_progress(progress_callback, 40, "Gerando narração...")
@@ -193,6 +185,8 @@ class VideoGenerationPipeline:
             rendered_scenes = render_all_result.get("data", {}).get("rendered_scenes", [])
 
             # Atualiza prompts com status
+            prompts_path = project_dir / "prompts" / "scene_prompts.json"
+            prompts_path.parent.mkdir(parents=True, exist_ok=True)
             prompts_path.write_text(
                 json.dumps(scene_prompts, indent=2, ensure_ascii=False),
                 encoding="utf-8"

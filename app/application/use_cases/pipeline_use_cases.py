@@ -3,8 +3,10 @@
 """
 from typing import Dict, Any, List
 from app.application.use_cases.base import UseCase, UseCaseError
-from app.pipeline.scene_splitter import split_script_into_scenes, save_scenes
-from app.pipeline.prompt_builder import build_prompts_for_scenes, save_prompts
+from app.domain.scene_parser import split_script_into_scenes
+from app.repositories.scene_repository import SceneRepository
+from app.domain.prompt_builder_service import build_prompts_for_scenes
+from app.repositories.prompt_repository import PromptRepository
 from app.adapters.ffmpeg_adapter import create_storyboard_video
 from app.hardware import get_gpu_info, get_recommended_preset
 
@@ -26,7 +28,7 @@ class SplitScenesUseCase(UseCase):
             
             # 2. Execute business logic
             scenes = split_script_into_scenes(script, project_id)
-            save_scenes(project_id, scenes)
+            SceneRepository(project_id).save_scenes(scenes)
             
             # 3. Return result with status
             return self._build_success(
@@ -60,8 +62,8 @@ class BuildPromptsUseCase(UseCase):
                 return self._build_error("Invalid scenes, style or project_id")
             
             # 2. Execute business logic
-            scenes_with_prompts = build_prompts_for_scenes(scenes, style)
-            save_prompts(project_id, scenes_with_prompts)
+            scenes_with_prompts = build_prompts_for_scenes(scenes, project_id)
+            PromptRepository(project_id).save_prompts(scenes_with_prompts)
             
             # 3. Return result with status
             return self._build_success(

@@ -166,9 +166,9 @@ class VideoService:
             Dict com status e caminhos dos arquivos gerados
         """
         try:
-            from app.pipeline.script_generator import generate_script
-            from app.pipeline.scene_splitter import split_script_into_scenes
-            from app.pipeline.prompt_builder import build_prompts_for_scenes
+            from app.services.script_service import generate_script
+            from app.domain.scene_parser import split_script_into_scenes
+            from app.domain.prompt_builder_service import build_prompts_for_scenes
             import json
             
             project_dir = Path(PROJECTS_DIR) / project_id

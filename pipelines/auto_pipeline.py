@@ -4,7 +4,8 @@ from pathlib import Path
 from app.logging_config import setup_logger
 from app.config import PROJECTS_DIR
 from app.project_manager import create_project
-from app.pipeline.script_generator import generate_script_with_details, save_script
+from app.services.script_service import generate_script_with_details
+from app.repositories.script_repository import ScriptRepository
 
 logger = setup_logger()
 
@@ -48,7 +49,7 @@ def run_auto_pipeline(project_name, briefing, commercial_type="produto", duratio
         # 5. Gerar roteiro usando LLM providers (com timeout 120s)
         gen_result = generate_script_with_details(briefing, project_id, mode=mode)
         script = gen_result["script"]
-        save_script(project_id, script)
+        ScriptRepository(project_id).save_script(script)
         result["script"] = script
         result["logs"].append("Roteiro gerado.")
         

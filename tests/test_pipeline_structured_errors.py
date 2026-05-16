@@ -21,6 +21,10 @@ def _make_pipeline():
     pipeline.generate_script_use_case = MagicMock()
     pipeline.split_scenes_use_case = MagicMock()
     pipeline.build_prompts_use_case = MagicMock()
+    pipeline.build_prompts_use_case.execute.return_value = {
+        "ok": True,
+        "data": {"scenes": [{"id": 1, "prompt": "test prompt", "scene_text": "test scene", "duration": 5}]},
+    }
     pipeline.generate_audio_use_case = MagicMock()
     pipeline.render_all_scenes_uc._render_video_uc = MagicMock()
     pipeline.render_all_scenes_uc._create_static_video_uc = MagicMock()

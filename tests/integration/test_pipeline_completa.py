@@ -15,16 +15,16 @@ class TestPipelineCompleta:
     
     def test_fluxo_completo_mock(self):
         """Testa pipeline completo com mocks."""
-        from app.pipeline.script_generator import generate_script
-        from app.pipeline.scene_splitter import split_script_into_scenes
-        from app.pipeline.prompt_builder import build_prompts_for_scenes
+        from app.services.script_service import generate_script
+        from app.domain.scene_parser import split_script_into_scenes
+        from app.domain.prompt_builder_service import build_prompts_for_scenes
         from app.adapters.ffmpeg_adapter import create_storyboard_video
         
         # Mock para não gerar vídeo real
         from unittest.mock import patch, MagicMock
         
         # Mockar generate_script_with_llm para retornar um roteiro de template
-        with patch('app.pipeline.script_generator.generate_script_with_llm') as mock_llm:
+        with patch('app.services.script_service.generate_script_with_llm') as mock_llm:
             mock_llm.return_value = {
                 "ok": True,
                 "script": "Cena 1: Apresentação do produto\nCena 2: Demonstração\nCena 3: Chamada para ação",

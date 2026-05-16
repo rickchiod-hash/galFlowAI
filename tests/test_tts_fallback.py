@@ -50,8 +50,7 @@ def test_tts_unavailable_graceful_audio_fallback():
          patch('app.pipeline.video_generation_pipeline.ConcatVideosUseCase') as mock_concat_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.WanGPAdapter') as mock_wangp_cls, \
          patch('app.pipeline.video_generation_pipeline.TTSAdapter') as mock_tts_cls, \
-         patch('app.pipeline.video_generation_pipeline.FFmpegAdapter') as mock_ffmpeg_cls, \
-         patch('app.pipeline.prompt_builder.build_prompts_for_scenes') as mock_build_prompts:
+         patch('app.pipeline.video_generation_pipeline.FFmpegAdapter') as mock_ffmpeg_cls:
 
         mock_script_uc = MagicMock()
         mock_script_uc.execute.return_value = {
@@ -134,11 +133,6 @@ def test_tts_unavailable_graceful_audio_fallback():
         mock_ffmpeg.is_available.return_value = True
         mock_ffmpeg_cls.return_value = mock_ffmpeg
 
-        mock_build_prompts.return_value = [
-            {'id': 1, 'prompt': 'Prompt 1', 'scene_text': 'Scene 1 text', 'duration': 5},
-            {'id': 2, 'prompt': 'Prompt 2', 'scene_text': 'Scene 2 text', 'duration': 5}
-        ]
-
         from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
 
         pipeline = VideoGenerationPipeline()
@@ -171,9 +165,6 @@ def test_tts_unavailable_graceful_audio_fallback():
         assert mock_audio_uc.execute.called, "GenerateAudioUseCase não foi chamado"
         logger.info("  ✓ TTS foi tentado (mas indisponível)")
 
-
-
-
 def test_tts_available_normal_operation():
     logger.info("Testando operação normal: TTS disponível")
 
@@ -186,8 +177,7 @@ def test_tts_available_normal_operation():
          patch('app.pipeline.video_generation_pipeline.ConcatVideosUseCase') as mock_concat_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.WanGPAdapter') as mock_wangp_cls, \
          patch('app.pipeline.video_generation_pipeline.TTSAdapter') as mock_tts_cls, \
-         patch('app.pipeline.video_generation_pipeline.FFmpegAdapter') as mock_ffmpeg_cls, \
-         patch('app.pipeline.prompt_builder.build_prompts_for_scenes') as mock_build_prompts:
+         patch('app.pipeline.video_generation_pipeline.FFmpegAdapter') as mock_ffmpeg_cls:
 
         mock_script_uc = MagicMock()
         mock_script_uc.execute.return_value = {
@@ -273,11 +263,6 @@ def test_tts_available_normal_operation():
         mock_ffmpeg.is_available.return_value = True
         mock_ffmpeg_cls.return_value = mock_ffmpeg
 
-        mock_build_prompts.return_value = [
-            {'id': 1, 'prompt': 'Prompt 1', 'scene_text': 'Scene 1 text', 'duration': 5},
-            {'id': 2, 'prompt': 'Prompt 2', 'scene_text': 'Scene 2 text', 'duration': 5}
-        ]
-
         from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
 
         pipeline = VideoGenerationPipeline()
@@ -306,9 +291,6 @@ def test_tts_available_normal_operation():
         assert mock_concat_uc.execute.called, "ConcatVideosUseCase não foi chamado"
         logger.info("  ✓ WanGP e TTS usados para geração, FFmpeg apenas para concatenação final")
 
-
-
-
 def test_both_wangp_and_tts_unavailable():
     logger.info("Testando cenário extremo: WanGP e TTS indisponíveis")
 
@@ -321,8 +303,7 @@ def test_both_wangp_and_tts_unavailable():
          patch('app.pipeline.video_generation_pipeline.ConcatVideosUseCase') as mock_concat_uc_cls, \
          patch('app.pipeline.video_generation_pipeline.WanGPAdapter') as mock_wangp_cls, \
          patch('app.pipeline.video_generation_pipeline.TTSAdapter') as mock_tts_cls, \
-         patch('app.pipeline.video_generation_pipeline.FFmpegAdapter') as mock_ffmpeg_cls, \
-         patch('app.pipeline.prompt_builder.build_prompts_for_scenes') as mock_build_prompts:
+         patch('app.pipeline.video_generation_pipeline.FFmpegAdapter') as mock_ffmpeg_cls:
 
         mock_script_uc = MagicMock()
         mock_script_uc.execute.return_value = {
@@ -402,11 +383,6 @@ def test_both_wangp_and_tts_unavailable():
         mock_ffmpeg = MagicMock()
         mock_ffmpeg.is_available.return_value = True
         mock_ffmpeg_cls.return_value = mock_ffmpeg
-
-        mock_build_prompts.return_value = [
-            {'id': 1, 'prompt': 'Prompt 1', 'scene_text': 'Scene 1 text', 'duration': 5},
-            {'id': 2, 'prompt': 'Prompt 2', 'scene_text': 'Scene 2 text', 'duration': 5}
-        ]
 
         from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
 

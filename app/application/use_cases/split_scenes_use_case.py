@@ -2,7 +2,8 @@
 from typing import Dict, Any, Optional
 from pathlib import Path
 from app.application.use_cases.base_use_case import BaseUseCase
-from app.pipeline.scene_splitter import split_script_into_scenes, save_scenes
+from app.domain.scene_parser import split_script_into_scenes
+from app.repositories.scene_repository import SceneRepository
 from app.config import PROJECTS_DIR
 
 class SplitScenesUseCase(BaseUseCase):
@@ -32,7 +33,7 @@ class SplitScenesUseCase(BaseUseCase):
             
             # 3. Execute business logic
             scenes = split_script_into_scenes(script, project_id)
-            save_scenes(project_id, scenes)
+            SceneRepository(project_id).save_scenes(scenes)
             
             # 4. Return result with status
             return self._build_success(

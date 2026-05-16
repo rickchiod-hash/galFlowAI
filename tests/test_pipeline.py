@@ -3,9 +3,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from app.pipeline.script_generator import generate_script, save_script
-from app.pipeline.scene_splitter import split_script_into_scenes, save_scenes
-from app.pipeline.prompt_builder import build_prompts_for_scenes, save_prompts
+from app.services.script_service import generate_script
+from app.domain.scene_parser import split_script_into_scenes
+from app.domain.prompt_builder_service import build_prompts_for_scenes
 from app.logging_config import setup_logger
 
 logger = setup_logger()

@@ -13,7 +13,7 @@ class TestPromptBuilder(unittest.TestCase):
     
     def setUp(self):
         """Configuração antes de cada teste"""
-        from app.pipeline.prompt_builder import build_prompts_for_scenes
+        from app.domain.prompt_builder_service import build_prompts_for_scenes
         self.builder_func = build_prompts_for_scenes
         
         # Cena de exemplo
@@ -85,7 +85,7 @@ class TestPromptBuilderEdgeCases(unittest.TestCase):
     
     def test_scene_without_elements(self):
         """Testa cena sem elementos"""
-        from app.pipeline.prompt_builder import build_prompts_for_scenes
+        from app.domain.prompt_builder_service import build_prompts_for_scenes
         
         scenes = [{
             "id": "scene_001",
@@ -99,7 +99,7 @@ class TestPromptBuilderEdgeCases(unittest.TestCase):
     
     def test_scene_with_special_chars(self):
         """Testa cena com caracteres especiais"""
-        from app.pipeline.prompt_builder import build_prompts_for_scenes
+        from app.domain.prompt_builder_service import build_prompts_for_scenes
         
         scenes = [{
             "id": "scene_001",
