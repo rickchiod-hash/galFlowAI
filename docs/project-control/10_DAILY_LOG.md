@@ -2,6 +2,21 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-16 — Sessão 46: GAL-944 Converter 40 rotas FastAPI de async def para def
+
+### Contexto
+FastAPI executa `async def` routes diretamente no event loop — qualquer chamada sync bloqueante (HTTP, subprocess, file I/O) bloqueia o event loop inteiro. Já `def` routes rodam em thread pool, isolando chamadas bloqueantes. 40 das 41 rotas não usavam `await` — apenas a WebSocket `websocket_progress` realmente precisava de async.
+
+### O que fiz
+- 40 `async def` → `def` em `app/api.py` (mantido `async def websocket_progress`)
+- Rotas sync rodam em thread pool do FastAPI, sem bloquear event loop
+- **Testes**: 980 passed, 0 failed
+
+### Arquivos alterados
+- `app/api.py`
+- `docs/project-control/01_AUDITORIA_HISTORICO_GIT.md`
+- `docs/project-control/10_DAILY_LOG.md`
+
 ## 2026-05-16 — Sessão 44: GAL-941 Adicionar logging em 27 `except Exception:` sem `as e`
 
 ### Contexto

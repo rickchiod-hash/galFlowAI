@@ -83,7 +83,7 @@ app.add_middleware(
 
 
 @app.get("/api/v1/health")
-async def health_check() -> JSONResponse:
+def health_check() -> JSONResponse:
     """Health check endpoint."""
     return success_response({
         "status": "ok",
@@ -107,7 +107,7 @@ class LLMProviderResponse(BaseModel):
 
 
 @app.get("/api/v1/llm/providers")
-async def get_llm_providers() -> JSONResponse:
+def get_llm_providers() -> JSONResponse:
     """Check which LLM providers are available."""
     try:
         from app.adapters.llm import ProviderRouter
@@ -146,7 +146,7 @@ class ScriptGenerateRequest(BaseModel):
 
 
 @app.post("/api/v1/llm/script")
-async def generate_script_api(request: ScriptGenerateRequest) -> JSONResponse:
+def generate_script_api(request: ScriptGenerateRequest) -> JSONResponse:
     """Generate script using LLM providers."""
     try:
         # Use case: thin controller
@@ -180,7 +180,7 @@ class ScriptSaveRequest(BaseModel):
 
 
 @app.post("/api/v1/projects/{project_id}/script/save-manual-edit")
-async def save_manual_edit(project_id: str, request: ScriptSaveRequest) -> JSONResponse:
+def save_manual_edit(project_id: str, request: ScriptSaveRequest) -> JSONResponse:
     """Save manually edited script."""
     try:
         # Use case: thin controller
@@ -196,7 +196,7 @@ async def save_manual_edit(project_id: str, request: ScriptSaveRequest) -> JSONR
 
 
 @app.post("/api/v1/projects/{project_id}/script/improve")
-async def improve_script(project_id: str, briefing: str = "") -> JSONResponse:
+def improve_script(project_id: str, briefing: str = "") -> JSONResponse:
     """Improve existing script."""
     try:
         from app.application.use_cases.script_generation import ImproveScriptUseCase
@@ -212,7 +212,7 @@ async def improve_script(project_id: str, briefing: str = "") -> JSONResponse:
 
 
 @app.post("/api/v1/projects/{project_id}/script/more-viral")
-async def make_more_viral(project_id: str) -> JSONResponse:
+def make_more_viral(project_id: str) -> JSONResponse:
     """Make script more viral."""
     try:
         from app.services.script_service import make_more_viral
@@ -225,7 +225,7 @@ async def make_more_viral(project_id: str) -> JSONResponse:
         raise error_response("VIRAL_FAILED", str(e), status_code=500)
 
 @app.post("/api/v1/projects/{project_id}/script/more-premium")
-async def make_more_premium(project_id: str) -> JSONResponse:
+def make_more_premium(project_id: str) -> JSONResponse:
     """Make script more premium."""
     try:
         from app.services.script_service import make_more_premium
@@ -238,7 +238,7 @@ async def make_more_premium(project_id: str) -> JSONResponse:
         raise error_response("PREMIUM_FAILED", str(e), status_code=500)
 
 @app.post("/api/v1/projects/{project_id}/script/more-direct")
-async def make_more_direct(project_id: str) -> JSONResponse:
+def make_more_direct(project_id: str) -> JSONResponse:
     """Make script more direct for sales."""
     try:
         from app.services.script_service import make_more_direct
@@ -251,7 +251,7 @@ async def make_more_direct(project_id: str) -> JSONResponse:
         raise error_response("DIRECT_FAILED", str(e), status_code=500)
 
 @app.post("/api/v1/projects/{project_id}/script/new-version")
-async def create_new_version(project_id: str) -> JSONResponse:
+def create_new_version(project_id: str) -> JSONResponse:
     """Create new script version."""
     try:
         from app.services.script_service import create_new_version
@@ -264,7 +264,7 @@ async def create_new_version(project_id: str) -> JSONResponse:
         raise error_response("NEW_VERSION_FAILED", str(e), status_code=500)
 
 @app.post("/api/v1/projects/{project_id}/script/restore-previous")
-async def restore_previous_version(project_id: str) -> JSONResponse:
+def restore_previous_version(project_id: str) -> JSONResponse:
     """Restore previous script version."""
     try:
         from app.services.script_service import restore_previous_version
@@ -278,7 +278,7 @@ async def restore_previous_version(project_id: str) -> JSONResponse:
 
 
 @app.post("/api/v1/projects/{project_id}/script/approve")
-async def approve_script_api(project_id: str) -> JSONResponse:
+def approve_script_api(project_id: str) -> JSONResponse:
     """Approve script for production."""
     try:
         from app.application.use_cases.script_generation import ApproveScriptUseCase
@@ -294,7 +294,7 @@ async def approve_script_api(project_id: str) -> JSONResponse:
 
 
 @app.get("/api/v1/projects/{project_id}/script/current")
-async def get_current_script(project_id: str) -> JSONResponse:
+def get_current_script(project_id: str) -> JSONResponse:
     """Get current script."""
     try:
         from app.services.script_service import load_current_script
@@ -305,7 +305,7 @@ async def get_current_script(project_id: str) -> JSONResponse:
 
 
 @app.get("/api/v1/projects/{project_id}/script/versions")
-async def get_script_versions(project_id: str):
+def get_script_versions(project_id: str):
     """Get all script versions."""
     try:
         from app.services.script_service import load_script_versions
@@ -322,7 +322,7 @@ class ScriptGenerateForProjectRequest(BaseModel):
 
 
 @app.post("/api/v1/projects/{project_id}/script/generate")
-async def generate_script_for_project(project_id: str, request: ScriptGenerateForProjectRequest = None) -> JSONResponse:
+def generate_script_for_project(project_id: str, request: ScriptGenerateForProjectRequest = None) -> JSONResponse:
     """Generate script for a project without triggering video rendering.
     
     UI-201: Gerar roteiro sem renderizar vídeo.
@@ -386,7 +386,7 @@ class SplitScenesRequest(BaseModel):
 
 
 @app.post("/api/v1/projects/{project_id}/scenes/split")
-async def split_project_scenes(project_id: str, request: SplitScenesRequest = None) -> JSONResponse:
+def split_project_scenes(project_id: str, request: SplitScenesRequest = None) -> JSONResponse:
     """Split approved script into scenes.
     
     UI-202: Bloquear cenas sem roteiro aprovado.
@@ -439,7 +439,7 @@ async def split_project_scenes(project_id: str, request: SplitScenesRequest = No
 # ========== Hardware ==========
 
 @app.get("/api/v1/hardware")
-async def get_hardware_info() -> JSONResponse:
+def get_hardware_info() -> JSONResponse:
     """Get hardware information."""
     try:
         from app.hardware import get_gpu_info
@@ -452,7 +452,7 @@ async def get_hardware_info() -> JSONResponse:
 # ========== Jobs (Implemented with Use Cases) ==========
 
 @app.get("/api/v1/jobs/{job_id}")
-async def get_job_status(job_id: str) -> JSONResponse:
+def get_job_status(job_id: str) -> JSONResponse:
     """Get job status directly from queue."""
     from app.jobs.queue import queue
     job = queue.get_job(job_id)
@@ -463,7 +463,7 @@ async def get_job_status(job_id: str) -> JSONResponse:
 
 
 @app.post("/api/v1/jobs/{job_id}/cancel")
-async def cancel_job(job_id: str) -> JSONResponse:
+def cancel_job(job_id: str) -> JSONResponse:
     """Cancel a job (PIPE-400: formal cancel via queue)."""
     try:
         from app.jobs.queue import queue
@@ -478,7 +478,7 @@ async def cancel_job(job_id: str) -> JSONResponse:
 
 
 @app.get("/api/v1/jobs")
-async def list_all_jobs() -> JSONResponse:
+def list_all_jobs() -> JSONResponse:
     """List all jobs using use case."""
     try:
         from app.application.use_cases.job_use_cases import ListJobsUseCase
@@ -500,7 +500,7 @@ class JobCreateRequest(BaseModel):
     job_type: str = "video_render"
 
 @app.post("/api/v1/jobs")
-async def create_job(request: JobCreateRequest) -> JSONResponse:
+def create_job(request: JobCreateRequest) -> JSONResponse:
     """Create new job using use case."""
     try:
         from app.application.use_cases.job_use_cases import AddJobUseCase
@@ -533,7 +533,7 @@ class VideoGenerationRequest(BaseModel):
 
 
 @app.post("/api/v1/generate-video")
-async def generate_video(request: VideoGenerationRequest):
+def generate_video(request: VideoGenerationRequest):
     """
     Generate a complete commercial video.
     
@@ -598,7 +598,7 @@ async def generate_video(request: VideoGenerationRequest):
 
 
 @app.get("/api/v1/video-status/{project_id}")
-async def get_video_status(project_id: str):
+def get_video_status(project_id: str):
     """Get status of video generation project."""
     from app.config import PROJECTS_DIR
     from pathlib import Path
@@ -635,7 +635,7 @@ async def get_video_status(project_id: str):
 # ========== Pipeline Status ==========
 
 @app.get("/api/v1/pipeline/status")
-async def get_pipeline_status():
+def get_pipeline_status():
     """Get status of all pipeline components."""
     try:
         from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
@@ -696,7 +696,7 @@ async def websocket_progress(websocket: WebSocket, job_id: str):
 
 
 @app.get("/api/v1/metrics")
-async def get_metrics():
+def get_metrics():
     """Get metrics summary."""
     try:
         from app.application.use_cases.metrics_use_cases import GetMetricsSummaryUseCase
@@ -713,7 +713,7 @@ async def get_metrics():
 
 
 @app.get("/api/v1/metrics/operations")
-async def get_recent_operations(limit: int = 10):
+def get_recent_operations(limit: int = 10):
     """Get recent operations."""
     try:
         from app.application.use_cases.metrics_use_cases import GetRecentOperationsUseCase
@@ -730,7 +730,7 @@ async def get_recent_operations(limit: int = 10):
 
 
 @app.get("/api/v1/logs/recent")
-async def get_recent_logs(level: Optional[str] = None, search: Optional[str] = None, limit: int = 200):
+def get_recent_logs(level: Optional[str] = None, search: Optional[str] = None, limit: int = 200):
     """Get recent logs with filters."""
     try:
         from app.application.use_cases.log_use_cases import GetRecentLogsUseCase
@@ -747,7 +747,7 @@ async def get_recent_logs(level: Optional[str] = None, search: Optional[str] = N
 
 
 @app.get("/api/v1/logs/summary")
-async def get_log_summary():
+def get_log_summary():
     """Get log summary statistics."""
     try:
         from app.application.use_cases.log_use_cases import GetLogSummaryUseCase
@@ -764,7 +764,7 @@ async def get_log_summary():
 
 
 @app.get("/api/v1/logs/last-error")
-async def get_last_error():
+def get_last_error():
     """Get last error from logs."""
     try:
         from app.application.use_cases.log_use_cases import GetLastErrorUseCase
@@ -781,7 +781,7 @@ async def get_last_error():
 
 
 @app.get("/api/v1/logs/diagnostic")
-async def get_diagnostic_bundle():
+def get_diagnostic_bundle():
     """Get diagnostic bundle for support."""
     try:
         from app.application.use_cases.log_use_cases import GetDiagnosticBundleUseCase
@@ -798,7 +798,7 @@ async def get_diagnostic_bundle():
 
 
 @app.post("/api/v1/projects/{project_id}/prompt-pack")
-async def create_prompt_pack(project_id: str, request: dict):
+def create_prompt_pack(project_id: str, request: dict):
     """Create Prompt Context Pack."""
     try:
         from app.application.use_cases.prompt_use_cases import CreatePromptPackUseCase
@@ -820,7 +820,7 @@ async def create_prompt_pack(project_id: str, request: dict):
 
 
 @app.get("/api/v1/projects/{project_id}/prompt-pack")
-async def get_prompt_pack(project_id: str):
+def get_prompt_pack(project_id: str):
     """Get Prompt Context Pack."""
     try:
         from app.application.use_cases.prompt_use_cases import LoadPromptPackUseCase
@@ -837,7 +837,7 @@ async def get_prompt_pack(project_id: str):
 
 
 @app.post("/api/v1/projects/{project_id}/prompt-pack/validate")
-async def validate_prompt_pack(project_id: str, request: dict):
+def validate_prompt_pack(project_id: str, request: dict):
     """Validate Prompt Context Pack consistency."""
     try:
         from app.application.use_cases.prompt_use_cases import ValidatePromptConsistencyUseCase
@@ -854,7 +854,7 @@ async def validate_prompt_pack(project_id: str, request: dict):
 
 
 @app.post("/api/v1/scripts/score")
-async def score_script(request: dict):
+def score_script(request: dict):
     """Score a script based on quality criteria."""
     try:
         from app.application.use_cases.script_quality_use_cases import ScoreScriptUseCase
@@ -874,7 +874,7 @@ async def score_script(request: dict):
 
 
 @app.get("/api/v1/scripts/templates/{commercial_type}")
-async def get_script_template(commercial_type: str = "produto"):
+def get_script_template(commercial_type: str = "produto"):
     """Get script template by commercial type."""
     try:
         from app.application.use_cases.script_quality_use_cases import GetScriptTemplateUseCase
@@ -891,7 +891,7 @@ async def get_script_template(commercial_type: str = "produto"):
 
 
 @app.post("/api/v1/briefing/enrich")
-async def enrich_briefing(request: dict):
+def enrich_briefing(request: dict):
     """Enrich briefing with additional context."""
     try:
         from app.application.use_cases.briefing_enrichment_use_case import BriefingEnrichmentUseCase
@@ -908,7 +908,7 @@ async def enrich_briefing(request: dict):
 
 
 @app.post("/api/v1/projects/{project_id}/visual-bible")
-async def create_visual_bible(project_id: str, request: dict):
+def create_visual_bible(project_id: str, request: dict):
     """Create Visual Bible for project."""
     try:
         from app.application.use_cases.visual_consistency_use_cases import CreateVisualBibleUseCase
@@ -930,7 +930,7 @@ async def create_visual_bible(project_id: str, request: dict):
 
 
 @app.post("/api/v1/projects/{project_id}/scene-contracts")
-async def generate_scene_contracts(project_id: str, request: dict):
+def generate_scene_contracts(project_id: str, request: dict):
     """Generate scene contracts with visual consistency."""
     try:
         from app.application.use_cases.visual_consistency_use_cases import GenerateScenePromptsUseCase
@@ -952,7 +952,7 @@ async def generate_scene_contracts(project_id: str, request: dict):
 
 
 @app.post("/api/v1/projects/{project_id}/validate-visual")
-async def validate_visual_consistency(project_id: str, request: dict):
+def validate_visual_consistency(project_id: str, request: dict):
     """Validate visual consistency across scenes."""
     try:
         from app.application.use_cases.visual_consistency_use_cases import ValidateVisualConsistencyUseCase
@@ -969,7 +969,7 @@ async def validate_visual_consistency(project_id: str, request: dict):
 
 
 @app.get("/api/v1/health/dashboard")
-async def get_health_dashboard():
+def get_health_dashboard():
     """Get comprehensive health dashboard."""
     try:
         from app.application.use_cases.observability_use_cases import GetHealthDashboardUseCase
@@ -986,7 +986,7 @@ async def get_health_dashboard():
 
 
 @app.get("/api/v1/logs/structured")
-async def get_structured_logs(level: Optional[str] = None, limit: int = 100):
+def get_structured_logs(level: Optional[str] = None, limit: int = 100):
     """Get logs in structured JSON format."""
     try:
         from app.application.use_cases.observability_use_cases import GetStructuredLogsUseCase
