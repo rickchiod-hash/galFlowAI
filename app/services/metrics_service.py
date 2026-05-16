@@ -36,7 +36,8 @@ class MetricsService:
         """Carrega dados do arquivo."""
         try:
             return json.loads(self.metrics_file.read_text(encoding="utf-8"))
-        except Exception:
+        except Exception as e:
+            logger.warning("Metrics load failed, resetting: %s", e)
             self.metrics_file.unlink(missing_ok=True)
             self._ensure_file()
             return json.loads(self.metrics_file.read_text(encoding="utf-8"))

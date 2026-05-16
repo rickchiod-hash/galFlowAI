@@ -243,7 +243,8 @@ def copy_diagnostic_bundle() -> str:
                 cwd=str(BASE_DIR)
             )
             bundle.append(f"Commit atual: {result.stdout.strip()}")
-        except Exception:
+        except Exception as e:
+            logger.debug("Git log failed: %s", e)
             bundle.append("Commit atual: não disponível")
 
         bundle.append(f"Python: {sys.version.split()[0]}")
@@ -348,7 +349,8 @@ def get_structured_errors(limit: int = 20) -> list[dict]:
         from app.services.error_jsonl_writer import ErrorJsonlWriter
         writer = ErrorJsonlWriter()
         return writer.read_recent(limit=limit)
-    except Exception:
+    except Exception as e:
+        logger.debug("get_structured_logs failed: %s", e)
         return []
 
 
@@ -358,5 +360,6 @@ def log_structured_error(error: AppError) -> bool:
         from app.services.error_jsonl_writer import ErrorJsonlWriter
         writer = ErrorJsonlWriter()
         return writer.write(error)
-    except Exception:
+    except Exception as e:
+        logger.error("log_structured_error failed: %s", e)
         return False

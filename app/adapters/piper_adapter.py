@@ -59,8 +59,8 @@ class PiperAdapter:
                                   capture_output=True, text=True, shell=True)
             if result.returncode == 0:
                 return result.stdout.strip().split('\n')[0]
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug("Piper not found in PATH: %s", e)
             
         return None
     
@@ -329,8 +329,8 @@ class PiperAdapter:
                 rate = wav_file.getframerate()
                 duration = frames / float(rate)
                 return duration
-        except Exception:
-            # Fallback: estimativa baseada no texto
+        except Exception as e:
+            logger.debug("WAV duration read failed, estimating by text: %s", e)
             # Taxa média de fala: ~150 palavras por minuto em português
             words = len(text.split())
             base_duration = (words / 150) * 60  # segundos

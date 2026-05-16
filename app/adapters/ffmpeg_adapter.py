@@ -401,7 +401,8 @@ def create_placeholder_image(output_path: Path, text: str):
         draw = ImageDraw.Draw(img)
         try:
             font = ImageFont.truetype("arial.ttf", 24)
-        except Exception:
+        except Exception as e:
+            logger.debug("Font arial.ttf not found, using default: %s", e)
             font = ImageFont.load_default()
         bbox = draw.textbbox((0, 0), text, font=font)
         w = bbox[2] - bbox[0]

@@ -5,8 +5,11 @@ Persiste preferencias do usuario em JSON.
 """
 
 import json
+import logging
 from pathlib import Path
 from typing import Any, Dict, Optional
+
+logger = logging.getLogger(__name__)
 
 from app.config import LOGS_DIR, PROJECTS_DIR
 CONFIG_DIR = LOGS_DIR
@@ -33,7 +36,8 @@ class ConfigService:
             try:
                 data = json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
                 self._config = {**DEFAULT_CONFIG, **data}
-            except Exception:
+            except Exception as e:
+                logger.warning("Config load failed, using defaults: %s", e)
                 self._config = dict(DEFAULT_CONFIG)
         else:
             self._config = dict(DEFAULT_CONFIG)

@@ -212,7 +212,8 @@ def get_provider_status() -> Dict[str, bool]:
             cls = getattr(mod, cls_name)
             provider = cls()
             status[name] = provider.is_available()
-        except Exception:
+        except Exception as e:
+            logger.debug("Provider %s status check failed: %s", name, e)
             status[name] = False
     return status
 

@@ -141,7 +141,8 @@ class QdrantStore(VectorStoreAdapter):
                 payload=p.payload.get("payload", {}),
                 metadata=p.payload.get("metadata", {}),
             )
-        except Exception:
+        except Exception as e:
+            logger.debug("Qdrant get failed: %s", e)
             return None
 
     def delete(self, record_id: str, project_id: str = "") -> bool:
@@ -160,7 +161,8 @@ class QdrantStore(VectorStoreAdapter):
                 ),
             )
             return True
-        except Exception:
+        except Exception as e:
+            logger.debug("Qdrant delete failed: %s", e)
             return False
 
     def search(
@@ -201,7 +203,8 @@ class QdrantStore(VectorStoreAdapter):
                 collection_name=self._collection_name(project_id),
             )
             return result.count
-        except Exception:
+        except Exception as e:
+            logger.debug("Qdrant count failed: %s", e)
             return 0
 
     def clear(self, project_id: str = "") -> None:
@@ -222,5 +225,6 @@ class QdrantStore(VectorStoreAdapter):
         try:
             result = self._client.get_collections()
             return [c.name for c in result.collections]
-        except Exception:
+        except Exception as e:
+            logger.debug("Qdrant list_collections failed: %s", e)
             return []

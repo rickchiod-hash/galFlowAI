@@ -31,7 +31,8 @@ class TranslatorAdapter:
                 capture_output=True, text=True, timeout=5
             )
             return result.returncode == 0
-        except Exception:
+        except Exception as e:
+            logger.debug("Translator Ollama check failed: %s", e)
             return False
     
     def traduzir(self, texto_ptbr: str) -> str:

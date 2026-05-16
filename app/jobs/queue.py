@@ -78,8 +78,8 @@ class JobQueue:
             # Note: In a real test scenario, we might want to recreate the ledger
             # For now, we'll just clear the in-memory cache
             pass
-        except Exception:
-            pass  # Ignore errors during test cleanup
+        except Exception as e:
+            logger.debug("Queue cleanup error: %s", e)
 
     def add_job(self, job_type: str, project_id: str, params: Optional[Dict[str, Any]] = None) -> str:
         """Add a new job to queue."""

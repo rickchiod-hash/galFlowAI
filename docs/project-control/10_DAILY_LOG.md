@@ -2,6 +2,39 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-16 — Sessão 44: GAL-941 Adicionar logging em 27 `except Exception:` sem `as e`
+
+### Contexto
+Varredura revelou 27 ocorrências de `except Exception:` sem `as e` em 13 arquivos. O erro era engolido silenciosamente, impossibilitando debugging.
+
+### O que fiz
+Adicionei `as e` + `logger.{warning,debug,error}()` em todos os 27 locais:
+
+| Arquivo | Ocorrências |
+|---|---|
+| `app/adapters/ffmpeg_adapter.py` | 1 |
+| `app/adapters/ollama_adapter.py` | 2 |
+| `app/adapters/piper_adapter.py` | 2 |
+| `app/adapters/translator_adapter.py` | 1 |
+| `app/adapters/tts_adapter.py` | 1 |
+| `app/adapters/vector_store_chroma.py` | 6 |
+| `app/adapters/vector_store_qdrant.py` | 4 |
+| `app/jobs/queue.py` | 1 |
+| `app/pipeline/job_ledger.py` | 1 |
+| `app/services/config_service.py` | 1 |
+| `app/services/error_jsonl_writer.py` | 2 |
+| `app/services/log_service.py` | 3 |
+| `app/services/metrics_service.py` | 1 |
+| `app/services/script_service.py` | 1 |
+
+Adicionado `import logging` + `logger` em 3 arquivos sem logger (`job_ledger.py`, `config_service.py`, `error_jsonl_writer.py`).
+
+### Testes
+- 980 passed, 0 failed
+
+### Arquivos alterados
+- 14 arquivos de código + docs
+
 ## 2026-05-16 — Sessão 43: GAL-940 Remover `or True` bug em TTSAdapter.is_available()
 
 ### Contexto

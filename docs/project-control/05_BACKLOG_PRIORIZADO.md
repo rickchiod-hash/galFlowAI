@@ -135,6 +135,7 @@ Bug fixes identificados durante Recovery Mission S29. Todos corrigidos e verific
 | 3 | GAL-938 | Substituir 23 hardcoded K:\ paths por app.config.BASE_DIR e relativos — portabilidade para qualquer máquina | Média | 8 | ✅ Concluída | Nenhuma |
 | 4 | GAL-939 | Substituir exec() por importlib.import_module em provider_router.py | Média | 3 | ✅ Concluída | Nenhuma |
 | 5 | GAL-940 | Remover `or True` bug em TTSAdapter.is_available() que sempre retorna True | Média | 2 | ✅ Concluída | Nenhuma |
+| 6 | GAL-941 | Adicionar logging em 27 `except Exception:` sem `as e` em 13 arquivos | Média | 8 | ✅ Concluída | Nenhuma |
 
 ## Regras de priorização
 

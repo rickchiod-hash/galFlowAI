@@ -11,7 +11,8 @@ logger = setup_logger()
 
 try:
     _OLLAMA_PATH = str(ENGINES_DIR.parent / "envs" / "studio" / "Library" / "bin" / "ollama.exe")
-except Exception:
+except Exception as e:
+    logger.debug("Engines dir not found, using raw ollama.exe: %s", e)
     _OLLAMA_PATH = "ollama.exe"
 
 def check_ollama_available() -> bool:
@@ -62,6 +63,6 @@ def get_available_models() -> list:
         if result.returncode == 0:
             lines = result.stdout.strip().split("\n")[1:]  # Skip header
             return [line.split()[0] for line in lines if line.strip()]
-    except Exception:
-        pass
+    except Exception as e:
+        logger.debug("Ollama model list failed: %s", e)
     return []

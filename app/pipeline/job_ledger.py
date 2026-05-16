@@ -1,12 +1,15 @@
 """SQLite WAL job ledger for persistent job state management (PIPE-403)."""
 
 import json
+import logging
 import sqlite3
 import threading
 import time
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 from app.pipeline.job_state import JobState, JobStatus
 
@@ -62,7 +65,8 @@ class SQLiteJobLedger:
             try:
                 yield conn
                 conn.commit()
-            except Exception:
+            except Exception as e:
+                logger.error("Job ledger transaction failed, rolling back: %s", e)
                 conn.rollback()
                 raise
             finally:

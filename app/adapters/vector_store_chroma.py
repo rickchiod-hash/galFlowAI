@@ -72,7 +72,8 @@ class ChromaStore(VectorStoreAdapter):
             return self._collections[name]
         try:
             collection = self._client.get_collection(name)
-        except Exception:
+        except Exception as e:
+            logger.debug("Chroma collection not found, creating: %s", e)
             collection = self._client.create_collection(name)
         self._collections[name] = collection
         return collection
@@ -110,7 +111,8 @@ class ChromaStore(VectorStoreAdapter):
                 payload=json.loads(meta.get("_payload_json", "{}")),
                 metadata=json.loads(meta.get("_metadata_json", "{}")),
             )
-        except Exception:
+        except Exception as e:
+            logger.debug("Chroma get failed: %s", e)
             return None
 
     def delete(self, record_id: str, project_id: str = "") -> bool:
@@ -120,7 +122,8 @@ class ChromaStore(VectorStoreAdapter):
         try:
             collection.delete(ids=[record_id])
             return True
-        except Exception:
+        except Exception as e:
+            logger.debug("Chroma delete failed: %s", e)
             return False
 
     def search(
@@ -166,7 +169,8 @@ class ChromaStore(VectorStoreAdapter):
             return 0
         try:
             return collection.count()
-        except Exception:
+        except Exception as e:
+            logger.debug("Chroma count failed: %s", e)
             return 0
 
     def clear(self, project_id: str = "") -> None:
@@ -174,13 +178,14 @@ class ChromaStore(VectorStoreAdapter):
         try:
             self._client.delete_collection(name)
             self._collections.pop(name, None)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug("Chroma clear failed: %s", e)
 
     def list_collections(self) -> List[str]:
         if not self._lazy_init():
             return []
         try:
             return [c.name for c in self._client.list_collections()]
-        except Exception:
+        except Exception as e:
+            logger.debug("Chroma list_collections failed: %s", e)
             return []

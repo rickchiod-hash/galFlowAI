@@ -296,8 +296,8 @@ class TTSAdapter:
                         "name": v.name,
                         "id": v.id
                     })
-            except Exception:
-                pass
+            except Exception as e:
+                logger.debug("TTS voice enumeration failed: %s", e)
         
         return voices
     
