@@ -1,6 +1,7 @@
 """Use cases for Prompt Context Pack (V2.2 / H14)."""
 from typing import Dict, Any, List, Optional
 from app.application.use_cases.base import UseCase
+from app.config import PROJECTS_DIR
 from pydantic import BaseModel, Field
 from datetime import datetime
 import json
@@ -43,7 +44,7 @@ class CreatePromptPackUseCase(UseCase):
     
     def __init__(self):
         super().__init__()
-        self.packs_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects")
+        self.packs_dir = PROJECTS_DIR
     
     def execute(
         self,
@@ -109,7 +110,7 @@ class LoadPromptPackUseCase(UseCase):
     
     def __init__(self):
         super().__init__()
-        self.packs_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects")
+        self.packs_dir = PROJECTS_DIR
     
     def execute(self, project_id: str) -> Dict[str, Any]:
         """Execute load prompt pack."""

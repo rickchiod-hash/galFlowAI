@@ -89,7 +89,7 @@ _ERROR_DEFINITIONS: dict[str, dict] = {
     },
     ErrorCode.FILE_SYSTEM_ERROR: {
         "message": "Erro de sistema de arquivos.",
-        "suggestion": "Verifique permissões de escrita e espaço em disco. Caminhos configurados em K:\\AI_VIDEO_COMMERCIAL_STUDIO\\opencodegalpasta.",
+        "suggestion": "Verifique permissões de escrita e espaço em disco. Caminhos configurados via app.config (GALFLOWAI_BASE_DIR).",
         "severity": Severity.ERROR,
         "retryable": True,
         "stage": "general",

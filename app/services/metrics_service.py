@@ -6,7 +6,8 @@ from typing import Dict, Any, List
 from datetime import datetime
 from collections import defaultdict
 
-METRICS_DIR = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/logs")
+from app.config import LOGS_DIR
+METRICS_DIR = LOGS_DIR
 METRICS_FILE = METRICS_DIR / "metrics.json"
 
 

@@ -5,6 +5,7 @@ import subprocess
 from pathlib import Path
 from typing import Optional, Dict, Any
 import logging
+from app.config import ENGINES_DIR
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ class FramePackAdapter:
     @staticmethod
     def disponivel() -> bool:
         """Verifica se FramePack está disponível"""
-        framepack_path = r"K:\AI_VIDEO_COMMERCIAL_STUDIO\engines\FramePack"
+        framepack_path = str(ENGINES_DIR / "FramePack")
         if not os.path.exists(framepack_path):
             return False
         possible_files = ["main.py", "run.py", "inference.py", "generate.py"]
@@ -25,7 +26,7 @@ class FramePackAdapter:
         return False
     
     def __init__(self, framepack_path: Optional[str] = None):
-        self.framepack_path = framepack_path or r"K:\AI_VIDEO_COMMERCIAL_STUDIO\engines\FramePack"
+        self.framepack_path = framepack_path or str(ENGINES_DIR / "FramePack")
         self.available = self.disponivel()
         self.model_preset = "1.3B"
         
@@ -71,7 +72,7 @@ class FramePackAdapter:
             return {"success": False, "error": str(e), "fallback_suggested": True}
     
     def _get_python_executable(self) -> str:
-        studio_python = r"K:\AI_VIDEO_COMMERCIAL_STUDIO\envs\studio\Scripts\python.exe"
+        studio_python = str(ENGINES_DIR.parent / "envs" / "studio" / "Scripts" / "python.exe")
         if os.path.exists(studio_python):
             return studio_python
         return "python"

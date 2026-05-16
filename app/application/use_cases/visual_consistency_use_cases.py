@@ -1,6 +1,7 @@
 """Use cases for Visual Consistency (V2.6 / H17)."""
 from typing import Dict, Any, List, Optional
 from app.application.use_cases.base import UseCase
+from app.config import PROJECTS_DIR
 from pydantic import BaseModel, Field
 from pathlib import Path
 import json
@@ -54,7 +55,7 @@ class CreateVisualBibleUseCase(UseCase):
     
     def __init__(self):
         super().__init__()
-        self.bibles_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects")
+        self.bibles_dir = PROJECTS_DIR
     
     def execute(
         self,
@@ -108,7 +109,7 @@ class GenerateScenePromptsUseCase(UseCase):
     
     def __init__(self):
         super().__init__()
-        self.bibles_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects")
+        self.bibles_dir = PROJECTS_DIR
     
     def execute(
         self,

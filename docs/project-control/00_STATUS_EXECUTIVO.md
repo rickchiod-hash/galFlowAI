@@ -1,7 +1,18 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-16 (sessão 40 — GAL-937 async→sync wrappers eliminados ✅)
+Atualizado em: 2026-05-16 (sessão 41 — GAL-938 hardcoded K:\ paths removidos ✅)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
+
+## Sessão 41 — GAL-938: Remover hardcoded K:\ paths — portabilidade (2026-05-16)
+
+### O que foi feito
+
+1. **GAL-938 ✅** — 23 hardcoded `K:\` paths substituídos por `app.config.BASE_DIR`, `LOGS_DIR`, `PROJECTS_DIR`, `ENGINES_DIR` em 10 arquivos
+2. **Testes**: 980 passed, 0 failed
+3. **Backlog**: GAL-938 ✅ Concluída
+
+### Arquivos alterados
+- 10 arquivos de código + 4 docs
 
 ## Sessão 40 — GAL-937: Eliminar async wrappers falsos sobre sync blocking calls (2026-05-16)
 
@@ -11,9 +22,10 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
    - `provider_strategy.py`: `LLMStrategy.generate()` e `TemplateStrategy.generate()` convertidos de `async def` para `def`
    - `provider_router.py`: `generate_script_fast()` e `generate_script_quality()` convertidos de `async def` para `def`, removidos `await` e `import asyncio`
    - `script_service.py`: removidos wrappers `async def` falsos, simplificado `generate_script_with_llm()` sem event loop detection
+   - Commitado, PR #44 criado, mergeado para master
 2. **Testes**: 980 passed, 0 failed
-3. **Backlog**: GAL-937 adicionado como Em andamento
-4. **GAP-010**: Atualizado para Em resolução
+3. **Backlog**: GAL-937 ✅ Concluída
+4. **GAP-010**: ✅ Concluído
 
 ## Sessão 39 — GAL-936: Finalização — commit, PR, merge (2026-05-16)
 

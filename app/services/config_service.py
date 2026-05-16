@@ -8,7 +8,8 @@ import json
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-CONFIG_DIR = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/logs")
+from app.config import LOGS_DIR, PROJECTS_DIR
+CONFIG_DIR = LOGS_DIR
 CONFIG_FILE = CONFIG_DIR / "settings.json"
 
 DEFAULT_CONFIG: Dict[str, Any] = {
@@ -16,7 +17,7 @@ DEFAULT_CONFIG: Dict[str, Any] = {
     "default_quality": "STANDARD",
     "default_duration_sec": 30,
     "logs_dir": str(CONFIG_DIR),
-    "projects_dir": "K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects",
+    "projects_dir": str(PROJECTS_DIR),
     "theme": "default",
 }
 

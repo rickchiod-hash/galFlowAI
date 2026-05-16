@@ -1,6 +1,7 @@
 """Use cases for Advanced Observability (V3.0 / H18)."""
 from typing import Dict, Any, List, Optional
 from app.application.use_cases.base import UseCase
+from app.config import LOGS_DIR, BASE_DIR
 from datetime import datetime
 import json
 from pathlib import Path
@@ -17,7 +18,7 @@ class GetHealthDashboardUseCase(UseCase):
     
     def __init__(self):
         super().__init__()
-        self.log_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/logs")
+        self.log_dir = LOGS_DIR
     
     def execute(self) -> Dict[str, Any]:
         """Execute health dashboard collection."""
@@ -65,7 +66,7 @@ class GetHealthDashboardUseCase(UseCase):
             adapter = WanGPAdapter()
             services["wangp"] = {
                 "available": adapter.is_available(),
-                "path": "K:/AI_VIDEO_COMMERCIAL_STUDIO/engines/Wan2GP"
+                "path": str(BASE_DIR / "engines" / "Wan2GP")
             }
         except Exception as e:
             services["wangp"] = {"available": False, "error": str(e)}
@@ -94,7 +95,7 @@ class GetHealthDashboardUseCase(UseCase):
             import psutil
             cpu_percent = psutil.cpu_percent(interval=0.1)
             memory = psutil.virtual_memory()
-            disk = psutil.disk_usage("K:/")
+            disk = psutil.disk_usage(str(BASE_DIR))
             
             return {
                 "cpu_percent": cpu_percent,
@@ -144,7 +145,7 @@ class GetStructuredLogsUseCase(UseCase):
     
     def __init__(self):
         super().__init__()
-        self.log_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/logs")
+        self.log_dir = LOGS_DIR
     
     def execute(
         self,

@@ -2,6 +2,36 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-16 — Sessão 41: GAL-938 Remover 23 hardcoded K:\ paths — portabilidade
+
+### Contexto
+Varredura técnica revelou 23 ocorrências de caminhos hardcoded `K:\AI_VIDEO_COMMERCIAL_STUDIO\opencodegalpasta` em 10 arquivos. Isso impedia o projeto de rodar em qualquer outra máquina. `app.config.py` já tinha `BASE_DIR`, `LOGS_DIR`, `PROJECTS_DIR`, `ENGINES_DIR` definidos com `Path(__file__).resolve().parent.parent` — bastava usá-los.
+
+### O que fiz
+Substituí todos os 23 hardcoded `K:\` paths por imports de `app.config`:
+
+| Arquivo | Ocorrências | Substituído por |
+|---|---|---|
+| `app/services/metrics_service.py` | 1 | `from app.config import LOGS_DIR` |
+| `app/services/log_service.py` | 2 | `LOGS_DIR`, `BASE_DIR` |
+| `app/services/config_service.py` | 2 | `LOGS_DIR`, `PROJECTS_DIR` |
+| `app/services/error_catalog_service.py` | 1 | Texto descritivo genérico |
+| `app/adapters/framepack_adapter.py` | 3 | `ENGINES_DIR` |
+| `app/adapters/ollama_adapter.py` | 3 | `ENGINES_DIR.parent / "envs"` |
+| `app/application/use_cases/observability_use_cases.py` | 4 | `LOGS_DIR`, `BASE_DIR` |
+| `app/application/use_cases/visual_consistency_use_cases.py` | 2 | `PROJECTS_DIR` |
+| `app/application/use_cases/script_improvement_use_cases.py` | 3 | `PROJECTS_DIR` |
+| `app/application/use_cases/prompt_use_cases.py` | 2 | `PROJECTS_DIR` |
+
+### Testes executados
+- Full suite: **980 passed, 0 failed**
+
+### Arquivos alterados
+- 10 arquivos de código + 4 docs
+
+### Próximo passo
+Aguardar definição ou escolher próximo P1 (exec(), bare except, TTS bug or True).
+
 ## 2026-05-16 — Sessão 40: GAL-937 Eliminar async wrappers falsos sobre sync bloqueante
 
 ### Contexto

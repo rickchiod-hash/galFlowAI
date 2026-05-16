@@ -5,14 +5,20 @@ import subprocess
 import json
 from pathlib import Path
 from app.logging_config import setup_logger
+from app.config import ENGINES_DIR
 
 logger = setup_logger()
+
+try:
+    _OLLAMA_PATH = str(ENGINES_DIR.parent / "envs" / "studio" / "Library" / "bin" / "ollama.exe")
+except Exception:
+    _OLLAMA_PATH = "ollama.exe"
 
 def check_ollama_available() -> bool:
     """Verifica se Ollama esta instalado."""
     try:
         result = subprocess.run(
-            ["K:/AI_VIDEO_COMERCIAL_STUDIO/envs/studio/Library/bin/ollama.exe", "list"],
+            [_OLLAMA_PATH, "list"],
             capture_output=True, text=True, timeout=10
         )
         return result.returncode == 0
@@ -33,7 +39,7 @@ Seja criativo e profissional.""" % briefing
     
     try:
         result = subprocess.run(
-            ["K:/AI_VIDEO_COMERCIAL_STUDIO/envs/studio/Library/bin/ollama.exe", 
+            [_OLLAMA_PATH,
              "run", model, prompt],
             capture_output=True, text=True, timeout=60
         )
@@ -50,7 +56,7 @@ def get_available_models() -> list:
     """Lista modelos disponíveis no Ollama."""
     try:
         result = subprocess.run(
-            ["K:/AI_VIDEO_COMERCIAL_STUDIO/envs/studio/Library/bin/ollama.exe", "list"],
+            [_OLLAMA_PATH, "list"],
             capture_output=True, text=True, timeout=10
         )
         if result.returncode == 0:

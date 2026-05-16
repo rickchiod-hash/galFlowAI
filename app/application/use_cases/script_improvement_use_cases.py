@@ -1,6 +1,7 @@
 """Use cases for Advanced Script Editing (V2.5 / H16)."""
 from typing import Dict, Any, List, Optional
 from app.application.use_cases.base import UseCase
+from app.config import PROJECTS_DIR
 from pathlib import Path
 import json
 from datetime import datetime
@@ -17,7 +18,7 @@ class ImproveScriptUseCase(UseCase):
     
     def __init__(self):
         super().__init__()
-        self.improvements_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects")
+        self.improvements_dir = PROJECTS_DIR
     
     def execute(
         self,
@@ -118,7 +119,7 @@ class ApproveScriptUseCase(UseCase):
     
     def __init__(self):
         super().__init__()
-        self.approvals_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects")
+        self.approvals_dir = PROJECTS_DIR
     
     def execute(
         self,
@@ -176,7 +177,7 @@ class GetScriptVersionsUseCase(UseCase):
     
     def __init__(self):
         super().__init__()
-        self.versions_dir = Path("K:/AI_VIDEO_COMMERCIAL_STUDIO/opencodegalpasta/projects")
+        self.versions_dir = PROJECTS_DIR
     
     def execute(self, project_id: str) -> Dict[str, Any]:
         """Execute get script versions."""
