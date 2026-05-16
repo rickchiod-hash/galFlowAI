@@ -79,7 +79,7 @@ class CreatePromptPackUseCase(UseCase):
             # Save
             self._save_pack(pack)
             
-            return self._build_success(data=pack.dict())
+            return self._build_success(data=pack.model_dump())
         except Exception as e:
             return self._build_error(str(e))
     
@@ -94,7 +94,7 @@ class CreatePromptPackUseCase(UseCase):
         
         pack_path = project_dir / "prompt_pack.json"
         pack_path.write_text(
-            json.dumps(pack.dict(), indent=2, ensure_ascii=False),
+            json.dumps(pack.model_dump(), indent=2, ensure_ascii=False),
             encoding="utf-8"
         )
 

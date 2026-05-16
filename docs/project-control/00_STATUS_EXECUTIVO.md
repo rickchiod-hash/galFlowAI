@@ -1,7 +1,27 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-16 (sessão 48 — GAL-943 27 raises genéricos → exceções tipadas)
+Atualizado em: 2026-05-16 (sessão 50 — GAL-946 Pydantic .dict()→.model_dump())
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
+
+## Sessão 50 — GAL-946: Substituir .dict() por .model_dump() (2026-05-16)
+
+### O que foi feito
+
+1. **Auditoria** — 5 chamadas `.dict()` em 2 use cases (`prompt_use_cases.py`, `visual_consistency_use_cases.py`)
+2. **Substituição** — todas para `.model_dump()` (API Pydantic V2)
+3. **Resultado**: 14→6 warnings nos testes (8 deprecações Pydantic eliminadas)
+
+### Testes
+- **1091 passed, 0 failed** — zero regressão
+- **6 warnings restantes** — todos do Gradio 6.x (css, col_count→column_count)
+
+### Arquivos alterados
+- `app/application/use_cases/prompt_use_cases.py` — 2× .dict() → .model_dump()
+- `app/application/use_cases/visual_consistency_use_cases.py` — 3× .dict() → .model_dump()
+- 3 docs atualizados
+
+### Próximo passo
+- Gradio 6.x deprecations ou lint+lockfile
 
 ## Sessão 48 — GAL-943: Substituir 27 raises genéricos por exceções tipadas (2026-05-16)
 

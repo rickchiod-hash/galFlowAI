@@ -2,6 +2,22 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-16 — Sessão 50: GAL-946 Pydantic .dict() → .model_dump()
+
+### Contexto
+Auditoria técnica apontou 14 warnings de deprecação Pydantic: `.dict()` está deprecated desde V2.0 e será removido no V3.0. 5 chamadas em 2 use cases.
+
+### O que fiz
+- Substituí 5× `.dict()` por `.model_dump()` em `prompt_use_cases.py` (2) e `visual_consistency_use_cases.py` (3)
+- Warnings: 14 → 6 (8 deprecações Pydantic eliminadas)
+- 6 warnings restantes: Gradio 6.x (css no Blocks, col_count→column_count)
+
+### Testes
+- 1091 passed, 0 failed
+
+### Próximo passo
+- Próxima task da auditoria: Gradio 6.x deprecations ou lint+lockfile
+
 ## 2026-05-16 — Sessão 48: GAL-943 Substituir 27 raises genéricos por exceções tipadas
 
 ### Contexto
