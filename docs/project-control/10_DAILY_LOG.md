@@ -2,6 +2,19 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-16 — Sessão 43: GAL-940 Remover `or True` bug em TTSAdapter.is_available()
+
+### Contexto
+`return any(v for k, v in self.available_engines.items() if k != "silence") or True` — o `or True` anulava o `any()`, fazendo `is_available()` retornar sempre `True` mesmo sem nenhum motor TTS real instalado. Isso causava chamadas a `generate_audio()` sem engine disponível, resultando em falha silenciosa.
+
+### O que fiz
+- Removido `or True` — `is_available()` agora retorna `False` corretamente quando só `silence` está disponível
+- **Testes**: 980 passed, 0 failed
+
+### Arquivos alterados
+- `app/adapters/tts_adapter.py`
+- `docs/project-control/10_DAILY_LOG.md`
+
 ## 2026-05-16 — Sessão 42: GAL-939 Substituir exec() por importlib.import_module em provider_router.py
 
 ### Contexto

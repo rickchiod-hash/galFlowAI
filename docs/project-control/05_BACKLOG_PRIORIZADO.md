@@ -134,6 +134,7 @@ Bug fixes identificados durante Recovery Mission S29. Todos corrigidos e verific
 | 2 | GAL-937 | Eliminar async wrappers falsos sobre chamadas sync bloqueantes — converter async def para def em provider_router, provider_strategy, script_service | Média | 5 | ✅ Concluída | Nenhuma |
 | 3 | GAL-938 | Substituir 23 hardcoded K:\ paths por app.config.BASE_DIR e relativos — portabilidade para qualquer máquina | Média | 8 | ✅ Concluída | Nenhuma |
 | 4 | GAL-939 | Substituir exec() por importlib.import_module em provider_router.py | Média | 3 | ✅ Concluída | Nenhuma |
+| 5 | GAL-940 | Remover `or True` bug em TTSAdapter.is_available() que sempre retorna True | Média | 2 | ✅ Concluída | Nenhuma |
 
 ## Regras de priorização
 

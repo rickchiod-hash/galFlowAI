@@ -79,7 +79,7 @@ class TTSAdapter:
     
     def is_available(self) -> bool:
         """Retorna se pelo menos um motor TTS está disponível"""
-        return any(v for k, v in self.available_engines.items() if k != "silence") or True
+        return any(v for k, v in self.available_engines.items() if k != "silence")
     
     def generate_audio(
         self,
