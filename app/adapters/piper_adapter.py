@@ -42,8 +42,8 @@ class PiperAdapter:
             # No PATH do sistema
             "piper.exe",
             # Em diretórios comuns de instalação
-            os.path.join(os.environ.get("PROGRAMFILES", "C:\\Program Files"), "piper", "piper.exe"),
-            os.path.join(os.environ.get("PROGRAMFILES(X86)", "C:\\Program Files (x86)"), "piper", "piper.exe"),
+            os.path.join(os.environ.get("PROGRAMFILES", ""), "piper", "piper.exe"),
+            os.path.join(os.environ.get("PROGRAMFILES(X86)", ""), "piper", "piper.exe"),
             # No diretório de ferramentas do projeto
             os.path.join(os.getcwd(), "tools", "piper", "piper.exe"),
             os.path.join(os.getcwd(), "piper", "piper.exe"),

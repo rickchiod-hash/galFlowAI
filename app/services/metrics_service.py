@@ -1,4 +1,5 @@
 """Metrics Service - Métricas do GalFlowAI Studio."""
+import logging
 import time
 import json
 from pathlib import Path
@@ -7,6 +8,8 @@ from datetime import datetime
 from collections import defaultdict
 
 from app.config import LOGS_DIR
+
+logger = logging.getLogger(__name__)
 METRICS_DIR = LOGS_DIR
 METRICS_FILE = METRICS_DIR / "metrics.json"
 

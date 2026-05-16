@@ -4,7 +4,7 @@ Uses Strategy + Factory pattern for provider management.
 """
 import importlib
 import time
-from typing import List, Optional, Dict
+from typing import List, Dict
 from app.adapters.llm.base_provider import BaseLLMProvider, TemplateProvider
 from app.adapters.llm.provider_strategy import ProviderStrategyFactory, LLMStrategy
 
