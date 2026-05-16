@@ -1,7 +1,36 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-16 (sessão 48 — GAL-943 27 raises genéricos → exceções tipadas)
+Atualizado em: 2026-05-16 (sessão 49 — GAL-945 remover 9 módulos órfãos)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
+
+## Sessão 49 — GAL-945: Remover 9 módulos órfãos (2026-05-16)
+
+### O que foi feito
+
+1. **Auditoria completa** — Verificados imports em produção (0), tests (0) e __init__.py (0) para cada módulo
+2. **9 arquivos deletados** — 471 linhas de código morto removido:
+   - `app/adapters/framepack_adapter.py` (48 stmts)
+   - `app/adapters/ollama_adapter.py` (38 stmts)
+   - `app/adapters/piper_adapter.py` (156 stmts) — TTS adapter não utilizado
+   - `app/adapters/translator_adapter.py` (32 stmts)
+   - `app/pipeline/checkpoint_manager.py` (54 stmts)
+   - `app/pipeline/filesystem_helper.py` (66 stmts)
+   - `app/pipeline/voice_script_optimizer.py` (64 stmts)
+   - `app/safety.py` (13 stmts)
+   - `app/assets/asset_manager.py` (— stmts)
+3. **Diretórios vazios removidos**: `app/assets/`, `app/pipeline/stages/`
+
+### Testes
+- **1091 passed, 0 failed** — zero regressão
+
+### Arquivos alterados
+- 9 arquivos deletados, 2 diretórios vazios removidos
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — GAL-945 adicionado e marcado Concluída
+- `docs/project-control/10_DAILY_LOG.md` — entrada desta sessão
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — esta entrada
+
+### Próximo passo
+- Próxima história do backlog (definir com PO)
 
 ## Sessão 48 — GAL-943: Substituir 27 raises genéricos por exceções tipadas (2026-05-16)
 

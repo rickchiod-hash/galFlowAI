@@ -2,6 +2,34 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-16 — Sessão 49: GAL-945 Remover 9 módulos órfãos (dead code)
+
+### Contexto
+Auditoria técnica revelou 9 módulos .py com 0 imports em produção, 0 imports em testes e 0 exports em __init__.py — código morto sem qualquer referência. Decisão: remover para reduzir ruído, superfície de manutenção e falsa sensação de cobertura baixa.
+
+### O que fiz
+- **Verificação individual** de cada módulo: grep por nome em `app/` e `tests/` + `__init__.py`
+- **9 arquivos deletados**: framepack_adapter, ollama_adapter, piper_adapter, translator_adapter, checkpoint_manager, filesystem_helper, voice_script_optimizer, safety, asset_manager
+- **2 diretórios vazios removidos**: `app/assets/`, `app/pipeline/stages/`
+- **Testes**: 1091 passed, 0 failed (mesmo de antes — zero regressão)
+
+### Bloqueios
+- Nenhum
+
+### Arquivos alterados
+- 9 arquivos .py deletados (471+ linhas)
+- 2 diretórios deletados
+- 3 docs atualizados (backlog, status executivo, daily log)
+
+### Testes
+- 1091 passed, 0 failed
+
+### Histórias atualizadas
+- ✅ GAL-945 adicionada ao backlog e marcada Concluída
+
+### Próximo passo
+- Próxima história do backlog (definir com PO)
+
 ## 2026-05-16 — Sessão 48: GAL-943 Substituir 27 raises genéricos por exceções tipadas
 
 ### Contexto
