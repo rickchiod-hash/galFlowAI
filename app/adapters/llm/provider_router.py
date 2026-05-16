@@ -2,6 +2,7 @@
 Provider Router - manages LLM providers with fallback.
 Uses Strategy + Factory pattern for provider management.
 """
+import importlib
 import time
 from typing import List, Optional, Dict
 from app.adapters.llm.base_provider import BaseLLMProvider, TemplateProvider
@@ -34,18 +35,18 @@ class ProviderRouter:
         
         for name, class_name, module in provider_configs:
             try:
-                # Dynamically import and register strategy
-                exec(f"from {module} import {class_name}")
-                # For now, use base provider directly; strategy wraps it
+                mod = importlib.import_module(module)
+                cls = getattr(mod, class_name)
+                provider_instance = cls()
                 strategy_class = type(f"{name}Strategy", (LLMStrategy,), {
-                    'provider': locals().get(class_name)(),
+                    'provider': provider_instance,
                     'generate': lambda self, briefing, timeout: self.provider.generate(briefing, timeout),
                     'is_available': lambda self: self.provider.is_available(),
                     'validate_response': lambda self, response: self.provider.validate_response(response)
                 })
                 ProviderStrategyFactory.register(name, strategy_class)
                 self.strategies.insert(0, ProviderStrategyFactory.create(name))
-            except (ImportError, Exception):
+            except ImportError:
                 pass
     
     def detect_available(self) -> Dict[str, bool]:

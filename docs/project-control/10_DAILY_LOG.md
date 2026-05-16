@@ -2,6 +2,24 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-16 — Sessão 42: GAL-939 Substituir exec() por importlib.import_module em provider_router.py
+
+### Contexto
+`exec(f"from {module} import {class_name}")` em `provider_router.py:38` era um risco de segurança e impedia análise estática. Substituído por `importlib.import_module(module)` + `getattr(mod, class_name)`.
+
+### O que fiz
+1. **provider_router.py**: `exec()` → `importlib.import_module()` + `getattr()`
+2. `locals().get(class_name)()` → instância direta via `cls()`
+3. `except (ImportError, Exception):` → `except ImportError:` (mais específico)
+4. Adicionado `import importlib`
+5. Testes: 980 passed, 0 failed (exceto audit count, atualizado)
+6. Commitado em master
+
+### Arquivos alterados
+- `app/adapters/llm/provider_router.py`
+- `docs/project-control/01_AUDITORIA_HISTORICO_GIT.md` — 278 commits
+- `docs/project-control/10_DAILY_LOG.md`
+
 ## 2026-05-16 — Sessão 41: GAL-938 Remover 23 hardcoded K:\ paths — portabilidade
 
 ### Contexto
@@ -28,6 +46,7 @@ Substituí todos os 23 hardcoded `K:\` paths por imports de `app.config`:
 
 ### Arquivos alterados
 - 10 arquivos de código + 4 docs
+- Commitado e pushado para master
 
 ### Próximo passo
 Aguardar definição ou escolher próximo P1 (exec(), bare except, TTS bug or True).

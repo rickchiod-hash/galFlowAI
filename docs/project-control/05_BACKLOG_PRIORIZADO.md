@@ -133,6 +133,7 @@ Bug fixes identificados durante Recovery Mission S29. Todos corrigidos e verific
 | 1 | GAL-936 | Remover módulos legados do pipeline (`script_generator.py`, `scene_splitter.py`, `prompt_builder.py`) — realocar lógica para domain/repositories, atualizar importers, deletar 3 arquivos | Média | 8 | ✅ Concluída | Nenhuma |
 | 2 | GAL-937 | Eliminar async wrappers falsos sobre chamadas sync bloqueantes — converter async def para def em provider_router, provider_strategy, script_service | Média | 5 | ✅ Concluída | Nenhuma |
 | 3 | GAL-938 | Substituir 23 hardcoded K:\ paths por app.config.BASE_DIR e relativos — portabilidade para qualquer máquina | Média | 8 | ✅ Concluída | Nenhuma |
+| 4 | GAL-939 | Substituir exec() por importlib.import_module em provider_router.py | Média | 3 | ✅ Concluída | Nenhuma |
 
 ## Regras de priorização
 
