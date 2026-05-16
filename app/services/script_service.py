@@ -236,19 +236,11 @@ def generate_script_with_llm(briefing: str, mode: str = "auto") -> Dict:
             mode = "fast"  # Only template available
     
     try:
-        if mode in ("fast", "quality"):
-            # Check if there's a running event loop to avoid asyncio.run conflicts
-            try:
-                asyncio.get_running_loop()
-                # Running loop exists (e.g., FastAPI endpoint), use safe mode
-                result = router.generate_script_safe(briefing)
-            except RuntimeError:
-                # No running loop, safe to use asyncio.run for async providers
-                if mode == "fast":
-                    result = asyncio.run(router.generate_script_fast(briefing))
-                else:  # quality
-                    result = asyncio.run(router.generate_script_quality(briefing))
-        else:  # safe or auto
+        if mode == "fast":
+            result = router.generate_script_fast(briefing)
+        elif mode == "quality":
+            result = router.generate_script_quality(briefing)
+        else:  # safe, auto, or template
             result = router.generate_script_safe(briefing)
         
         logger.info(
@@ -495,20 +487,6 @@ def validate_script_quality(script: str) -> Dict:
         result["issues"].append("Missing call to action")
     
     return result
-
-
-# ========== Async Support ==========
-
-import asyncio
-
-async def generate_script_fast(briefing: str, timeout: int = 5) -> Dict:
-    """Async wrapper for fast mode."""
-    return generate_script_with_llm(briefing, mode="fast")
-
-
-async def generate_script_quality(briefing: str, timeout: int = 15) -> Dict:
-    """Async wrapper for quality mode."""
-    return generate_script_with_llm(briefing, mode="quality")
 
 
 # ========== Legacy-compatible wrappers (GAL-936) ==========

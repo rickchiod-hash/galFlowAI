@@ -9,7 +9,7 @@ class LLMStrategy(ABC):
     """Base strategy for LLM generation."""
     
     @abstractmethod
-    async def generate(self, briefing: str, timeout: int = 10) -> str:
+    def generate(self, briefing: str, timeout: int = 10) -> str:
         """Generate content from briefing."""
         pass
     
@@ -31,7 +31,7 @@ class TemplateStrategy(LLMStrategy):
         from app.adapters.llm.base_provider import TemplateProvider
         self.provider = TemplateProvider()
     
-    async def generate(self, briefing: str, timeout: int = 10) -> str:
+    def generate(self, briefing: str, timeout: int = 10) -> str:
         return self.provider.generate(briefing, timeout)
     
     def is_available(self) -> bool:
