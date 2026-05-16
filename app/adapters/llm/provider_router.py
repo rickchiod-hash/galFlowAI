@@ -2,7 +2,6 @@
 Provider Router - manages LLM providers with fallback.
 Uses Strategy + Factory pattern for provider management.
 """
-import asyncio
 import time
 from typing import List, Optional, Dict
 from app.adapters.llm.base_provider import BaseLLMProvider, TemplateProvider
@@ -59,7 +58,7 @@ class ProviderRouter:
         
         return result
     
-    async def generate_script_fast(self, briefing: str, timeout: int = 5) -> dict:
+    def generate_script_fast(self, briefing: str, timeout: int = 5) -> dict:
         """Fast mode: first valid response wins."""
         start = time.time()
         
@@ -68,7 +67,7 @@ class ProviderRouter:
                 continue
             
             try:
-                result = await strategy.generate(briefing, timeout)
+                result = strategy.generate(briefing, timeout)
                 if result and strategy.validate_response(result):
                     return {
                         "script": result,
@@ -83,7 +82,7 @@ class ProviderRouter:
         
         # Ultimate fallback
         template_strategy = self.strategies[-1]  # Template is always last
-        template_result = await template_strategy.generate(briefing, timeout=2)
+        template_result = template_strategy.generate(briefing, timeout=2)
         
         return {
             "script": template_result,
@@ -92,7 +91,7 @@ class ProviderRouter:
             "quality": "fallback"
         }
     
-    async def generate_script_quality(self, briefing: str, timeout: int = 15) -> dict:
+    def generate_script_quality(self, briefing: str, timeout: int = 15) -> dict:
         """Quality mode: wait for best response."""
         start = time.time()
         
@@ -102,7 +101,7 @@ class ProviderRouter:
                 continue
             
             try:
-                result = await strategy.generate(briefing, timeout)
+                result = strategy.generate(briefing, timeout)
                 if result:
                     provider_name = strategy.provider.name if hasattr(strategy, 'provider') else "Template"
                     results.append({
@@ -135,7 +134,7 @@ class ProviderRouter:
         # Fallback
         template_strategy = self.strategies[-1]
         return {
-            "script": await template_strategy.generate(briefing, timeout=2),
+            "script": template_strategy.generate(briefing, timeout=2),
             "provider": "TemplateProvider",
             "time": time.time() - start,
             "quality": "fallback"

@@ -2,6 +2,39 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-16 — Sessão 40: GAL-937 Eliminar async wrappers falsos sobre sync bloqueante
+
+### Contexto
+GAP-010 identificou que `provider_router.py` tinha 2 métodos `async def` (`generate_script_fast`, `generate_script_quality`) que chamavam `await strategy.generate()`, mas `BaseLLMProvider.generate()` era sync — o await não fazia nada além de overhead. Além disso, `script_service.py` tinha 2 wrappers `async def` que chamavam código sync sem await (falsos async), e `generate_script_with_llm()` usava `asyncio.get_running_loop()` + `asyncio.run()` para decidir entre caminhos async/sync, criando 2 code paths paralelos e comportamento frágil.
+
+### O que fiz
+
+1. **provider_strategy.py**: `LLMStrategy.generate()` e `TemplateStrategy.generate()` convertidos de `async def` para `def`
+2. **provider_router.py**: `generate_script_fast()` e `generate_script_quality()` convertidos de `async def` para `def`, removidos todos `await`, removido `import asyncio`
+3. **script_service.py**:
+   - Removidos wrappers `async def generate_script_fast()` e `async def generate_script_quality()` (falsos async)
+   - Removido `import asyncio`
+   - Simplificado `generate_script_with_llm()` — eliminada detecção de event loop e `asyncio.run()`, sempre chama router diretamente (sync)
+4. **test_script_service_coverage.py**: Removidos imports e testes dos wrappers async removidos, simplificados testes de modo fast/quality
+5. **git audit**: 273 commits
+
+### Arquivos alterados
+- `app/adapters/llm/provider_strategy.py` — `async def` → `def` generate
+- `app/adapters/llm/provider_router.py` — `async def` → `def`, remove `await` e `import asyncio`
+- `app/services/script_service.py` — remove wrappers async, simplifica generate_script_with_llm
+- `tests/test_script_service_coverage.py` — remove testes de wrappers async, simplifica mocks
+- `docs/project-control/*` — daily log, gaps, status, audit, backlog (GAL-937)
+
+### Testes executados
+- Full suite: **980 passed, 0 failed** (4 testes de async wrappers removidos)
+
+### Pendências
+- GAP-010 marcado como "Em resolução" (GAL-937)
+- Fase 2 opcional: converter providers HTTP sync (`requests` → `httpx.AsyncClient`) se necessário no futuro
+
+### Próximo passo
+Definir próxima iteração com PO, ou abordar novo gap/debt identificado.
+
 ## 2026-05-16 — Sessão 39: GAL-936 commit + PR + merge — backlog completo
 
 ### Contexto

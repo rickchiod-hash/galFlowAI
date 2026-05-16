@@ -1,7 +1,19 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-16 (sessão 39 — GAL-936 commitado, PR mergeado, backlog zerado ✅)
+Atualizado em: 2026-05-16 (sessão 40 — GAL-937 async→sync wrappers eliminados ✅)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
+
+## Sessão 40 — GAL-937: Eliminar async wrappers falsos sobre sync blocking calls (2026-05-16)
+
+### O que foi feito
+
+1. **GAL-937 ✅** — Async wrappers falsos eliminados:
+   - `provider_strategy.py`: `LLMStrategy.generate()` e `TemplateStrategy.generate()` convertidos de `async def` para `def`
+   - `provider_router.py`: `generate_script_fast()` e `generate_script_quality()` convertidos de `async def` para `def`, removidos `await` e `import asyncio`
+   - `script_service.py`: removidos wrappers `async def` falsos, simplificado `generate_script_with_llm()` sem event loop detection
+2. **Testes**: 980 passed, 0 failed
+3. **Backlog**: GAL-937 adicionado como Em andamento
+4. **GAP-010**: Atualizado para Em resolução
 
 ## Sessão 39 — GAL-936: Finalização — commit, PR, merge (2026-05-16)
 

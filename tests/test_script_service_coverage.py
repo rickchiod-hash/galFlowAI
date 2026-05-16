@@ -21,8 +21,6 @@ from app.services.script_service import (
     make_script_more_premium,
     make_script_more_direct,
     validate_script_quality,
-    generate_script_fast,
-    generate_script_quality as async_generate_script_quality,
 )
 
 
@@ -153,19 +151,15 @@ class TestGenerateScriptWithLLM:
         assert result["ok"] is True
 
     @patch("app.services.script_service.ProviderRouter")
-    @patch("app.services.script_service.asyncio.get_running_loop")
-    def test_auto_with_only_template_uses_fast(self, mock_loop, mock_router_cls):
-        mock_loop.side_effect = RuntimeError
+    def test_auto_with_only_template_uses_fast(self, mock_router_cls):
         mock_router = MagicMock()
         mock_router.detect_available.return_value = {"template": True}
         mock_router.generate_script_fast = MagicMock(return_value={"provider": "TemplateProvider", "script": "ok", "time": 0, "quality": "template"})
         mock_router_cls.return_value = mock_router
 
-        with patch("app.services.script_service.asyncio.run") as mock_run:
-            mock_run.return_value = {"provider": "TemplateProvider", "script": "ok", "time": 0, "quality": "template"}
-            result = generate_script_with_llm("brief", mode="auto")
-            assert result["ok"] is True
-            assert result["provider"] == "TemplateProvider"
+        result = generate_script_with_llm("brief", mode="auto")
+        assert result["ok"] is True
+        assert result["provider"] == "TemplateProvider"
 
     @patch("app.services.script_service.ProviderRouter")
     def test_safe_mode(self, mock_router_cls):
@@ -185,49 +179,18 @@ class TestGenerateScriptWithLLM:
         mock_router.generate_script_safe = MagicMock()
         mock_router_cls.return_value = mock_router
 
-        with patch("app.services.script_service.asyncio.get_running_loop", side_effect=RuntimeError):
-            with patch("app.services.script_service.asyncio.run") as mock_run:
-                mock_run.return_value = {"provider": "Fast", "script": "fast", "time": 0, "quality": "high"}
-                result = generate_script_with_llm("brief", mode="fast")
-                assert result["ok"] is True
-
-    @patch("app.services.script_service.ProviderRouter")
-    @patch("app.services.script_service.asyncio.get_running_loop")
-    def test_fast_mode_with_running_loop(self, mock_loop, mock_router_cls):
-        mock_loop.return_value = "loop"
-        mock_router = MagicMock()
-        mock_router.detect_available.return_value = {"template": True, "gpt4all": True}
-        mock_router.generate_script_safe.return_value = {"provider": "Safe", "script": "ok", "time": 0, "quality": "safe"}
-        mock_router_cls.return_value = mock_router
-
         result = generate_script_with_llm("brief", mode="fast")
         assert result["ok"] is True
 
     @patch("app.services.script_service.ProviderRouter")
-    @patch("app.services.script_service.asyncio.get_running_loop")
-    def test_quality_mode_with_running_loop(self, mock_loop, mock_router_cls):
-        mock_loop.return_value = "loop"
-        mock_router = MagicMock()
-        mock_router.detect_available.return_value = {"template": True, "gpt4all": True}
-        mock_router.generate_script_safe.return_value = {"provider": "Safe", "script": "ok", "time": 0, "quality": "safe"}
-        mock_router_cls.return_value = mock_router
-
-        result = generate_script_with_llm("brief", mode="quality")
-        assert result["ok"] is True
-
-    @patch("app.services.script_service.ProviderRouter")
-    @patch("app.services.script_service.asyncio.get_running_loop")
-    def test_quality_mode_without_running_loop(self, mock_loop, mock_router_cls):
-        mock_loop.side_effect = RuntimeError
+    def test_quality_mode(self, mock_router_cls):
         mock_router = MagicMock()
         mock_router.detect_available.return_value = {"template": True, "gpt4all": True}
         mock_router.generate_script_quality = MagicMock(return_value={"provider": "Quality", "script": "ok", "time": 0, "quality": "high"})
         mock_router_cls.return_value = mock_router
 
-        with patch("app.services.script_service.asyncio.run") as mock_run:
-            mock_run.return_value = {"provider": "Quality", "script": "ok", "time": 0, "quality": "high"}
-            result = generate_script_with_llm("brief", mode="quality")
-            assert result["ok"] is True
+        result = generate_script_with_llm("brief", mode="quality")
+        assert result["ok"] is True
 
     @patch("app.services.script_service.ProviderRouter")
     def test_exception_in_generation_returns_error(self, mock_router_cls):
@@ -657,21 +620,4 @@ class TestValidateScriptQuality:
         assert result["valid"] is False
 
 
-# ========== Async Wrappers ==========
 
-class TestAsyncWrappers:
-    @patch("app.services.script_service.generate_script_with_llm")
-    def test_generate_script_fast(self, mock_gs):
-        mock_gs.return_value = {"ok": True}
-        import asyncio
-        result = asyncio.run(generate_script_fast("brief"))
-        mock_gs.assert_called_once_with("brief", mode="fast")
-        assert result["ok"] is True
-
-    @patch("app.services.script_service.generate_script_with_llm")
-    def test_generate_script_quality(self, mock_gs):
-        mock_gs.return_value = {"ok": True}
-        import asyncio
-        result = asyncio.run(async_generate_script_quality("brief"))
-        mock_gs.assert_called_once_with("brief", mode="quality")
-        assert result["ok"] is True
