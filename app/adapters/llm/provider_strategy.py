@@ -4,6 +4,8 @@ Strategy pattern for LLM providers.
 from abc import ABC, abstractmethod
 from typing import Dict, Any, List
 
+from app.exceptions import ConfigError
+
 
 class LLMStrategy(ABC):
     """Base strategy for LLM generation."""
@@ -55,7 +57,7 @@ class ProviderStrategyFactory:
     def create(cls, name: str, **kwargs) -> LLMStrategy:
         """Create strategy instance."""
         if name not in cls._strategies:
-            raise ValueError(f"Unknown strategy: {name}")
+            raise ConfigError(f"Unknown strategy: {name}", param="strategy_name")
         return cls._strategies[name](**kwargs)
     
     @classmethod

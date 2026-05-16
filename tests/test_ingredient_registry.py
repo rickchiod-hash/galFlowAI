@@ -1,5 +1,6 @@
 """Tests for Ingredient Registry schema (VIS-500)."""
 import pytest
+from app.exceptions import NotFoundError, ValidationError
 from app.domain.ingredient_registry import (
     Ingredient,
     IngredientRegistry,
@@ -99,10 +100,10 @@ class TestIngredientRegistry:
         assert registry.count() == 1
 
     def test_register_empty_name_raises(self):
-        """Registering with empty name raises ValueError."""
+        """Registering with empty name raises ValidationError."""
         registry = IngredientRegistry()
         ing = Ingredient(name="", type=IngredientType.PRODUCT, description="Vazio")
-        with pytest.raises(ValueError, match="name cannot be empty"):
+        with pytest.raises(ValidationError, match="name cannot be empty"):
             registry.register(ing)
 
     def test_get_existing(self):
@@ -151,9 +152,9 @@ class TestIngredientRegistry:
         assert updated.id == original_id  # id is protected
 
     def test_update_nonexistent_raises(self):
-        """Updating nonexistent ingredient raises KeyError."""
+        """Updating nonexistent ingredient raises NotFoundError."""
         registry = IngredientRegistry()
-        with pytest.raises(KeyError, match="not found"):
+        with pytest.raises(NotFoundError, match="not found"):
             registry.update("nonexistent", name="New Name")
 
     def test_delete_existing(self):

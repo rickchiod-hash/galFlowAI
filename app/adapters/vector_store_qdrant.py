@@ -16,6 +16,7 @@ from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
 from app.adapters.vector_store import VectorStoreAdapter, VectorRecord, SearchResult
+from app.exceptions import ProviderError
 
 logger = logging.getLogger(__name__)
 
@@ -106,7 +107,7 @@ class QdrantStore(VectorStoreAdapter):
 
     def upsert(self, record: VectorRecord, project_id: str = "") -> str:
         if not self._ensure_collection(project_id):
-            raise RuntimeError("Qdrant nao disponivel")
+            raise ProviderError("Qdrant nao disponivel", provider="qdrant")
         point_id = record.id if record.id.strip() else str(uuid4())
         payload = {
             "payload": record.payload,

@@ -81,7 +81,8 @@ class VectorStoreAdapter(ABC):
 def cosine_similarity(a: List[float], b: List[float]) -> float:
     """Calcula similaridade cosseno entre dois vetores."""
     if len(a) != len(b):
-        raise ValueError("Vetores devem ter mesma dimensao")
+        from app.exceptions import VectorStoreError
+        raise VectorStoreError("Vetores devem ter mesma dimensao", store_type="cosine_similarity")
     dot = sum(x * y for x, y in zip(a, b))
     norm_a = sum(x * x for x in a) ** 0.5
     norm_b = sum(y * y for y in b) ** 0.5

@@ -12,6 +12,7 @@ from uuid import uuid4
 
 from pydantic import BaseModel, Field
 
+from app.exceptions import ConfigError
 from app.domain.scene_contract import (
     CameraMovement,
     SceneContract,
@@ -74,7 +75,7 @@ class PromptCompilerService:
         elif engine == EngineType.VACE:
             return self._compile_for_vace(contract)
         else:
-            raise ValueError(f"Unsupported engine: {engine}")
+            raise ConfigError(f"Unsupported engine: {engine}", param="engine")
 
     def compile_all(
         self,

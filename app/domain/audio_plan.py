@@ -13,6 +13,8 @@ from uuid import uuid4
 
 from pydantic import BaseModel, Field
 
+from app.exceptions import NotFoundError, ValidationError
+
 
 class AudioPlanStatus(str, Enum):
     """Status do plano de áudio."""
@@ -62,7 +64,7 @@ class AudioPlanService:
     def create(self, plan: AudioPlan) -> str:
         """Registra um novo plano de áudio."""
         if not plan.project_id.strip():
-            raise ValueError("project_id cannot be empty")
+            raise ValidationError("project_id cannot be empty", field="project_id")
         now = datetime.now(timezone.utc)
         plan.version = 1
         plan.created_at = now
@@ -88,7 +90,7 @@ class AudioPlanService:
         """
         plan = self._plans.get(plan_id)
         if not plan:
-            raise KeyError(f"AudioPlan not found: {plan_id}")
+            raise NotFoundError(f"AudioPlan not found: {plan_id}", entity_type="AudioPlan")
 
         for key, value in updates.items():
             if hasattr(plan, key) and key not in ("id", "created_at", "version"):
@@ -119,7 +121,7 @@ class AudioPlanService:
         """Adiciona entrada de narração a um plano."""
         plan = self._plans.get(plan_id)
         if not plan:
-            raise KeyError(f"AudioPlan not found: {plan_id}")
+            raise NotFoundError(f"AudioPlan not found: {plan_id}", entity_type="AudioPlan")
         plan.narrations.append(entry)
         plan.version += 1
         plan.updated_at = datetime.now(timezone.utc)
@@ -129,7 +131,7 @@ class AudioPlanService:
         """Remove entrada de narração pelo número da cena."""
         plan = self._plans.get(plan_id)
         if not plan:
-            raise KeyError(f"AudioPlan not found: {plan_id}")
+            raise NotFoundError(f"AudioPlan not found: {plan_id}", entity_type="AudioPlan")
         plan.narrations = [
             n for n in plan.narrations
             if n.scene_number != scene_number
@@ -144,15 +146,15 @@ class AudioPlanService:
         """Atualiza o texto de narração de uma cena."""
         plan = self._plans.get(plan_id)
         if not plan:
-            raise KeyError(f"AudioPlan not found: {plan_id}")
+            raise NotFoundError(f"AudioPlan not found: {plan_id}", entity_type="AudioPlan")
         for n in plan.narrations:
             if n.scene_number == scene_number:
                 n.narration_text = narration_text
                 plan.version += 1
                 plan.updated_at = datetime.now(timezone.utc)
                 return plan
-        raise ValueError(
-            f"Narration not found for scene {scene_number}"
+        raise NotFoundError(
+            f"Narration not found for scene {scene_number}", entity_type="NarrationEntry"
         )
 
     def generate_narration_script(self, plan_id: str) -> str:
@@ -163,7 +165,7 @@ class AudioPlanService:
         """
         plan = self._plans.get(plan_id)
         if not plan:
-            raise KeyError(f"AudioPlan not found: {plan_id}")
+            raise NotFoundError(f"AudioPlan not found: {plan_id}", entity_type="AudioPlan")
 
         lines = []
         lines.append(f"# Narration Script — Projeto: {plan.project_id}")

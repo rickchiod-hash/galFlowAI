@@ -4,6 +4,8 @@
 import pytest
 from datetime import datetime, timezone
 
+from app.exceptions import NotFoundError, ValidationError
+
 from app.domain.audio_plan import (
     AudioPlan,
     AudioPlanService,
@@ -91,7 +93,7 @@ class TestAudioPlanService:
     def test_create_requires_project_id(self):
         service = AudioPlanService()
         plan = AudioPlan(project_id="")
-        with pytest.raises(ValueError, match="project_id cannot be empty"):
+        with pytest.raises(ValidationError, match="project_id cannot be empty"):
             service.create(plan)
 
     def test_create_sets_version_and_timestamps(self):
@@ -168,7 +170,7 @@ class TestAudioPlanService:
 
     def test_update_nonexistent(self):
         service = AudioPlanService()
-        with pytest.raises(KeyError, match="AudioPlan not found"):
+        with pytest.raises(NotFoundError, match="AudioPlan not found"):
             service.update("nonexistent", notes="x")
 
     def test_delete_existing(self):
@@ -237,7 +239,7 @@ class TestAudioPlanNarrations:
     def test_add_narration_to_nonexistent_plan(self):
         service = AudioPlanService()
         entry = NarrationEntry(scene_number=1, narration_text="x")
-        with pytest.raises(KeyError, match="AudioPlan not found"):
+        with pytest.raises(NotFoundError, match="AudioPlan not found"):
             service.add_narration("nonexistent", entry)
 
     def test_remove_narration(self):
@@ -257,7 +259,7 @@ class TestAudioPlanNarrations:
 
     def test_remove_narration_from_nonexistent_plan(self):
         service = AudioPlanService()
-        with pytest.raises(KeyError, match="AudioPlan not found"):
+        with pytest.raises(NotFoundError, match="AudioPlan not found"):
             service.remove_narration("nonexistent", 1)
 
     def test_update_narration_text(self):
@@ -279,12 +281,12 @@ class TestAudioPlanNarrations:
         service = AudioPlanService()
         plan = AudioPlan(project_id="proj_err")
         pid = service.create(plan)
-        with pytest.raises(ValueError, match="Narration not found"):
+        with pytest.raises(NotFoundError, match="Narration not found"):
             service.update_narration_text(pid, 99, "novo texto")
 
     def test_update_narration_text_nonexistent_plan(self):
         service = AudioPlanService()
-        with pytest.raises(KeyError, match="AudioPlan not found"):
+        with pytest.raises(NotFoundError, match="AudioPlan not found"):
             service.update_narration_text("nonexistent", 1, "x")
 
 
@@ -366,7 +368,7 @@ class TestNarrationScriptGeneration:
 
     def test_generates_markdown_nonexistent_plan(self):
         service = AudioPlanService()
-        with pytest.raises(KeyError, match="AudioPlan not found"):
+        with pytest.raises(NotFoundError, match="AudioPlan not found"):
             service.generate_narration_script("nonexistent")
 
     def test_narration_script_includes_tts_voice(self):

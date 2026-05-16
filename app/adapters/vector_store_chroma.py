@@ -17,6 +17,7 @@ from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
 from app.adapters.vector_store import VectorStoreAdapter, VectorRecord, SearchResult
+from app.exceptions import ProviderError
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +85,7 @@ class ChromaStore(VectorStoreAdapter):
     def upsert(self, record: VectorRecord, project_id: str = "") -> str:
         collection = self._ensure_collection(project_id)
         if collection is None:
-            raise RuntimeError("Chroma nao disponivel")
+            raise ProviderError("Chroma nao disponivel", provider="chroma")
         point_id = record.id if record.id.strip() else str(uuid4())
         collection.upsert(
             ids=[point_id],

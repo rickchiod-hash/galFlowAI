@@ -11,6 +11,7 @@ from app.adapters.vector_store import (
     InMemoryVectorStore,
     cosine_similarity,
 )
+from app.exceptions import VectorStoreError
 
 
 class TestCosineSimilarity:
@@ -31,7 +32,7 @@ class TestCosineSimilarity:
         assert cosine_similarity([0, 0], [1, 0]) == pytest.approx(0.0)
 
     def test_different_dimensions_raises(self):
-        with pytest.raises(ValueError, match="mesma dimensao"):
+        with pytest.raises(VectorStoreError, match="mesma dimensao"):
             cosine_similarity([1, 0], [1, 0, 0])
 
 

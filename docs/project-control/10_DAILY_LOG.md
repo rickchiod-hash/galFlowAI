@@ -2,6 +2,38 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-16 — Sessão 48: GAL-943 Substituir 27 raises genéricos por exceções tipadas
+
+### Contexto
+27 raises genéricos (ValueError/KeyError/RuntimeError) espalhados por 11 arquivos dificultavam debugging, tratamento de erros e rastreabilidade. GAL-943 step 1+2 (sessão anterior incompleta) criou 4 novas exceções tipadas e converteu 4 raises. Esta sessão completou os 23 restantes + corrigiu testes + fixou bug de import em chroma/qdrant.
+
+### O que fiz
+- **22 raises genéricos substituídos** em 8 arquivos de domínio/serviço
+- **job_state.py**: ValueError("Invalid transition") → ValidationError
+- **queue.py**: 3× `except ValueError:` → `except (ValueError, ValidationError):`
+- **Bug fix**: `SearchResult` import de `app.exceptions` → `app.adapters.vector_store` (chroma e qdrant)
+- **24 testes atualizados** com `pytest.raises` para as novas exceções tipadas
+- **2 testes pré-existentes corrigidos** que já esperavam ValueError/RuntimeError
+
+### Bloqueios
+- Nenhum
+
+### Arquivos alterados
+- Código fonte: 11 arquivos (audio_plan, ingredient_registry, prompt_compiler, scene_contract, sfx_manifest, visual_bible, artifact_cache_service, script_service, job_state, queue, vector_store_chroma, vector_store_qdrant)
+- Testes: 8 arquivos (audio_plan, ingredient_registry, prompt_compiler, scene_contract, sfx_manifest, visual_bible, job_state, vector_store, vector_store_chroma)
+- Docs: 3 arquivos (backlog, status executivo, daily log)
+
+### Testes
+- 1095 passed, 1 failed (git audit — commit count drift, preexistente)
+- 0 regressão
+
+### Histórias atualizadas
+- ✅ GAL-943 marcada como Concluída no backlog
+
+### Próximo passo
+- Próxima história do backlog (definir com PO)
+- git audit doc sync
+
 ## 2026-05-16 — Sessão 47: GAL-942 Testes para 10 módulos críticos com cobertura 0% ou <20%
 
 ### Contexto

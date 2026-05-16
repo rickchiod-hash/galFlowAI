@@ -138,6 +138,7 @@ Bug fixes identificados durante Recovery Mission S29. Todos corrigidos e verific
 | 6 | GAL-941 | Adicionar logging em 27 `except Exception:` sem `as e` em 13 arquivos | Média | 8 | ✅ Concluída | Nenhuma |
 | 7 | GAL-944 | Converter 40 rotas FastAPI de async def para def (thread pool) | Média | 5 | ✅ Concluída | Nenhuma |
 | 8 | GAL-942 | Criar testes para 10 módulos críticos com cobertura 0% ou <20% — approve, create_project, create_storyboard, manage_queue, script_quality, script_improvement, visual_consistency, prompt, video_service, tts_service | Média | 8 | ✅ Concluída | Nenhuma |
+| 9 | GAL-943 | Substituir 27 raises genéricos (ValueError/KeyError/RuntimeError) por exceções tipadas (ValidationError, NotFoundError, ConfigError, ProviderError, VectorStoreError, ScriptError, CacheError) em 11 arquivos | Média | 8 | ✅ Concluída | Nenhuma |
 
 ## Regras de priorização
 

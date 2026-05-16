@@ -10,6 +10,7 @@ from app.logging_config import setup_logger
 from app.adapters.llm import ProviderRouter
 from app.adapters.llm.base_provider import TemplateProvider
 from app.repositories.script_repository import ScriptRepository
+from app.exceptions import ScriptError
 
 logger = setup_logger()
 
@@ -514,7 +515,7 @@ def generate_script(briefing, project_id=None, mode="auto"):
         result = _run_generation(briefing, mode)
         logger.info("Roteiro gerado via %s", result.get("provider", "unknown"))
         if not result.get("ok") or "script" not in result:
-            raise KeyError("Resultado sem script: %s" % result.get("error", "erro desconhecido"))
+            raise ScriptError("Resultado sem script: %s" % result.get("error", "erro desconhecido"))
         return result["script"]
     except Exception as e:
         logger.error("CAUSA: Falha no servico de roteiro: %s | CORREÇÃO: Verifique LLM provider disponível", e)
@@ -532,7 +533,7 @@ def generate_script_with_details(briefing, project_id=None, mode="auto"):
         result = _run_generation(briefing, mode)
         logger.info("Roteiro gerado via %s", result.get("provider", "unknown"))
         if not result.get("ok") or "script" not in result:
-            raise KeyError("Resultado sem script: %s" % result.get("error", "erro desconhecido"))
+            raise ScriptError("Resultado sem script: %s" % result.get("error", "erro desconhecido"))
         return result
     except Exception as e:
         logger.error("CAUSA: Falha no servico de roteiro: %s | CORREÇÃO: Verifique LLM provider disponível", e)

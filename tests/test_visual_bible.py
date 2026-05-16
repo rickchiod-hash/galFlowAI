@@ -1,5 +1,6 @@
 """Tests for Visual Bible schema (VIS-501)."""
 import pytest
+from app.exceptions import NotFoundError, ValidationError
 from app.domain.visual_bible import (
     ApprovedReference,
     BibleEntry,
@@ -140,17 +141,17 @@ class TestVisualBible:
         assert bible.count() == 1
 
     def test_add_empty_ingredient_id_raises(self):
-        """Adding with empty ingredient_id raises ValueError."""
+        """Adding with empty ingredient_id raises ValidationError."""
         bible = VisualBible()
         entry = BibleEntry(ingredient_id="", ingredient_name="Test")
-        with pytest.raises(ValueError, match="ingredient_id cannot be empty"):
+        with pytest.raises(ValidationError, match="ingredient_id cannot be empty"):
             bible.add(entry)
 
     def test_add_empty_name_raises(self):
-        """Adding with empty ingredient_name raises ValueError."""
+        """Adding with empty ingredient_name raises ValidationError."""
         bible = VisualBible()
         entry = BibleEntry(ingredient_id="ing_abc", ingredient_name="")
-        with pytest.raises(ValueError, match="ingredient_name cannot be empty"):
+        with pytest.raises(ValidationError, match="ingredient_name cannot be empty"):
             bible.add(entry)
 
     def test_get_existing(self):
@@ -228,9 +229,9 @@ class TestVisualBible:
         assert updated.ingredient_id == "ing_abc"
 
     def test_update_nonexistent_raises(self):
-        """Updating nonexistent entry raises KeyError."""
+        """Updating nonexistent entry raises NotFoundError."""
         bible = VisualBible()
-        with pytest.raises(KeyError, match="not found"):
+        with pytest.raises(NotFoundError, match="not found"):
             bible.update("nonexistent", status=BibleEntryStatus.APPROVED)
 
     def test_delete_existing(self):

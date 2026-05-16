@@ -7,6 +7,7 @@ from typing import Optional, Dict, Any, List
 from app.logging_config import setup_logger
 from app.pipeline.job_state import JobState, JobStatus as _JobStatus
 from app.pipeline.job_ledger import SQLiteJobLedger
+from app.exceptions import ValidationError
 
 # Re-export JobStatus for backward compatibility with existing imports
 JobStatus = _JobStatus
@@ -143,7 +144,7 @@ class JobQueue:
         if job:
             try:
                 job.complete(output_path=output_path)
-            except ValueError:
+            except (ValueError, ValidationError):
                 job.status = JobStatus.COMPLETED
                 job.completed_at = time.time()
                 job.progress = 100
@@ -165,7 +166,7 @@ class JobQueue:
         if job:
             try:
                 job.fail(error_msg)
-            except ValueError:
+            except (ValueError, ValidationError):
                 job.status = JobStatus.FAILED
                 job.completed_at = time.time()
                 job.error = error_msg
@@ -188,7 +189,7 @@ class JobQueue:
             
         try:
             job.cancel()
-        except ValueError:
+        except (ValueError, ValidationError):
             logger.warning("Job %s cannot be cancelled (status: %s)", job_id, job.status.value)
             return False
         if self.running_job_id == job_id:

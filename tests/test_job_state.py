@@ -1,5 +1,6 @@
 """Tests for JobState formal state machine (PIPE-400)."""
 import pytest
+from app.exceptions import ValidationError
 from app.pipeline.job_state import JobState, JobStatus
 
 
@@ -82,13 +83,13 @@ class TestJobStateTransitions:
         """RUNNING -> RUNNING is invalid."""
         job = JobState("job_001", "proj_001")
         job.start()
-        with pytest.raises(ValueError, match="Invalid transition"):
+        with pytest.raises(ValidationError, match="Invalid transition"):
             job.start()
 
     def test_cannot_complete_queued(self):
         """QUEUED -> COMPLETED is invalid."""
         job = JobState("job_001", "proj_001")
-        with pytest.raises(ValueError, match="Invalid transition"):
+        with pytest.raises(ValidationError, match="Invalid transition"):
             job.complete()
 
     def test_cannot_cancel_completed(self):
@@ -96,7 +97,7 @@ class TestJobStateTransitions:
         job = JobState("job_001", "proj_001")
         job.start()
         job.complete()
-        with pytest.raises(ValueError, match="Invalid transition"):
+        with pytest.raises(ValidationError, match="Invalid transition"):
             job.cancel()
 
     def test_cannot_fail_completed(self):
@@ -104,7 +105,7 @@ class TestJobStateTransitions:
         job = JobState("job_001", "proj_001")
         job.start()
         job.complete()
-        with pytest.raises(ValueError, match="Invalid transition"):
+        with pytest.raises(ValidationError, match="Invalid transition"):
             job.fail("too late")
 
     def test_cannot_succeed_failed(self):
@@ -112,7 +113,7 @@ class TestJobStateTransitions:
         job = JobState("job_001", "proj_001")
         job.start()
         job.fail("error")
-        with pytest.raises(ValueError, match="Invalid transition"):
+        with pytest.raises(ValidationError, match="Invalid transition"):
             job.succeed()
 
 

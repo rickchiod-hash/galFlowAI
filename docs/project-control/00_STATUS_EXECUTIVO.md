@@ -1,7 +1,63 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-16 (sessão 47 — GAL-942 coverage: 62%→70%, 116 novos testes)
+Atualizado em: 2026-05-16 (sessão 48 — GAL-943 27 raises genéricos → exceções tipadas)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
+
+## Sessão 48 — GAL-943: Substituir 27 raises genéricos por exceções tipadas (2026-05-16)
+
+### O que foi feito
+
+1. **GAL-943 step 1** ✅ — 4 novas exceções em `app/exceptions.py`: ValidationError (422), NotFoundError (404), CacheError (500), VectorStoreError (500)
+2. **GAL-943 step 2** ✅ — 4 raises já convertidos em sessão anterior: RuntimeError→ProviderError (vector_store_chroma, vector_store_qdrant), ValueError→ConfigError (provider_strategy), ValueError→VectorStoreError (vector_store)
+3. **GAL-943 step 3 (esta sessão)** ✅ — 22 raises genéricos substituídos em 8 arquivos:
+   - `audio_plan.py`: 7× ValueError/KeyError → ValidationError/NotFoundError
+   - `ingredient_registry.py`: 2× ValueError/KeyError → ValidationError/NotFoundError
+   - `prompt_compiler.py`: 1× ValueError → ConfigError
+   - `scene_contract.py`: 3× ValueError/KeyError → ValidationError/NotFoundError
+   - `sfx_manifest.py`: 3× ValueError/KeyError → ValidationError/NotFoundError
+   - `visual_bible.py`: 3× ValueError/KeyError → ValidationError/NotFoundError
+   - `artifact_cache_service.py`: 1× ValueError → CacheError
+   - `script_service.py`: 2× KeyError → ScriptError
+4. **job_state.py** ✅ — ValueError("Invalid transition") → ValidationError
+5. **queue.py** ✅ — 3× `except ValueError:` → `except (ValueError, ValidationError):`
+6. **Bug fix** 🔧 — SearchResult incorretamente importado de `app.exceptions` em chroma/qdrant (era em `app.adapters.vector_store`)
+7. **24 testes atualizados** — `pytest.raises(ValueError|KeyError)` → `pytest.raises(ValidationError|NotFoundError|ConfigError|...)`
+8. **2 testes pré-existentes corrigidos** — `test_vector_store.py` (ValueError→VectorStoreError) e `test_vector_store_chroma.py` (RuntimeError→ProviderError)
+
+### Testes
+- **1095 passed, 1 failed** (única falha: `test_git_audit` — commit count drift, preexistente)
+- **Coverage**: 70% mantida
+
+### Arquivos alterados
+- `app/exceptions.py` — +4 classes (ValidationError, NotFoundError, CacheError, VectorStoreError)
+- `app/domain/audio_plan.py` — 7 raises tipados
+- `app/domain/ingredient_registry.py` — 2 raises tipados
+- `app/domain/prompt_compiler.py` — 1 raise tipado
+- `app/domain/scene_contract.py` — 3 raises tipados
+- `app/domain/sfx_manifest.py` — 3 raises tipados
+- `app/domain/visual_bible.py` — 3 raises tipados
+- `app/services/artifact_cache_service.py` — 1 raise tipado
+- `app/services/script_service.py` — 2 raises tipados
+- `app/pipeline/job_state.py` — 1 raise tipado
+- `app/jobs/queue.py` — 3 excepts atualizados
+- `app/adapters/vector_store_chroma.py` — import SearchResult fix
+- `app/adapters/vector_store_qdrant.py` — import SearchResult fix
+- `tests/test_audio_plan.py` — 7 asserts atualizados
+- `tests/test_ingredient_registry.py` — 2 asserts atualizados
+- `tests/test_prompt_compiler.py` — 1 assert atualizado
+- `tests/test_scene_contract.py` — 3 asserts atualizados
+- `tests/test_sfx_manifest.py` — 3 asserts atualizados
+- `tests/test_visual_bible.py` — 3 asserts atualizados
+- `tests/test_job_state.py` — 5 asserts atualizados
+- `tests/test_vector_store.py` — 1 assert atualizado
+- `tests/test_vector_store_chroma.py` — 1 assert atualizado
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — GAL-943 marcado Concluída
+- `docs/project-control/10_DAILY_LOG.md` — entrada desta sessão
+- `docs/project-control/00_STATUS_EXECUTIVO.md` — esta entrada
+
+### Próximo passo
+- Próxima história do backlog (definir com PO)
+- git audit doc sync
 
 ## Sessão 41 — GAL-938: Remover hardcoded K:\ paths — portabilidade (2026-05-16)
 

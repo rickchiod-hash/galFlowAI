@@ -8,7 +8,7 @@ class FlowForgeException(Exception):
         self.code = code
         self.details = details or {}
         super().__init__(message)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "error": True,
@@ -75,6 +75,42 @@ class WanGPError(FlowForgeException):
             message=message,
             code=500,
             details={"model": model, "stage": "wangp"}
+        )
+
+class ValidationError(FlowForgeException):
+    """Erro de validação de domínio (campos obrigatórios, formato inválido)."""
+    def __init__(self, message: str, field: str = ""):
+        super().__init__(
+            message=message,
+            code=422,
+            details={"field": field, "stage": "validation"}
+        )
+
+class NotFoundError(FlowForgeException):
+    """Entidade não encontrada (repositório/domínio)."""
+    def __init__(self, message: str, entity_type: str = ""):
+        super().__init__(
+            message=message,
+            code=404,
+            details={"entity_type": entity_type, "stage": "domain"}
+        )
+
+class CacheError(FlowForgeException):
+    """Erro no serviço de cache."""
+    def __init__(self, message: str, cache_key: str = ""):
+        super().__init__(
+            message=message,
+            code=500,
+            details={"cache_key": cache_key, "stage": "cache"}
+        )
+
+class VectorStoreError(FlowForgeException):
+    """Erro no vector store."""
+    def __init__(self, message: str, store_type: str = ""):
+        super().__init__(
+            message=message,
+            code=500,
+            details={"store_type": store_type, "stage": "vector_store"}
         )
 
 class FallbackWarning(Warning):

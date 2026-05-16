@@ -5,6 +5,8 @@ from typing import Optional, Dict, Any
 import time
 import logging
 
+from app.exceptions import ValidationError
+
 logger = logging.getLogger(__name__)
 
 
@@ -53,9 +55,10 @@ class JobState:
         """Guard: only allow valid status transitions."""
         allowed = self.VALID_TRANSITIONS.get(self.status, [])
         if new_status not in allowed:
-            raise ValueError(
+            raise ValidationError(
                 f"Invalid transition: {self.status.value} -> {new_status.value}. "
-                f"Allowed: {[s.value for s in allowed]}"
+                f"Allowed: {[s.value for s in allowed]}",
+                field="status"
             )
         self.status = new_status
 

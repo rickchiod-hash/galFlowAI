@@ -5,6 +5,7 @@ parâmetros específicos, registry de prompts compilados.
 """
 
 import pytest
+from app.exceptions import ConfigError
 from app.domain.scene_contract import (
     CameraDirective,
     CameraMovement,
@@ -419,5 +420,5 @@ class TestCompilationError:
     def test_unsupported_engine(self):
         svc = PromptCompilerService()
         contract = make_contract()
-        with pytest.raises(ValueError, match="Unsupported engine"):
+        with pytest.raises(ConfigError, match="Unsupported engine"):
             svc.compile(contract, "invalid_engine")  # type: ignore

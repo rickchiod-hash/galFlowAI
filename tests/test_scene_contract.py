@@ -5,6 +5,7 @@ Cobre schemas, CRUD, busca, filtro, versionamento e reordenação.
 
 import pytest
 from datetime import datetime, timezone
+from app.exceptions import NotFoundError, ValidationError
 from app.domain.scene_contract import (
     CameraDirective,
     CameraMovement,
@@ -156,12 +157,12 @@ class TestSceneContractService:
 
     def test_create_requires_description(self):
         svc = SceneContractService()
-        with pytest.raises(ValueError, match="description cannot be empty"):
+        with pytest.raises(ValidationError, match="description cannot be empty"):
             svc.create(SceneContract(scene_number=1, description="   "))
 
     def test_create_requires_non_negative_scene_number(self):
         svc = SceneContractService()
-        with pytest.raises(ValueError, match="scene_number must be non-negative"):
+        with pytest.raises(ValidationError, match="scene_number must be non-negative"):
             svc.create(SceneContract(scene_number=-1, description="invalida"))
 
     def test_create_sets_version_and_timestamps(self):
@@ -245,7 +246,7 @@ class TestSceneContractService:
 
     def test_update_nonexistent(self):
         svc = SceneContractService()
-        with pytest.raises(KeyError, match="SceneContract not found"):
+        with pytest.raises(NotFoundError, match="SceneContract not found"):
             svc.update("sc_nonexistent", description="x")
 
     def test_delete_existing(self):

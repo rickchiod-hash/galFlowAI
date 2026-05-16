@@ -13,6 +13,8 @@ from uuid import uuid4
 
 from pydantic import BaseModel, Field
 
+from app.exceptions import NotFoundError, ValidationError
+
 
 class SFXLicenseType(str, Enum):
     """Tipos de licenca para assets de audio."""
@@ -57,9 +59,9 @@ class SFXManifest:
     def register(self, asset: SFXAsset) -> str:
         """Registra um novo asset sonoro."""
         if not asset.name.strip():
-            raise ValueError("SFX name cannot be empty")
+            raise ValidationError("SFX name cannot be empty", field="name")
         if not asset.file_path.strip():
-            raise ValueError("SFX file_path cannot be empty")
+            raise ValidationError("SFX file_path cannot be empty", field="file_path")
         now = datetime.now(timezone.utc)
         asset.version = 1
         asset.created_at = now
@@ -87,7 +89,7 @@ class SFXManifest:
         """
         asset = self._assets.get(asset_id)
         if not asset:
-            raise KeyError(f"SFXAsset not found: {asset_id}")
+            raise NotFoundError(f"SFXAsset not found: {asset_id}", entity_type="SFXAsset")
 
         protected = {"id", "created_at", "version"}
         for key, value in updates.items():

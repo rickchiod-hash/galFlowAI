@@ -4,6 +4,7 @@
 import pytest
 from datetime import datetime, timezone
 
+from app.exceptions import NotFoundError, ValidationError
 from app.domain.sfx_manifest import SFXAsset, SFXLicenseType, SFXManifest
 
 
@@ -75,12 +76,12 @@ class TestSFXManifest:
 
     def test_register_empty_name_raises(self):
         m = SFXManifest()
-        with pytest.raises(ValueError, match="SFX name cannot be empty"):
+        with pytest.raises(ValidationError, match="SFX name cannot be empty"):
             m.register(SFXAsset(name="", file_path="x.wav"))
 
     def test_register_empty_file_path_raises(self):
         m = SFXManifest()
-        with pytest.raises(ValueError, match="SFX file_path cannot be empty"):
+        with pytest.raises(ValidationError, match="SFX file_path cannot be empty"):
             m.register(SFXAsset(name="x", file_path=""))
 
     def test_register_sets_version_and_timestamps(self):
@@ -152,7 +153,7 @@ class TestSFXManifest:
 
     def test_update_nonexistent(self):
         m = SFXManifest()
-        with pytest.raises(KeyError, match="SFXAsset not found"):
+        with pytest.raises(NotFoundError, match="SFXAsset not found"):
             m.update("nonexistent", name="x")
 
     def test_delete_existing(self):

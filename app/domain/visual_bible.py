@@ -12,6 +12,8 @@ from uuid import uuid4
 
 from pydantic import BaseModel, Field
 
+from app.exceptions import NotFoundError, ValidationError
+
 
 class BibleEntryStatus(str, Enum):
     """Status de uma entrada na Visual Bible."""
@@ -61,9 +63,9 @@ class VisualBible:
     def add(self, entry: BibleEntry) -> str:
         """Adiciona uma nova entrada à bíblia."""
         if not entry.ingredient_id.strip():
-            raise ValueError("ingredient_id cannot be empty")
+            raise ValidationError("ingredient_id cannot be empty", field="ingredient_id")
         if not entry.ingredient_name.strip():
-            raise ValueError("ingredient_name cannot be empty")
+            raise ValidationError("ingredient_name cannot be empty", field="ingredient_name")
         now = datetime.now(timezone.utc)
         entry.version = 1
         entry.created_at = now
@@ -89,7 +91,7 @@ class VisualBible:
         """
         entry = self._entries.get(entry_id)
         if not entry:
-            raise KeyError(f"Bible entry not found: {entry_id}")
+            raise NotFoundError(f"Bible entry not found: {entry_id}", entity_type="BibleEntry")
 
         for key, value in updates.items():
             if hasattr(entry, key) and key not in ("id", "ingredient_id", "created_at", "version"):

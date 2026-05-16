@@ -11,6 +11,8 @@ from uuid import uuid4
 
 from pydantic import BaseModel, Field
 
+from app.exceptions import NotFoundError, ValidationError
+
 
 class IngredientType(str, Enum):
     """Tipos de ingredientes."""
@@ -57,7 +59,7 @@ class IngredientRegistry:
     def register(self, ingredient: Ingredient) -> str:
         """Registra um novo ingrediente."""
         if not ingredient.name.strip():
-            raise ValueError("Ingredient name cannot be empty")
+            raise ValidationError("Ingredient name cannot be empty", field="name")
         now = datetime.now(timezone.utc)
         ingredient.version = 1
         ingredient.created_at = now
@@ -76,7 +78,7 @@ class IngredientRegistry:
         """
         ingredient = self._ingredients.get(ingredient_id)
         if not ingredient:
-            raise KeyError(f"Ingredient not found: {ingredient_id}")
+            raise NotFoundError(f"Ingredient not found: {ingredient_id}", entity_type="Ingredient")
 
         for key, value in updates.items():
             if hasattr(ingredient, key) and key not in ("id", "created_at", "version"):

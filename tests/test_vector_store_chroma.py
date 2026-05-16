@@ -9,6 +9,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from app.adapters.vector_store_chroma import ChromaStore
 from app.adapters.vector_store import VectorRecord
+from app.exceptions import ProviderError
 
 
 def _mock_chroma_client():
@@ -203,6 +204,6 @@ def test_not_available_upsert_raises():
     record = VectorRecord(id="x", vector=[0.1])
     try:
         store.upsert(record)
-        assert False, "Deveria levantar RuntimeError"
-    except RuntimeError as e:
+        assert False, "Deveria levantar ProviderError"
+    except ProviderError as e:
         assert "Chroma nao disponivel" in str(e)

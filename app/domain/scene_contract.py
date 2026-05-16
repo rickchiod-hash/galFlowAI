@@ -12,6 +12,8 @@ from uuid import uuid4
 
 from pydantic import BaseModel, Field
 
+from app.exceptions import NotFoundError, ValidationError
+
 
 class SceneContractStatus(str, Enum):
     """Status de um contrato de cena."""
@@ -108,9 +110,9 @@ class SceneContractService:
     def create(self, contract: SceneContract) -> str:
         """Registra um novo contrato de cena."""
         if not contract.description.strip():
-            raise ValueError("description cannot be empty")
+            raise ValidationError("description cannot be empty", field="description")
         if contract.scene_number < 0:
-            raise ValueError("scene_number must be non-negative")
+            raise ValidationError("scene_number must be non-negative", field="scene_number")
         now = datetime.now(timezone.utc)
         contract.version = 1
         contract.created_at = now
@@ -136,7 +138,7 @@ class SceneContractService:
         """
         contract = self._contracts.get(contract_id)
         if not contract:
-            raise KeyError(f"SceneContract not found: {contract_id}")
+            raise NotFoundError(f"SceneContract not found: {contract_id}", entity_type="SceneContract")
 
         for key, value in updates.items():
             if hasattr(contract, key) and key not in ("id", "scene_number", "created_at", "version"):

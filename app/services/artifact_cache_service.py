@@ -10,6 +10,7 @@ import shutil
 from pathlib import Path
 from typing import Optional, Dict, Any, Tuple, Union
 from app.logging_config import setup_logger
+from app.exceptions import CacheError
 
 logger = setup_logger()
 
@@ -119,7 +120,7 @@ class ArtifactCache:
     Uses first 2 characters of hash as subdirectory to avoid too many files in one directory.
         """
         if len(content_hash) < 2:
-            raise ValueError(f"Hash too short: {content_hash}")
+            raise CacheError(f"Hash too short: {content_hash}", cache_key=content_hash)
         subdir = self.artifacts_dir / content_hash[:2]
         subdir.mkdir(exist_ok=True)
         return subdir / content_hash
