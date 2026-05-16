@@ -4,7 +4,7 @@ from typing import Dict, List, Optional
 from datetime import datetime
 
 from app.core.result import Result
-from app.config import PROJECTS_DIR
+import app.config
 from app.logging_config import setup_logger
 
 logger = setup_logger()
@@ -23,7 +23,7 @@ class ScriptRepository:
     @property
     def script_dir(self) -> Path:
         if self._script_dir is None:
-            self._script_dir = PROJECTS_DIR / self.project_id / "script"
+            self._script_dir = Path(app.config.PROJECTS_DIR) / self.project_id / "script"
         return self._script_dir
 
     def load_versions_list(self) -> List[Dict]:
@@ -169,6 +169,27 @@ class ScriptRepository:
             }
             for v in versions
         ]
+
+    def save_script(self, script_text: str) -> Result[str]:
+        try:
+            self.script_dir.mkdir(parents=True, exist_ok=True)
+            script_path = self.script_dir / "script.txt"
+            script_path.write_text(script_text, encoding="utf-8")
+
+            proj_file = Path(app.config.PROJECTS_DIR) / self.project_id / "project.json"
+            if proj_file.exists():
+                content = json.loads(proj_file.read_text(encoding="utf-8"))
+                content["script"] = script_text
+                content["status"] = "script_generated"
+                proj_file.write_text(
+                    json.dumps(content, indent=2, ensure_ascii=False),
+                    encoding="utf-8"
+                )
+
+            logger.info("Roteiro salvo: %s", script_path.name)
+            return Result.success(str(script_path))
+        except Exception as e:
+            return Result.failure(error=str(e), code="SCRIPT_SAVE_FAILED")
 
     def find_previous_version(self) -> Result[Dict]:
         versions = self.load_versions_list()

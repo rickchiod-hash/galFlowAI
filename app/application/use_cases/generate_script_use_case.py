@@ -4,7 +4,7 @@ from typing import Dict, Any
 import logging
 from app.application.use_cases.base_use_case import BaseUseCase
 from app.services.script_service import generate_script_with_llm, generate_script_with_provider
-from app.pipeline.script_generator import save_script
+from app.repositories.script_repository import ScriptRepository
 from app.application.use_cases.artifact_cache_use_cases import (
     CheckArtifactCacheUseCase,
     StoreArtifactUseCase
@@ -70,7 +70,7 @@ class GenerateScriptUseCase(BaseUseCase):
                 )
             
             # Save script to disk
-            save_script(project_id, result["script"])
+            ScriptRepository(project_id).save_script(result["script"])
             
             # Cache the script content for future use
             store_result = self.store_cache_use_case.execute(

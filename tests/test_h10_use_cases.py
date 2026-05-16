@@ -48,7 +48,7 @@ class TestGenerateScriptUseCase:
     """Test generate script use case."""
     
     @patch('app.application.use_cases.script_generation.generate_script_with_llm')
-    @patch('app.application.use_cases.script_generation.save_script')
+    @patch('app.repositories.script_repository.ScriptRepository.save_script')
     def test_execute_success(self, mock_save, mock_generate):
         """Test successful script generation."""
         mock_generate.return_value = {
@@ -64,7 +64,7 @@ class TestGenerateScriptUseCase:
         assert result["ok"] is True
         assert result["data"]["script"] == "Test script content"
         assert result["project_id"] == "proj_001"
-        mock_save.assert_called_once_with("proj_001", "Test script content")
+        mock_save.assert_called_once_with("Test script content")
     
     def test_validate_invalid_briefing(self):
         """Test validation with invalid briefing."""
@@ -73,7 +73,7 @@ class TestGenerateScriptUseCase:
         assert uc._validate(briefing="short", project_id="proj_001") is False
     
     @patch('app.application.use_cases.script_generation.generate_script_with_llm')
-    @patch('app.application.use_cases.script_generation.save_script')
+    @patch('app.repositories.script_repository.ScriptRepository.save_script')
     def test_validate_invalid_project_id(self, mock_save, mock_generate):
         """Test that generation works without project_id (it's optional)."""
         mock_generate.return_value = {"script": "test", "provider": "TemplateProvider"}
@@ -107,7 +107,7 @@ class TestSplitScenesUseCase:
     """Test split scenes use case."""
     
     @patch('app.application.use_cases.pipeline_use_cases.split_script_into_scenes')
-    @patch('app.application.use_cases.pipeline_use_cases.save_scenes')
+    @patch('app.repositories.scene_repository.SceneRepository.save_scenes')
     def test_execute_success(self, mock_save, mock_split):
         """Test successful scene splitting."""
         mock_split.return_value = [{"id": 1, "text": "Scene 1"}]
@@ -124,7 +124,7 @@ class TestBuildPromptsUseCase:
     """Test build prompts use case."""
     
     @patch('app.application.use_cases.pipeline_use_cases.build_prompts_for_scenes')
-    @patch('app.application.use_cases.pipeline_use_cases.save_prompts')
+    @patch('app.repositories.prompt_repository.PromptRepository.save_prompts')
     def test_execute_success(self, mock_save, mock_build):
         """Test successful prompt building."""
         mock_build.return_value = [{"id": 1, "prompt": "test prompt"}]

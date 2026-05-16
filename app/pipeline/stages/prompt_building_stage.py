@@ -1,7 +1,8 @@
 """Prompt building stage with artifact caching (PIPE-402)."""
 
 from app.pipeline.stages.base_stage import BaseStage
-from app.pipeline.prompt_builder import build_prompts_for_scenes, save_prompts
+from app.domain.prompt_builder_service import build_prompts_for_scenes
+from app.repositories.prompt_repository import PromptRepository
 from app.application.use_cases.artifact_cache_use_cases import (
     CheckArtifactCacheUseCase,
     StoreArtifactUseCase
@@ -75,7 +76,7 @@ class PromptBuildingStage(BaseStage):
             )
             
             # Save prompts to disk
-            save_prompts(project_id, scene_prompts)
+            PromptRepository(project_id).save_prompts(scene_prompts)
             
             # Cache the prompts content for future use
             prompts_json = json.dumps(scene_prompts, ensure_ascii=False, indent=2)

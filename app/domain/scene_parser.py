@@ -1,9 +1,10 @@
-import json
+"""Domain logic for splitting script text into scene dictionaries."""
+
 import re
-from pathlib import Path
 from app.logging_config import setup_logger
 
 logger = setup_logger()
+
 
 def split_script_into_scenes(script_text: str, project_id: str) -> list:
     """Divide o roteiro em cenas baseado em marcadores [Cena X] ou linhas em branco."""
@@ -52,31 +53,3 @@ def split_script_into_scenes(script_text: str, project_id: str) -> list:
     msg = "Dividido em %d cenas via fallback" % len(scenes)
     logger.info(msg)
     return scenes
-
-def save_scenes(project_id: str, scenes: list) -> Path:
-    from app.config import PROJECTS_DIR
-    proj_dir = PROJECTS_DIR / project_id
-    proj_dir.mkdir(parents=True, exist_ok=True)
-    scenes_path = proj_dir / "storyboard" / "scenes.json"
-    scenes_path.parent.mkdir(parents=True, exist_ok=True)
-    text = json.dumps(scenes, indent=2, ensure_ascii=False)
-    scenes_path.write_text(text, encoding="utf-8")
-    
-    proj_file = proj_dir / "project.json"
-    if proj_file.exists():
-        content = proj_file.read_text(encoding="utf-8")
-        proj = json.loads(content)
-        proj["scenes"] = scenes
-        proj["status"] = "scenes_created"
-    else:
-        proj = {
-            "project_id": project_id,
-            "scenes": scenes,
-            "status": "scenes_created",
-            "created_at": ""
-        }
-    proj_file.write_text(json.dumps(proj, indent=2, ensure_ascii=False), encoding="utf-8")
-    
-    msg = "Cenas salvas para %s: %d cenas" % (project_id, len(scenes))
-    logger.info(msg)
-    return scenes_path

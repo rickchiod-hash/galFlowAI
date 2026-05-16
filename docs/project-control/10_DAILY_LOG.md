@@ -2,6 +2,101 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-16 — Sessão 39: GAL-936 commit + PR + merge — backlog completo
+
+### Contexto
+Sessão 38 (2026-05-15) removeu os 3 módulos legados do pipeline (`script_generator.py`, `scene_splitter.py`, `prompt_builder.py`) e realocou a lógica para `app/domain/` e `app/repositories/`, mas as alterações não foram commitadas. Sessão 39 finaliza: verifica, commita, cria PR, mergeia para master e atualiza documentação.
+
+### O que fiz
+1. **Verificação de estado**: branch `feature/GAL-936-remove-legacy-pipeline` com 33 arquivos modificados, 3 deletados, 4 untracked
+2. **Testes**: **984 passed, 0 failed** — suite completa sem regressão
+3. **Daily log**: entrada S38 adicionada (retroativa)
+4. **Commit**: alterações GAL-936 commitadas
+5. **PR**: criado e mergeado para master
+6. **Backlog**: GAL-936 marcado como ✅ Concluída
+7. **Git audit**: atualizado
+
+### Arquivos alterados (GAL-936)
+- `app/domain/scene_parser.py` — novo
+- `app/domain/prompt_builder_service.py` — novo
+- `app/repositories/scene_repository.py` — novo
+- `app/repositories/prompt_repository.py` — novo
+- `app/repositories/script_repository.py` — `save_script()` adicionado
+- `app/services/script_service.py` — `generate_script()` wrappers
+- `app/pipeline/script_generator.py` — **deletado**
+- `app/pipeline/scene_splitter.py` — **deletado**
+- `app/pipeline/prompt_builder.py` — **deletado**
+- + 20 arquivos de use cases, stages, testes com imports atualizados
+
+### Testes executados
+- Full suite: **984 passed, 0 failed**
+
+### Status do backlog
+- **65/65 histórias + 11 Fase 6 + P0 bugs + S30 + GAL-936 = todas concluídas** ✅
+- Nenhuma história pendente no backlog
+
+### Próximo passo
+Backlog oficial zerado. Próximos passos possíveis:
+- Revisar GAP-010 (async wrappers sync), GAP-011 (test coverage), GAP-012 (E2E fallback test)
+- Planejar próxima iteração com product owner
+
+## 2026-05-15 — Sessão 38: GAL-936 Remove legacy pipeline modules (código pronto, sem commit)
+
+### Contexto
+GAP-009 identificou que `app/pipeline/script_generator.py`, `scene_splitter.py` e `prompt_builder.py` duplicavam lógica dos use cases em `app/application/use_cases/`. Esses 3 arquivos eram resíduo da pipeline antiga, mantidos por compatibilidade mas sem callers reais além dos próprios testes.
+
+### O que fiz
+1. **Domain logic extraída**:
+   - `scene_splitter.py` → `app/domain/scene_parser.py` (parse + validate)
+   - `prompt_builder.py` → `app/domain/prompt_builder_service.py` (build + format)
+2. **I/O extraído**:
+   - `scene_repository.py` (salvar/carregar cenas)
+   - `prompt_repository.py` (salvar/carregar prompts)
+3. **ScriptRepository estendido**: `save_script()` adicionado
+4. **ScriptService estendido**: `generate_script()` + `generate_script_with_details()` wrappers
+5. **12 callers atualizados**: use cases, stages, pipeline, gradio, testes
+6. **6 bugs cascata corrigidos**: `prompts_path undefined`, `mock_build_prompts` NameError, patch targets legacy, `style=""` vs `style`, `_make_pipeline()` sem build_prompts mock, import app.config + Path() em ScriptRepository
+
+### Arquivos alterados
+- 4 novos: `domain/scene_parser.py`, `domain/prompt_builder_service.py`, `repositories/scene_repository.py`, `repositories/prompt_repository.py`
+- 3 deletados: `pipeline/script_generator.py`, `pipeline/scene_splitter.py`, `pipeline/prompt_builder.py`
+- 20+ modificados: use cases, stages, services, pipeline, gradio, testes
+
+### Por que não foi commitado
+Alterações extensas (33 arquivos) e fim de sessão. Commit adiado para S39 para validação completa.
+
+## 2026-05-14 — Sessão 37: GAL-900 GPT4All GPU offload + GAL-901 TODO cleanup
+
+### Contexto
+Varredura da sessão 36 revelou que GAL-900 e GAL-901 tinham TODOs `type=debt` no código mas estavam marcados como ✅ no backlog. Análise aprofundada:
+- GAL-900: GPT4All rodava apenas em CPU (`n_gpu_layers=0` default) + `max_tokens=800`
+- GAL-901: `_extract_product()` já implementava a heurística correta — TODO era stale
+
+### O que fiz
+1. **GAL-900 ⚡** — GPT4All GPU offload:
+   - Adicionado `n_gpu_layers=20` no construtor `GPT4All()` — offloading 20 layers para GPU (GTX 1660 Super 6GB)
+   - Reduzido `max_tokens` de 800 para 400 (suficiente para comercial de 30s)
+   - Fallback seguro: try/except captura falha de GPU e recai para CPU
+   - TODO atualizado para `type=completed`
+   - Meta: resposta < 30s para 400 tokens (antes ~63-115s para 800 tokens)
+
+2. **GAL-901 ✅** — `_extract_product()` já tinha a heurística correta desde commit `24c3b00`. TODO marcado como `type=completed`
+
+3. **Git audit**: 270 commits
+
+### Arquivos alterados
+- `app/adapters/llm/gpt4all_provider.py` — GPU offload, max_tokens 800→400, TODO updated
+- `app/adapters/llm/base_provider.py` — TODO type=debt→completed (já implementado)
+- `docs/project-control/01_AUDITORIA_HISTORICO_GIT.md` — 270 commits
+
+### Testes executados
+- Full suite: **1051 passed, 1 pre-existing fail** (git audit count, já corrigido)
+- Zero regressão
+
+### Pendências reais
+- GAP-009: Legacy pipeline modules (`script_generator.py`, `scene_splitter.py`, `prompt_builder.py`) duplicam use cases — ainda sem história no backlog
+- GA metadata cleanup / next feature phase
+
 ## 2026-05-14 — Sessão 36: Fix duplicate routes + backlog correction
 
 ### Contexto

@@ -1,7 +1,8 @@
 """Scene splitting stage with artifact caching (PIPE-402)."""
 
 from app.pipeline.stages.base_stage import BaseStage
-from app.pipeline.scene_splitter import split_script_into_scenes
+from app.domain.scene_parser import split_script_into_scenes
+from app.repositories.scene_repository import SceneRepository
 from app.application.use_cases.artifact_cache_use_cases import (
     CheckArtifactCacheUseCase,
     StoreArtifactUseCase
@@ -77,8 +78,7 @@ class SceneSplittingStage(BaseStage):
                 return self._create_result(False, error="Falha ao dividir em cenas")
             
             # Save scenes to disk
-            from app.pipeline.scene_splitter import save_scenes
-            save_scenes(project_id, scenes)
+            SceneRepository(project_id).save_scenes(scenes)
             
             # Cache the scenes content for future use
             scenes_json = json.dumps(scenes, ensure_ascii=False, indent=2)

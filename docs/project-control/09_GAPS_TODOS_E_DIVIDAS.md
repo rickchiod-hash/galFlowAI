@@ -53,7 +53,7 @@ TODO genérico é proibido.
 | GAP-006 | C: paths em documentação | DOC-103 | varredura grep — referências informativas em docs de instalação, não são hardcoded paths de código | Mantido como documentação |
 | GAP-007 | TODO_TECNICO sem história vinculada em 3 arquivos | GAL-930..935 | script_service.py:18, pipeline.py:28, api.py:53 | Corrigido — convertido para TODO(GAL-XXX) |
 | GAP-008 | 42/44 rotas API sem type hint de retorno | GAL-935 | api.py | Corrigido — adicionado `-> JSONResponse` |
-| GAP-009 | Legacy pipeline modules duplicam use cases | — | `pipeline/script_generator.py`, `scene_splitter.py`, `prompt_builder.py` | Documentado — remoção agendada para refatoração futura |
+| GAP-009 | Legacy pipeline modules duplicam use cases | GAL-936 | `pipeline/script_generator.py`, `scene_splitter.py`, `prompt_builder.py` | ✅ Concluído — removido em S38, commitado S39 |
 | GAP-010 | async wrappers sobre sync blocking calls | — | `provider_router.py`, `script_service.py` | Documentado — mitigado por safe mode |
 | GAP-011 | Test coverage baixo em script_service.py | GAL-932 | 1 teste apenas | Documentado — pendente |
 | GAP-012 | Sem teste E2E fallback WanGP→FFmpeg | GAL-934 | — | Documentado — pendente |

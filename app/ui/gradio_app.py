@@ -332,7 +332,7 @@ def on_generate_scenes(app_state_val):
     script = app_state_val.get("script", "")
     if not script or not app_state_val.get("script_approved"):
         return app_state_val, [], "Aprove o roteiro antes de gerar cenas."
-    from app.pipeline.scene_splitter import split_script_into_scenes
+    from app.domain.scene_parser import split_script_into_scenes
     project_id = app_state_val.get("project_id", "web_ui")
     scenes = split_script_into_scenes(script, project_id)
     app_state_val["scenes"] = scenes
@@ -357,8 +357,8 @@ def on_render_scenes(app_state_val, progress=gr.Progress()):
     project_id = app_state_val.get("project_id", "web_ui")
     from app.pipeline.video_generation_pipeline import VideoGenerationPipeline
     pipeline = VideoGenerationPipeline()
-    from app.pipeline.scene_splitter import save_scenes
-    save_scenes(project_id, scenes)
+    from app.repositories.scene_repository import SceneRepository
+    SceneRepository(project_id).save_scenes(scenes)
     import time as _time
     start = _time.time()
     logs = []
@@ -408,7 +408,7 @@ def on_generate_scene_prompts(app_state_val):
     scenes = app_state_val.get("scenes", [])
     if not scenes:
         return "Nenhuma cena disponivel."
-    from app.pipeline.prompt_builder import build_prompts_for_scenes
+    from app.domain.prompt_builder_service import build_prompts_for_scenes
     try:
         scenes = build_prompts_for_scenes(scenes)
         app_state_val["scenes"] = scenes

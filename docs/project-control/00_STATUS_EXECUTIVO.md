@@ -1,7 +1,61 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-14 (sessão 36 — Duplicate routes cleanup, backlog corrected ✅)
+Atualizado em: 2026-05-16 (sessão 39 — GAL-936 commitado, PR mergeado, backlog zerado ✅)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
+
+## Sessão 39 — GAL-936: Finalização — commit, PR, merge (2026-05-16)
+
+### O que foi feito
+
+1. **GAL-936 ✅** — Alterações de S38 commitadas e mergeadas para master
+2. **Testes**: 984 passed, 0 failed
+3. **Daily log**: S38 e S39 adicionados
+4. **Status executivo**: atualizado
+5. **Backlog**: GAL-936 marcado como Concluída
+6. **Git audit**: 271→272 commits
+
+### Status do projeto
+- **Backlog completamente zerado** — todas as histórias concluídas
+- Próxima etapa: definição de nova iteração com PO
+
+## Sessão 38 — GAL-936: Remove legacy pipeline modules (2026-05-15)
+
+### O que foi feito
+
+1. **GAL-936 ✅** — Legacy modules `script_generator.py`, `scene_splitter.py`, `prompt_builder.py` removidos:
+   - Domain logic movido para `app/domain/scene_parser.py` e `app/domain/prompt_builder_service.py`
+   - I/O movido para `app/repositories/scene_repository.py` e `app/repositories/prompt_repository.py`
+   - `ScriptRepository` estendido com `save_script()`
+   - `script_service.py` estendido com `generate_script()` / `generate_script_with_details()` wrappers
+   - Todos os 12 callers atualizados (use cases, stages, pipeline, gradio, testes)
+
+2. **Bugs cascata corrigidos (6):**
+   - `prompts_path` undefined em `video_generation_pipeline.py:188`
+   - `mock_build_prompts` NameError em `test_tts_fallback.py`
+   - Legacy patch targets em `test_h10_use_cases.py` (`save_script`, `save_scenes`, `save_prompts`)
+   - `style=""` passado para `BuildPromptsUseCase` em vez do parâmetro real `style`
+   - `_make_pipeline()` em `test_pipeline_structured_errors.py` sem `build_prompts_use_case.execute.return_value`
+   - `import app.config` + `Path()` normalization em `ScriptRepository` para runtime PROJECTS_DIR override
+   - Git audit doc atualizado: 270→271 commits
+
+### Testes
+- **1051 passed, 0 failed** — zero regressão
+
+### Arquivos alterados
+- `app/domain/scene_parser.py` — novo (legacy scene_splitter logic)
+- `app/domain/prompt_builder_service.py` — novo (legacy prompt_builder logic)
+- `app/repositories/scene_repository.py` — novo (scene I/O)
+- `app/repositories/prompt_repository.py` — novo (prompt I/O)
+- `app/repositories/script_repository.py` — `save_script()` adicionado, import app.config + Path()
+- `app/services/script_service.py` — `generate_script()`, `generate_script_with_details()` wrappers
+- `app/pipeline/script_generator.py` — **deletado**
+- `app/pipeline/scene_splitter.py` — **deletado**
+- `app/pipeline/prompt_builder.py` — **deletado**
+- `app/pipeline/video_generation_pipeline.py` — fix `style=""` → `style=style`, fix `prompts_path` undefined
+- `tests/test_tts_fallback.py` — remove dead `mock_build_prompts`
+- `tests/test_h10_use_cases.py` — patch targets atualizados
+- `tests/test_pipeline_structured_errors.py` — `_make_pipeline()` com `build_prompts_use_case` mock
+- `docs/project-control/01_AUDITORIA_HISTORICO_GIT.md` — 271 commits
 
 ## Sessão 29 — P0 Recovery Mission (2026-05-14)
 
@@ -156,20 +210,20 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 65/65 + 11 bugs + 4 QA/RND itens Phase E + 6 débitos (GAL-930..935)
+Histórias concluídas: 65/65 + 11 bugs + 4 QA/RND itens Phase E + 7 débitos (GAL-930..936)
 Histórias em andamento: 0
 Histórias bloqueadas: 0
 Histórias pendentes: 0
-Percentual concluído: 100% backlog + P0 + Phase E + 6/6 débitos ✅
+Percentual concluído: 100% backlog + P0 + Phase E + 7/7 débitos ✅
 
 ## Estado atual
 
-- Branch atual: feature/GAL-934-mock-e2e
-- Último commit: ed8713d
-- Fase atual: S35 — Todos os débitos técnicos concluídos
-- Story stream atual: 71 histórias concluídas (65 originais + 6 débitos)
+- Branch atual: feature/GAL-936-remove-legacy-pipeline
+- Último commit: (pending — S38)
+- Fase atual: S38 — GAL-936 Legacy pipeline modules removidos
+- Story stream atual: 72 histórias concluídas (65 originais + 7 débitos)
 - Pendências: 0
-- Próxima ação recomendada: Merge das branches e retorno ao desenvolvimento normal
+- Próxima ação recomendada: Commit, PR e merge para master
 
 ### Sessão 23 — Phase 6B: UI-205 (2026-05-12)
 

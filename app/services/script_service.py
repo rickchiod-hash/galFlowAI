@@ -302,8 +302,7 @@ def improve_script(project_id: str, briefing: str = "") -> Dict:
         if not current.get("script"):
             return {"ok": False, "error": "No current script found"}
         
-        # Use LLM to improve
-        from app.pipeline.script_generator import generate_script
+        # Use LLM to improve (GAL-936: inline from legacy module)
         improved = generate_script(briefing if briefing else current["script"], project_id)
         
         # Save as new version
@@ -510,3 +509,56 @@ async def generate_script_fast(briefing: str, timeout: int = 5) -> Dict:
 async def generate_script_quality(briefing: str, timeout: int = 15) -> Dict:
     """Async wrapper for quality mode."""
     return generate_script_with_llm(briefing, mode="quality")
+
+
+# ========== Legacy-compatible wrappers (GAL-936) ==========
+
+_PROVIDER_MODES = {"lmstudio", "koboldcpp", "llamacpp", "gpt4all", "template"}
+
+
+def _run_generation(briefing, mode="auto"):
+    """Internal: returns dict with script, provider, time, quality."""
+    if mode in _PROVIDER_MODES:
+        return generate_script_with_provider(briefing, mode)
+    else:
+        return generate_script_with_llm(briefing, mode)
+
+
+def generate_script(briefing, project_id=None, mode="auto"):
+    """
+    Gera roteiro a partir do briefing usando LLMs locais ou templates.
+    mode: 'auto', 'fast', 'quality', 'safe', 'template', 'lmstudio', 'koboldcpp', 'llamacpp', 'gpt4all'
+    Returns: str (the generated script)
+    """
+    logger.info("Gerando roteiro para: %s [modo: %s]", str(briefing)[:50], mode)
+    try:
+        result = _run_generation(briefing, mode)
+        logger.info("Roteiro gerado via %s", result.get("provider", "unknown"))
+        if not result.get("ok") or "script" not in result:
+            raise KeyError("Resultado sem script: %s" % result.get("error", "erro desconhecido"))
+        return result["script"]
+    except Exception as e:
+        logger.error("CAUSA: Falha no servico de roteiro: %s | CORREÇÃO: Verifique LLM provider disponível", e)
+        from app.adapters.llm.template_provider import TemplateProvider
+        return TemplateProvider().generate(briefing)
+
+
+def generate_script_with_details(briefing, project_id=None, mode="auto"):
+    """
+    Gera roteiro e retorna dict com script + metadados do provider.
+    Returns: dict with keys: ok, script, provider, time, quality
+    """
+    logger.info("Gerando roteiro para: %s [modo: %s]", str(briefing)[:50], mode)
+    try:
+        result = _run_generation(briefing, mode)
+        logger.info("Roteiro gerado via %s", result.get("provider", "unknown"))
+        if not result.get("ok") or "script" not in result:
+            raise KeyError("Resultado sem script: %s" % result.get("error", "erro desconhecido"))
+        return result
+    except Exception as e:
+        logger.error("CAUSA: Falha no servico de roteiro: %s | CORREÇÃO: Verifique LLM provider disponível", e)
+        from app.adapters.llm.template_provider import TemplateProvider
+        tp = TemplateProvider()
+        fallback_result = {"ok": True, "script": tp.generate(briefing), "provider": "TemplateProvider", "time": 0, "quality": "fallback"}
+        logger.info("Fallback: Script generated via TemplateProvider (time: 0.00s)")
+        return fallback_result

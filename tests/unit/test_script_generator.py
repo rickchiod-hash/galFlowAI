@@ -6,7 +6,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from app.pipeline.script_generator import generate_script, save_script
+from app.services.script_service import generate_script
+from app.repositories.script_repository import ScriptRepository
 from app.logging_config import setup_logger
 
 logger = setup_logger()
@@ -42,8 +43,9 @@ def test_save_script(tmp_path):
     proj_file = proj_dir / "project.json"
     proj_file.write_text(json.dumps({"id": project_id, "name": "test"}), encoding="utf-8")
     
-    result = save_script(project_id, "Test script content")
+    result = ScriptRepository(project_id).save_script("Test script content")
     assert result is not None
+    assert result.success
     logger.info("test_save_script: PASSED")
 
 

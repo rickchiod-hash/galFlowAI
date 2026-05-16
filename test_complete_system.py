@@ -16,8 +16,8 @@ class TestCompleteSystem(unittest.TestCase):
         try:
             from app.services.video_service import VideoService
             from app.services.tts_service import TTSService
-            from app.pipeline.prompt_builder import build_prompts_for_scenes
-            from app.pipeline.scene_splitter import split_script_into_scenes
+            from app.domain.prompt_builder_service import build_prompts_for_scenes
+            from app.domain.scene_parser import split_script_into_scenes
             from app.adapters.wangp_adapter import WanGPAdapter
             from app.adapters.ffmpeg_adapter import FFmpegAdapter
             self.assertTrue(True)
@@ -40,7 +40,7 @@ class TestCompleteSystem(unittest.TestCase):
     
     def test_prompt_generation_flow(self):
         """Testa fluxo completo de geração de prompts"""
-        from app.pipeline.prompt_builder import build_prompts_for_scenes
+        from app.domain.prompt_builder_service import build_prompts_for_scenes
         
         scenes = [
             {"id": "s1", "text": "Cena 1", "duration": 5},
@@ -132,7 +132,7 @@ class TestErrorHandling(unittest.TestCase):
     
     def test_prompt_builder_empty_scenes(self):
         """Testa comportamento com lista vazia de cenas"""
-        from app.pipeline.prompt_builder import build_prompts_for_scenes
+        from app.domain.prompt_builder_service import build_prompts_for_scenes
         
         prompts = build_prompts_for_scenes([])
         self.assertEqual(len(prompts), 0)
