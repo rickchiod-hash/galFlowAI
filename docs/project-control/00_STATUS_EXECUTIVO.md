@@ -1,6 +1,6 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-16 (sessão 41 — GAL-938 hardcoded K:\ paths removidos ✅)
+Atualizado em: 2026-05-16 (sessão 47 — GAL-942 coverage: 62%→70%, 116 novos testes)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Sessão 41 — GAL-938: Remover hardcoded K:\ paths — portabilidade (2026-05-16)
@@ -234,20 +234,45 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
 ## Progresso geral
 
-Histórias concluídas: 65/65 + 11 bugs + 4 QA/RND itens Phase E + 7 débitos (GAL-930..936)
+Histórias concluídas: 65/65 + 11 bugs + 4 QA/RND itens Phase E + 8 débitos (GAL-930..944)
 Histórias em andamento: 0
 Histórias bloqueadas: 0
 Histórias pendentes: 0
-Percentual concluído: 100% backlog + P0 + Phase E + 7/7 débitos ✅
+Percentual concluído: 100% backlog + P0 + Phase E + 8/8 débitos ✅
+
+## Sessão 47 — GAL-942: Coverage crítica — 62%→70%, 116 novos testes (2026-05-16)
+
+### O que foi feito
+1. **GAL-942 ✅** — 116 testes unitários para 10 módulos com cobertura 0% ou <20%
+2. Cobertura total: **62% → 70%** (+8pp)
+3. Módulos com 0% que agora estão >78%: approve_script_use_case (100%), create_project_use_case (100%), create_storyboard_use_case (100%), manage_queue_use_case (98%), script_quality_use_cases (91%), script_improvement_use_cases (78%), visual_consistency_use_cases (86%), prompt_use_cases (93%)
+4. Serviços recuperados: video_service (12%→84%), tts_service (18%→82%)
+5. Padrão usado: unittest.mock (patch/MagicMock), tempfile para I/O real em LoadPromptPackUseCase
+
+### Arquivos criados
+- `tests/test_approve_script_use_case.py` — 4 testes
+- `tests/test_create_project_use_case.py` — 4 testes
+- `tests/test_create_storyboard_use_case.py` — 5 testes
+- `tests/test_manage_queue_use_case.py` — 9 testes
+- `tests/test_script_quality_use_cases.py` — 15 testes
+- `tests/test_script_improvement_use_cases.py` — 17 testes
+- `tests/test_visual_consistency_use_cases.py` — 17 testes
+- `tests/test_prompt_use_cases.py` — 17 testes
+- `tests/test_video_service.py` — 17 testes
+- `tests/test_tts_service.py` — 11 testes
+
+### Testes
+- **1096 passed, 0 failed** (anterior: 980)
 
 ## Estado atual
 
-- Branch atual: feature/GAL-936-remove-legacy-pipeline
-- Último commit: (pending — S38)
-- Fase atual: S38 — GAL-936 Legacy pipeline modules removidos
-- Story stream atual: 72 histórias concluídas (65 originais + 7 débitos)
+- Branch atual: master
+- Último commit: 76a74a3 (GAL-944)
+- Fase atual: S47 — GAL-942 Coverage crítica
+- Story stream atual: 73 histórias concluídas (65 originais + 8 débitos)
 - Pendências: 0
-- Próxima ação recomendada: Commit, PR e merge para master
+- Cobertura: 70%
+- Próxima ação recomendada: Definir próxima história (GAL-943 exceções tipadas ou nova feature)
 
 ### Sessão 23 — Phase 6B: UI-205 (2026-05-12)
 

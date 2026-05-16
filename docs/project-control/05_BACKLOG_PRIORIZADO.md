@@ -137,6 +137,7 @@ Bug fixes identificados durante Recovery Mission S29. Todos corrigidos e verific
 | 5 | GAL-940 | Remover `or True` bug em TTSAdapter.is_available() que sempre retorna True | Média | 2 | ✅ Concluída | Nenhuma |
 | 6 | GAL-941 | Adicionar logging em 27 `except Exception:` sem `as e` em 13 arquivos | Média | 8 | ✅ Concluída | Nenhuma |
 | 7 | GAL-944 | Converter 40 rotas FastAPI de async def para def (thread pool) | Média | 5 | ✅ Concluída | Nenhuma |
+| 8 | GAL-942 | Criar testes para 10 módulos críticos com cobertura 0% ou <20% — approve, create_project, create_storyboard, manage_queue, script_quality, script_improvement, visual_consistency, prompt, video_service, tts_service | Média | 8 | ✅ Concluída | Nenhuma |
 
 ## Regras de priorização
 

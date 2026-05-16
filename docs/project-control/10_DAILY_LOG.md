@@ -2,6 +2,45 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-16 — Sessão 47: GAL-942 Testes para 10 módulos críticos com cobertura 0% ou <20%
+
+### Contexto
+Coverage report apontou 10 módulos com cobertura crítica entre 0% e 18%. A maioria era use cases de negócio puro ou serviços core, sem dependência externa complexa — candidatos naturais para testes unitários com mocking.
+
+### O que fiz
+- **116 novos testes** em 10 arquivos
+- Cobertura total subiu de **62% → 70%** (+8pp)
+- Módulos que saíram de 0%:
+  - `approve_script_use_case.py`: 0% → **100%** (4 testes)
+  - `create_project_use_case.py`: 0% → **100%** (4 testes)
+  - `create_storyboard_use_case.py`: 0% → **100%** (5 testes)
+  - `manage_queue_use_case.py`: 0% → **98%** (9 testes)
+  - `script_quality_use_cases.py`: 0% → **91%** (15 testes)
+  - `script_improvement_use_cases.py`: 0% → **78%** (17 testes)
+  - `visual_consistency_use_cases.py`: 0% → **86%** (17 testes)
+  - `prompt_use_cases.py`: 0% → **93%** (17 testes)
+- Serviços que saíram de cobertura crítica:
+  - `video_service.py`: 12% → **84%** (17 testes)
+  - `tts_service.py`: 18% → **82%** (11 testes)
+- Padrão usado: `unittest.mock` (patch, MagicMock), tempfile para I/O real em prompt_use_cases
+- **Testes**: 1096 passed, 0 failed (anterior: 980)
+
+### Arquivos criados
+- `tests/test_approve_script_use_case.py`
+- `tests/test_create_project_use_case.py`
+- `tests/test_create_storyboard_use_case.py`
+- `tests/test_manage_queue_use_case.py`
+- `tests/test_script_quality_use_cases.py`
+- `tests/test_script_improvement_use_cases.py`
+- `tests/test_visual_consistency_use_cases.py`
+- `tests/test_prompt_use_cases.py`
+- `tests/test_video_service.py`
+- `tests/test_tts_service.py`
+
+### Arquivos alterados
+- `docs/project-control/05_BACKLOG_PRIORIZADO.md` — GAL-942 marcado Concluída
+- `docs/project-control/10_DAILY_LOG.md` — esta entrada
+
 ## 2026-05-16 — Sessão 46: GAL-944 Converter 40 rotas FastAPI de async def para def
 
 ### Contexto
