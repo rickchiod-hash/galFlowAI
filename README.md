@@ -2,100 +2,77 @@
 
 <p align="center">
   <img src="galflowai_logo_master.png" alt="GalFlowAI logo" width="360" />
+  <br/>
+  <strong>Roteiro → Cenas → IA → Vídeo</strong>
+  <br/>
+  <em>Local-first · Fallback-first · Offline-ready</em>
 </p>
 
 <p align="center">
-  <img src="galflowai_app_icon.png" alt="GalFlowAI icon" width="64" />
+  <img src="https://img.shields.io/badge/tests-1165%20passed-brightgreen" alt="Testes">
+  <img src="https://img.shields.io/badge/coverage-70%25-yellow" alt="Coverage">
+  <img src="https://img.shields.io/badge/python-3.12-blue" alt="Python">
+  <img src="https://img.shields.io/badge/license-MIT-orange" alt="License">
 </p>
 
-<p align="center">
-  <strong>Roteiro → Cenas → IA → Vídeo</strong><br/>
-  Plataforma <strong>local-first</strong> para geração de vídeos comerciais com IA, fallback robusto e foco em operação offline.
-</p>
+---
+
+## Índice
+
+- [O que é](#o-que-é)
+- [Quick Start](#quick-start)
+- [Pipeline](#pipeline)
+- [Stage Gates](#stage-gates)
+- [Prompt Reviewer](#prompt-reviewer)
+- [CLI de Qualidade](#cli-de-qualidade)
+- [LLM Providers](#llm-providers)
+- [Testes](#testes)
+- [Docs](#docs)
+- [Arquitetura](#arquitetura)
+- [Riscos](#riscos)
 
 ---
 
-## Sumário
-### 🎯 Trilha Operação (como usar)
-- [Começando em 5 minutos](#começando-em-5-minutos)
-- [Onboarding Rápido](#onboarding-rápido)
-- [Execução e Operação](#execução-e-operação)
-- [Riscos Ativos](#riscos-ativos)
-- [Qualidade e Testes](#qualidade-e-testes)
+## O que é
 
-### 🏗️ Trilha Arquitetura (como evoluir)
-- [Visão do Produto](#visão-do-produto)
-- [Princípios de Arquitetura](#princípios-de-arquitetura)
-- [Status Real do Projeto](#status-real-do-projeto)
-- [Fluxo do Sistema](#fluxo-do-sistema)
-- [Arquitetura Técnica](#arquitetura-técnica)
-- [Roadmap objetivo](#roadmap-objetivo)
-- [Governança de documentação](#governança-de-documentação)
+GalFlowAI gera **comerciais de vídeo curtos** com IA 100% local. Do briefing ao MP4 sem depender de API paga ou cloud.
 
----
+### Capacidades
 
-## Visão do Produto
-
-**GalFlowAI** é uma plataforma para criação de comerciais curtos com IA rodando localmente, priorizando:
-
-- privacidade e autonomia (sem dependência obrigatória de API paga);
-- resiliência operacional via fallback;
-- iteração rápida de roteiro e cenas;
-- rastreabilidade técnica do pipeline.
-
-### Naming oficial
-- **Produto e marca:** `GalFlowAI`
-- **Repositório:** `galFlowAI`
-- **Logos:** `galflowai_logo_master.png` (logo principal), `galflowai_app_icon.png` (ícone)
-- Referências legadas (ex.: GalFlowAI) devem aparecer apenas em contexto histórico.
+| Funcionalidade | Status |
+|---|---|
+| Geração de roteiro por IA local | ✅ 6 providers |
+| Edição, versões, aprovação | ✅ Com stage gates |
+| Quebra em cenas + prompts visuais | ✅ |
+| TTS com fallback silencioso | ✅ |
+| Render WanGP + FFmpeg fallback | ✅ |
+| Quality gates por etapa | ✅ Novo |
+| Prompt lint automático | ✅ Novo |
+| Dashboard de logs em tempo real | ✅ |
+| API REST `/api/v1/` | ✅ |
+| Queue com ledger SQLite | ✅ |
+| Quality CLI (`scripts/quality_check.py`) | ✅ Novo |
 
 ---
 
-## Princípios de Arquitetura
+## Quick Start
 
-1. **Local-first**: funcional mesmo sem cloud.
-2. **Fail-safe por fallback**: fluxo não deve parar em falha de engine principal.
-3. **Evolução incremental**: mudanças pequenas, testáveis e reversíveis.
-4. **Contrato explícito**: API, erros e estado de job devem ser previsíveis.
-5. **Documentação viva**: README (entrada), BACKLOG (execução), ROADMAP (direção).
+```bash
+# Ativar ambiente
+K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\activate
 
----
+# Iniciar UI
+scripts\start_GalFlowAI_standard.bat
+# → http://127.0.0.1:7860
 
-## Status Real do Projeto
-
-### ✅ Já implementado
-- Pipeline base de criação: roteiro → cenas → render/finalização.
-- Base FastAPI + UI local (Gradio 6 em 127.0.0.1:7860).
-- Fallback operacional em cadeia para não interromper geração.
-- Estrutura completa de use cases na camada de aplicação (25+ use cases).
-- 6 providers LLM locais: Template, GPT4All, LM Studio, KoboldCpp, llama.cpp, Ollama (opcional).
-- GPT4All funcional com orca-mini-3b + max_tokens=800 e prompt pt-BR.
-- Job queue com mutex (H11 concluído: 16 testes passando).
-- Metrics & Monitoring (H12 concluído: 10 testes passando).
-- Logs via API (H13 concluído: 11 testes passando).
-- Prompt Context Pack (H14 concluído: 12 testes passando).
-- Script Quality & Commercial (H15 concluído: 13 testes passando).
-- Advanced Script Editing (H16 concluído: 11 testes passando).
-- Visual Consistency (H17 concluído: 13 testes passando).
-- Advanced Observability (H18 concluído: 6 testes passando).
-- Documentação técnica segmentada em `docs/`.
-- **Total: 840 testes passando, 1 pre-existing fail (git audit).**
-- **Padronização de erros:** formato "CAUSA | CORREÇÃO" implementado.
-- **Ambiente K-only:** sem dependências obrigatórias de C:, todos os caminhos em K:.
-- **S30 Recovery concluída:** 11 bugs P0/alta corrigidos, UI 6-stage funcional.
-
-### 🟨 Em evolução (não concluído)
-- Testes E2E para gate de aprovação (QA-1007).
-- Testes E2E provider selecionado vs usado (QA-1008).
-- Testes E2E logs/dashboard pós-job (QA-1009).
-- Evidência de geração real de vídeo fim a fim (RND-613).
-- Testes de contrato FastAPI (GAL-935).
-- Cobertura de testes script_service.py (GAL-932).
-- Unificação pipeline em use cases independentes (GAL-933).
+# Testes
+pytest -q
+# → 1165 passed
+```
 
 ---
 
-## Fluxo do Sistema
+## Pipeline
 
 ```mermaid
 flowchart TD
@@ -103,206 +80,182 @@ flowchart TD
     B --> C[Edição/Aprovação]
     C --> D[Quebra em cenas]
     D --> E[Prompts visuais]
-    E --> F[Engine principal de vídeo]
-    F -->|falha| G[Fallback FFmpeg/Template]
+    E --> F[Render principal WanGP]
+    F -->|falha| G[Fallback FFmpeg]
     F -->|sucesso| H[Composição final]
     G --> H
     H --> I[Export MP4]
 ```
 
-### Estados de alto nível
+**7 etapas** orquestradas por `VideoGenerationPipeline` com use cases independentes, logging estruturado e erros rastreáveis.
 
-```mermaid
-stateDiagram-v2
-    [*] --> queued
-    queued --> running
-    running --> succeeded
-    running --> failed
-    failed --> queued: retry
-    running --> canceled
+---
+
+## Stage Gates
+
+Gates formais que bloqueiam etapas se pré-condições não forem atendidas:
+
+| Gate | Stage | O que valida |
+|------|-------|-------------|
+| `ProjectExistsGate` | script | Diretório do projeto existe |
+| `BriefingNotEmptyGate` | script | Briefing não está vazio |
+| `ScriptGeneratedGate` | approval | `script_draft.md` existe |
+| `ScriptApprovedGate` | scenes | `script_approved.md` existe |
+| `ScenesExistGate` | prompts | `scenes.json` existe |
+| `PromptsExistGate` | render | Prompt files existem |
+| `RenderedScenesGate` | concat | Pelo menos 1 cena renderizada |
+
+Atualmente **2 gates integrados ao pipeline**: SCRIPT (project + briefing) e CONCAT (cenas renderizadas). Demais disponíveis via CLI.
+
+```bash
+py scripts/quality_check.py meu_projeto --gate scenes
+py scripts/quality_check.py meu_projeto --all
 ```
 
 ---
 
-## Arquitetura Técnica
+## Prompt Reviewer
+
+Lint automático de prompts com 8 regras e score (0.0–1.0):
+
+| Regra | Severidade | O que detecta |
+|-------|-----------|---------------|
+| `prompt_pos_not_empty` | ERROR | Prompt vazio |
+| `prompt_neg_not_empty` | WARNING | Negative prompt vazio |
+| `prompt_too_short` | WARNING | < 20 caracteres |
+| `prompt_too_long` | INFO | > 2000 caracteres |
+| `no_placeholder_text` | ERROR | "DESCRIÇÃO", "TODO", placeholders |
+| `has_quality_keywords_pos` | INFO | Prompt sem termos de qualidade |
+| `neg_has_quality_terms` | WARNING | Negative sem "blurry, low quality" |
+| `neg_has_both_languages` | WARNING | Faltam termos PT ou EN |
+
+```python
+from app.domain.prompt_reviewer import review_scene_prompts
+
+report = review_scene_prompts(scenes)
+# → scene_count, average_score, total_violations, scene_reviews
+```
+
+---
+
+## CLI de Qualidade
+
+```bash
+# Verificar gates de um projeto
+py scripts/quality_check.py meu_projeto
+
+# Gate específico
+py scripts/quality_check.py meu_projeto --gate scenes
+
+# Revisar prompts
+py scripts/quality_check.py meu_projeto --review-prompts
+
+# Exportar relatório completo como JSON
+py scripts/quality_check.py meu_projeto --export
+# → projects/meu_projeto/quality/quality_report.json
+
+# Listar todos os gates registrados
+py scripts/quality_check.py --list-gates
+```
+
+---
+
+## LLM Providers
+
+| Provider | Status | Fallback |
+|----------|--------|----------|
+| TemplateProvider | ✅ Always | Fallback universal |
+| GPT4All (orca-mini-3b) | ✅ Local | Template |
+| LM Studio | ✅ Local | Template |
+| KoboldCpp | ✅ Local | Template |
+| LlamaCpp | ✅ Local | Template |
+| Ollama | ⚡ Opcional | Template |
+
+---
+
+## Testes
+
+```bash
+pytest -q            # 1165 testes, full suite
+pytest tests/ -v     # verbose
+pytest --cov=app     # cobertura (70%)
+```
+
+- **26 testes** para Stage Gates
+- **43 testes** para Prompt Reviewer
+- **4+** E2E mockados para fallback WanGP→FFmpeg
+- Zero dependência de GPU nos testes
+
+---
+
+## Docs
+
+| Documento | Conteúdo |
+|---|---|
+| `README.md` | Esta página → entrada única |
+| `docs/project-control/` | Backlog, status, daily log, DoR/DoD |
+| `docs/reference/` | Fonte de verdade do produto, matriz de preservação |
+| `artifacts/qa/` | Testes smoke, 60 críticas técnicas, matriz runtime |
+
+---
+
+## Arquitetura
 
 ```mermaid
 graph LR
-    UI[Frontend/UI] --> API[FastAPI]
-    API --> APP[Application Use Cases]
-    APP --> SVC[Domain Services]
-    SVC --> ADP[Adapters Engines/Providers]
-    ADP --> FS[File System Projects]
-    SVC --> LOG[Log/Metrics]
+    UI[Gradio UI] --> API[FastAPI]
+    API --> UC[Use Cases]
+    UC --> DOM[Domain Services]
+    UC --> GATES[Stage Gates]
+    DOM --> ADP[Adapters]
+    ADP --> FS[(File System)]
+    DOM --> LOG[StageLogger]
+    GATES --> UC
 ```
 
-### Estrutura de diretórios (resumo)
+### Estrutura
 
-```text
-app/                  # API + camadas de aplicação/serviços
-frontend/             # interface e assets
-docs/                 # documentação técnica por domínio
-tests/                # testes unitários/integrados
-state/                # estado operacional e checkpoints
-scripts/              # automações operacionais
-galflowai_logo_master.png  # Logo principal
-galflowai_app_icon.png     # Ícone do app
 ```
-
----
-
-## Começando em 5 minutos
-
-### 1) Ambiente
-```bash
-# Usar ambiente existente (recomendado)
-K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\activate
-```
-
-### 2) Subir aplicação
-```bash
-# Via BAT padrão (configura todas as variáveis)
-scripts\start_GalFlowAI_standard.bat
-
-# Ou diretamente
-python run_galFlowAI.py
-```
-
-### 3) Rodar testes básicos
-```bash
-pytest -q
-# Total: 314 testes coletados
+app/
+├── pipeline/           # Orquestração + Gates + JobState
+│   ├── video_generation_pipeline.py
+│   ├── stage_gate.py           # ← Novo
+│   ├── job_state.py
+│   └── job_ledger.py
+├── domain/             # Regras de negócio
+│   ├── prompt_reviewer.py      # ← Novo
+│   ├── stage_logger.py
+│   └── scene_contract.py
+├── application/        # Use cases
+├── adapters/           # WanGP, FFmpeg, TTS, LLM providers
+└── ui/                 # Gradio (moderno)
+scripts/
+├── quality_check.py    # ← Novo
+└── lint_check.py       # ← Novo
+tests/                  # 1165 testes
 ```
 
 ---
 
-## Execução e Operação
+## Riscos
 
-- **Entrada recomendada:** `run_galFlowAI.py`
-- **Documentação operacional:** `docs/VIDEO_PIPELINE.md`, `docs/TROUBLESHOOTING.md`
-- **Configuração de provedores locais:** `docs/PROVIDERS_SETUP.md`
-- **Variáveis obrigatórias:** configuradas via `scripts/start_GalFlowAI_standard.bat`
-  - PIP_CACHE_DIR, HF_HOME, TORCH_HOME, XDG_CACHE_HOME, TEMP, TMP, OLLAMA_MODELS, GIT_PYTHON_GIT_EXECUTABLE
-
----
-
-## Qualidade e Testes
-
-### Estratégia
-- testes unitários para regras de negócio;
-- testes de contrato para API crítica;
-- testes de fallback para cenários de falha;
-- smoke de fluxo local-first.
-
-### Cobertura atual
-- **314 testes coletados** (pytest)
-- **84+ novos testes H11-H18** (100% pass)
-- Use cases seguem padrão 3 pontos: Validate → Execute → Return
-
-### Referências
-- Plano de QA: `qa/QA_TEST_PLAN.md`
-- Backlog técnico: `BACKLOG.md`
-- Roadmap: `ROADMAP.md`
+| Risco | Impacto | Mitigação |
+|---|---|---|
+| VRAM 6GB limitada (GTX 1660 Super) | Alto | Modelo 1.3B, preset seguro, mutex |
+| Fallback FFmpeg pode falhar | Médio | Testes E2E, validação de paths |
+| Drift docs/código | Médio | Atualização mandatória em PR |
+| Logs sem rotação | Baixo | Compactação periódica |
 
 ---
 
-## Roadmap objetivo
+## Licença
 
-### Curto prazo (H19-H20)
-1. Contrato de API (`/api/v1`) + testes de contrato.
-2. Envelope padrão de erros (CAUSA | CORREÇÃO).
-3. Fila local de jobs com estados formais.
-
-### Médio prazo
-1. Logs estruturados e métricas por etapa/provider.
-2. Observabilidade operacional com diagnóstico rápido.
-3. Testes E2E completos.
-
-### Longo prazo
-1. Integração com WanGP/Wan2GP 1.3B (motor principal).
-2. FramePack como motor experimental.
-3. Montagem FFmpeg como prioridade.
+MIT — uso livre, modificação e distribuição permitidas.
 
 ---
 
-## Governança de documentação
-
-Para cada PR:
-- atualizar docs impactadas no mesmo PR;
-- distinguir claramente **implementado** vs **planejado**;
-- incluir evidência (teste, log, endpoint ou artefato);
-- manter naming oficial **GalFlowAI**;
-- usar logos oficiais (`galflowai_logo_master.png`, `galflowai_app_icon.png`).
-
----
-
-## Trilhas de Documentação
-
-### 🎯 Trilha Operação (como usar o GalFlowAI)
-- **Começando:** [Começando em 5 minutos](#começando-em-5-minutos)
-- **Onboarding:** [Onboarding Rápido](#onboarding-rápido)
-- **Execução:** [Execução e Operação](#execução-e-operação)
-- **Troubleshooting:** `docs/TROUBLESHOOTING.md`
-- **Provedores LLM:** `docs/PROVIDERS_SETUP.md`
-- **Instalação GPT4All:** `docs/INSTALAR_GPT4ALL_K.md`
-- **Instalação KoboldCPP:** `docs/INSTALAR_KOBOLDCPP_K.md`
-- **Instalação LLaMA.cpp:** `docs/INSTALAR_LLAMACPP_K.md`
-- **Instalação LM Studio:** `docs/INSTALAR_LM_STUDIO_K.md`
-
-### 🏗️ Trilha Arquitetura (como evoluir o GalFlowAI)
-- **Visão:** [Visão do Produto](#visão-do-produto)
-- **Princípios:** [Princípios de Arquitetura](#princípios-de-arquitetura)
-- **Status:** [Status Real do Projeto](#status-real-do-projeto)
-- **Fluxo:** [Fluxo do Sistema](#fluxo-do-sistema)
-- **Arquitetura:** [Arquitetura Técnica](#arquitetura-técnica)
-- **Roadmap:** [Roadmap objetivo](#roadmap-objetivo)
-- **Governança:** [Governança de documentação](#governança-de-documentação)
-- **Arquitetura Detalhada:** `docs/ARQUITETURA.md`
-- **API V2:** `docs/FASTAPI_V2.md`
-- **UI/UX:** `docs/GRADIO_STUDIO_UX.md`, `docs/UI_UX_GAL_AI_STUDIO.md`
-- **Motores:** `docs/MOTORES_ROTEIRO_TELA.md`, `docs/VIDEO_SERVICE.md`
-- **Pipeline:** `docs/VIDEO_PIPELINE.md`
-- **Roteiro:** `docs/PROMPT_ROTEIRO_V2.md`, `docs/ROTEIRO_EDITAVEL.md`, `docs/SCRIPT_EDITABLE.md`
-- **LLM Local:** `docs/LLM_LOCAL_SEM_API_KEY.md`
-
----
-
-## Riscos Ativos
-
-| Risco | Impacto | Mitigação | Owner |
-|---|---|---|---|
-| VRAM 6GB limitada | Alto | Usar 1.3B, preset seguro, mutex na queue | Dev |
-| Fallback FFmpeg pode falhar | Médio | Testes E2E, validação de caminhos K: | QA |
-| Divergência docs/código | Médio | Atualização obrigatória em PR | Dev |
-| Logs crescem sem limite | Baixo | Rotacionar logs, compactar | Ops |
-
----
-
-## Onboarding Rápido
-
-1. **Clone o repositório** em K:\AI_VIDEO_COMERCIAL_STUDIO\opencodegalpasta
-2. **Ative o ambiente:** `K:\AI_VIDEO_COMERCIAL_STUDIO\envs\studio\Scripts\activate`
-3. **Execute:** `scripts\start_GalFlowAI_standard.bat`
-4. **Acesse:** http://127.0.0.1:7860
-5. **Teste:** `pytest -q` (840 testes)
-
----
-
-Se algo neste README divergir do comportamento real, abra issue e referencie arquivo/linha para correção rápida.
-
----
-
-## Histórico de Refatoração
-
-### Rename GalFlowAI → GalFlowAI (06/05/2026)
-- **Contexto:** Padronização do nome do projeto conforme AGENTS.md (deve terminar com AI).
-- **Escopo:** Substituído "GalFlowAI" por "GalFlowAI" em todos os arquivos (.py, .md, .bat).
-- **Arquivos afetados:** 15+ arquivos incluindo api.py, use_cases, services, testes.
-- **Evidência:** `git diff` mostra substituição completa.
-- **Status:** ✅ Concluído.
-
-### Atualização de Logos (06/05/2026)
-- **Contexto:** Uso de logos oficiais (`galflowai_logo_master.png`, `galflowai_app_icon.png`).
-- **Escopo:** Atualizado README.md, preparado para uso em UI.
-- **Arquivos:** README.md, frontend/assets/.
-- **Status:** ✅ Concluído.
+<p align="center">
+  <img src="galflowai_app_icon.png" width="32" />
+  <br/>
+  <em>Feito para rodar onde você está.</em>
+</p>
