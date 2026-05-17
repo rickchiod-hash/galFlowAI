@@ -16,6 +16,18 @@ import sys
 from pathlib import Path
 from typing import Dict, Any
 
+# Ensure UTF-8 output on Windows
+if sys.stdout.encoding.lower() not in ("utf-8", "utf8"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except AttributeError:
+        pass
+
+# Ensure project root is on path
+_project_root = Path(__file__).resolve().parent.parent
+if str(_project_root) not in sys.path:
+    sys.path.insert(0, str(_project_root))
+
 from app.config import PROJECTS_DIR
 from app.pipeline.stage_gate import (
     PipelineStage, check_gates, STAGE_GATES, GateResult
@@ -163,7 +175,7 @@ def export_report(project_id: str) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="GalFlowAI Quality Check CLI")
-    parser.add_argument("project_id", help="Project ID to check")
+    parser.add_argument("project_id", nargs="?", default=None, help="Project ID to check")
     parser.add_argument("--gate", "-g", help="Check specific stage gate", default=None)
     parser.add_argument("--review-prompts", "-p", action="store_true", help="Review scene prompts")
     parser.add_argument("--list-gates", "-l", action="store_true", help="List all registered gates")
@@ -174,6 +186,9 @@ def main() -> None:
     if args.list_gates:
         list_gates()
         return
+
+    if not args.project_id:
+        parser.error("the following arguments are required: project_id")
 
     if args.gate:
         run_gate(args.gate, args.project_id)
