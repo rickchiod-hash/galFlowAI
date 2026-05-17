@@ -23,6 +23,7 @@ tmp/
 *.log
 logs/*.log
 logs/*.log.*
+.coverage
 
 # Modelos e dados grandes
 models/
