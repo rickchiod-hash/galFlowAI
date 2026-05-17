@@ -17,6 +17,18 @@ import gradio as gr
 from app.logging_config import setup_logger
 logger = setup_logger("galflowai", "info")
 
+CUSTOM_CSS = """
+.gradio-container { max-width: 1280px !important; }
+.status-box { background-color: #f0f0f0; padding: 20px; border-radius: 10px; margin: 10px 0; }
+.step-done { color: #2e7d32; font-weight: bold; }
+.step-active { color: #1565c0; font-weight: bold; }
+.step-pending { color: #9e9e9e; }
+.stage-group { border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; margin: 8px 0; }
+.gate-badge { background-color: #fff3e0; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; }
+.error-text { color: #c62828; }
+.warning-text { color: #e65100; }
+"""
+
 from app.services.script_service import (
     generate_script_with_provider,
     get_provider_status,
@@ -528,19 +540,7 @@ def create_gradio_app():
     web_interface = None
     metrics_service = get_metrics_service()
 
-    custom_css = """
-    .gradio-container { max-width: 1280px !important; }
-    .status-box { background-color: #f0f0f0; padding: 20px; border-radius: 10px; margin: 10px 0; }
-    .step-done { color: #2e7d32; font-weight: bold; }
-    .step-active { color: #1565c0; font-weight: bold; }
-    .step-pending { color: #9e9e9e; }
-    .stage-group { border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; margin: 8px 0; }
-    .gate-badge { background-color: #fff3e0; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; }
-    .error-text { color: #c62828; }
-    .warning-text { color: #e65100; }
-    """
-
-    with gr.Blocks(css=custom_css, title="GalFlowAI - Gerador de Comerciais") as demo:
+    with gr.Blocks(title="GalFlowAI - Gerador de Comerciais") as demo:
         app_state = gr.State(value=dict(_STATE_DEFAULT))
 
         gr.Markdown(
@@ -847,7 +847,7 @@ def create_gradio_app():
                         headers=["horario", "nivel", "modulo", "mensagem", "sugestao", "code", "stage", "retryable", "fallback_used"],
                         label="Logs",
                         datatype=["str", "str", "str", "str", "str", "str", "str", "str", "str"],
-                        col_count=(9, "fixed"),
+                        column_count=9,
                     )
                     with gr.Row():
                         refresh_logs_btn = gr.Button("Atualizar Logs")
@@ -862,7 +862,7 @@ def create_gradio_app():
                         headers=["code", "severity", "mensagem", "stage", "retryable", "fallback_used", "provider", "timestamp"],
                         label="Erros Estruturados",
                         datatype=["str", "str", "str", "str", "str", "str", "str", "str"],
-                        col_count=(8, "fixed"),
+                        column_count=8,
                     )
                     refresh_errors_btn = gr.Button("Atualizar Erros Estruturados")
                 with gr.Tab("Diagnostico"):
@@ -1017,4 +1017,4 @@ if __name__ == "__main__":
 
     demo = create_gradio_app()
     demo.queue()
-    demo.launch(server_name="127.0.0.1", server_port=7860, share=False, debug=True)
+    demo.launch(server_name="127.0.0.1", server_port=7860, share=False, debug=True, css=CUSTOM_CSS)

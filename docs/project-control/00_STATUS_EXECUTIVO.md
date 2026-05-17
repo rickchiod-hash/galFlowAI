@@ -1,7 +1,26 @@
 # Status Executivo do Projeto — GalFlowAI
 
-Atualizado em: 2026-05-16 (sessão 48 — GAL-943 27 raises genéricos → exceções tipadas)
+Atualizado em: 2026-05-17 (sessão 51 — GAL-947 Gradio 6.x deprecations)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
+
+## Sessão 51 — GAL-947: Corrigir deprecações Gradio 6.x (css, col_count) (2026-05-17)
+
+### O que foi feito
+
+1. **css no Blocks** — `gr.Blocks(css=...)` movido para `demo.launch(css=...)` (API Gradio 6.0)
+2. **col_count** — 2× `col_count=(N, "fixed")` substituído por `column_count=N` (API Gradio 6.0)
+3. **Variável CSS** — movida de escopo local para constante de módulo (`CUSTOM_CSS`)
+
+### Testes
+- **1091 passed, 0 failed** — zero regressão
+- `test_ui_metrics.py`: 19 passed, 0 warnings (antes: 6 warnings de deprecação)
+
+### Arquivos alterados
+- `app/ui/gradio_app.py` — css movido para launch(), col_count→column_count, custom_css→CUSTOM_CSS
+- 3 docs atualizados
+
+### Próximo passo
+- lint+lockfile ou git audit sync
 
 ## Sessão 48 — GAL-943: Substituir 27 raises genéricos por exceções tipadas (2026-05-16)
 

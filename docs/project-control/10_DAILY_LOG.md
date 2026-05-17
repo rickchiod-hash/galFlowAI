@@ -2,6 +2,23 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-17 — Sessão 51: GAL-947 Corrigir deprecações Gradio 6.x
+
+### Contexto
+Auditoria técnica revelou 6+ warnings de deprecação Gradio 6.x: `css` no construtor Blocks deve ser movido para `launch()`, `col_count=(N, "fixed")` deve ser `column_count=N`. A versão atual é Gradio 6.14.0, então a migração é necessária.
+
+### O que fiz
+- Movi `css=custom_css` de `gr.Blocks(css=...)` para `demo.launch(css=...)` em gradio_app.py
+- Extraí `custom_css` de escopo local para constante de módulo `CUSTOM_CSS`
+- Substituí 2× `col_count=(9, "fixed")` e `col_count=(8, "fixed")` por `column_count=9` e `column_count=8`
+- `test_ui_metrics.py`: 19 passed, 0 warnings (antes: 6 warnings de deprecação Gradio)
+
+### Testes
+- 1091 passed, 0 failed
+
+### Próximo passo
+- lint+lockfile ou git audit sync
+
 ## 2026-05-16 — Sessão 48: GAL-943 Substituir 27 raises genéricos por exceções tipadas
 
 ### Contexto
