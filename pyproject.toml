@@ -1,0 +1,82 @@
+[build-system]
+requires = ["setuptools>=75.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "galflowai"
+version = "2.0.0"
+description = "Plataforma local-first para geracao de videos comerciais com IA"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.136",
+    "gradio>=6.14",
+    "httpx>=0.28",
+    "numpy>=2.0",
+    "pandas>=3.0",
+    "Pillow>=12.0",
+    "psutil>=6.0",
+    "pydantic>=2.13",
+    "pydub>=0.25",
+    "python-multipart>=0.0.27",
+    "PyYAML>=6.0",
+    "requests>=2.33",
+    "typer>=0.25",
+    "uvicorn>=0.46",
+]
+
+[project.optional-dependencies]
+llm-local = [
+    "gpt4all>=2.0",
+]
+tts = [
+    "pyttsx3>=2.0",
+    "soundfile>=0.13",
+    "kokoro>=0.9",
+]
+voice-clone = [
+    "torch>=2.0",
+]
+vector-store = [
+    "chromadb>=0.6",
+    "qdrant-client>=1.12",
+]
+dev = [
+    "pytest>=9.0",
+    "pytest-cov>=7.0",
+    "ruff>=0.15",
+    "coverage>=7.14",
+]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",  # pycodestyle
+    "F",       # pyflakes
+    "I",       # isort
+    "N",       # pep8-naming
+    "UP",      # pyupgrade
+    "D",       # pydocstyle
+    "SIM",     # simplify
+    "TID",     # tidy imports
+]
+ignore = [
+    "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107",
+    "D200", "D205", "D212", "D400", "D401", "D403",
+    "N802", "N803", "N806", "N815", "N816",
+    "SIM117", "SIM108",
+]
+unfixable = ["D"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D", "N"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --tb=short --ignore=tests/test_git_audit.py"

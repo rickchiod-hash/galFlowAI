@@ -20,7 +20,27 @@ Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 - 3 docs atualizados
 
 ### Próximo passo
-- lint+lockfile ou git audit sync
+- git audit sync ou próxima história
+
+## Sessão 52 — Infraestrutura: lint+lockfile (pyproject.toml + requirements.txt) (2026-05-17)
+
+### O que foi feito
+
+1. **pyproject.toml** — criado com metadados, dependências core+opcionais, ruff config, pytest config
+2. **requirements.txt** — lockfile gerado via `pip freeze`
+3. **ruff install** — instalado para uso futuro em CI
+4. **ruff check** — 2937 erros encontrados, mas `--fix` NÃO aplicado (sem refactor big bang)
+
+### Testes
+- 1091 passed, 0 failed
+
+### Arquivos alterados
+- `pyproject.toml` (novo)
+- `requirements.txt` (novo)
+- docs atualizados
+
+### Próximo passo
+- git audit sync
 
 ## Sessão 48 — GAL-943: Substituir 27 raises genéricos por exceções tipadas (2026-05-16)
 

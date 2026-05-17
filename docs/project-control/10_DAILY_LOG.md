@@ -19,6 +19,42 @@ Auditoria técnica revelou 6+ warnings de deprecação Gradio 6.x: `css` no cons
 ### Próximo passo
 - lint+lockfile ou git audit sync
 
+## 2026-05-17 — Sessão 52: Infraestrutura lint+lockfile (pyproject.toml + requirements.txt)
+
+### Contexto
+Próximo passo do status executivo era configurar lint e lockfile. Projeto não tinha `pyproject.toml` nem `requirements.txt` — dependências gerenciadas apenas via `pip install` direto.
+
+### O que fiz
+1. **pyproject.toml** — Criado com:
+   - Metadados do projeto (name=galflowai, version=2.0.0, python>=3.12)
+   - Dependências core: fastapi, gradio, pydantic, typer, uvicorn, httpx, etc.
+   - Dependências opcionais: llm-local, tts, voice-clone, vector-store, dev
+   - Ruff config: lint rules (E, W, F, I, N, UP, D, SIM, TID) com ignores
+   - Pytest config: testpaths, addopts
+2. **requirements.txt** — `pip freeze` do ambiente atual
+3. **ruff install** — `py -m pip install ruff` registrado
+4. **ruff check app/** — 2937 erros encontrados, 2042 auto-fixáveis → tentei `--fix` mas quebrou 19 testes (UP045/UP006 inseguros). Reverti. Config permanece, correção gradual fica para outro momento.
+
+### Decisões
+- `ruff --fix` NÃO aplicado no código fonte. "Sem refactor big bang" — infra fica configurada, correções manuais ou por PR separado.
+- `pyproject.toml` substitui ausência total de metadata Python.
+
+### Testes
+- 1091 passed, 0 failed
+
+### Arquivos alterados
+- `pyproject.toml` (novo)
+- `requirements.txt` (novo)
+- `docs/project-control/10_DAILY_LOG.md`
+- `docs/project-control/00_STATUS_EXECUTIVO.md`
+
+### Próximo passo
+- git audit sync (docs desatualizadas) ou próxima história
+
+## 2026-05-17 — Sessão 51: GAL-947 Corrigir deprecações Gradio 6.x
+
+(already added above as Sessão 51)
+
 ## 2026-05-16 — Sessão 48: GAL-943 Substituir 27 raises genéricos por exceções tipadas
 
 ### Contexto
