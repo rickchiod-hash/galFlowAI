@@ -78,7 +78,7 @@ class CreateVisualBibleUseCase(UseCase):
             
             self._save_bible(bible)
             
-            return self._build_success(data=bible.dict())
+            return self._build_success(data=bible.model_dump())
         except Exception as e:
             return self._build_error(str(e))
     
@@ -93,7 +93,7 @@ class CreateVisualBibleUseCase(UseCase):
         
         bible_path = bible_dir / "visual_bible.json"
         bible_path.write_text(
-            json.dumps(bible.dict(), indent=2, ensure_ascii=False),
+            json.dumps(bible.model_dump(), indent=2, ensure_ascii=False),
             encoding="utf-8"
         )
 
@@ -135,7 +135,7 @@ class GenerateScenePromptsUseCase(UseCase):
                     script=script,
                     bible_data=bible_data
                 )
-                contracts.append(contract.dict())
+                contracts.append(contract.model_dump())
             
             # Save contracts
             self._save_contracts(project_id, contracts)
