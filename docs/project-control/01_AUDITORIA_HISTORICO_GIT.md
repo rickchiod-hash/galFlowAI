@@ -1,6 +1,6 @@
 # 01_AUDITORIA_HISTORICO_GIT — GalFlowAI
 
-Atualizado em: 2026-05-16
+Atualizado em: 2026-05-17
 
 ## Objetivo
 
@@ -21,10 +21,10 @@ git log --diff-filter=D --name-only --format="%h %s"
 ### Resultados
 
 - Branch: master
-- Total de commits: 282
-- HEAD: ea8d4a3 "fix(perf): GAL-900 GPU offload (n_gpu_layers=20) + max_tokens 800->400 for GPT4All; GAL-901 TODO marked completed (already implemented)" (Thu May 14 2026)
+- Total de commits: 286
+- HEAD: be5531d "infra(lint): GAL-952 add pyproject.toml with ruff config and requirements.txt" (Sun May 17 2026)
 - Primeiro commit: 067938a "feat: galFlowAI MVP - interface Gradio com barra de progresso" (Sat May 2 14:35:18 2026 -0300)
-- Período: 6 dias de desenvolvimento (02/05 a 08/05/2026)
+- Período: 15 dias de desenvolvimento (02/05 a 17/05/2026)
 - Autores: Henrique Luiz, rickchiod-hash
 - Working tree: untracked files (user's pending work — piper_adapter, checkpoint_manager, job_state, stages/, use_cases, utils/)
 - Branch local logs-feature também existe (Central de Logs na UI)
