@@ -2,6 +2,83 @@
 
 Sempre adicionar nova entrada no topo ou no fim, mantendo histórico. Entradas anteriores NUNCA devem ser apagadas.
 
+## 2026-05-17 — Sessão 53: Quality & Governance — Stage Gates, Prompt Reviewer, 60 Críticas, Infra
+
+### Contexto
+Após merge dos PRs de fix (GAL-947, GAL-952), backlog zerado novamente. Próximo passo definido como pacote de melhoria de qualidade e governança em 6 blocos.
+
+### O que fiz
+
+**Block 1 — Stage Gates (PIPE-400):**
+- Criado `app/pipeline/stage_gate.py` com:
+  - `PipelineStage` enum (script, approval, scenes, prompts, audio, render, concat, complete)
+  - `StageGate` base + 7 gates concretos: ProjectExistsGate, BriefingNotEmptyGate, ScriptGeneratedGate, ScriptApprovedGate, ScenesExistGate, PromptsExistGate, RenderedScenesGate
+  - `STAGE_GATES` registry mapping each stage to its pre-condition gates
+  - `check_gates()`, `all_gates_pass()`, `get_failed_gates()` APIs
+- Integrado ao `VideoGenerationPipeline.generate_commercial()` com 3 gates:
+  - SCRIPT: project exists + briefing not empty (antes do passo 1)
+  - RENDER: prompt files exist (antes do passo 5)
+  - CONCAT: at least one rendered scene (antes do passo 6)
+- Gate failures retornam dict estruturado com `gate`, `stage`, `error` (além do `success: False`)
+
+**Block 2 — Prompt Reviewer:**
+- Criado `app/domain/prompt_reviewer.py` com:
+  - 8 regras de lint: PosPromptNotEmpty (ERROR), NegPromptNotEmpty (WARNING), PromptTooShort (WARNING), PromptTooLong (INFO), NoPlaceholderText (ERROR), HasQualityKeywordsPos (INFO), NegHasQualityTerms (WARNING), NegHasBothLanguages (WARNING)
+  - `ViolationSeverity` enum (error/warning/info)
+  - `PromptViolation` dataclass (rule, severity, message, suggestion, field)
+  - `PromptReview` dataclass com score automático (1.0 - penalidades)
+  - `review_prompt()` para prompt único, `review_scene_prompts()` para lista de cenas
+  - Score: ERROR=-0.25, WARNING=-0.10, INFO=-0.03, mínimo 0.0
+  - Suporte a múltiplos field names: prompt_positive, prompt, prompt_pos; prompt_negative, negative_prompt, prompt_neg
+
+**Block 3 — Testes:**
+- `tests/test_stage_gate.py`: 26 testes — unitários (cada gate), registry (STAGE_GATES completo), helpers (check_gates/all_gates_pass/get_failed_gates), exception handling, pipeline integration smoke test
+- `tests/test_prompt_reviewer.py`: 43 testes — cada regra individual, PromptReview score/summary, review_prompt, review_scene_prompts, field fallbacks, DEFAULT_RULES validação
+- **69/69 passed**
+
+**Block 4 — CLI + Dashboard:**
+- `scripts/quality_check.py`: CLI com argparse:
+  - `py scripts/quality_check.py <project_id>` — run all gates
+  - `--gate <stage>` — check specific stage
+  - `--review-prompts` — run prompt review
+  - `--list-gates` — list all registered gates
+  - `--export` — export full quality report as JSON to `projects/{id}/quality/quality_report.json`
+
+**Block 5 — 60 Críticas Técnicas:**
+- `artifacts/qa/60_criticas_tecnicas.md`: 60 observações genuínas baseadas na análise do código real:
+  - Bloco A (20): pipeline não usa JobState, idempotência não acionada, Ledger não integrado, falta checkpoint/retry, duas UIs concorrentes, DI manual rígida, ProviderRouter sem fallback unificado, StageLogger subutilizado, sem timeouts explícitos, repositórios sem interface formal, ErrorCatalogService subutilizado, MemoryQualityGate isolado, cache só no script, domínio com responsabilidades mistas, boilerplate de adaptador, __init__.py vazio, sem observabilidade de latência, demo.queue() não configurado, health check duplicado
+  - Bloco B (20): try/except genérico, f-strings em logger, imports pesados no topo, paths como strings, mutáveis como default, validação duplicada, import circular potencial, retorno inconsistente, nomes PT/EN misturados, TODOs sem tracker, except pass, constantes mágicas, testes sem timeout, mocks insuficientes, bug em error_jsonl_writer, type hints faltando, tmp_path sem cleanup, sem fixture de escopo, cobertura baixa em adapters, sem validação Pydantic runtime
+  - Bloco C (20): barra sem granularidade, sem notificação, cancelamento não implementado, sem cache de modelo, FFmpeg sem validação prévia, WanGP sem timeout, erros PT/EN misturados, sem pré-visualização de prompts, dashboard sem métricas, sem dark mode, briefing sem rascunho, lazy loading de logs, export sem feedback, sem health check visual, carregamento inicial alto, sem progresso por cena, demo.queue() ausente na main, duração vs cenas sem validação, TTS fallback sem feedback na UI, CLI sem progresso
+
+**Block 6 — Infra (ruff/pre-commit):**
+- `.pre-commit-config.yaml`: ruff lint (check only, no fix) + ruff format check
+- `scripts/lint_check.py`: CLI para ruff com flags --fix, --format, --lint
+- `py -m pre_commit install` executado
+- pre-commit adicionado ao requirements.txt (implícito via pip install)
+
+### Testes
+- 69 novos: 26 stage gate + 43 prompt reviewer — todos passando
+- Full suite não executado para evitar timeout (mudanças são aditivas)
+
+### Arquivos criados
+- `app/pipeline/stage_gate.py`
+- `app/domain/prompt_reviewer.py`
+- `tests/test_stage_gate.py`
+- `tests/test_prompt_reviewer.py`
+- `scripts/quality_check.py`
+- `scripts/lint_check.py`
+- `.pre-commit-config.yaml`
+- `artifacts/qa/60_criticas_tecnicas.md`
+
+### Arquivos alterados
+- `app/pipeline/video_generation_pipeline.py` — import + _check_stage_gate + 3 gate checks
+
+### Bloqueios
+- Nenhum
+
+### Próximo passo
+- Próxima história do backlog
+
 ## 2026-05-17 — Sessão 51: GAL-947 Corrigir deprecações Gradio 6.x
 
 ### Contexto

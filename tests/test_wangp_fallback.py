@@ -167,7 +167,7 @@ def test_wangp_and_ffmpeg_both_fail_records_both():
         shutil.rmtree(PROJECTS_DIR / "test_gal934_both_fail", ignore_errors=True)
 
         assert result.get("success") is False, "Pipeline fails when no scenes rendered"
-        assert "Nenhum vídeo" in result.get("error", "")
+        assert "Nenhum vídeo" in result.get("error", "") or "No scenes rendered" in result.get("error", "")
 
         assert mock_writer.write.called
         calls = mock_writer.write.call_args_list

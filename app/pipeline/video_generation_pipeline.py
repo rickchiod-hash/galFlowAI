@@ -21,6 +21,7 @@ from app.config import BASE_DIR, PROJECTS_DIR
 from app.core.app_error import AppError, Severity
 from app.core.error_codes import ErrorCode
 from app.domain.stage_logger import StageLogger
+from app.pipeline.stage_gate import PipelineStage, get_failed_gates
 
 logger = logging.getLogger(__name__)
 
@@ -68,6 +69,21 @@ class VideoGenerationPipeline:
             self._error_writer = ErrorJsonlWriter()
         return self._error_writer
 
+    def _check_stage_gate(self, stage: PipelineStage, project_id: str, context: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
+        """Check stage gates. Returns error dict if any gate fails, else None."""
+        failed = get_failed_gates(stage, project_id, context)
+        if failed:
+            errors = [f.error for f in failed]
+            gates = [f.gate for f in failed]
+            logger.warning("Gate(s) blocked stage '%s': %s", stage.value, "; ".join(gates))
+            return {
+                "success": False,
+                "gate": "; ".join(gates),
+                "stage": stage.value,
+                "error": "; ".join(errors),
+            }
+        return None
+
     def generate_commercial(
         self,
         project_id: str,
@@ -96,11 +112,20 @@ class VideoGenerationPipeline:
         try:
             project_dir = Path(PROJECTS_DIR) / project_id
             project_dir.mkdir(parents=True, exist_ok=True)
-            
+
+            # [GATE] SCRIPT: project exists + briefing not empty
+            briefing = f"{product}. {target_audience}"
+            script_gate_err = self._check_stage_gate(
+                PipelineStage.SCRIPT, project_id,
+                {"briefing": briefing}
+            )
+            if script_gate_err:
+                return script_gate_err
+
             # 1. Gerar roteiro (draft)
             self._report_progress(progress_callback, 10, "Gerando roteiro...")
             script_result = self.generate_script_use_case.execute(
-                briefing=f"{product}. {target_audience}",
+                briefing=briefing,
                 project_id=project_id
             )
             
@@ -192,6 +217,14 @@ class VideoGenerationPipeline:
                 encoding="utf-8"
             )
             
+            # [GATE] CONCAT: at least one rendered scene before concat
+            concat_gate_err = self._check_stage_gate(
+                PipelineStage.CONCAT, project_id,
+                {"rendered_scenes": rendered_scenes}
+            )
+            if concat_gate_err:
+                return concat_gate_err
+
             # 6. Montar vídeo final com FFmpeg
             self._report_progress(progress_callback, 85, "Montando vídeo final...")
             final_video_path = project_dir / "final" / "commercial.mp4"

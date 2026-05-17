@@ -3,6 +3,58 @@
 Atualizado em: 2026-05-17 (sessão 51 — GAL-947 Gradio 6.x deprecations)
 Arquivo de continuidade obrigatório. Sempre atualizar ao final de cada sessão.
 
+## Sessão 53 — Quality & Governance: Stage Gates + Prompt Reviewer + 60 Críticas (2026-05-17)
+
+### O que foi feito
+
+**Block 1 — Stage Gates (PIPE-400)**
+- `app/pipeline/stage_gate.py`: `PipelineStage` enum, `StageGate` base + 7 gates concretos, gate registry por stage, `check_gates()`/`all_gates_pass()`/`get_failed_gates()`
+- Integração no `VideoGenerationPipeline` com 3 gates: SCRIPT (project exists + briefing not empty), RENDER (prompts exist), CONCAT (rendered scenes exist)
+- Método `_check_stage_gate()` com retorno estruturado (`gate`, `stage`, `error`)
+
+**Block 2 — Prompt Reviewer**
+- `app/domain/prompt_reviewer.py`: 8 regras de lint (PosPromptNotEmpty, NegPromptNotEmpty, PromptTooShort, PromptTooLong, NoPlaceholderText, HasQualityKeywordsPos, NegHasQualityTerms, NegHasBothLanguages)
+- `review_prompt()` para prompt único, `review_scene_prompts()` para lista de cenas
+- Score automático (0.0-1.0), relatório com severidade, sugestão e field
+
+**Block 3 — Testes**
+- `tests/test_stage_gate.py`: 26 testes (unitários + registry + helpers + integração)
+- `tests/test_prompt_reviewer.py`: 43 testes (regras individuais + review + scene review)
+- **69/69 passed**
+
+**Block 4 — CLI + Dashboard**
+- `scripts/quality_check.py`: CLI com `--gate`, `--review-prompts`, `--export`, `--list-gates`
+- Gate check por stage + relatório completo exportável para JSON
+
+**Block 5 — 60 Críticas Técnicas**
+- `artifacts/qa/60_criticas_tecnicas.md`: 20 arquitetura/estrutura + 20 qualidade de código + 20 UX/desempenho
+
+**Block 6 — Infra (ruff/pre-commit)**
+- `.pre-commit-config.yaml`: ruff lint + format check hooks
+- `scripts/lint_check.py`: CLI para ruff check/fix/format
+- pre-commit instalado no hook git
+
+### Testes
+- **69 novos testes** (26 stage gate + 43 prompt reviewer) — todos passando
+- Regressão zero
+
+### Arquivos criados
+- `app/pipeline/stage_gate.py` — Stage Gate system (150+ linhas)
+- `app/domain/prompt_reviewer.py` — Prompt Reviewer (230+ linhas)
+- `tests/test_stage_gate.py` — 26 testes
+- `tests/test_prompt_reviewer.py` — 43 testes
+- `scripts/quality_check.py` — Quality CLI
+- `scripts/lint_check.py` — Ruff lint CLI
+- `.pre-commit-config.yaml` — Pre-commit hooks
+- `artifacts/qa/60_criticas_tecnicas.md` — 60 críticas
+
+### Arquivos alterados
+- `app/pipeline/video_generation_pipeline.py` — 3 stage gates integrados
+- docs atualizados
+
+### Próximo passo
+- Próxima história do backlog
+
 ## Sessão 51 — GAL-947: Corrigir deprecações Gradio 6.x (css, col_count) (2026-05-17)
 
 ### O que foi feito

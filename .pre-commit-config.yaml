@@ -1,0 +1,16 @@
+# Pre-commit hooks for GalFlowAI
+# Install: pip install pre-commit && pre-commit install
+# Run all: pre-commit run --all-files
+repos:
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.11.0
+    hooks:
+      - id: ruff
+        name: ruff-lint-check
+        description: "Run Ruff linter (check only, no auto-fix)"
+        args: [check, --no-fix]
+
+      - id: ruff-format
+        name: ruff-format-check
+        description: "Check formatting with Ruff"
+        args: [format, --check]
